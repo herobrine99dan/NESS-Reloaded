@@ -1,0 +1,43 @@
+Configuration:
+#How much VL is required to be instantly kicked
+  VLForInstakick: 400
+#Probability that the player will be lagged back
+  LagPossibility: 40
+#The Discord WebHook URL,leave empty if you don't want to use it.
+  WebHookURL: ''
+#Minimum VL required to notify staff
+  MinimumVL: 20
+Settings:
+#Whether or not developer mode is enabled
+#In Developer mode players won't be kicked, checks are shown to NESS.notify.developer
+  DeveloperMode: false
+  AntiVape: true
+  DebugMode: false
+  UsePackets: true
+#Whether to lag-back the player
+  Cancel: true
+#Will NESS alert staff members in the server or all servers?
+  Bungeecord: false
+#Should NESS automatically check for new updates? (I suggest keeping this enabled)
+  CheckForUpdates: true
+Prefix: '&8[&b&lNESS&8]&r&7>'
+#Should NESS create logs?
+StoreLogs: true
+PacketMessage: You are sending too many packets
+Messages:
+  KickMessage: '%prefix% &cYou have been &c&lkicked&c from the server for cheating.'
+  WarnHacks: '%prefix% &c%player% &7failed &c%hack%&7! VL &c%vl% &7[&o%module%&7].'
+  NoPermission: '%prefix% &7You &cdon''t have the permission &7to do that.'
+  ReportCommand: '%prefix% &7Please use /ness report &c[Player]&7 &c[Hack]&7.'
+  ReportUnknowPlayer: '%prefix% &7 Sorry, that players &cisn''t &7online!.'
+  ReportAcceptedHacks: '%prefix% &7 Sorry, I don''t know that one! Accepted hacks are: %acceptedhack%.'
+  ReportTooFast: '%prefix% &7 Sorry your &clast report &7was too recent!'
+  ReportAlready: '%prefix% &7That player has already &cbeen reported &7recently!'
+  ReportSuccess: '%prefix% &7You have reported &c%player% &7for &c%hack%&7! We will check the player soon'
+  ReportStaff: '%prefix% &7The player %c%player%&7 reported &c%cheater%&7 for &c%hack%&7!'
+#Disable certain checks. Example: 'Flight', 'Kill Aura' (etc)
+DisabledChecks:
+- '0'
+- exampleHack
+DisabledWorlds:
+- exampleWorld
