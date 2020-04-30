@@ -39,19 +39,18 @@ import org.bukkit.event.server.TabCompleteEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-import org.mswsplex.MSWS.NESS.checks.AntiASCII;
-import org.mswsplex.MSWS.NESS.checks.AntiTab;
-import org.mswsplex.MSWS.NESS.checks.AutoClicker;
-import org.mswsplex.MSWS.NESS.checks.FastEat;
-import org.mswsplex.MSWS.NESS.checks.FastPlace;
-import org.mswsplex.MSWS.NESS.checks.GhostHand;
-import org.mswsplex.MSWS.NESS.checks.IllegalInteraction;
-import org.mswsplex.MSWS.NESS.checks.InventoryHack;
-import org.mswsplex.MSWS.NESS.checks.Jesus;
-import org.mswsplex.MSWS.NESS.checks.NoSlowDown;
-import org.mswsplex.MSWS.NESS.checks.NoSwing;
-import org.mswsplex.MSWS.NESS.checks.Scaffold;
-import org.mswsplex.MSWS.NESS.checks.SpamBot;
+import org.mswsplex.MSWS.NESS.checks.chat.AntiASCII;
+import org.mswsplex.MSWS.NESS.checks.chat.SpamBot;
+import org.mswsplex.MSWS.NESS.checks.combat.AutoClicker;
+import org.mswsplex.MSWS.NESS.checks.combat.FastEat;
+import org.mswsplex.MSWS.NESS.checks.combat.NoSwing;
+import org.mswsplex.MSWS.NESS.checks.movement.Jesus;
+import org.mswsplex.MSWS.NESS.checks.movement.NoSlowDown;
+import org.mswsplex.MSWS.NESS.checks.world.FastPlace;
+import org.mswsplex.MSWS.NESS.checks.world.GhostHand;
+import org.mswsplex.MSWS.NESS.checks.world.IllegalInteraction;
+import org.mswsplex.MSWS.NESS.checks.world.InventoryHack;
+import org.mswsplex.MSWS.NESS.checks.world.Scaffold;
 import org.mswsplex.MSWS.NESS.exploits.SimpleExploit;
 import org.mswsplex.MSWS.NESS.protocol.Packet1_15Helper;
 
@@ -71,11 +70,6 @@ public class MiscEvents implements Listener {
 	@EventHandler
 	public void onSignChange(final SignChangeEvent event) {
 		AntiASCII.Check2(event);
-	}
-
-	@EventHandler
-	public void onChat(TabCompleteEvent event) {
-		AntiTab.Check(event);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

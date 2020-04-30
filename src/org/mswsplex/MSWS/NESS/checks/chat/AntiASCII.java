@@ -1,4 +1,4 @@
-package org.mswsplex.MSWS.NESS.checks;
+package org.mswsplex.MSWS.NESS.checks.chat;
 
 import java.nio.charset.Charset;
 

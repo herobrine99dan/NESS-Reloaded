@@ -1,4 +1,4 @@
-package org.mswsplex.MSWS.NESS.checks;
+package org.mswsplex.MSWS.NESS.checks.movement;
 
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;

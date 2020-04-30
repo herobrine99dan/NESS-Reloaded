@@ -1,4 +1,4 @@
-package org.mswsplex.MSWS.NESS.checks;
+package org.mswsplex.MSWS.NESS.checks.combat;
 
 import java.util.HashMap;
 import org.bukkit.Bukkit;

@@ -1,4 +1,4 @@
-package org.mswsplex.MSWS.NESS.checks;
+package org.mswsplex.MSWS.NESS.checks.world;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

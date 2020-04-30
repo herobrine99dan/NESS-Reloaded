@@ -1,4 +1,4 @@
-package org.mswsplex.MSWS.NESS.checks;
+package org.mswsplex.MSWS.NESS.checks.movement;
 
 import java.util.ArrayList;
 import java.util.HashMap;

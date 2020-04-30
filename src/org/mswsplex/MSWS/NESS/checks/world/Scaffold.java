@@ -1,4 +1,4 @@
-package org.mswsplex.MSWS.NESS.checks;
+package org.mswsplex.MSWS.NESS.checks.world;
 
 import java.util.Set;
 import org.bukkit.Bukkit;
