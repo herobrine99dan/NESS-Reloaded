@@ -5,13 +5,14 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
-import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CPSCheck;
 
 public class CheckManager {
 	
@@ -23,6 +24,10 @@ public class CheckManager {
 	
 	CheckManager(NESSAnticheat ness) {
 		this.ness = ness;
+	}
+	
+	void addAllChecks() {
+		checks.add(new CPSCheck(this));
 	}
 	
 	public Executor getExecutor() {
@@ -43,10 +48,6 @@ public class CheckManager {
 				}
 			});
 		}, 5L, 1L);
-	}
-	
-	public void forEachPlayer(Consumer<NessPlayer> action) {
-		players.values().forEach(action);
 	}
 	
 	void registerListener() {

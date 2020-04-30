@@ -14,10 +14,11 @@ public class NESSAnticheat extends JavaPlugin {
 	@Getter
 	private Executor executor;
 	
-	private CheckManager manager;
+	// TODO add config (this is null for now)
+	@Getter
+	private NessConfig nessConfig;
 	
-	// TODO Add config
-	private NessConfig config;
+	private CheckManager manager;
 	
 	@Override
 	public void onEnable() {
