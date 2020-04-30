@@ -135,7 +135,7 @@ public class Utility {
 	}
 
 	public boolean isPureAscii(String v) {
-		return StandardCharsets.US_ASCII.newEncoder().canEncode(v.replaceAll("�", "!").replaceAll("�", "?"));
+		return StandardCharsets.US_ASCII.newEncoder().canEncode(v.replaceAll("¡", "!").replaceAll("¿", "?"));
 	}
 
 	public static boolean hasBlock(Player p, Material m) {
