@@ -39,9 +39,11 @@ public class WarnHacks {
 		if (NESS.main.config.getStringList("DisabledWorlds").contains(hacker.getWorld().getName())) {
 			return;
 		}
-		if (hacker.isInsideVehicle() && (hacker.getVehicle().getType() == EntityType.ENDER_PEARL
-				|| hacker.getVehicle().getType() == EntityType.HORSE || hacker.getVehicle().getType() == EntityType.DONKEY)) {
-			return;
+		if (hacker.isInsideVehicle()) {
+			EntityType vehicleType = hacker.getVehicle().getType();
+			if (vehicleType == EntityType.ENDER_PEARL || vehicleType == EntityType.HORSE || vehicleType.name().equals("DONKEY)")) {
+				return;
+			}
 		}
 		if (hacker.isDead()) {
 			return;
