@@ -17,7 +17,7 @@ public class InteractionListener implements Listener {
 	@EventHandler
 	private void onInteraction(PlayerInteractEvent evt) {
 		if (evt.getAction() == Action.LEFT_CLICK_AIR || evt.getAction() == Action.LEFT_CLICK_BLOCK) {
-			manager.getPlayer(evt.getPlayer()).cps_Click();
+			manager.getPlayer(evt.getPlayer()).checkCpsAndPossiblyKick();
 		}
 	}
 	
