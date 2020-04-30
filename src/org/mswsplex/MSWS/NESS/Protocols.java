@@ -14,8 +14,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.mswsplex.MSWS.NESS.combat.KillauraBotCheck;
-import org.mswsplex.MSWS.NESS.movement.BadPackets;
+import org.mswsplex.MSWS.NESS.checks.combat.KillauraBotCheck;
+import org.mswsplex.MSWS.NESS.checks.movement.BadPackets;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;

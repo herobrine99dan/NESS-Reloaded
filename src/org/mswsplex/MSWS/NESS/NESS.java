@@ -59,6 +59,8 @@ public class NESS extends JavaPlugin implements PluginMessageListener {
 	public static String FMLHS;
 	public static NESS main;
 	public TinyProtocol protocol;
+	
+	private NESSAnticheat anticheat;
 
 	public NESS() {
 		this.vlYml = new File(this.getDataFolder() + "/vls.yml");
@@ -74,6 +76,7 @@ public class NESS extends JavaPlugin implements PluginMessageListener {
 	public void onEnable() {
 		NESS.main = this;
 		this.ver = this.getDescription().getVersion();
+		anticheat = new NESSAnticheat(this);
 		this.configYml = new File(this.getDataFolder(), "config.yml");// Load the config
 		this.saveDefaultConfig();
 		// if (!this.configYml.exists()) {
@@ -150,15 +153,16 @@ public class NESS extends JavaPlugin implements PluginMessageListener {
 	}
 
 	private void checkUpdate() {
-		String version = Utility.getSpigotVersion(75887);
-		if (version == null) {
-			return;
-		}
-		if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
-			MSG.log("&aYou are using the latest version!");
-		} else {
-			MSG.log("&bThere is a new update avaible: " + version);
-		}
+		int versionId = 75887;
+		anticheat.checkUpdate(versionId).thenAccept((version) -> {
+			if (version == null) {
+				MSG.log("&cCannot look for update!");
+			} else if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
+				MSG.log("&aYou are using the latest version!");
+			} else {
+				MSG.log("&bThere is a new update avaible: " + version);
+			}
+		});
 	}
 
 	public void onDisable() {

@@ -1,5 +1,3 @@
-
-
 package org.mswsplex.MSWS.NESS;
 
 import com.google.common.io.ByteArrayDataOutput;
@@ -16,7 +14,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.mswsplex.MSWS.NESS.NESS;
 import org.mswsplex.MSWS.NESS.api.PlayerViolationEvent;
 import org.mswsplex.MSWS.NESS.discord.DiscordHackWarn;
 
@@ -40,9 +37,11 @@ public class WarnHacks {
 		if (NESS.main.config.getStringList("DisabledWorlds").contains(hacker.getWorld().getName())) {
 			return;
 		}
-		if (hacker.isInsideVehicle() && (hacker.getVehicle().getType() == EntityType.ENDER_PEARL
-				|| hacker.getVehicle().getType() == EntityType.HORSE || hacker.getVehicle().getType() == EntityType.DONKEY)) {
-			return;
+		if (hacker.isInsideVehicle()) {
+			EntityType vehicleType = hacker.getVehicle().getType();
+			if (vehicleType == EntityType.ENDER_PEARL || vehicleType == EntityType.HORSE || vehicleType.name().equals("DONKEY)")) {
+				return;
+			}
 		}
 		if (hacker.isDead()) {
 			return;

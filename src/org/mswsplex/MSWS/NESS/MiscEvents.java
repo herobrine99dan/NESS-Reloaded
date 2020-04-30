@@ -39,20 +39,20 @@ import org.bukkit.event.server.TabCompleteEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-import org.mswsplex.MSWS.NESS.chat.AntiASCII;
-import org.mswsplex.MSWS.NESS.chat.SpamBot;
-import org.mswsplex.MSWS.NESS.combat.AutoClicker;
-import org.mswsplex.MSWS.NESS.combat.FastEat;
-import org.mswsplex.MSWS.NESS.combat.NoSwing;
+import org.mswsplex.MSWS.NESS.checks.chat.AntiASCII;
+import org.mswsplex.MSWS.NESS.checks.chat.SpamBot;
+import org.mswsplex.MSWS.NESS.checks.combat.AutoClicker;
+import org.mswsplex.MSWS.NESS.checks.combat.FastEat;
+import org.mswsplex.MSWS.NESS.checks.combat.NoSwing;
+import org.mswsplex.MSWS.NESS.checks.movement.Jesus;
+import org.mswsplex.MSWS.NESS.checks.movement.NoSlowDown;
+import org.mswsplex.MSWS.NESS.checks.world.FastPlace;
+import org.mswsplex.MSWS.NESS.checks.world.GhostHand;
+import org.mswsplex.MSWS.NESS.checks.world.IllegalInteraction;
+import org.mswsplex.MSWS.NESS.checks.world.InventoryHack;
+import org.mswsplex.MSWS.NESS.checks.world.Scaffold;
 import org.mswsplex.MSWS.NESS.exploit.SimpleExploit;
-import org.mswsplex.MSWS.NESS.movement.Jesus;
-import org.mswsplex.MSWS.NESS.movement.NoSlowDown;
 import org.mswsplex.MSWS.NESS.protocols.Packet1_15Helper;
-import org.mswsplex.MSWS.NESS.world.FastPlace;
-import org.mswsplex.MSWS.NESS.world.GhostHand;
-import org.mswsplex.MSWS.NESS.world.IllegalInteraction;
-import org.mswsplex.MSWS.NESS.world.InventoryHack;
-import org.mswsplex.MSWS.NESS.world.Scaffold;
 
 public class MiscEvents implements Listener {
 	@EventHandler

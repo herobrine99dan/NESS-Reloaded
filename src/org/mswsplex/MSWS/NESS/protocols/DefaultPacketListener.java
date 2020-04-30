@@ -4,8 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.mswsplex.MSWS.NESS.NESS;
 import org.mswsplex.MSWS.NESS.NESSPlayer;
-import org.mswsplex.MSWS.NESS.movement.BadPackets;
-import org.mswsplex.MSWS.NESS.world.PingSpoof;
+import org.mswsplex.MSWS.NESS.checks.movement.BadPackets;
+import org.mswsplex.MSWS.NESS.checks.world.PingSpoof;
 
 import net.minecraft.server.v1_12_R1.PacketPlayInCustomPayload;
 import net.minecraft.server.v1_12_R1.PacketPlayInSettings;

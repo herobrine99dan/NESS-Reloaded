@@ -172,17 +172,6 @@ public class Utility {
 		return (dist * 0.5) - 1.5;
 	}
 
-	public static String getSpigotVersion(int id) {
-        try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + id).openStream(); Scanner scanner = new Scanner(inputStream)) {
-            if (scanner.hasNext()) {
-                return scanner.next();
-            }
-        } catch (IOException exception) {
-        	MSG.log("&cCannot look for update!");
-        }
-		return null;
-	}
-
 	public static double getRotations(Player player) {
 		return -Math.atan2(player.getLocation().getY() + player.getEyeHeight(),
 				Math.sqrt(player.getLocation().getX() * player.getLocation().getX()
