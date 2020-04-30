@@ -5,14 +5,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import com.github.ness.PlayerManager;
+import com.github.ness.CheckManager;
 
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class InteractionListener implements Listener {
 
-	private final PlayerManager manager;
+	private final CheckManager manager;
 	
 	@EventHandler
 	private void onInteraction(PlayerInteractEvent evt) {

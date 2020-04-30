@@ -1,10 +1,7 @@
 package com.github.ness;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.bukkit.entity.Player;
 
 import com.github.ness.annotation.SyncOnly;
@@ -13,8 +10,6 @@ public class NessPlayer {
 
 	@SyncOnly
 	private final Player player;
-	
-	private int suspicion;
 	
 	/**
 	 * Retain clicks for 4 seconds in CPS check

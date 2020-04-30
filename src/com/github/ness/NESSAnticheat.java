@@ -7,8 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.ness.listener.InteractionListener;
-
 import lombok.Getter;
 
 public class NESSAnticheat extends JavaPlugin {
@@ -16,15 +14,18 @@ public class NESSAnticheat extends JavaPlugin {
 	@Getter
 	private Executor executor;
 	
+	private CheckManager manager;
+	
 	@Override
 	public void onEnable() {
-		PlayerManager manager = new PlayerManager();
 		executor = Executors.newSingleThreadExecutor();
-		getServer().getPluginManager().registerEvents(new InteractionListener(manager), this);
+		manager = new CheckManager(this);
+		manager.registerChecks();
 	}
 	
 	@Override
 	public void onDisable() {
+		manager.unregisterChecks();
 		ExecutorService service = ((ExecutorService) executor);
 		service.shutdown();
 		try {
@@ -32,7 +33,6 @@ public class NESSAnticheat extends JavaPlugin {
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
 		}
-		executor = null;
 	}
 	
 	
