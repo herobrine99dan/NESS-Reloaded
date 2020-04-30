@@ -5,5 +5,5 @@ author: herobrine99dan
 softdepend: [ProtocolLib, Punish, mcMMO]
 commands:
    ness:
-      description: Made by MSWS
+      description: Made by herobrine99dan and A248
       usage: /<command>
