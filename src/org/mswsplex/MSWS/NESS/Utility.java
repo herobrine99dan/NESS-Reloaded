@@ -135,7 +135,7 @@ public class Utility {
 	}
 
 	public boolean isPureAscii(String v) {
-		return StandardCharsets.US_ASCII.newEncoder().canEncode(v.replaceAll("¡", "!").replaceAll("¿", "?"));
+		return StandardCharsets.US_ASCII.newEncoder().canEncode(v.replaceAll("ï¿½", "!").replaceAll("ï¿½", "?"));
 	}
 
 	public static boolean hasBlock(Player p, Material m) {
@@ -170,17 +170,6 @@ public class Utility {
 
 	public static double calcDamage(double dist) {
 		return (dist * 0.5) - 1.5;
-	}
-
-	public static String getSpigotVersion(int id) {
-        try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + id).openStream(); Scanner scanner = new Scanner(inputStream)) {
-            if (scanner.hasNext()) {
-                return scanner.next();
-            }
-        } catch (IOException exception) {
-        	MSG.log("&cCannot look for update!");
-        }
-		return null;
 	}
 
 	public static double getRotations(Player player) {
