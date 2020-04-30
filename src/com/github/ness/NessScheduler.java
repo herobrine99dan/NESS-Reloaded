@@ -19,6 +19,7 @@ public class NessScheduler implements Runnable, Executor, AutoCloseable {
 				Thread.currentThread().interrupt();
 			} catch (Exception ex) {
 				// Encountered an error
+				// We can log the exception properly later
 				ex.printStackTrace();
 			}
 		}
