@@ -1,4 +1,4 @@
-package org.mswsplex.MSWS.NESS.checks;
+package org.mswsplex.MSWS.NESS.checks.killaura;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import org.mswsplex.MSWS.NESS.Utility;
 import org.mswsplex.MSWS.NESS.WarnHacks;
 import org.mswsplex.MSWS.NESS.protocol.NPC1_12;
 import org.mswsplex.MSWS.NESS.protocol.NPC1_8;
-import com.comphenix.packetwrapper.WrapperPlayClientUseEntity;
+//import com.comphenix.packetwrapper.WrapperPlayClientUseEntity;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 
@@ -58,13 +58,13 @@ public class KillauraBotCheck {
 		Location loc = p.getLocation();
 		String direction = Utilities.DeterminateDirection(loc.getYaw());
 		if(direction.equals("nord")) {
-			loc.add(1.5, 0, -0.1);
+			loc.add(1.7, 0, 0);
 		} else if(direction.equals("sud")) {
-			loc.add(-1.5, 0, 0.1);
+			loc.add(-1.7, 0, 0);
 		} else if(direction.equals("est")) {
-			loc.add(0.1, 0, 1.5);
+			loc.add(0, 0, 1.7);
 		} else if(direction.equals("ovest")) {
-			loc.add(0.1, 0, -1.5);
+			loc.add(0, 0, -1.7);
 		}
 		return loc;
 	}
@@ -75,11 +75,12 @@ public class KillauraBotCheck {
 		if(p==null) {
 			return;
 		}
-		WrapperPlayClientUseEntity pac = new WrapperPlayClientUseEntity(packet);
+		//WrapperPlayClientUseEntity pac = new WrapperPlayClientUseEntity(packet);
 		String id = npclist.getOrDefault(p.getName(), "");
-		if (id.equals(Integer.toString(pac.getTargetID()))) {
-			WarnHacks.warnHacks(p, "Killaura", 5, -1.0D, 2, "KillauraBot", false);
-		}
+		//if (id.equals(Integer.toString(pac.getTargetID()))) {
+			//WarnHacks.warnHacks(p, "Killaura", 1, -1.0D, 2, "KillauraBot", false);
+			return;
+		//}
 	}
 
 }

@@ -1,7 +1,8 @@
-package org.mswsplex.MSWS.NESS.checks;
+package org.mswsplex.MSWS.NESS.checks.killaura;
 
 import java.util.HashMap;
 import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -16,6 +17,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
 import org.mswsplex.MSWS.NESS.MSG;
 import org.mswsplex.MSWS.NESS.NESS;
+import org.mswsplex.MSWS.NESS.NESSPlayer;
 import org.mswsplex.MSWS.NESS.PlayerManager;
 import org.mswsplex.MSWS.NESS.Protocols;
 import org.mswsplex.MSWS.NESS.Utility;
@@ -70,7 +72,7 @@ public class Killaura {
 						&& ((Entity) Killaura.lastEntityHit.get(player)).equals(event.getEntity())) {
 					Double dist = event.getEntity().getLocation().distance((Location) NESS.main.lastHitLoc.get(player));
 					if (dist > 0.129D) {
-						punish(player, 17, "PerfectAura", 5);
+						punish(player, 17, "PerfectAura", 4);
 					}
 				}
 
@@ -83,9 +85,9 @@ public class Killaura {
 			if (target.getType().isSolid()) {
 				PlayerManager.addAction("clicks", player);
 			}
-            if(Protocols.angles == null) {
-            	return;
-            }
+			if (Protocols.angles == null) {
+				return;
+			}
 			if (Protocols.angles.containsKey(player.getUniqueId())) {
 				Location real = (Location) Protocols.angles.get(player.getUniqueId());
 				double difference = (double) (real.getYaw() - player.getLocation().getYaw());
@@ -178,83 +180,54 @@ public class Killaura {
 
 	public static void Check5(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
-			Player player = (Player) e.getDamager();
-			final Location from = player.getLocation();
-			if (NESS.main.debugMode) {
-				Bukkit.getScheduler().runTaskLater(NESS.main, new Runnable() {
-					public void run() {
-						Location to = player.getLocation();
-						double grade = Math.abs(to.getYaw() - from.getYaw());
-						double grade1 = Math.abs(to.getPitch() - from.getPitch());
-						MSG.tell(player, "&eStatistics:");
-						// MSG.tell(player, "&7dist: &e" + to.distanceSquared(from));
-						MSG.tell(player, "&7Yaw: &e" + Utility.around(grade, 6));
-						MSG.tell(player, "&7Pitch: &e" + Utility.around(grade1, 6));
-						// MSG.tell(player, "&7EyeHeight: &e" + player.getEyeHeight());
-					}
-				}, 3L);
+			Player p = (Player) e.getDamager();
+			Entity damaged = e.getEntity();
+			Location to = p.getLocation();
+			Location from = damaged.getLocation();
+			double x = Math.abs(from.getX() - to.getX());
+			double z = Math.abs(from.getX() - to.getX());
+			if (!e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK)) {
+				return;
+			}
+			if (x == 0.0D || z == 0.0D) {
+				return;
+			}
+			if (Math.abs(from.getY() - to.getY()) >= 0.6D) {
+				return;
+			}
+			Location l = null;
+			if (x <= 0.5D && z >= 1.0D) {
+				if (e.getDamager().getLocation().getZ() > e.getEntity().getLocation().getZ()) {
+					l = e.getDamager().getLocation().clone().add(0.0D, 0.0D, -1.0D);
+				} else {
+
+					l = e.getDamager().getLocation().clone().add(0.0D, 0.0D, 1.0D);
+				}
+
+			} else if (z <= 0.5D && x >= 1.0D) {
+				if (e.getDamager().getLocation().getX() > e.getEntity().getLocation().getX()) {
+					l = e.getDamager().getLocation().clone().add(-1.0D, 0.0D, 0.0D);
+				} else {
+
+					l = e.getDamager().getLocation().clone().add(-1.0D, 0.0D, 0.0D);
+				}
+			}
+			boolean failed = false;
+			if (l != null) {
+				failed = (l.getBlock().getType().isSolid()
+						&& l.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType().isSolid());
+			}
+			if (failed) {
+				WarnHacks.warnHacks(p, "Killaura", 5, -1.0D, 7, "ThrougWalls", false);
 			}
 		}
 	}
 	
-	public static void Check7(EntityDamageByEntityEvent event) {
-
-	}
-	
-	public static void Check8(EntityDamageByEntityEvent e) {
+	public static void Check6(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
-			Player damager = (Player) e.getDamager();
-			Entity damaged = e.getEntity();
-	        double angle = Math.atan2(damager.getLocation().getX() - damaged.getLocation().getX(), damager.getLocation().getZ() - damaged.getLocation().getZ());
-	        angle = -(angle / 3.141592653589793) * 360.0 / 2.0 + 180.0;
-	        double dirX = damager.getLocation().getDirection().getX();
-	        double dirY = damager.getLocation().getDirection().getY();
-	        double dirZ = damager.getLocation().getDirection().getZ();
-	        double dirAngle = Math.atan2(dirX - damaged.getLocation().getX(), damager.getLocation().getZ() - damaged.getLocation().getZ());
-		}
-	}
-	
-	public static void Check9(EntityDamageByEntityEvent e) {
-		if (e.getDamager() instanceof Player) {
-			Player p = (Player) e.getDamager();
-			Entity damaged = e.getEntity();
-		    Location to = p.getLocation();
-		    Location from = damaged.getLocation();
-		    double x = Math.abs(from.getX()-to.getX());
-		    double z = Math.abs(from.getX()-to.getX());
-		    if (!e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK)) {
-		      return;
-		    }
-		    if (x == 0.0D || z == 0.0D) {
-		      return;
-		    }
-		    if (Math.abs(from.getY()-to.getY()) >= 0.6D) {
-		      return;
-		    }
-		    Location l = null;
-		    if (x <= 0.5D && z >= 1.0D) {
-		      if (e.getDamager().getLocation().getZ() > e.getEntity().getLocation().getZ()) {
-		        l = e.getDamager().getLocation().clone().add(0.0D, 0.0D, -1.0D);
-		      } else {
-		        
-		        l = e.getDamager().getLocation().clone().add(0.0D, 0.0D, 1.0D);
-		      }
-		    
-		    } else if (z <= 0.5D && x >= 1.0D) {
-		      if (e.getDamager().getLocation().getX() > e.getEntity().getLocation().getX()) {
-		        l = e.getDamager().getLocation().clone().add(-1.0D, 0.0D, 0.0D);
-		      } else {
-		        
-		        l = e.getDamager().getLocation().clone().add(-1.0D, 0.0D, 0.0D);
-		      } 
-		    } 
-		    boolean failed = false;
-		    if (l != null) {
-		      failed = (l.getBlock().getType().isSolid() && l.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType().isSolid());
-		    }
-		    if (failed) {
-		      WarnHacks.warnHacks(p, "Killaura", 5, -1.0D, 7, "ThrougWalls", false);
-		    } 
+           if(e.getEntity().getEntityId() == e.getDamager().getEntityId()) {
+        	   WarnHacks.warnHacks((Player) e.getDamager(), "Killaura", 5, -1.0D, 7, "SelfHit", false);
+           }
 		}
 	}
 

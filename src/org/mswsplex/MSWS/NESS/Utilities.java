@@ -37,6 +37,55 @@ public final class Utilities {
 		return bd.doubleValue();
 	}
 
+	public static boolean IsSameBlockAround(Player p, Material mat, float add_y, float width) {
+		Material new_loc1 = p.getLocation().add(0, add_y, 0).getBlock().getType();
+
+		Material new_loc2 = p.getLocation().add(width, add_y, 0).getBlock().getType();
+		Material new_loc3 = p.getLocation().add(-width, add_y, 0).getBlock().getType();
+
+		Material new_loc4 = p.getLocation().add(0, add_y, width).getBlock().getType();
+		Material new_loc5 = p.getLocation().add(0, add_y, -width).getBlock().getType();
+
+		Material new_loc6 = p.getLocation().add(-width, add_y, -width).getBlock().getType();
+		Material new_loc7 = p.getLocation().add(width, add_y, width).getBlock().getType();
+
+		Material new_loc8 = p.getLocation().add(width, add_y, -width).getBlock().getType();
+		Material new_loc9 = p.getLocation().add(-width, add_y, width).getBlock().getType();
+
+		if (new_loc1 == mat && new_loc2 == mat && new_loc3 == mat && new_loc4 == mat && new_loc5 == mat
+				&& new_loc6 == mat && new_loc7 == mat && new_loc8 == mat && new_loc9 == mat) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+    public static float yawTo180F(float flub) {
+        if ((flub %= 360.0f) >= 180.0f) {
+            flub -= 360.0f;
+        }
+        if (flub < -180.0f) {
+            flub += 360.0f;
+        }
+        return flub;
+    }
+    
+    public static float[] getRotations(Location one, Location two) {
+        double diffX = two.getX() - one.getX();
+        double diffZ = two.getZ() - one.getZ();
+        double diffY = two.getY() + 2.0 - 0.4 - (one.getY() + 2.0);
+        double dist = Math.sqrt(diffX * diffX + diffZ * diffZ);
+        float yaw = (float) (Math.atan2(diffZ, diffX) * 180.0 / 3.141592653589793) - 90.0f;
+        float pitch = (float) (-Math.atan2(diffY, dist) * 180.0 / 3.141592653589793);
+        return new float[]{yaw, pitch};
+    }
+    
+    public static double[] getOffsetFromEntity(Player player, LivingEntity entity) {
+        double yawOffset = Math.abs(Utilities.yawTo180F(player.getEyeLocation().getYaw()) - Utilities.yawTo180F(Utilities.getRotations(player.getLocation(), entity.getLocation())[0]));
+        double pitchOffset = Math.abs(Math.abs(player.getEyeLocation().getPitch()) - Math.abs(Utilities.getRotations(player.getLocation(), entity.getLocation())[1]));
+        return new double[]{yawOffset, pitchOffset};
+    }
+
 	public static boolean BlockOverPlayer(Location loc) {
 		int onOtherBlockX = 0;
 		int onOtherBlockZ = 0;
