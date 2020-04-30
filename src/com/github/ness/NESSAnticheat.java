@@ -8,6 +8,7 @@ public class NESSAnticheat extends JavaPlugin {
 	
 	public void onEnable() {
 		scheduler = new NessScheduler();
+		getServer().getScheduler().runTaskAsynchronously(this, scheduler);
 	}
 	
 	public void onDisable() {
