@@ -16,16 +16,20 @@ public class NESSAnticheat extends JavaPlugin {
 	
 	private CheckManager manager;
 	
+	// TODO Add config
+	private NessConfig config;
+	
 	@Override
 	public void onEnable() {
 		executor = Executors.newSingleThreadExecutor();
 		manager = new CheckManager(this);
-		manager.registerChecks();
+		manager.registerListener();
+		manager.startAsyncTimer();
 	}
 	
 	@Override
 	public void onDisable() {
-		manager.unregisterChecks();
+		manager.unregisterListeners();
 		ExecutorService service = ((ExecutorService) executor);
 		service.shutdown();
 		try {
