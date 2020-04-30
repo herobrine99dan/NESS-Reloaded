@@ -1,9 +1,9 @@
 name: NESS
-main: org.mswsplex.MSWS.NESS.NESS
-version: 1.9
-author: herobrine99dan
-softdepend: [ProtocolLib, Punish, mcMMO]
+main: com.github.ness.NessAnticheat
+version: 2.0
+authors: [herobrine99dan, A248]
+softdepend: [ProtocolLib]
 commands:
    ness:
-      description: Made by MSWS
+      description: Main ness command
       usage: /<command>
