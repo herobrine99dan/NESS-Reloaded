@@ -8,13 +8,19 @@ public class NessScheduler implements Runnable, Executor, AutoCloseable {
 
 	private BlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
 	
+	private final CheckManager manager;
+	
+	NessScheduler(CheckManager manager) {
+		this.manager = manager;
+	}
+	
 	@Override
 	public void run() {
 		while (true) {
 
 			// Process anticheat checks
 
-			
+			manager.runAll();
 			
 			// Run tasks
 			for (int n = 0; n < 5; ) {
