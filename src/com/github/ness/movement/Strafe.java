@@ -9,11 +9,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
-
 import com.github.ness.MovementPlayerData;
 import com.github.ness.NESS;
 import com.github.ness.PlayerManager;
-import com.github.ness.ServerLag;
 import com.github.ness.Utilities;
 import com.github.ness.Utility;
 import com.github.ness.WarnHacks;
@@ -115,10 +113,6 @@ public class Strafe {
 			if (nearestEntity < 1.8) {
 				value *= 1.5;
 			}
-		}
-
-		if ((System.nanoTime() - p.getSprintLastToggle()) / 1000000 - PlayerManager.getPing(player) - ServerLag.getServerLag() < 500) {
-			value *= 3.1;
 		}
 
 		if (player.isSneaking()) {
