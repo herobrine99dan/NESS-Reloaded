@@ -1,9 +1,9 @@
 package org.mswsplex.MSWS.NESS;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -15,7 +15,9 @@ public class NESSPlayer {
 	 * How to use NESSPlayer p = NESSPlayer.getInstance(e.getPlayer());
 	 */
 	private boolean moved = false;
+	private double anglekillauramachinelearning = 0.0;
 	private Player player;
+	public List<Float> patterns = new ArrayList<Float>();
 	private HashMap<String, Double> distance = new HashMap<String, Double>();
 	private HashMap<String, Boolean> isswim = new HashMap<String, Boolean>();
 	private HashMap<String, Integer> packets = new HashMap<String, Integer>();
@@ -161,6 +163,14 @@ public class NESSPlayer {
 		} else {
 			return "MC|Brand";
 		}
+	}
+	
+	public void SetAngleKillaura(double n) {
+		anglekillauramachinelearning = n;
+	}
+	
+	public double GetAngleKillaura() {
+		return anglekillauramachinelearning;
 	}
 
 	public void SetLanguage(String n) {

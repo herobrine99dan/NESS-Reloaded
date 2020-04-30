@@ -16,6 +16,7 @@ public class MovementPlayerData {
 	public double DistanceFastStairs = 0.0;
 	public long pingspooftimer = 0;
 	public long oldpingspooftimer = 0;
+	private double LastYDIff = 0.0;
 	private HashMap<String, Double> distance = new HashMap<String, Double>();
 	private Map<String, Location> onground = new HashMap<String, Location>();
 	private static Map<String, MovementPlayerData> nessplayers = new HashMap<String, MovementPlayerData>();
@@ -92,6 +93,14 @@ public class MovementPlayerData {
 
 	public void setFlyMoves(int flyMoves) {
 		FlyMoves = flyMoves;
+	}
+	
+	public double getLastYDiff() {
+		return FlyMoves;
+	}
+
+	public void setLastYDiff(double x) {
+		LastYDIff = x;
 	}
 	
 	public long getSprintLastToggle() {

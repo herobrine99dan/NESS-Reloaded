@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+import org.mswsplex.MSWS.NESS.MovementPlayerData;
 import org.mswsplex.MSWS.NESS.NESS;
 import org.mswsplex.MSWS.NESS.NESSPlayer;
 import org.mswsplex.MSWS.NESS.PlayerManager;
@@ -53,8 +54,8 @@ public class Speed {
 						bypass = true;
 					}
 				}
-				if (y > 0.36 && y < 0.419 && !(y == 0.404) && !(y == 0.365) && !(y == 0.395) && !bypass && !(y == 0.386) && !(y == 0.414)
-						&& !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
+				if (y > 0.36 && y < 0.419 && !(y == 0.404) && !(y == 0.365) && !(y == 0.395) && !bypass && !(y == 0.386)
+						&& !(y == 0.414) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 					if (Utility.hasflybypass(player)) {
 						return;
 					}
@@ -84,7 +85,7 @@ public class Speed {
 			if (dist > 0.62D) {
 				if (Utilities.getPlayerUpperBlock(player).getType().isSolid()
 						&& Utilities.getPlayerUnderBlock(player).getType().name().toLowerCase().contains("ice")) {
-                   return;
+					return;
 				}
 				if (NESS.main.devMode) {
 					event.getPlayer().sendMessage("First Distance: " + dist);
@@ -103,8 +104,8 @@ public class Speed {
 			return;
 		}
 		int ping = PlayerManager.getPing(p);
-		int maxPackets = NESS.main.maxpackets * (ping/100);
-		if(ping<150) {
+		int maxPackets = NESS.main.maxpackets * (ping / 100);
+		if (ping < 150) {
 			maxPackets = NESS.main.maxpackets;
 		}
 		NESSPlayer player = NESSPlayer.getInstance(p);
@@ -114,46 +115,26 @@ public class Speed {
 		}
 	}
 
-	public static void Check3(PlayerMoveEvent event) {
-		Player p = event.getPlayer();
-		if (Utility.hasflybypass(p) || p.hasPotionEffect(PotionEffectType.SPEED)
-				|| p.hasPotionEffect(PotionEffectType.JUMP)) {
-			return;
-		}
-		if (!(event.getFrom().getY() > event.getTo().getY())) {
-			return;
-		}
-		if (event.getTo().getY() == event.getFrom().getY()) {
-			return;
-		}
-		double Airmaxspeed = 0.4D;
-		Location l = p.getLocation();
-		int x = l.getBlockX();
-		int y = l.getBlockY();
-		int z = l.getBlockZ();
-		double speed = Speed.getHV(event.getTo().toVector()).subtract(Speed.getHV(event.getFrom().toVector())).length();
-		Location above = new Location(p.getWorld(), (double) x, (double) (y + 2), (double) z);
-		Location above3 = new Location(p.getWorld(), (double) (x - 1), (double) (y + 2), (double) (z - 1));
-		if (!Utility.isOnGround(p) && !Utility.checkGround(p.getLocation().getY()) && speed >= Airmaxspeed
-				&& !Utilities.getPlayerUnderBlock(p).getType().equals(Material.PACKED_ICE)
-				&& !Utilities.getPlayerUnderBlock(p).getType().equals(Material.ICE)
-				&& !Utilities.getPlayerUnderBlock(p).getType().isSolid() && !l.getBlock().isLiquid()
-				&& above.getBlock().getType() == Material.AIR && above3.getBlock().getType() == Material.AIR
-				&& !Utilities.getPlayerUnderBlock(p).getType().equals(Material.AIR)) {
-			return;
-		} else {
-			WarnHacks.warnHacks(p, "Speed", 5, -1.0D, 27, "MidAir", false);
-		}
-	}
-
 	public static void Check4(PlayerMoveEvent event) {
-		Player p = event.getPlayer();
-		if (Utility.hasflybypass(p)) {
+		MovementPlayerData mp = MovementPlayerData.getInstance(event.getPlayer());
+		Player player = event.getPlayer();
+
+		if (Utility.hasflybypass(player))
 			return;
+
+		double ydiff = event.getTo().getY() - event.getFrom().getY();
+
+		if (!(mp==null)) {
+			if (Utilities.IsSameBlockAround(player, Material.AIR, 2, 0.5f)
+					&& Utilities.IsSameBlockAround(player, Material.AIR, 0, 0.5f)
+					&& player.getLocation().add(0, -1, 0).getBlock().getType() != Material.SLIME_BLOCK) {
+				if (mp.getLastYDiff() <= 0.f && ydiff > 0.f && ydiff < 0.4
+						|| ydiff != 0.f && ydiff == -(mp.getLastYDiff())) {
+					WarnHacks.warnHacks(player, "Speed", 5, -1.0D, 45, "MiniJump", true);
+				}
+			}
 		}
-		if (Utility.isSpeed(Utility.getMaxSpeed(event.getFrom(), event.getTo()))) {
-			WarnHacks.warnHacks(event.getPlayer(), "Speed", 2, -1.0D, 82, "CheckedDistance", true);
-		}
+		mp.setLastYDiff(ydiff);
 	}
 
 	private static Vector getHV(Vector V) {

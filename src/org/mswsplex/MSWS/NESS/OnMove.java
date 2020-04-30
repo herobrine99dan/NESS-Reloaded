@@ -19,11 +19,12 @@ import org.mswsplex.MSWS.NESS.checks.FastStairs;
 import org.mswsplex.MSWS.NESS.checks.Fly;
 import org.mswsplex.MSWS.NESS.checks.Headless;
 import org.mswsplex.MSWS.NESS.checks.Jesus;
-import org.mswsplex.MSWS.NESS.checks.KillauraBotCheck;
 import org.mswsplex.MSWS.NESS.checks.NoClip;
 import org.mswsplex.MSWS.NESS.checks.Speed;
 import org.mswsplex.MSWS.NESS.checks.Sprint;
 import org.mswsplex.MSWS.NESS.checks.Strafe;
+import org.mswsplex.MSWS.NESS.checks.killaura.KillauraBotCheck;
+import org.mswsplex.MSWS.NESS.checks.killaura.PatternKillaura;
 
 public class OnMove implements Listener {
 	protected static HashMap<String, Integer> noground = new HashMap<String, Integer>();
@@ -35,13 +36,6 @@ public class OnMove implements Listener {
 		NESSPlayer p = NESSPlayer.getInstance(player);
 		p.setValuesMovement(event);
 		Sprint.Check(event);
-		Sprint.Check1(event);
-		Headless.Check(event);
-		Speed.Check(event);
-		Speed.Check1(event);
-		Speed.Check2(event);
-		Speed.Check4(event);
-		FastStairs.Check(event);
 		Fly.Check(event);
 		Fly.Check1(event);
 		Fly.Check2(event);
@@ -54,6 +48,12 @@ public class OnMove implements Listener {
 		Fly.Check9(event);
 		Fly.Check10(event);
 		Fly.Check11(event);
+		Sprint.Check1(event);
+		Headless.Check(event);
+		Speed.Check(event);
+		Speed.Check1(event);
+		Speed.Check2(event);
+		FastStairs.Check(event);
 		//Step.Check(event);
 		Jesus.Check(event);
 		Jesus.Check2(event);
@@ -63,6 +63,7 @@ public class OnMove implements Listener {
 		Aimbot.Check3(event);
 		EntitySpeedCheck.Check(event);
 		Strafe.Check(event);
+		PatternKillaura.Check1(event);
 		//Utility.createChecks(event);
 		/*
 		 * if(Utility.debug==event.getPlayer().getName()) { Utility.createChecks(event);

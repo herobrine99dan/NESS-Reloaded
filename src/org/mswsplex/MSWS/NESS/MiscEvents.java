@@ -1,6 +1,7 @@
 package org.mswsplex.MSWS.NESS;
 
 import java.util.Set;
+
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -17,13 +18,12 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.EntityToggleSwimEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -49,6 +49,7 @@ import org.mswsplex.MSWS.NESS.checks.IllegalInteraction;
 import org.mswsplex.MSWS.NESS.checks.InventoryHack;
 import org.mswsplex.MSWS.NESS.checks.Jesus;
 import org.mswsplex.MSWS.NESS.checks.NoSlowDown;
+import org.mswsplex.MSWS.NESS.checks.NoSwing;
 import org.mswsplex.MSWS.NESS.checks.Scaffold;
 import org.mswsplex.MSWS.NESS.checks.SpamBot;
 import org.mswsplex.MSWS.NESS.exploits.SimpleExploit;
@@ -212,6 +213,12 @@ public class MiscEvents implements Listener {
 				(Object) (NESS.main.vl.getInt(player.getUniqueId() + ".accuracy.misses") + 1));
 		NESS.main.lastLookLoc.put(player, target.getLocation());
 		SimpleExploit.Check(event);
+		NoSwing.interactEvent(event);
+	}
+	
+	@EventHandler
+	public void onAnimation(PlayerAnimationEvent event) {
+		NoSwing.animationEvent(event);
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)

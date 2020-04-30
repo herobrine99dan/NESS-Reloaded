@@ -11,8 +11,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.mswsplex.MSWS.NESS.checks.Aimbot;
 import org.mswsplex.MSWS.NESS.checks.AntiKb;
 import org.mswsplex.MSWS.NESS.checks.Criticals;
-import org.mswsplex.MSWS.NESS.checks.Killaura;
-import org.mswsplex.MSWS.NESS.checks.KillauraBotCheck;
+import org.mswsplex.MSWS.NESS.checks.NoSwing;
+import org.mswsplex.MSWS.NESS.checks.killaura.Killaura;
+import org.mswsplex.MSWS.NESS.checks.killaura.KillauraBotCheck;
+import org.mswsplex.MSWS.NESS.checks.killaura.PatternKillaura;
 
 public class OnAttack implements Listener {
 	protected static List<UUID> fightingPlayers = new ArrayList<UUID>();
@@ -27,9 +29,10 @@ public class OnAttack implements Listener {
 		Killaura.Check3(event);
 		Killaura.Check4(event);
 		Killaura.Check5(event);
+		Killaura.Check6(event);
+		PatternKillaura.Check(event);
 		KillauraBotCheck.Check(event);
-		Killaura.Check7(event);
-		Killaura.Check8(event);
+		NoSwing.damageEvent(event);
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
 			OnAttack.fightingPlayers.add(player.getUniqueId());

@@ -18,7 +18,7 @@ public class Aimbot {
 	private static final Map<UUID, Float> lastmcdpitch = new HashMap<UUID, Float>();
 
 	public static void Check(PlayerMoveEvent e) {
-		int samples = 20;
+		int samples = 23;
 		int pitchlimit = 10;
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
@@ -36,7 +36,7 @@ public class Aimbot {
 			float gcdDiff = Math.abs(deltaPitchGCD - lastDeltaPitchGCD);
 			// if GCD is significantly different or if GCD is practically unsolvable
 			if (gcdDiff > 0.001 || deltaPitchGCD < 0.00001) {
-				WarnHacks.warnHacks(e.getPlayer(), "Aimbot", 3, -1.0D, 2, "PitchPattern", false);
+				WarnHacks.warnHacks(e.getPlayer(), "Aimbot", 5, -1.0D, 2, "PitchPattern", false);
 			}
 			lastDeltaPitches.clear();
 			lastmcdpitch.put(uuid, deltaPitchGCD);
@@ -80,15 +80,6 @@ public class Aimbot {
 	}
 
 	public static void Check3(PlayerMoveEvent event) {
-		float diff = Math.abs(event.getTo().getYaw() - event.getFrom().getYaw()) % 360.0F;
-		MovementPlayerData p = MovementPlayerData.getInstance(event.getPlayer());
-		if (diff > 1.0F && (float) Math.round(diff) == diff) {
-			if (diff == p.suspiciousYaw) {
-				WarnHacks.warnHacks(event.getPlayer(), "Aimbot", 5, -1.0D, 1, "AimAssistA", false);
-			}
-			p.suspiciousYaw = (float) Math.round(diff);
-		} else {
-			p.suspiciousYaw = 0.0F;
-		}
+
 	}
 }
