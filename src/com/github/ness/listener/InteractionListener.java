@@ -5,19 +5,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import com.github.ness.CheckManager;
+import com.github.ness.PlayerManager;
 
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class InteractionListener implements Listener {
 
-	private final CheckManager manager;
+	private final PlayerManager manager;
 	
 	@EventHandler
 	private void onInteraction(PlayerInteractEvent evt) {
 		if (evt.getAction() == Action.LEFT_CLICK_AIR || evt.getAction() == Action.LEFT_CLICK_BLOCK) {
-			manager.getPlayer(evt.getPlayer().getUniqueId()).click();
+			manager.getPlayer(evt.getPlayer()).cps_Click();
 		}
 	}
 	

@@ -10,7 +10,7 @@ public class NESSAnticheat extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
-		CheckManager manager = new CheckManager();
+		PlayerManager manager = new PlayerManager();
 		scheduler = new NessScheduler();
 		getServer().getScheduler().runTaskAsynchronously(this, scheduler);
 		getServer().getPluginManager().registerEvents(new InteractionListener(manager), this);

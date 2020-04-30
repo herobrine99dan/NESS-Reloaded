@@ -3,22 +3,20 @@ package com.github.ness;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CheckManager {
+import org.bukkit.entity.Player;
+
+public class PlayerManager {
 	
 	private final ConcurrentHashMap<UUID, NessPlayer> players = new ConcurrentHashMap<>();
-	
-	void runAll() {
-		
-	}
 	
 	/**
 	 * Gets a NessPlayer or creates one if it does not exist
 	 * 
-	 * @param uuid the corresponding player uuid
+	 * @param player the corresponding player
 	 * @return the ness player
 	 */
-	public NessPlayer getPlayer(UUID uuid) {
-		return players.computeIfAbsent(uuid, (k) -> new NessPlayer());
+	public NessPlayer getPlayer(Player player) {
+		return players.computeIfAbsent(player.getUniqueId(), (k) -> new NessPlayer(player));
 	}
 	
 }
