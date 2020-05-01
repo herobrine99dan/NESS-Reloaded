@@ -4,57 +4,64 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
+import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CPSCheck;
 
-public class CheckManager {
+import lombok.Getter;
+
+public class CheckManager implements AutoCloseable {
 	
 	private final ConcurrentHashMap<UUID, NessPlayer> players = new ConcurrentHashMap<>();
 	
 	private final Set<AbstractCheck<?>> checks = new HashSet<>();
 	
+	@Getter
 	private final NESSAnticheat ness;
 	
 	CheckManager(NESSAnticheat ness) {
 		this.ness = ness;
 	}
 	
+	private void addCheck(AbstractCheck<?> check) {
+		check.initiatePeriodicTasks();
+		checks.add(check);
+	}
+	
 	void addAllChecks() {
-		checks.add(new CPSCheck(this));
-	}
-	
-	public Executor getExecutor() {
-		return ness.getExecutor();
-	}
-	
-	void onAnyEvent(Event evt) {
-		checks.forEach((check) -> check.checkAnyEvent(evt));
-	}
-	
-	void startAsyncTimer() {
-		Bukkit.getScheduler().runTaskTimerAsynchronously(ness, () -> {
-			checks.forEach((check) -> {
-				if (check.canCheckAsyncPeriodic()) {
-					players.values().forEach((player) -> {
-						check.checkAsyncPeriodic(player);
-					});
-				}
-			});
-		}, 5L, 1L);
+		addCheck(new CPSCheck(this));
 	}
 	
 	void registerListener() {
-		Bukkit.getPluginManager().registerEvents(new EntiretyListener(this), ness);
+		Bukkit.getPluginManager().registerEvents(new Listener() {
+			@EventHandler
+			private void onAnyEvent(Event evt) {
+				if (evt instanceof PlayerJoinEvent) {
+					Player player = ((PlayerJoinEvent) evt).getPlayer();
+					players.put(player.getUniqueId(), new NessPlayer(player));
+				} else if (evt instanceof PlayerQuitEvent) {
+					players.remove(((PlayerQuitEvent) evt).getPlayer().getUniqueId()).close();
+				} else {
+					checks.forEach((check) -> check.checkAnyEvent(evt));
+				}
+			}
+		}, ness);
 	}
-
-	void unregisterListeners() {
+	
+	@Override
+	public void close() {
+		checks.forEach(AbstractCheck::close);
+		checks.clear();
 		HandlerList.unregisterAll(ness);
 	}
 	
@@ -68,12 +75,13 @@ public class CheckManager {
 		return players.get(player.getUniqueId());
 	}
 	
-	void addPlayer(Player player) {
-		players.put(player.getUniqueId(), new NessPlayer(player));
-	}
-	
-	void removePlayer(Player player) {
-		players.remove(player.getUniqueId());
+	/**
+	 * Do something for each NessPlayer
+	 * 
+	 * @param action what to do
+	 */
+	public void forEachPlayer(Consumer<NessPlayer> action) {
+		players.values().forEach(action);
 	}
 	
 }

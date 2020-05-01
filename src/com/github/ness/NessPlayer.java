@@ -9,7 +9,7 @@ import com.github.ness.annotation.SyncOnly;
 
 import lombok.Getter;
 
-public class NessPlayer {
+public class NessPlayer implements AutoCloseable {
 
 	@SyncOnly
 	private final Player player;
@@ -20,5 +20,12 @@ public class NessPlayer {
 	public NessPlayer(Player player) {
 		this.player = player;
 	}
+
+	@Override
+	public void close() {
+		
+	}
+	
+	
 	
 }

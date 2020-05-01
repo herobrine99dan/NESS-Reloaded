@@ -1,6 +1,7 @@
 package com.github.ness.check;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -10,7 +11,7 @@ import com.github.ness.NessPlayer;
 public class CPSCheck extends AbstractCheck<PlayerInteractEvent> {
 
 	public CPSCheck(CheckManager manager) {
-		super(manager, CheckInfo.eventWithAsyncPeriodic(4 * 20, PlayerInteractEvent.class));
+		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerInteractEvent.class, 4, TimeUnit.SECONDS));
 	}
 
 	/**
