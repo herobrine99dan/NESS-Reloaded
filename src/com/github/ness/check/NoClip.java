@@ -16,7 +16,7 @@ public class NoClip extends AbstractCheck<PlayerMoveEvent> {
 	
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
-       Check(e);
+       Check(e);//Send the event
 	}
 
 	public void Check(PlayerMoveEvent event) {
