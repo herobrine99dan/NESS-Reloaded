@@ -7,6 +7,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
+import com.github.ness.Violation;
 
 public class CPSCheck extends AbstractCheck<PlayerInteractEvent> {
 
@@ -28,7 +29,7 @@ public class CPSCheck extends AbstractCheck<PlayerInteractEvent> {
 		clickHistory.removeIf((time) -> time - now > (CLICK_HISTORY_RETENTION * 1000L));
 		int clicks = clickHistory.size();
 		if (clicks / CLICK_HISTORY_RETENTION > 14) {
-			hasViolated = true;
+			player.setViolation(new Violation("CPS", clicks));
 		}
 	}
 

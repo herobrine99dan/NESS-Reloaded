@@ -14,8 +14,6 @@ public abstract class AbstractCheck<T extends Event> {
 	
 	private ScheduledFuture<?> asyncFuture;
 	
-	volatile boolean hasViolated;
-	
 	AbstractCheck(CheckManager manager, CheckInfo<T> info) {
 		this.manager = manager;
 		this.info = info;
@@ -33,10 +31,6 @@ public abstract class AbstractCheck<T extends Event> {
 		if (asyncFuture != null) {
 			asyncFuture.cancel(false);
 		}
-	}
-	
-	public boolean hasViolated() {
-		return hasViolated;
 	}
 	
 	public void checkAnyEvent(Event evt) {

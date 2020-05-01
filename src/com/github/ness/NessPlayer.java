@@ -8,9 +8,14 @@ import org.bukkit.entity.Player;
 import com.github.ness.annotation.SyncOnly;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class NessPlayer implements AutoCloseable {
 
+	@Getter
+	@Setter
+	private volatile Violation violation;
+	
 	@SyncOnly
 	private final Player player;
 	
