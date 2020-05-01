@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.AntiASCII;
 import com.github.ness.check.CPSCheck;
 
 import lombok.Getter;
@@ -40,6 +41,7 @@ public class CheckManager implements AutoCloseable {
 	
 	void addAllChecks() {
 		addCheck(new CPSCheck(this));
+		addCheck(new AntiASCII(this));
 	}
 	
 	void registerListener() {

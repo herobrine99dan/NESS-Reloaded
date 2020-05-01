@@ -14,8 +14,6 @@ public class AntiASCII extends AbstractCheck<AsyncPlayerChatEvent>  {
 
 	public static boolean isPureAscii(String v) {
 		return Charset.forName("US-ASCII").newEncoder().canEncode(v);
-		// or "ISO-8859-1" for ISO Latin 1
-		// or StandardCharsets.US_ASCII with JDK1.7+
 	}
 
 	@Override
