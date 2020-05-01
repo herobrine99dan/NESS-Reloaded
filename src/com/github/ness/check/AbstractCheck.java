@@ -26,7 +26,7 @@ public abstract class AbstractCheck<T extends Event> {
 		if (info.asyncInterval != -1L) {
 			asyncFuture = manager.getNess().getExecutor().scheduleWithFixedDelay(() -> {
 				manager.forEachPlayer(this::checkAsyncPeriodic);
-			}, 1L, info.asyncInterval, TimeUnit.MILLISECONDS);
+			}, 1L, info.asyncInterval, info.units);
 		}
 	}
 	
