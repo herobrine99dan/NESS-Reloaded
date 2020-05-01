@@ -21,7 +21,7 @@ public class CPSCheck extends AbstractCheck<PlayerInteractEvent> {
 	private static final int CLICK_HISTORY_RETENTION = 4;
 
 	@Override
-	public void checkAsyncPeriodic(NessPlayer player) {
+	void checkAsyncPeriodic(NessPlayer player) {
 		Set<Long> clickHistory = player.getClickHistory();
 		long now = System.currentTimeMillis();
 		clickHistory.add(now);
