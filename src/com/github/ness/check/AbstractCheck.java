@@ -14,13 +14,24 @@ public abstract class AbstractCheck<T extends Event> {
 	
 	private ScheduledFuture<?> asyncFuture;
 	
+	/**
+	 * Creates the check. Subclasses should require CheckManager as a parameter in their constructors
+	 * and simply pass it along to this superconstructor. They should make their own CheckInfo.
+	 * 
+	 * @param manager the check manager
+	 * @param info information about the check, designated by the check itself
+	 */
 	AbstractCheck(CheckManager manager, CheckInfo<T> info) {
 		this.manager = manager;
 		this.info = info;
 	}
 	
+	// To be called by CheckManager
+	
 	public void initiatePeriodicTasks() {
 		if (info.asyncInterval != -1L) {
+			assert asyncFuture == null;
+
 			asyncFuture = manager.getNess().getExecutor().scheduleWithFixedDelay(() -> {
 				manager.forEachPlayer(this::checkAsyncPeriodic);
 			}, 1L, info.asyncInterval, info.units);
