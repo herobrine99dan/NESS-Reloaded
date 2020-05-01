@@ -39,10 +39,9 @@ public abstract class AbstractCheck<T extends Event> {
 		return hasViolated;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void checkAnyEvent(Event evt) {
-		if (info.event != null && info.getClass().isInstance(evt)) {
-			checkEvent((T) evt);
+		if (info.event != null && info.event.isInstance(evt)) {
+			checkEvent(info.event.cast(evt));
 		}
 	}
 	
