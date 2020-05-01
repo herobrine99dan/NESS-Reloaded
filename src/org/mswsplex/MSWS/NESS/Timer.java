@@ -7,11 +7,14 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.mswsplex.MSWS.NESS.checks.BadPackets;
-import org.mswsplex.MSWS.NESS.checks.Freecam;
-import org.mswsplex.MSWS.NESS.checks.Speed;
-import org.mswsplex.MSWS.NESS.checks.Sprint;
-import org.mswsplex.MSWS.NESS.checks.Strafe;
+
+import com.github.ness.Utility;
+import com.github.ness.check.BadPackets;
+import com.github.ness.check.Freecam;
+import com.github.ness.check.Speed;
+import com.github.ness.check.Sprint;
+import com.github.ness.check.Strafe;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import java.util.HashMap;

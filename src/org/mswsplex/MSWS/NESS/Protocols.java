@@ -14,14 +14,14 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.mswsplex.MSWS.NESS.checks.BadPackets;
-import org.mswsplex.MSWS.NESS.checks.killaura.KillauraBotCheck;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.events.PacketListener;
+import com.github.ness.check.BadPackets;
+import com.github.ness.check.KillauraBotCheck;
 
 public class Protocols {
 	public static Map<UUID, Location> angles;

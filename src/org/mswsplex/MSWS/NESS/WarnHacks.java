@@ -2,6 +2,9 @@
 
 package org.mswsplex.MSWS.NESS;
 
+import com.github.ness.DragDown;
+import com.github.ness.api.PlayerViolationEvent;
+import com.github.ness.discord.DiscordHackWarn;
 import com.google.common.io.ByteArrayDataOutput;
 import java.io.IOException;
 import java.io.DataOutputStream;
@@ -16,8 +19,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.mswsplex.MSWS.NESS.api.PlayerViolationEvent;
-import org.mswsplex.MSWS.NESS.discord.DiscordHackWarn;
 
 import java.util.HashMap;
 

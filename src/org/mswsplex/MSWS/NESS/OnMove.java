@@ -13,18 +13,20 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
-import org.mswsplex.MSWS.NESS.checks.Aimbot;
-import org.mswsplex.MSWS.NESS.checks.EntitySpeedCheck;
-import org.mswsplex.MSWS.NESS.checks.FastStairs;
-import org.mswsplex.MSWS.NESS.checks.Fly;
-import org.mswsplex.MSWS.NESS.checks.Headless;
-import org.mswsplex.MSWS.NESS.checks.Jesus;
-import org.mswsplex.MSWS.NESS.checks.NoClip;
-import org.mswsplex.MSWS.NESS.checks.Speed;
-import org.mswsplex.MSWS.NESS.checks.Sprint;
-import org.mswsplex.MSWS.NESS.checks.Strafe;
-import org.mswsplex.MSWS.NESS.checks.killaura.KillauraBotCheck;
-import org.mswsplex.MSWS.NESS.checks.killaura.PatternKillaura;
+
+import com.github.ness.Utility;
+import com.github.ness.check.Aimbot;
+import com.github.ness.check.EntitySpeedCheck;
+import com.github.ness.check.FastStairs;
+import com.github.ness.check.Fly;
+import com.github.ness.check.Headless;
+import com.github.ness.check.Jesus;
+import com.github.ness.check.KillauraBotCheck;
+import com.github.ness.check.NoClip;
+import com.github.ness.check.PatternKillaura;
+import com.github.ness.check.Speed;
+import com.github.ness.check.Sprint;
+import com.github.ness.check.Strafe;
 
 public class OnMove implements Listener {
 	protected static HashMap<String, Integer> noground = new HashMap<String, Integer>();

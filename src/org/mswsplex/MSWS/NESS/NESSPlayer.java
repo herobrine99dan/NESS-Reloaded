@@ -10,6 +10,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import com.github.ness.MovementPlayerData;
+import com.github.ness.Utility;
+
 public class NESSPlayer {
 	/*
 	 * How to use NESSPlayer p = NESSPlayer.getInstance(e.getPlayer());
