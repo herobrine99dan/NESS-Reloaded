@@ -4,14 +4,27 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.mswsplex.MSWS.NESS.NESS;
 import org.mswsplex.MSWS.NESS.NESSPlayer;
-import org.mswsplex.MSWS.NESS.WarnHacks;
-
+import com.github.ness.CheckManager;
 import com.github.ness.Utility;
+import com.github.ness.Violation;
 
-public class InventoryHack {
-	public static void Check(InventoryClickEvent e) {
+public class InventoryHack extends AbstractCheck<InventoryClickEvent>{
+	
+	public InventoryHack(CheckManager manager) {
+		super(manager, CheckInfo.eventOnly(InventoryClickEvent.class));
+		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	void checkEvent(InventoryClickEvent e) {
+       Check(e);
+       Check2(e);
+	}
+	
+	public void Check(InventoryClickEvent e) {
 		if (e.getWhoClicked() instanceof Player) {
 			Player player = (Player) e.getWhoClicked();
 			if(Utility.hasflybypass(player)) {
@@ -19,7 +32,7 @@ public class InventoryHack {
 			}
 			if (player.isSprinting() || player.isSneaking() || player.isBlocking() || player.isSleeping()
 					|| player.isConversing()) {
-				WarnHacks.warnHacks(player, "InventoryMove", 10, 250, 9, "InvMove", false);
+				manager.getPlayer(player).setViolation(new Violation("InventoryHack"));
 			} else {
 				final Location from = player.getLocation();
 				Bukkit.getScheduler().runTaskLater(NESS.main, new Runnable() {
@@ -27,8 +40,7 @@ public class InventoryHack {
 						Location to = player.getLocation();
 						double distance = to.distanceSquared(from) - Math.abs(from.getY() - to.getBlockY());
 						if (distance > 0.05) {
-							WarnHacks.warnHacks(player, "InventoryMove", 10, -1.0D, 10, "InvMove", false);
-							// MSG.tell(player, "Distance " + distance);
+							manager.getPlayer(player).setViolation(new Violation("InventoryHack"));							// MSG.tell(player, "Distance " + distance);
 						}
 					}
 				}, 2L);
@@ -36,13 +48,13 @@ public class InventoryHack {
 		}
 	}
 	
-	public static void Check2(InventoryClickEvent e) {
+	public void Check2(InventoryClickEvent e) {
 		if (e.getWhoClicked() instanceof Player) {
 			Player player = (Player) e.getWhoClicked();
 			NESSPlayer p = NESSPlayer.getInstance(player);
 			p.SetClicks(p.getClicks()+1);
             if(p.getClicks()>4) {
-           	 WarnHacks.warnHacks(player, "InventoryHacks", 10, -1.0D, 10, "FastClick", true);
+				manager.getPlayer(player).setViolation(new Violation("FastClick"));							// MSG.tell(player, "Distance " + distance);
            	 e.setCancelled(true);
             }
 		}

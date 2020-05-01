@@ -4,13 +4,22 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.mswsplex.MSWS.NESS.WarnHacks;
-
+import com.github.ness.CheckManager;
 import com.github.ness.Utility;
+import com.github.ness.Violation;
 
-public class EntitySpeedCheck {
+public class EntitySpeedCheck extends AbstractCheck<PlayerMoveEvent>{
 
-	public static void Check(PlayerMoveEvent event) {
+	public EntitySpeedCheck(CheckManager manager) {
+		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
+	}
+	
+	@Override
+	void checkEvent(PlayerMoveEvent e) {
+       Check(e);
+	}
+	
+	public void Check(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
 		if(p.isInsideVehicle()) {
 			Entity e = p.getVehicle();
@@ -19,7 +28,7 @@ public class EntitySpeedCheck {
 			}
 			double limit = 5.75;
 			if(Utility.getMaxSpeed(event.getFrom(), event.getTo())>limit) {
-				WarnHacks.warnHacks(p, "Speed", 10, -1.0D, 5, "MaxDistanceVehicle", false);
+				manager.getPlayer(event.getPlayer()).setViolation(new Violation("EntitySpeedCheck"));
 			}
 		}
 		

@@ -2,17 +2,28 @@ package com.github.ness.check;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.mswsplex.MSWS.NESS.PlayerManager;
-import org.mswsplex.MSWS.NESS.WarnHacks;
+import com.github.ness.CheckManager;
+import com.github.ness.Violation;
 
-public class SpamBot {
+public class SpamBot extends AbstractCheck<AsyncPlayerChatEvent> {
+
+	public SpamBot(CheckManager manager) {
+		super(manager, CheckInfo.eventOnly(AsyncPlayerChatEvent.class));
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	void checkEvent(AsyncPlayerChatEvent e) {
+		Check(e);
+	}
 
 	@SuppressWarnings("unchecked")
-	public static void Check(AsyncPlayerChatEvent event) {
+	public void Check(AsyncPlayerChatEvent event) {
 		final Player player = event.getPlayer();
 		PlayerManager.addAction("chatMessage", event.getPlayer());
 		PlayerManager.setInfo("lastChat", (OfflinePlayer) player, System.currentTimeMillis());
@@ -37,11 +48,11 @@ public class SpamBot {
 			lastClick = d;
 		}
 		if (chats.size() > 20) {
-			WarnHacks.warnHacks(player, "Spambot", 5 * (chats.size() - 8), -1.0, 62,"Spammer",false);
+			manager.getPlayer(event.getPlayer()).setViolation(new Violation("SpamBot"));
 			PlayerManager.addLogMessage((OfflinePlayer) player, "Spammed: " + event.getMessage() + " TIME: %time%");
 		}
 		if (times > 4) {
-			WarnHacks.warnHacks(player, "Spambot", 5 * (times - 2), -1.0, 63,"Spammer",false);
+			manager.getPlayer(event.getPlayer()).setViolation(new Violation("SpamBot"));
 			PlayerManager.addLogMessage((OfflinePlayer) player, "Spammed: " + event.getMessage() + " TIME: %time%");
 		}
 	}

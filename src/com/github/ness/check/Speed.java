@@ -2,7 +2,6 @@ package com.github.ness.check;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -13,16 +12,34 @@ import org.bukkit.util.Vector;
 import org.mswsplex.MSWS.NESS.NESS;
 import org.mswsplex.MSWS.NESS.NESSPlayer;
 import org.mswsplex.MSWS.NESS.PlayerManager;
-import org.mswsplex.MSWS.NESS.WarnHacks;
 
+import com.github.ness.CheckManager;
 import com.github.ness.MovementPlayerData;
 import com.github.ness.Utilities;
 import com.github.ness.Utility;
+import com.github.ness.Violation;
 
-public class Speed {
-	public static HashMap<String, Integer> speed = new HashMap<String, Integer>();
+public class Speed extends AbstractCheck<PlayerMoveEvent> {
+	public  HashMap<String, Integer> speed = new HashMap<String, Integer>();
 
-	public static void Check(PlayerMoveEvent e) {
+	public Speed(CheckManager manager) {
+		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
+		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	void checkEvent(PlayerMoveEvent e) {
+       Check(e);
+       Check1(e);
+       Check2(e);
+       Check4(e);
+	}
+	
+	private void punish(Player p) {
+		manager.getPlayer(p).setViolation(new Violation("Speed"));
+	}
+	
+	public  void Check(PlayerMoveEvent e) {
 		Location from = e.getFrom();
 		Location to = e.getTo();
 		// Bukkit.getPlayer("herobrine99dan").sendMessage(
@@ -60,12 +77,12 @@ public class Speed {
 					if (Utility.hasflybypass(player)) {
 						return;
 					}
-					WarnHacks.warnHacks(player, "Speed", 5, -1.0D, 45, "MiniJump", true);
+					punish(player);
 					if (NESS.main.devMode) {
 						player.sendMessage("y:" + y);
 					}
 				} else if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
-					WarnHacks.warnHacks(player, "Speed", 5, -1.0D, 46, "MiniJump", true);
+					punish(player);
 					if (NESS.main.devMode) {
 						player.sendMessage("Ydist: " + y);
 					}
@@ -74,7 +91,7 @@ public class Speed {
 		}
 	}
 
-	public static void Check1(PlayerMoveEvent event) {
+	public  void Check1(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		if (Utility.hasflybypass(player)) {
 			return;
@@ -91,15 +108,15 @@ public class Speed {
 				if (NESS.main.devMode) {
 					event.getPlayer().sendMessage("First Distance: " + dist);
 				}
-				WarnHacks.warnHacks(event.getPlayer(), "Speed", 10, -1.0D, 79, "MaxDistance", false);
+				punish(player);
 			} else if (dist > soulsand && player.getFallDistance() == 0
 					&& player.getLocation().getBlock().getType().equals(Material.SOUL_SAND)) {
-				WarnHacks.warnHacks(event.getPlayer(), "Speed", 5, -1.0D, 79, "NoSlowDown", false);
+				punish(player);
 			}
 		}
 	}
 
-	public static void Check2(PlayerMoveEvent event) {
+	public  void Check2(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
 		if (Utility.hasflybypass(p)) {
 			return;
@@ -111,12 +128,12 @@ public class Speed {
 		}
 		NESSPlayer player = NESSPlayer.getInstance(p);
 		if (player.getOnMoveRepeat() > maxPackets) {
-			WarnHacks.warnHacks(p, "Timer", 10, -1.0D, 26, "TooMovements", false);
+			punish(p);
 			// p.sendMessage("Repeat: " + player.getOnMoveRepeat());
 		}
 	}
 
-	public static void Check4(PlayerMoveEvent event) {
+	public  void Check4(PlayerMoveEvent event) {
 		MovementPlayerData mp = MovementPlayerData.getInstance(event.getPlayer());
 		Player player = event.getPlayer();
 
@@ -131,14 +148,14 @@ public class Speed {
 					&& player.getLocation().add(0, -1, 0).getBlock().getType() != Material.SLIME_BLOCK) {
 				if (mp.getLastYDiff() <= 0.f && ydiff > 0.f && ydiff < 0.4
 						|| ydiff != 0.f && ydiff == -(mp.getLastYDiff())) {
-					WarnHacks.warnHacks(player, "Speed", 5, -1.0D, 45, "MiniJump", true);
+					punish(player);
 				}
 			}
 		}
 		mp.setLastYDiff(ydiff);
 	}
 
-	private static Vector getHV(Vector V) {
+	private  Vector getHV(Vector V) {
 		V.setY(0);
 		return V;
 	}

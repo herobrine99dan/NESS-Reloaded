@@ -10,15 +10,29 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.mswsplex.MSWS.NESS.NESSPlayer;
-import org.mswsplex.MSWS.NESS.WarnHacks;
 
+import com.github.ness.CheckManager;
 import com.github.ness.Utilities;
 import com.github.ness.Utility;
+import com.github.ness.Violation;
 
-public class Jesus {
-	public static List<Player> placedBlockOnWater = new ArrayList<>();
+public class Jesus extends AbstractCheck<PlayerMoveEvent>{
+	
+	public Jesus(CheckManager manager) {
+		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
+		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	void checkEvent(PlayerMoveEvent e) {
+       Check(e);
+       Check1(e);
+       Check2(e);
+	}
+	
+	public  List<Player> placedBlockOnWater = new ArrayList<>();
 
-	public static void Check(PlayerMoveEvent event) {
+	public  void Check(PlayerMoveEvent event) {
 		final Player player = event.getPlayer();
 		final Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0.0, 1.0, 0.0)).getType();
 		final Location from = event.getFrom();
@@ -59,7 +73,7 @@ public class Jesus {
 		}
 	}
 
-	protected static void Check1(PlayerMoveEvent event) {
+	protected  void Check1(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
 		if (!event.isCancelled()
 				&& (event.getFrom().getX() != event.getTo().getX() || event.getFrom().getZ() != event.getTo().getZ())
@@ -73,11 +87,11 @@ public class Jesus {
 		}
 	}
 	
-	private static void punish(Player p,int i,String module) {
-		WarnHacks.warnHacks(p, "Jesus", 10, -1.0D, i,module,true);
+	private  void punish(Player p,int i,String module) {
+		manager.getPlayer(p).setViolation(new Violation("Jesus"));
 	}
 
-	public static void Check2(PlayerMoveEvent e) {
+	public  void Check2(PlayerMoveEvent e) {
 		double fromy = e.getFrom().getY();
 		double toy = e.getTo().getY();
 		Player player = e.getPlayer();

@@ -1,6 +1,7 @@
 package com.github.ness.check;
 
 import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -9,14 +10,26 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.mswsplex.MSWS.NESS.MSG;
 import org.mswsplex.MSWS.NESS.NESS;
-import org.mswsplex.MSWS.NESS.WarnHacks;
 
+import com.github.ness.CheckManager;
 import com.github.ness.Utility;
+import com.github.ness.Violation;
 
-public class AntiKb {
-	static HashMap<Player, Entity> lastHitBy = new HashMap<Player, Entity>();
+public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
+	
+	public AntiKb(CheckManager manager) {
+		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
+		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	void checkEvent(EntityDamageByEntityEvent e) {
+       Check(e);
+	}
+	
+	 HashMap<Player, Entity> lastHitBy = new HashMap<Player, Entity>();
 
-	public static void Check(EntityDamageByEntityEvent event) {
+	public void Check(EntityDamageByEntityEvent event) {
 		if (event.getEntityType() == EntityType.PLAYER && !event.isCancelled()) {
 			Player player = (Player) event.getEntity();
 			final Player p = player;
@@ -26,8 +39,7 @@ public class AntiKb {
 				Location hitTo = event.getEntity().getLocation();
 				double dist = hitAt.distanceSquared(hitTo);
 				if (dist < 0.15D && !Utility.hasKbBypass(player)) {
-					WarnHacks.warnHacks(p, "AntiKB", (int) 5, 500.0D, 1,
-							"Low Velocity", false);
+					manager.getPlayer((Player) event.getEntity()).setViolation(new Violation("AntiKb"));
 					if (NESS.main.devMode) {
 						MSG.tell(event.getEntity(), "AntiKnockback Detected! &9Dev> &7KB Dist:" + dist);
 					}

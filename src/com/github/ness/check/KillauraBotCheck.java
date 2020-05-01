@@ -7,20 +7,31 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.mswsplex.MSWS.NESS.NESS;
 import org.mswsplex.MSWS.NESS.PlayerManager;
-import org.mswsplex.MSWS.NESS.WarnHacks;
 import org.mswsplex.MSWS.NESS.protocol.NPC1_12;
 import org.mswsplex.MSWS.NESS.protocol.NPC1_8;
 //import com.comphenix.packetwrapper.WrapperPlayClientUseEntity;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.github.ness.CheckManager;
 import com.github.ness.Utilities;
 import com.github.ness.Utility;
 
-public class KillauraBotCheck {
+public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent>{
 	public static HashMap<String, String> npclist = new HashMap<String, String>();
 
+	public KillauraBotCheck(CheckManager manager) {
+		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
+		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	void checkEvent(EntityDamageByEntityEvent e) {
+       Check(e);
+	}
+	
 	public static void Check(EntityDamageByEntityEvent event) {
 		if (event.getDamager() instanceof Player) {
 			Player p = (Player) event.getDamager();

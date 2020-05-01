@@ -4,11 +4,22 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.mswsplex.MSWS.NESS.WarnHacks;
+import com.github.ness.CheckManager;
+import com.github.ness.Violation;
 
-public class NoClip {
+public class NoClip extends AbstractCheck<PlayerMoveEvent> {
+	
+	public NoClip(CheckManager manager) {
+		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
+		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	void checkEvent(PlayerMoveEvent e) {
+       Check(e);
+	}
 
-	public static void Check(PlayerMoveEvent event) {
+	public void Check(PlayerMoveEvent event) {
 		final Player player = event.getPlayer();
 		final Location from = event.getFrom();
 		final Location to = event.getTo();
@@ -27,7 +38,7 @@ public class NoClip {
 			}
 		}
 		if (surrounded && (hozDist > 0.2 || to.getBlockY() < from.getBlockY())) {
-			WarnHacks.warnHacks(player, "NoClip", 10, -1.0, 21,"Passable",false);
+			manager.getPlayer(event.getPlayer()).setViolation(new Violation("NoClip"));
 		}
 
 	}

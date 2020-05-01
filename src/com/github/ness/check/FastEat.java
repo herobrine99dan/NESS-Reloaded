@@ -2,24 +2,34 @@ package com.github.ness.check;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.mswsplex.MSWS.NESS.MSG;
 import org.mswsplex.MSWS.NESS.NESS;
 import org.mswsplex.MSWS.NESS.PlayerManager;
-import org.mswsplex.MSWS.NESS.WarnHacks;
+import com.github.ness.CheckManager;
+import com.github.ness.Violation;
 
-public class FastEat {
+public class FastEat extends AbstractCheck<FoodLevelChangeEvent> {
+	
+	public FastEat(CheckManager manager) {
+		super(manager, CheckInfo.eventOnly(FoodLevelChangeEvent.class));
+		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	void checkEvent(FoodLevelChangeEvent e) {
+       Check(e);
+	}
 
 	@SuppressWarnings("deprecation")
-	public
-	static void Check(FoodLevelChangeEvent event) {
+	public void Check(FoodLevelChangeEvent event) {
 		if (event.getEntity() instanceof Player) {
 			final Player player = (Player) event.getEntity();
 			final ItemStack hand = player.getItemInHand();
@@ -36,8 +46,7 @@ public class FastEat {
 				return;
 			}
 			if (PlayerManager.timeSince("lastAte", player) < 1630.0) {
-				WarnHacks.warnHacks(player, "FastEat",
-						(int) Math.min(1650.0 - PlayerManager.timeSince("lastAte", player), 100.0), -1.0, 4,"Vanilla",false);
+				manager.getPlayer((Player) event.getEntity()).setViolation(new Violation("FastEat"));
 				if (NESS.main.devMode) {
 					MSG.tell((CommandSender) player,
 							"&9Dev> &7Food delay: " + PlayerManager.timeSince("lastAte", player));

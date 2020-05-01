@@ -4,14 +4,25 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
-import org.mswsplex.MSWS.NESS.WarnHacks;
-
+import com.github.ness.CheckManager;
 import com.github.ness.Utility;
+import com.github.ness.Violation;
 
-public class Criticals {
+public class Criticals extends AbstractCheck<EntityDamageByEntityEvent>{
 
-	public static void Check(EntityDamageByEntityEvent event) {
+	public Criticals(CheckManager manager) {
+		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
+		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	void checkEvent(EntityDamageByEntityEvent e) {
+       Check(e);
+	}
+	
+	public void Check(EntityDamageByEntityEvent event) {
 		if (!(event.getDamager().getType() == EntityType.PLAYER)) {
 			return;
 		}
@@ -23,7 +34,7 @@ public class Criticals {
 			if (player.getLocation().getY() % 1.0D == 0.0D || player.getLocation().getY() % 0.5 == 0) {
 				if (player.getFallDistance() < 0.06251 && !player.isInsideVehicle()
 						&& !player.hasPotionEffect(PotionEffectType.BLINDNESS)) {
-					WarnHacks.warnHacks(player, "Criticals", 40, -1.0D, 15, "InvalidLocation", false);
+					manager.getPlayer((Player) event.getEntity()).setViolation(new Violation("Criticals"));
 				}
 			}
 		}

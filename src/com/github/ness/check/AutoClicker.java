@@ -3,20 +3,31 @@ package com.github.ness.check;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.mswsplex.MSWS.NESS.PlayerManager;
-import org.mswsplex.MSWS.NESS.WarnHacks;
 
-public class AutoClicker {
+import com.github.ness.CheckManager;
+import com.github.ness.Violation;
+
+public class AutoClicker extends AbstractCheck<PlayerInteractEvent>{
+	
+	public AutoClicker(CheckManager manager) {
+		super(manager, CheckInfo.eventOnly(PlayerInteractEvent.class));
+		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	void checkEvent(PlayerInteractEvent e) {
+       Check(e);
+	}
 
 	@SuppressWarnings("unchecked")
-	public
-	static void Check(PlayerInteractEvent event) {
+	public void Check(PlayerInteractEvent event) {
 		final Player player = event.getPlayer();
 		final Block target = player.getTargetBlock((Set<Material>) null, 5);
 		if ((target.getType() == Material.AIR || target.getType().isSolid())
@@ -43,7 +54,7 @@ public class AutoClicker {
 				lastClick = d;
 			}
 			if (times > 50) {
-				WarnHacks.warnHacks(player, "AutoClicker", 5 * (times - 20) + 10, -1.0, 3,"Vanilla",false);
+				manager.getPlayer(event.getPlayer()).setViolation(new Violation("AutoClicker"));
 			}
 		}
 	}

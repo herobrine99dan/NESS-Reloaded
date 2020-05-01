@@ -7,8 +7,6 @@ import org.bukkit.entity.Player;
 import org.mswsplex.MSWS.NESS.NESS;
 import org.mswsplex.MSWS.NESS.NESSPlayer;
 import org.mswsplex.MSWS.NESS.PlayerManager;
-import org.mswsplex.MSWS.NESS.WarnHacks;
-
 import com.github.ness.Utility;
 
 public class BadPackets {

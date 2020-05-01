@@ -1,7 +1,6 @@
 package com.github.ness.check;
 
 import java.util.Set;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,13 +8,26 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.mswsplex.MSWS.NESS.NESS;
 import org.mswsplex.MSWS.NESS.NESSPlayer;
-import org.mswsplex.MSWS.NESS.WarnHacks;
+import com.github.ness.CheckManager;
+import com.github.ness.Violation;
 
-public class GhostHand {
+public class GhostHand extends AbstractCheck<PlayerInteractEvent>{
+	
+	public GhostHand(CheckManager manager) {
+		super(manager, CheckInfo.eventOnly(PlayerInteractEvent.class));
+		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	void checkEvent(PlayerInteractEvent e) {
+       Check(e);
 
-	public static void Check(PlayerInteractEvent event) {
+	}
+
+	public  void Check(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		final Location loc = player.getLocation();
 		Block targetBlock = player.getTargetBlock((Set<Material>) null, 7);
@@ -44,7 +56,7 @@ public class GhostHand {
 					return;
 				}
 				if (block.getBlock().getType().isSolid() || !targetBlock.equals(event.getClickedBlock())) {
-					WarnHacks.warnHacks(player, "GhostHand", 7, -1.0D, 36, "InvalidLocation", false);
+					manager.getPlayer(event.getPlayer()).setViolation(new Violation("GhostHand"));
 				}
 			}
 		}, 2L);
