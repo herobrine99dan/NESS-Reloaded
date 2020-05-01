@@ -1,7 +1,6 @@
 package com.github.ness.check;
 
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 import org.bukkit.event.Event;
 
@@ -58,6 +57,13 @@ public abstract class AbstractCheck<T extends Event> {
 		
 	}
 	
-	abstract void checkEvent(T evt);
+	/**
+	 * Called synchronously when this check's event is fired
+	 * 
+	 * @param evt the event
+	 */
+	void checkEvent(T evt) {
+		
+	}
 	
 }
