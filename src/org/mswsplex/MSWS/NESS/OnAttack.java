@@ -8,13 +8,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.mswsplex.MSWS.NESS.checks.Aimbot;
-import org.mswsplex.MSWS.NESS.checks.AntiKb;
-import org.mswsplex.MSWS.NESS.checks.Criticals;
-import org.mswsplex.MSWS.NESS.checks.NoSwing;
-import org.mswsplex.MSWS.NESS.checks.killaura.Killaura;
-import org.mswsplex.MSWS.NESS.checks.killaura.KillauraBotCheck;
-import org.mswsplex.MSWS.NESS.checks.killaura.PatternKillaura;
+
+import com.github.ness.check.Aimbot;
+import com.github.ness.check.AntiKb;
+import com.github.ness.check.Criticals;
+import com.github.ness.check.Killaura;
+import com.github.ness.check.KillauraBotCheck;
+import com.github.ness.check.NoSwing;
+import com.github.ness.check.PatternKillaura;
 
 public class OnAttack implements Listener {
 	protected static List<UUID> fightingPlayers = new ArrayList<UUID>();

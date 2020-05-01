@@ -39,21 +39,23 @@ import org.bukkit.event.server.TabCompleteEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-import org.mswsplex.MSWS.NESS.checks.AntiASCII;
-import org.mswsplex.MSWS.NESS.checks.AntiTab;
-import org.mswsplex.MSWS.NESS.checks.AutoClicker;
-import org.mswsplex.MSWS.NESS.checks.FastEat;
-import org.mswsplex.MSWS.NESS.checks.FastPlace;
-import org.mswsplex.MSWS.NESS.checks.GhostHand;
-import org.mswsplex.MSWS.NESS.checks.IllegalInteraction;
-import org.mswsplex.MSWS.NESS.checks.InventoryHack;
-import org.mswsplex.MSWS.NESS.checks.Jesus;
-import org.mswsplex.MSWS.NESS.checks.NoSlowDown;
-import org.mswsplex.MSWS.NESS.checks.NoSwing;
-import org.mswsplex.MSWS.NESS.checks.Scaffold;
-import org.mswsplex.MSWS.NESS.checks.SpamBot;
 import org.mswsplex.MSWS.NESS.exploits.SimpleExploit;
 import org.mswsplex.MSWS.NESS.protocol.Packet1_15Helper;
+
+import com.github.ness.MovementPlayerData;
+import com.github.ness.check.AntiASCII;
+import com.github.ness.check.AntiTab;
+import com.github.ness.check.AutoClicker;
+import com.github.ness.check.FastEat;
+import com.github.ness.check.FastPlace;
+import com.github.ness.check.GhostHand;
+import com.github.ness.check.IllegalInteraction;
+import com.github.ness.check.InventoryHack;
+import com.github.ness.check.Jesus;
+import com.github.ness.check.NoSlowDown;
+import com.github.ness.check.NoSwing;
+import com.github.ness.check.Scaffold;
+import com.github.ness.check.SpamBot;
 
 public class MiscEvents implements Listener {
 	@EventHandler
