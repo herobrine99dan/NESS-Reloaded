@@ -54,7 +54,7 @@ public abstract class AbstractCheck<T extends Event> {
 	 * 
 	 * @param player the ness player
 	 */
-	public void checkAsyncPeriodic(NessPlayer player) {
+	void checkAsyncPeriodic(NessPlayer player) {
 		
 	}
 	
