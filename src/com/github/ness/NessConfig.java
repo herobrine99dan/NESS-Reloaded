@@ -1,5 +1,7 @@
 package com.github.ness;
 
+import java.util.List;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -9,6 +11,10 @@ public class NessConfig {
 	
 	NessConfig(YamlConfiguration config) {
 		this.config = config;
+	}
+	
+	public List<String> getEnabledChecks() {
+		return config.getStringList("enabled-checks");
 	}
 	
 	public ConfigurationSection getCheck(String check) {
