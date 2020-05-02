@@ -2,20 +2,24 @@ package com.github.ness.check;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+import org.mswsplex.MSWS.NESS.MSG;
 import org.mswsplex.MSWS.NESS.NESS;
-
+import org.mswsplex.MSWS.NESS.PlayerManager;
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.Utilities;
@@ -24,6 +28,8 @@ import com.github.ness.Violation;
 
 public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
+	protected HashMap<String, Integer> noground = new HashMap<String, Integer>();
+	
 	public Fly(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
 	}
@@ -171,13 +177,12 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	public void Check5(PlayerMoveEvent event) {
-		Player p = event.getPlayer();
 		Location from = event.getFrom();
 		Location to = event.getTo();
 		double dist = Math.pow(to.getX() - from.getX(), 2.0D) + Math.pow(to.getZ() - from.getZ(), 2.0D);
 		double defaultvalue = 0.9800000190734863D;
 		if (!bypass(event.getPlayer())) {
-			double result = dist / 0.9800000190734863D;
+			double result = dist / defaultvalue;
 			if (calculate(result, 1.15D) >= 0 && calculate(dist, 0.8D) >= 0) {
 				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly"));
 			}
@@ -325,6 +330,198 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	public void Check12(PlayerMoveEvent e) {
+		Player player = e.getPlayer();
+		Location from = e.getFrom();
+		Location to = e.getTo();
+		boolean groundAround = Utility.groundAround(player.getLocation());
+		if (player.isInsideVehicle() && !groundAround && from.getY() <= to.getY() && (!player.isInsideVehicle()
+				|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))) {
+			// nogroundfly
+		}
+	}
+
+	public void Check13(PlayerMoveEvent e) {
+		Player player = e.getPlayer();
+		Location from = e.getFrom();
+		Location to = e.getTo();
+		Double hozDist = to.distanceSquared(from) - (to.getY() - from.getY());
+		boolean groundAround = Utility.groundAround(player.getLocation());
+		if (!groundAround) {
+			if (hozDist > 0.35 && PlayerManager.timeSince("wasIce", player) >= 1000.0 && !player.isFlying()) {
+				// hack
+			}
+		}
+	}
+
+	public void Check14(PlayerMoveEvent e) {
+		Player player = e.getPlayer();
+		Location from = e.getFrom();
+		Location to = e.getTo();
+		Double hozDist = to.distanceSquared(from) - (to.getY() - from.getY());
+		boolean groundAround = Utility.groundAround(player.getLocation());
+		if (!groundAround) {
+			if (hozDist > 0.35 && PlayerManager.timeSince("wasIce", player) >= 1000.0 && !player.isFlying()) {
+				// hack
+			}
+		}
+	}
+
+	public void Check15(PlayerMoveEvent e) {
+		Player player = e.getPlayer();
+		Location from = e.getFrom();
+		Location to = e.getTo();
+		Double hozDist = to.distanceSquared(from) - (to.getY() - from.getY());
+
+	}
+
+	public void Check16(PlayerMoveEvent e) {
+		Player player = e.getPlayer();
+		if (player.getLocation().getYaw() > 360.0f || player.getLocation().getYaw() < -360.0f
+				|| player.getLocation().getPitch() > 90.0f || player.getLocation().getPitch() < -90.0f) {
+			manager.getPlayer(player).setViolation(new Violation("IllegalMovement"));
+		}
+	}
+
+	public void Check17(PlayerMoveEvent e) {
+		Player player = e.getPlayer();
+		Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0.0, 1.0, 0.0)).getType();
+		if ((!player.isSneaking() || below != Material.LADDER) && !player.isFlying() && !player.isOnGround()
+				&& player.getLocation().getY() % 1.0 == 0.0 && PlayerManager.timeSince("lastJoin", player) >= 1000.0
+				&& PlayerManager.timeSince("teleported", player) >= 500.0 && !below.toString().contains("stairs")) {
+			int failed = noground.getOrDefault(player.getName(), 0);
+			noground.put(player.getName(), failed + 1);
+			if (failed > 2) {
+				// MSG.tell((CommandSender)player, "&7NoGround: &e" + failed);
+				if (!below.equals(Material.SLIME_BLOCK)) {
+					manager.getPlayer(player).setViolation(new Violation("NoGround"));
+				}
+			}
+		}
+	}
+
+	public void Check18(PlayerMoveEvent e) {
+		Player player = e.getPlayer();
+		Location from = e.getFrom();
+		Location to = e.getTo();
+		boolean web = false;
+		for (int x2 = -2; x2 <= 2; ++x2) {
+			for (int y = -2; y <= 3; ++y) {
+				for (int z3 = -2; z3 <= 2; ++z3) {
+					final Material belowSel2 = player.getWorld()
+							.getBlockAt(player.getLocation().add((double) x2, (double) y, (double) z3)).getType();
+					if (belowSel2 == Material.WEB) {
+						web = true;
+					}
+				}
+			}
+		}
+		boolean groundAround = Utility.groundAround(player.getLocation());
+		if (!groundAround && !player.isFlying()) {
+			if (from.getY() >= to.getY()) {
+				final double vel = from.getY() - to.getY();
+				if (!web && ((vel > 0.0799 && vel < 0.08) || (vel > 0.01 && vel < 0.02) || (vel > 0.549 && vel < 0.55))
+						&& !player.isFlying() && PlayerManager.timeSince("wasFlight", player) >= 3000.0
+						&& PlayerManager.timeSince("isHit", player) >= 1000.0) {
+					manager.getPlayer(player).setViolation(new Violation("Fly"));
+				}
+				if (vel > 0.0999 && vel < 0.1 && to.getY() > 0.0) {
+					manager.getPlayer(player).setViolation(new Violation("Fly"));
+				}
+				if (vel == 0.125) {
+					manager.getPlayer(player).setViolation(new Violation("Fly"));
+				}
+			}
+		}
+	}
+
+	public void Check19(PlayerMoveEvent e) {
+		Player player = e.getPlayer();
+		Location from = e.getFrom();
+		Location to = e.getTo();
+		double dTG = 0.0;
+		for (int x = -1; x <= 1; ++x) {
+			for (int z = -1; z <= 1; ++z) {
+				int y;
+				for (y = 0; !player.getLocation().subtract((double) x, (double) y, (double) z).getBlock().getType()
+						.isSolid() && y < 20; ++y) {
+				}
+				if (y < dTG || dTG == 0.0) {
+					dTG = y;
+				}
+			}
+		}
+		Material bottom = player.getLocation().getWorld().getBlockAt(player.getLocation().subtract(0.0, dTG, 0.0)).getType();
+		Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0.0, 1.0, 0.0)).getType();
+		boolean groundAround = Utility.groundAround(player.getLocation());
+		double hozDist = to.distanceSquared(from) - (to.getY() - from.getY());
+		double fallDist = (double) player.getFallDistance();
+		if (from.getY() - to.getY() > 0.3 && fallDist <= 0.4 && below != Material.STATIONARY_WATER
+				&& !player.getLocation().getBlock().isLiquid()) {
+			if (hozDist < 0.1 || !groundAround) {
+				if (PlayerManager.timeSince("breakTime", player) >= 2000.0
+						&& PlayerManager.timeSince("teleported", player) >= 500.0 && below != Material.PISTON_BASE
+						&& below != Material.PISTON_STICKY_BASE
+						&& (!player.isInsideVehicle()
+								|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))
+						&& !player.isFlying() && to.getY() > 0.0 && bottom != Material.SLIME_BLOCK) {
+					//NESSPlayer np = NESSPlayer.getInstance(player);
+					manager.getPlayer(player).setViolation(new Violation("NoFall"));
+				}
+			}
+		}
+	}
+
+	public void Check20(PlayerMoveEvent e) {
+		Player player = e.getPlayer();
+		Location from = e.getFrom();
+		Location to = e.getTo();
+		double dTG = 0.0;
+		for (int x = -1; x <= 1; ++x) {
+			for (int z = -1; z <= 1; ++z) {
+				int y;
+				for (y = 0; !player.getLocation().subtract((double) x, (double) y, (double) z).getBlock().getType()
+						.isSolid() && y < 20; ++y) {
+				}
+				if (y < dTG || dTG == 0.0) {
+					dTG = y;
+				}
+			}
+		}
+		dTG += player.getLocation().getY() % 1.0;
+		Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0.0, 1.0, 0.0)).getType();
+		if (to.getY() > from.getY()) {
+			final double lastDTG = PlayerManager.getAction("lastDTG", player);
+			final String diff2 = new StringBuilder(String.valueOf(Math.abs(dTG - lastDTG))).toString();
+			if (player.getLocation().getY() % 0.5 != 0.0 && !player.isFlying() && !below.isSolid()
+					&& (new StringBuilder(String.valueOf(dTG)).toString().contains("99999999")
+							|| new StringBuilder(String.valueOf(dTG)).toString().contains("00000000")
+							|| diff2.contains("000000") || diff2.startsWith("0.286"))
+					&& PlayerManager.timeSince("isHit", player) >= 500.0
+					&& !below.toString().toLowerCase().contains("water")
+					&& !below.toString().toLowerCase().contains("lava")) {
+				if (!Utility.SpecificBlockNear(player.getLocation(), Material.STATIONARY_LAVA)
+						&& !Utility.SpecificBlockNear(player.getLocation(), Material.WATER)
+						&& !Utility.SpecificBlockNear(player.getLocation(), Material.LAVA)
+						&& !Utility.SpecificBlockNear(player.getLocation(), Material.STATIONARY_WATER)) {
+					manager.getPlayer(player).setViolation(new Violation("Spider"));
+				}
+				if (NESS.main.devMode) {
+					MSG.tell((CommandSender) player, "&9Dev> &7dTG: " + dTG + " diff: " + diff2);
+				}
+			}
+			PlayerManager.setInfo("lastDTG", (OfflinePlayer) player, dTG);
+		}
+	}
+	
+	public void Check21(PlayerMoveEvent e) {
+		Player player = e.getPlayer();
+		Location from = e.getFrom();
+		Location to = e.getTo();
+		Double hozDist = to.distanceSquared(from) - (to.getY() - from.getY());
+		if (player.getWorld().getBlockAt(player.getLocation()).getType() == Material.WEB && hozDist > 0.140
+				&& !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED)) {
+			manager.getPlayer(player).setViolation(new Violation("NoWeb"));
+		}
 	}
 
 	private int calculate(double var0, double var2) {

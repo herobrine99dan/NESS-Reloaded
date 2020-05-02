@@ -21,26 +21,26 @@ import com.github.ness.Utility;
 import com.github.ness.Violation;
 
 public class Speed extends AbstractCheck<PlayerMoveEvent> {
-	public  HashMap<String, Integer> speed = new HashMap<String, Integer>();
+	public HashMap<String, Integer> speed = new HashMap<String, Integer>();
 
 	public Speed(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
-       Check(e);
-       Check1(e);
-       Check2(e);
-       Check4(e);
+		Check(e);
+		Check1(e);
+		Check2(e);
+		Check3(e);
 	}
-	
+
 	private void punish(Player p) {
 		manager.getPlayer(p).setViolation(new Violation("Speed"));
 	}
-	
-	public  void Check(PlayerMoveEvent e) {
+
+	public void Check(PlayerMoveEvent e) {
 		Location from = e.getFrom();
 		Location to = e.getTo();
 		// Bukkit.getPlayer("herobrine99dan").sendMessage(
@@ -92,7 +92,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
-	public  void Check1(PlayerMoveEvent event) {
+	public void Check1(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		if (Utility.hasflybypass(player)) {
 			return;
@@ -117,7 +117,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
-	public  void Check2(PlayerMoveEvent event) {
+	public void Check2(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
 		if (Utility.hasflybypass(p)) {
 			return;
@@ -134,7 +134,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
-	public  void Check4(PlayerMoveEvent event) {
+	public void Check3(PlayerMoveEvent event) {
 		MovementPlayerData mp = MovementPlayerData.getInstance(event.getPlayer());
 		Player player = event.getPlayer();
 
@@ -143,7 +143,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 
 		double ydiff = event.getTo().getY() - event.getFrom().getY();
 
-		if (!(mp==null)) {
+		if (!(mp == null)) {
 			if (Utilities.IsSameBlockAround(player, Material.AIR, 2, 0.5f)
 					&& Utilities.IsSameBlockAround(player, Material.AIR, 0, 0.5f)
 					&& player.getLocation().add(0, -1, 0).getBlock().getType() != Material.SLIME_BLOCK) {
@@ -155,8 +155,61 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 		mp.setLastYDiff(ydiff);
 	}
+	
+	public void TestingCheck(PlayerMoveEvent e) {
+		Location to = e.getTo();
+		Location from = e.getFrom();
+		Player p = e.getPlayer();
+		double x = to.getX() - from.getX();
+		double y = around(to.getY() - from.getY(), 5);
+		double z = to.getZ() - from.getZ();
+		Vector v = new Vector(x, y, z);
+		// Vector result = v.subtract(p.getVelocity());
+		Vector result = v.subtract(p.getVelocity().setY(around(p.getVelocity().getY(), 5)));
+		double yresult = 0.0;
+		try {
+			yresult = around(result.getY(), 5);
+		} catch (Exception ex) {
+			yresult = result.getY();
+		}
+		int i = 0;
+		for (Block b : Utility.getBlocksAround(to)) {
+			if (b.getType().isSolid()) {
+				i++;
+			}
+		}
+		if(i>0) {
+			return;
+		}
+		i = 0;
+		if (!(yresult == 0.07)) {
+			if (!(yresult == 0.0)) {
+				if (!(yresult == -0.01)) {
+					if (!(yresult == -0.03)) {
+						if (Math.abs(yresult) > 0.06) {
+							p.sendMessage("ResultY:" + yresult);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public static double around(double i, int places) {
+		String around;
+		if (Double.toString(i).length() > places - 2) {
+			if (!Double.toString(i).contains("-")) {
+				around = Double.toString(i).substring(0, places - 1);
+			} else {
+				around = Double.toString(i).substring(0, places);
+			}
+		} else {
+			around = Math.round(i) + "";
+		}
+		return Double.parseDouble(around);
+	}
 
-	private  Vector getHV(Vector V) {
+	private Vector getHV(Vector V) {
 		V.setY(0);
 		return V;
 	}
