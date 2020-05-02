@@ -5,6 +5,8 @@ import java.util.List;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import com.github.ness.check.AbstractCheck;
+
 public class NessConfig {
 
 	private final YamlConfiguration config;
@@ -17,7 +19,7 @@ public class NessConfig {
 		return config.getStringList("enabled-checks");
 	}
 	
-	public ConfigurationSection getCheck(Class<?> check) {
+	public ConfigurationSection getCheck(Class<? extends AbstractCheck<?>> check) {
 		return config.getConfigurationSection("checks." + check.getSimpleName());
 	}
 	
