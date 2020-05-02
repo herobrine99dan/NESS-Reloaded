@@ -1,4 +1,4 @@
-package org.mswsplex.MSWS.NESS.protocol;
+package com.github.ness.protocol;
 
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.mswsplex.MSWS.NESS.NESS;
 import org.mswsplex.MSWS.NESS.NESSPlayer;
 import org.mswsplex.MSWS.NESS.PlayerManager;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;

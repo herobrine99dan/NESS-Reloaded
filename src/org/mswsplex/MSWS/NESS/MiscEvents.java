@@ -40,7 +40,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.mswsplex.MSWS.NESS.exploits.SimpleExploit;
-import org.mswsplex.MSWS.NESS.protocol.Packet1_15Helper;
 
 import com.github.ness.MovementPlayerData;
 import com.github.ness.check.AntiASCII;
@@ -56,6 +55,7 @@ import com.github.ness.check.NoSlowDown;
 import com.github.ness.check.NoSwing;
 import com.github.ness.check.Scaffold;
 import com.github.ness.check.SpamBot;
+import com.github.ness.protocol.Packet1_15Helper;
 
 public class MiscEvents implements Listener {
 	@EventHandler
