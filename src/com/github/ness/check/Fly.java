@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,8 +15,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.mswsplex.MSWS.NESS.NESS;
-import org.mswsplex.MSWS.NESS.NESSPlayer;
+
 import com.github.ness.CheckManager;
+import com.github.ness.NessPlayer;
 import com.github.ness.Utilities;
 import com.github.ness.Utility;
 import com.github.ness.Violation;
@@ -47,7 +49,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	public void Check(PlayerMoveEvent event) {
 		if (!bypass(event.getPlayer()) && !Utility.hasBlock(event.getPlayer(), Material.SLIME_BLOCK)) {
 			Player player = event.getPlayer();
-			NESSPlayer np = NESSPlayer.getInstance(player);
 			if (!event.getPlayer().isOnGround()) {
 				double fallDist = (double) event.getPlayer().getFallDistance();
 				if (event.getPlayer().getVelocity().getY() < -1.0D && fallDist == 0.0D) {
@@ -306,15 +307,15 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 					if (!bypass(e.getPlayer()) && !e.getFrom().getBlock().getType().isSolid()
 							&& !e.getTo().getBlock().getType().isSolid()) {
 						double dist = e.getFrom().getY() - e.getTo().getY();
-						NESSPlayer player = NESSPlayer.getInstance(p);
+						NessPlayer player = new NessPlayer(p);
 						double oldY = player.getOldY();
-						player.SetOldY(dist);
+						player.setOldY(dist);
 						if (e.getFrom().getY() > e.getTo().getY()) {
 							if (oldY >= dist && oldY != 0.0D) {
 								manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly"));
 							}
 						} else {
-							player.SetOldY(0.0D);
+							player.setOldY(0.0D);
 						}
 
 					}

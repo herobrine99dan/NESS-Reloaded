@@ -6,8 +6,6 @@ import org.bukkit.entity.Player;
 import org.mswsplex.MSWS.NESS.NESS;
 import org.mswsplex.MSWS.NESS.NESSPlayer;
 import org.mswsplex.MSWS.NESS.PlayerManager;
-import org.mswsplex.MSWS.NESS.WarnHacks;
-
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;

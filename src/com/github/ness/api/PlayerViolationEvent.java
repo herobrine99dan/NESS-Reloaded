@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.mswsplex.MSWS.NESS.NESSPlayer;
 
 public class PlayerViolationEvent extends Event implements Cancellable {
 	private final String playerName;
@@ -41,11 +40,6 @@ public class PlayerViolationEvent extends Event implements Cancellable {
 
 	public Player getPlayer() {
 		return Bukkit.getPlayer(playerName);
-	}
-	
-	public NESSPlayer getNESSPlayer() {
-		NESSPlayer p = NESSPlayer.getInstance(Bukkit.getPlayer(playerName));
-		return p;
 	}
 
 	public String getHack() {

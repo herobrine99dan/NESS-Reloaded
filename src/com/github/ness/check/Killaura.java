@@ -17,7 +17,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 import org.mswsplex.MSWS.NESS.MSG;
 import org.mswsplex.MSWS.NESS.NESS;
-import org.mswsplex.MSWS.NESS.NESSPlayer;
 import org.mswsplex.MSWS.NESS.PlayerManager;
 import org.mswsplex.MSWS.NESS.Protocols;
 

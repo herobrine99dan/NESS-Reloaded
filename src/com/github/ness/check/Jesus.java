@@ -2,15 +2,12 @@ package com.github.ness.check;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.mswsplex.MSWS.NESS.NESSPlayer;
-
 import com.github.ness.CheckManager;
 import com.github.ness.Utilities;
 import com.github.ness.Utility;
@@ -95,14 +92,8 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent>{
 		double fromy = e.getFrom().getY();
 		double toy = e.getTo().getY();
 		Player player = e.getPlayer();
-		NESSPlayer p = NESSPlayer.getInstance(player);
 		if(Utility.hasflybypass(player)) {
 			return;
-		}
-		if(Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.14")) {
-			if(p.getIsSwimming()) {
-				return;
-			}
 		}
 		double resulty = Math.abs(fromy - toy);
 		double distance = e.getTo().distance(e.getFrom()) - resulty;

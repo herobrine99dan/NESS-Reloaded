@@ -1,12 +1,14 @@
 package com.github.ness.check;
 
 import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.mswsplex.MSWS.NESS.NESS;
-import org.mswsplex.MSWS.NESS.NESSPlayer;
 import org.mswsplex.MSWS.NESS.PlayerManager;
+
+import com.github.ness.NessPlayer;
 import com.github.ness.Utility;
 
 public class BadPackets {
@@ -25,7 +27,7 @@ public class BadPackets {
 				maxPackets = NESS.main.maxpackets;
 				maxPacketsrepeat = 3;
 			}
-			NESSPlayer p = NESSPlayer.getInstance(sender);
+			NessPlayer p = new NessPlayer(sender);
 			if (!packet.toString().contains("Position")) {
 				return;
 			}
@@ -37,7 +39,7 @@ public class BadPackets {
 			if(Utility.SpecificBlockNear(sender.getLocation(), Material.PORTAL)) {
 				return;
 			}
-			if (p.getPacketsNumber() > 9) {
+			if (p.getPackets() > 9) {
 				if (repeats.get(sender.getName()) == null) {
 					repeats.put(sender.getName(), 1);
 				} else {
@@ -45,12 +47,12 @@ public class BadPackets {
 				}
 			}
 			if (NESS.main.debugMode) {
-				sender.sendMessage("Packets:" + p.getPacketsNumber());
+				sender.sendMessage("Packets:" + p.getPackets());
 			}
 			if(repeats.get(sender.getName())==null) {
 				return;
 			}
-			if (p.getPacketsNumber() > maxPackets) {
+			if (p.getPackets() > maxPackets) {
                 WarnHacks.warnHacks(sender, "MorePackets", 5, -1.0D, 5, "TooPacket", false);
                 if(NESS.main.devMode) {
                 	sender.sendMessage("Your ping: " + PlayerManager.getPing(sender) + " - your max packets: " + maxPackets);
@@ -63,7 +65,7 @@ public class BadPackets {
                 }
 				repeats.put(sender.getName(), 0);
 			}
-			p.SetPacketsNumber(p.getPacketsNumber() + 1);
+			p.setPackets(p.getPackets() + 1);
 		},0);
 	}
 

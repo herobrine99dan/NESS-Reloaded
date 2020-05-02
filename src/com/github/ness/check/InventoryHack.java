@@ -4,10 +4,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.mswsplex.MSWS.NESS.NESS;
-import org.mswsplex.MSWS.NESS.NESSPlayer;
+
 import com.github.ness.CheckManager;
+import com.github.ness.NessPlayer;
 import com.github.ness.Utility;
 import com.github.ness.Violation;
 
@@ -51,8 +51,8 @@ public class InventoryHack extends AbstractCheck<InventoryClickEvent>{
 	public void Check2(InventoryClickEvent e) {
 		if (e.getWhoClicked() instanceof Player) {
 			Player player = (Player) e.getWhoClicked();
-			NESSPlayer p = NESSPlayer.getInstance(player);
-			p.SetClicks(p.getClicks()+1);
+			NessPlayer p = new NessPlayer(player);
+			p.setClicks(p.getClicks()+1);
             if(p.getClicks()>4) {
 				manager.getPlayer(player).setViolation(new Violation("FastClick"));							// MSG.tell(player, "Distance " + distance);
            	 e.setCancelled(true);

@@ -1,6 +1,7 @@
 package com.github.ness.check;
 
 import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -8,10 +9,10 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.mswsplex.MSWS.NESS.NESS;
-import org.mswsplex.MSWS.NESS.NESSPlayer;
+
 import com.github.ness.CheckManager;
+import com.github.ness.NessPlayer;
 import com.github.ness.Violation;
 
 public class GhostHand extends AbstractCheck<PlayerInteractEvent>{
@@ -38,7 +39,7 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent>{
 		if (targetBlock.equals(event.getClickedBlock())) {
 			return;
 		}
-		NESSPlayer p = NESSPlayer.getInstance(player);
+		NessPlayer p = new NessPlayer(player);
 		if(p.getDistance()>0.0 || p.getYawDelta()>0.0) {
 			return;
 		}

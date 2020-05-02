@@ -2,6 +2,7 @@ package com.github.ness.check;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -10,11 +11,11 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.mswsplex.MSWS.NESS.NESS;
-import org.mswsplex.MSWS.NESS.NESSPlayer;
 import org.mswsplex.MSWS.NESS.PlayerManager;
 
 import com.github.ness.CheckManager;
 import com.github.ness.MovementPlayerData;
+import com.github.ness.NessPlayer;
 import com.github.ness.Utilities;
 import com.github.ness.Utility;
 import com.github.ness.Violation;
@@ -126,7 +127,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (ping < 150) {
 			maxPackets = NESS.main.maxpackets;
 		}
-		NESSPlayer player = NESSPlayer.getInstance(p);
+		NessPlayer player = new NessPlayer(p);
 		if (player.getOnMoveRepeat() > maxPackets) {
 			punish(p);
 			// p.sendMessage("Repeat: " + player.getOnMoveRepeat());
