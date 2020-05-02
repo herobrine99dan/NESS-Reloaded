@@ -32,8 +32,7 @@ public class NESSAnticheat extends JavaPlugin {
 		}
 		executor = Executors.newSingleThreadScheduledExecutor();
 		manager = new CheckManager(this);
-		manager.registerListener();
-		CompletableFuture<?> future = CompletableFuture.runAsync(manager::addAllChecks, executor).thenRun(manager::initiateChecks);
+		CompletableFuture<?> future = manager.loadAsync();
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);
 	}
 	
