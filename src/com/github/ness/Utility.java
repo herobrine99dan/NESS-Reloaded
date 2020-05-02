@@ -39,6 +39,38 @@ public class Utility {
 		return v.substring(v.lastIndexOf('.') + 1);
 	}
 	
+	public static boolean groundAround(final Location loc) {
+		for (int radius = 2, x = -radius; x < radius; ++x) {
+			for (int y = -radius; y < radius; ++y) {
+				for (int z = -radius; z < radius; ++z) {
+					final Material mat = loc.getWorld().getBlockAt(loc.add((double) x, (double) y, (double) z))
+							.getType();
+					if (mat.isSolid() || mat.name().toLowerCase().contains("lava")
+							|| mat.name().toLowerCase().contains("water")) {
+						loc.subtract((double) x, (double) y, (double) z);
+						return true;
+					}
+					loc.subtract((double) x, (double) y, (double) z);
+				}
+			}
+		}
+		return false;
+	}
+	
+	public static List<Block> getBlocksAround(Location loc) {
+		List<Block> result = new ArrayList<>();
+		result.add(loc.getBlock());
+		result.add(loc.clone().add(0.5D, 0.0D, -0.5D).getBlock());
+		result.add(loc.clone().add(0.5D, 0.0D, 0.0D).getBlock());
+		result.add(loc.clone().add(-0.5D, 0.0D, 0.0D).getBlock());
+		result.add(loc.clone().add(0.0D, 0.0D, -0.5D).getBlock());
+		result.add(loc.clone().add(0.0D, 0.0D, 0.5D).getBlock());
+		result.add(loc.clone().add(-0.5D, 0.0D, -0.5D).getBlock());
+		result.add(loc.clone().add(0.5D, 0.0D, 0.5D).getBlock());
+		result.add(loc.clone().add(-0.5D, 0.0D, 0.5D).getBlock());
+		return result;
+	}
+	
 	public static String randomString() {
 	    int leftLimit = 97; // letter 'a'
 	    int rightLimit = 122; // letter 'z'
