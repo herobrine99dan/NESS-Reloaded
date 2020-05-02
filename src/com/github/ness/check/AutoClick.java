@@ -68,7 +68,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		copy1.removeIf((time) -> time - now2 > hardLimitRetention);
 		int cps = copy1.size() / hardLimitRetention;
 		if (cps > hardLimit) {
-			player.setViolation(new Violation("CPS", cps));
+			player.setViolation(new Violation("AutoClick", cps));
 			return;
 		}
 
@@ -105,7 +105,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 				if (subPeriods.size() >= constancyMinSample) {
 					int stdDevPercent = getStdDevPercent(subPeriods);
 					if (stdDevPercent < constancyDeviation) {
-						player.setViolation(new Violation("CPS", cps, stdDevPercent));
+						player.setViolation(new Violation("AutoClick", cps, stdDevPercent));
 						return;
 					}
 					superPeriods.add(stdDevPercent);
@@ -115,8 +115,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 			if (superPeriods.size() >= constancySuperMinSample) {
 				int superStdDevPercent = getStdDevPercent(superPeriods);
 				if (superStdDevPercent < constancySuperDeviation) {
-					player.setViolation(new Violation("CPS", cps, superStdDevPercent));
-					return;
+					player.setViolation(new Violation("AutoClick", cps, superStdDevPercent));
 				}
 			}
 		}
