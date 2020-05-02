@@ -25,7 +25,7 @@ enabled-checks:
   - 'Fly'
   - 'GhostHand'
   - 'Headless'
-  - 'IllegalInteraction'
+  - 'LiquidInteraction'
   - 'InventoryHack'
   - 'Jesus'
   - 'Killaura'
@@ -45,6 +45,8 @@ enabled-checks:
 #
 # Check name
 #
+# Description
+#
 # Performance impact: minimal, low, medium, high
 # Effectiveness: medium, high, very high
 #
@@ -54,8 +56,12 @@ checks:
 #
 # AutoClick
 #
+# Caps clicks per second (CPS) at a hard limit, also calculates
+# the variance in the user's clicks (constancy) and the variance
+# in the variance (constancy super).
+#
 # Performance impact: Minimal
-# Effectiveness: ?
+# Effectiveness: untested
 #
   autoclick:
     total-retention-secs: 32
@@ -70,6 +76,18 @@ checks:
         deviation-percent: 10
         min-sample: 12
       span-millis: 800
+
+#
+# LiquidInteraction
+#
+# Checks to see if a player placed a block against water.
+#
+# Performance impact: Minimal
+# Effectiveness: High
+#
+  liquidinteraction:
+    whitelisted-materials:
+      - 'WATER_LILY'
 
 # If you change this, you will receive warnings in console
 config-version: 1
