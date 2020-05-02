@@ -13,7 +13,7 @@ public class NessConfig {
 		this.config = config;
 	}
 	
-	public List<String> getEnabledChecks() {
+	List<String> getEnabledChecks() {
 		return config.getStringList("enabled-checks");
 	}
 	
