@@ -12,7 +12,7 @@
 #
 
 enabled-checks:
-  - 'CPSCheck'
+  - 'AutoClick'
   - 'AntiASCII'
   - 'AntiKb'
   - 'AutoClicker'
@@ -52,12 +52,12 @@ enabled-checks:
 checks:
 
 #
-# CPS Check
+# AutoClick
 #
 # Performance impact: Minimal
 # Effectiveness: ?
 #
-  cps:
+  autoclick:
     total-retention-secs: 32
     hard-limit:
       cps: 16

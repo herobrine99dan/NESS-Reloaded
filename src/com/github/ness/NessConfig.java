@@ -17,8 +17,8 @@ public class NessConfig {
 		return config.getStringList("enabled-checks");
 	}
 	
-	public ConfigurationSection getCheck(String check) {
-		return config.getConfigurationSection("checks." + check);
+	public ConfigurationSection getCheck(Class<?> check) {
+		return config.getConfigurationSection("checks." + check.getSimpleName());
 	}
 	
 }
