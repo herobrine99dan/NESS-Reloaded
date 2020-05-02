@@ -20,7 +20,7 @@ public class NessConfig {
 	}
 	
 	public ConfigurationSection getCheck(Class<? extends AbstractCheck<?>> check) {
-		return config.getConfigurationSection("checks." + check.getSimpleName());
+		return config.getConfigurationSection("checks." + check.getSimpleName().toLowerCase());
 	}
 	
 }
