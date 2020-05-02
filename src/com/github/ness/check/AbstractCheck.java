@@ -7,6 +7,17 @@ import org.bukkit.event.Event;
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 
+/**
+ * General check to be extended. <br>
+ * <br>
+ * Subclasses must declare a public constructor with CheckManager as a parameter, e.g.: <br>
+ * <code>public XXXCheck(CheckManager manager)</code>
+ * 
+ * 
+ * @author A248
+ *
+ * @param <T> the type of the event listened to
+ */
 public abstract class AbstractCheck<T extends Event> {
 
 	final CheckManager manager;
