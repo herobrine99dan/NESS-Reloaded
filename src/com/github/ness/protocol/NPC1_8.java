@@ -1,4 +1,4 @@
-package org.mswsplex.MSWS.NESS.protocol;
+package com.github.ness.protocol;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +12,8 @@ import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.mswsplex.MSWS.NESS.NESS;
+import org.mswsplex.MSWS.NESS.protocol.TinyProtocol;
+
 import com.mojang.authlib.GameProfile;
 import net.minecraft.server.v1_8_R3.Entity;
 import net.minecraft.server.v1_8_R3.EntityPlayer;

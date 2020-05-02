@@ -14,8 +14,8 @@ public class PingSpoof {
 		if (PlayerManager.getPing(sender) > 300 && (diff > 40) && (diff < 65)) {
 			if (NESS.main.devMode) {
 				sender.sendMessage("PingSpoof: difference " + diff + " Ping: " + PlayerManager.getPing(sender));
-			}
-			//HACK!
+			}//To rember this
+			HACK!
 			PlayerManager.setPing(sender, 100);
 		}
 		mp.oldpingspooftimer = mp.pingspooftimer;
