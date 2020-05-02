@@ -13,7 +13,7 @@
 
 enabled-checks:
   - 'AutoClick'
-  - 'AntiASCII'
+  - 'AntiUnicode'
   - 'AntiKb'
   - 'AutoClicker'
 #  - 'BadPackets'
