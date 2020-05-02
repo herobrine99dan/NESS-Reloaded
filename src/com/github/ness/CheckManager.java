@@ -52,7 +52,6 @@ public class CheckManager implements AutoCloseable {
 
 		return CompletableFuture.supplyAsync(this::getAllChecks, ness.getExecutor()).thenApplyAsync((checks) -> {
 			this.checks = checks;
-			checks.forEach((check) -> check.initiatePeriodicTasks());
 
 			try {
 				return scanFuture.get();
@@ -86,6 +85,8 @@ public class CheckManager implements AutoCloseable {
 
 			};
 			registerListener(eventExecutor, scanResult);
+
+			checks.forEach((check) -> check.initiatePeriodicTasks());
 		});
 	}
 	
