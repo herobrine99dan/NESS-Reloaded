@@ -60,6 +60,13 @@ public class CheckManager implements AutoCloseable {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Starts any timers which are required for checks to run
+	 * 
+	 */
+	void initiateChecks() {
 		checks.forEach((check) -> check.initiatePeriodicTasks());
 	}
 	

@@ -1,6 +1,7 @@
 package com.github.ness;
 
 import java.io.File;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -22,11 +23,18 @@ public class NESSAnticheat extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
-		nessConfig = new NessConfig(YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config-v2.yml")));
+		String cfg = "config-v2.yml";
+		saveResource(cfg, false);
+		nessConfig = new NessConfig(YamlConfiguration.loadConfiguration(new File(getDataFolder(), cfg)));
+		if (!nessConfig.checkVersion()) {
+			getLogger().warning(
+					"Your config is outdated! Until you regenerate it, NESS will use default values for some checks.");
+		}
 		executor = Executors.newSingleThreadScheduledExecutor();
 		manager = new CheckManager(this);
 		manager.registerListener();
-		manager.addAllChecks();
+		CompletableFuture<?> future = CompletableFuture.runAsync(manager::addAllChecks, executor).thenRun(manager::initiateChecks);
+		getServer().getScheduler().runTaskLater(this, future::join, 1L);
 	}
 	
 	@Override

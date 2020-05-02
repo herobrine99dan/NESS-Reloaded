@@ -9,10 +9,16 @@ import com.github.ness.check.AbstractCheck;
 
 public class NessConfig {
 
+	private static final int CONFIG_VERSION = 1;
+	
 	private final YamlConfiguration config;
 	
 	NessConfig(YamlConfiguration config) {
 		this.config = config;
+	}
+	
+	boolean checkVersion() {
+		return config.getInt("config-version", -1) == CONFIG_VERSION;
 	}
 	
 	List<String> getEnabledChecks() {
