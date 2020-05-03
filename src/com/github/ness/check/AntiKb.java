@@ -8,7 +8,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.mswsplex.MSWS.NESS.NESS;
+
 import com.github.ness.CheckManager;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.Utility;

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.Utilities;
@@ -294,10 +296,10 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			if (!p.getLocation().getBlock().isLiquid()) {
 				if (!Utility.checkGround(p.getLocation().getY()) && !Utility.isOnGround(p)) {
 					ArrayList<Block> blocks = Utility.getSurrounding(p.getLocation().getBlock(), true);
-					Iterator var4 = blocks.iterator();
+					Iterator<Block> var4 = blocks.iterator();
 
 					while (var4.hasNext()) {
-						Block b = (Block) var4.next();
+						Block b = var4.next();
 						if (b.isLiquid()) {
 							return;
 						}
