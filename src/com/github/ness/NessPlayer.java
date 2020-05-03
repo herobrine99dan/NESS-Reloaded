@@ -1,6 +1,7 @@
 package com.github.ness;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -61,13 +62,13 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	private final Set<Long> clickHistory = ConcurrentHashMap.newKeySet();
 
-	public NessPlayer(Player player) {
+	NessPlayer(Player player) {
 		this.player = player;
 	}
 	
-	public void setViolation(Violation v) {
-		violation = v;
-		player.sendMessage("HACK: " + v.getCheck() + " Module: " + (String) v.getDetails()[0]);
+	public void setViolation(Violation violation) {
+		this.violation = violation;
+		player.sendMessage("HACK: " + violation.getCheck() + " Module: " + Arrays.toString(violation.getDetails()));
 	}
 	
 	@Override

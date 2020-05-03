@@ -9,9 +9,6 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-
 import lombok.Getter;
 
 public class NESSAnticheat extends JavaPlugin {
@@ -23,7 +20,6 @@ public class NESSAnticheat extends JavaPlugin {
 	private NessConfig nessConfig;
 	public boolean devMode = true;
 	private CheckManager manager;
-    public static ProtocolManager packetmanager;
 
 	@Override
 	public void onEnable() {
@@ -38,12 +34,7 @@ public class NESSAnticheat extends JavaPlugin {
 		executor = Executors.newSingleThreadScheduledExecutor();
 		manager = new CheckManager(this);
 		CompletableFuture<?> future = manager.loadAsync();
-		packetmanager = ProtocolLibrary.getProtocolManager();
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);
-	}
-	
-	public static ProtocolManager getProtocolManager() {
-		return packetmanager;
 	}
 	
 	@Override

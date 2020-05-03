@@ -32,7 +32,7 @@ public class PatternKillauraMove extends AbstractCheck<PlayerMoveEvent> {
 				|| PatternKillauraAttack.lastHit.get(uuid) == null) {
 			return;
 		}
-		NessPlayer np = new NessPlayer(p);
+		NessPlayer np = manager.getPlayer(p);
 		List<Float> patterns = np.getPatterns();
 		float offset = Utilities
 				.yawTo180F((float) Utilities.getOffsetFromEntity(event.getPlayer(), PatternKillauraAttack.lastHit.get(uuid))[0]);
@@ -45,8 +45,8 @@ public class PatternKillauraMove extends AbstractCheck<PlayerMoveEvent> {
 			float range = Math.abs(patterns.get(patterns.size() - 1) - patterns.get(0));
 
 			if (Math.abs(range - PatternKillauraAttack.lastRange.getOrDefault(uuid, 0.0f)) < 4) {
-				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Killaura"));
-				if (NESSAnticheat.main.devMode) {
+				np.setViolation(new Violation("Killaura"));
+				if (manager.getNess().devMode) {
 					p.sendMessage("KillauraPattern: " + Math.abs(range - PatternKillauraAttack.lastRange.getOrDefault(uuid, 0.0f)));
 				}
 			}

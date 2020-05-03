@@ -4,10 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.mswsplex.MSWS.NESS.NESS;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.Utility;
 import com.github.ness.Violation;
@@ -36,13 +34,11 @@ public class InventoryHack extends AbstractCheck<InventoryClickEvent>{
 				manager.getPlayer(player).setViolation(new Violation("InventoryHack"));
 			} else {
 				final Location from = player.getLocation();
-				Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
-					public void run() {
-						Location to = player.getLocation();
-						double distance = to.distanceSquared(from) - Math.abs(from.getY() - to.getBlockY());
-						if (distance > 0.05) {
-							manager.getPlayer(player).setViolation(new Violation("InventoryHack"));							// MSG.tell(player, "Distance " + distance);
-						}
+				Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
+					Location to = player.getLocation();
+					double distance = to.distanceSquared(from) - Math.abs(from.getY() - to.getBlockY());
+					if (distance > 0.05) {
+						manager.getPlayer(player).setViolation(new Violation("InventoryHack"));							// MSG.tell(player, "Distance " + distance);
 					}
 				}, 2L);
 			}
@@ -52,10 +48,10 @@ public class InventoryHack extends AbstractCheck<InventoryClickEvent>{
 	public void Check2(InventoryClickEvent e) {
 		if (e.getWhoClicked() instanceof Player) {
 			Player player = (Player) e.getWhoClicked();
-			NessPlayer p = new NessPlayer(player);
+			NessPlayer p = manager.getPlayer(player);
 			p.setClicks(p.getClicks()+1);
             if(p.getClicks()>4) {
-				manager.getPlayer(player).setViolation(new Violation("FastClick"));							// MSG.tell(player, "Distance " + distance);
+				p.setViolation(new Violation("FastClick"));							// MSG.tell(player, "Distance " + distance);
            	 e.setCancelled(true);
             }
 		}

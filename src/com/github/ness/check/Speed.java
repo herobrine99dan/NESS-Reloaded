@@ -79,7 +79,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 						return;
 					}
 					punish(player, "MiniJump1");
-					if (NESSAnticheat.main.devMode) {
+					if (manager.getNess().devMode) {
 						player.sendMessage("y:" + y);
 					}
 				} else if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
@@ -127,7 +127,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (ping < 150) {
 			maxPackets = maxpackets;
 		}
-		NessPlayer player = new NessPlayer(p);
+		NessPlayer player = manager.getPlayer(p);
 		if (player.getOnMoveRepeat() > maxPackets) {
 			punish(p, "Timer");
 			// p.sendMessage("Repeat: " + player.getOnMoveRepeat());

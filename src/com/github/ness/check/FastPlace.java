@@ -19,10 +19,10 @@ public class FastPlace extends AbstractCheck<BlockPlaceEvent>{
 	}
 
 	public void Check(BlockPlaceEvent event) {
-		NessPlayer player = new NessPlayer(event.getPlayer());
+		NessPlayer player = manager.getPlayer(event.getPlayer());
 		player.setBlockplace(player.getBlockplace()+1);
 		if(player.getBlockplace()>5) {
-			manager.getPlayer(event.getPlayer()).setViolation(new Violation("FastPlace"));
+			player.setViolation(new Violation("FastPlace"));
 			event.setCancelled(true);
 		}
 		

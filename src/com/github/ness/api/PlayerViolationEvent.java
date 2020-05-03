@@ -1,27 +1,32 @@
 package com.github.ness.api;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+@RequiredArgsConstructor
 public class PlayerViolationEvent extends Event implements Cancellable {
-	private final String playerName;
-	private final String cheat;
+
+	@Getter
+	private final Player player;
+	@Getter
+	private final String hack;
+	@Getter
+	private final int violations;
+	@Getter
 	private final String module;
-	private final int vl;
-	private boolean isCancelled;
 
-	public PlayerViolationEvent(String playerName, String hack, int violations, String module) {
-		this.vl = violations;
-		this.cheat = hack;
-		this.module = module;
-		this.playerName = playerName;
-	}
-
+	@Setter
+	private boolean cancelled;
+	
 	private static final HandlerList HANDLERS = new HandlerList();
 
+	@Override
 	public HandlerList getHandlers() {
 		return HANDLERS;
 	}
@@ -30,27 +35,8 @@ public class PlayerViolationEvent extends Event implements Cancellable {
 		return HANDLERS;
 	}
 
+	@Override
 	public boolean isCancelled() {
-		return this.isCancelled;
-	}
-
-	public void setCancelled(boolean isCancelled) {
-		this.isCancelled = isCancelled;
-	}
-
-	public Player getPlayer() {
-		return Bukkit.getPlayer(playerName);
-	}
-
-	public String getHack() {
-		return this.cheat;
-	}
-
-	public int getVl() {
-		return this.vl;
-	}
-
-	public String getModule() {
-		return this.module;
+		return this.cancelled;
 	}
 }

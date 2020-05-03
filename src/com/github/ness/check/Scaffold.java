@@ -40,16 +40,14 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 		}
 	}
 
-	public  void Check2(BlockPlaceEvent event) {
+	public void Check2(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		final float now = player.getLocation().getPitch();
-		Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
-			public void run() {
-				float pitchNow = player.getLocation().getPitch();
-				float diff = Math.abs(now - pitchNow);
-				if (diff > 20F) {
-					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold"));
-				}
+		Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
+			float pitchNow = player.getLocation().getPitch();
+			float diff = Math.abs(now - pitchNow);
+			if (diff > 20F) {
+				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold"));
 			}
 		}, 2L);
 	}

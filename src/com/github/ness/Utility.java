@@ -26,7 +26,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-@SuppressWarnings("deprecation")
 public class Utility {
 	public static String debug = "null";
 
@@ -39,14 +38,14 @@ public class Utility {
 		for (int radius = 2, x = -radius; x < radius; ++x) {
 			for (int y = -radius; y < radius; ++y) {
 				for (int z = -radius; z < radius; ++z) {
-					final Material mat = loc.getWorld().getBlockAt(loc.add((double) x, (double) y, (double) z))
+					final Material mat = loc.getWorld().getBlockAt(loc.add(x, y, z))
 							.getType();
 					if (mat.isSolid() || mat.name().toLowerCase().contains("lava")
 							|| mat.name().toLowerCase().contains("water")) {
-						loc.subtract((double) x, (double) y, (double) z);
+						loc.subtract(x, y, z);
 						return true;
 					}
-					loc.subtract((double) x, (double) y, (double) z);
+					loc.subtract(x, y, z);
 				}
 			}
 		}
@@ -56,7 +55,7 @@ public class Utility {
 	public static int getPing(final Player player) {
 		int ping = 900;
 		try {
-			final Object entityPlayer = player.getClass().getMethod("getHandle", (Class<?>[]) new Class[0])
+			final Object entityPlayer = player.getClass().getMethod("getHandle", new Class[0])
 					.invoke(player, new Object[0]);
 			ping = (int) entityPlayer.getClass().getField("ping").get(entityPlayer);
 		} catch (Exception ex) {
@@ -79,9 +78,9 @@ public class Utility {
 	public static Integer distToBlock(final Location loc) {
 		Location res;
 		int yDif;
-		for (res = loc, yDif = -1; !res.subtract(0.0, (double) yDif, 0.0).getBlock().getType().isSolid()
-				&& res.subtract(0.0, (double) yDif, 0.0).getY() > 0.0; ++yDif) {
-			res.add(0.0, (double) yDif, 0.0);
+		for (res = loc, yDif = -1; !res.subtract(0.0, yDif, 0.0).getBlock().getType().isSolid()
+				&& res.subtract(0.0, yDif, 0.0).getY() > 0.0; ++yDif) {
+			res.add(0.0, yDif, 0.0);
 		}
 		return yDif;
 	}
@@ -90,13 +89,13 @@ public class Utility {
 		for (int radius = 2, x = -radius; x < radius; ++x) {
 			for (int y = -radius; y < radius; ++y) {
 				for (int z = -radius; z < radius; ++z) {
-					final Material mat = loc.getWorld().getBlockAt(loc.add((double) x, (double) y, (double) z))
+					final Material mat = loc.getWorld().getBlockAt(loc.add(x, y, z))
 							.getType();
 					if (mat.toString().toLowerCase().contains("piston")) {
-						loc.subtract((double) x, (double) y, (double) z);
+						loc.subtract(x, y, z);
 						return true;
 					}
-					loc.subtract((double) x, (double) y, (double) z);
+					loc.subtract(x, y, z);
 				}
 			}
 		}

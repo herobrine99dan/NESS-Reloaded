@@ -23,10 +23,10 @@ public class NoSlowDownFood extends AbstractCheck<PlayerItemConsumeEvent> {
 		if(Utility.hasflybypass(e.getPlayer())) {
 			return;
 		}
-		NessPlayer p = new NessPlayer(e.getPlayer());
+		NessPlayer p = manager.getPlayer(e.getPlayer());
 		double distance = p.getDistance();
 		if (distance > 0.2||e.getPlayer().isSprinting()) {
-			manager.getPlayer(e.getPlayer()).setViolation(new Violation("NoSlowDown"));
+			p.setViolation(new Violation("NoSlowDown"));
 		}
 	}
 }
