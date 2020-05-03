@@ -2,17 +2,11 @@ package com.github.ness.check;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffectType;
-import org.mswsplex.MSWS.NESS.NESS;
+
 import com.github.ness.CheckManager;
-import com.github.ness.Violation;
 
 public class FastEat extends AbstractCheck<FoodLevelChangeEvent> {
 	
@@ -26,7 +20,6 @@ public class FastEat extends AbstractCheck<FoodLevelChangeEvent> {
        Check(e);
 	}
 
-	@SuppressWarnings("deprecation")
 	public void Check(FoodLevelChangeEvent event) {
 
 	}

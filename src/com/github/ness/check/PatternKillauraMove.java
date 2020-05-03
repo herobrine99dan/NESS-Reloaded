@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.Utilities;
 import com.github.ness.Violation;

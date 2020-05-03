@@ -1,15 +1,16 @@
 package com.github.ness.check;
-import org.apache.commons.lang.ArrayUtils;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang.ArrayUtils;
 
 /**
  * Useful functions for calculations about a series of numbers.
@@ -29,7 +30,6 @@ public final class SLMaths {
      * @param angleSequence logged angle sequence
      * @return vector with 4 dimensions [a, b, c, d]
      */
-    @SuppressWarnings("unused")
     public static double[] extractFeatures(List<Float> angleSequence) {
         List<Double> anglesDouble = toDoubleList(angleSequence);
         List<Double> anglesDoubleDelta = calculateDelta(anglesDouble);

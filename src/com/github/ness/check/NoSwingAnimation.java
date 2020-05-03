@@ -1,9 +1,5 @@
 package com.github.ness.check;
 
-import java.util.HashMap;
-import java.util.UUID;
-
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 

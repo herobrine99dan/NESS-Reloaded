@@ -4,8 +4,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
+
 import com.github.ness.CheckManager;
 import com.github.ness.Utility;
 import com.github.ness.Violation;

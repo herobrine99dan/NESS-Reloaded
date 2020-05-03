@@ -9,10 +9,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.mswsplex.MSWS.NESS.NESS;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.Violation;
 
