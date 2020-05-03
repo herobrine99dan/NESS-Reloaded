@@ -40,7 +40,7 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent>{
 		if (targetBlock.equals(event.getClickedBlock())) {
 			return;
 		}
-		NessPlayer p = new NessPlayer(player);
+		NessPlayer p = manager.getPlayer(event.getPlayer());
 		if(p.getDistance()>0.0 || p.getYawDelta()>0.0) {
 			return;
 		}
@@ -58,7 +58,7 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent>{
 					return;
 				}
 				if (block.getBlock().getType().isSolid() || !targetBlock.equals(event.getClickedBlock())) {
-					manager.getPlayer(event.getPlayer()).setViolation(new Violation("GhostHand"));
+					p.setViolation(new Violation("GhostHand"));
 				}
 			}
 		}, 2L);

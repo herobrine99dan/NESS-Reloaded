@@ -52,10 +52,10 @@ public class InventoryHack extends AbstractCheck<InventoryClickEvent>{
 	public void Check2(InventoryClickEvent e) {
 		if (e.getWhoClicked() instanceof Player) {
 			Player player = (Player) e.getWhoClicked();
-			NessPlayer p = new NessPlayer(player);
+			NessPlayer p = manager.getPlayer(player);
 			p.setClicks(p.getClicks()+1);
             if(p.getClicks()>4) {
-				manager.getPlayer(player).setViolation(new Violation("FastClick"));							// MSG.tell(player, "Distance " + distance);
+				p.setViolation(new Violation("FastClick"));							// MSG.tell(player, "Distance " + distance);
            	 e.setCancelled(true);
             }
 		}

@@ -61,7 +61,7 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	private final Set<Long> clickHistory = ConcurrentHashMap.newKeySet();
 
-	public NessPlayer(Player player) {
+	NessPlayer(Player player) {
 		this.player = player;
 	}
 	

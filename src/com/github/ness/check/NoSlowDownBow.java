@@ -27,14 +27,14 @@ public class NoSlowDownBow extends AbstractCheck<EntityShootBowEvent>{
 			if(Utility.hasflybypass(o)) {
 				return;
 			}
-            NessPlayer p = new NessPlayer(o);
+            NessPlayer p = manager.getPlayer(o);
 			double distance = p.getDistance();
 			/*
 			 * if (o.isSprinting() || failed==1) { e.setCancelled(true);
 			 * checkfailed(o.getName()); }
 			 */
 			if (distance > 0.2||o.isSprinting()) {
-				manager.getPlayer(o).setViolation(new Violation("NoSlowDown"));
+				p.setViolation(new Violation("NoSlowDown"));
 			}
 		}
 	}

@@ -127,7 +127,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (ping < 150) {
 			maxPackets = maxpackets;
 		}
-		NessPlayer player = new NessPlayer(p);
+		NessPlayer player = manager.getPlayer(p);
 		if (player.getOnMoveRepeat() > maxPackets) {
 			punish(p, "Timer");
 			// p.sendMessage("Repeat: " + player.getOnMoveRepeat());

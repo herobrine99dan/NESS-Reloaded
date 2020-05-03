@@ -318,12 +318,12 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 					if (!bypass(e.getPlayer()) && !e.getFrom().getBlock().getType().isSolid()
 							&& !e.getTo().getBlock().getType().isSolid()) {
 						double dist = e.getFrom().getY() - e.getTo().getY();
-						NessPlayer player = new NessPlayer(p);
+						NessPlayer player = manager.getPlayer(p);
 						double oldY = player.getOldY();
 						player.setOldY(dist);
 						if (e.getFrom().getY() > e.getTo().getY()) {
 							if (oldY >= dist && oldY != 0.0D) {
-								manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly"));
+								player.setViolation(new Violation("Fly"));
 							}
 						} else {
 							player.setOldY(0.0D);
