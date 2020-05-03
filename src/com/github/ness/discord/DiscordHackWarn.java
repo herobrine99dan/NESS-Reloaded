@@ -3,9 +3,7 @@ package com.github.ness.discord;
 import java.awt.Color;
 import java.io.IOException;
 
-import org.bukkit.entity.Player;
-import org.mswsplex.MSWS.NESS.MSG;
-import org.mswsplex.MSWS.NESS.NESS;
+import org.bukkit.entity.Player;import org.mswsplex.MSWS.NESS.NESS;
 
 public class DiscordHackWarn {
 

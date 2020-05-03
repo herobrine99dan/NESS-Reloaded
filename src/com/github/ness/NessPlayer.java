@@ -67,11 +67,7 @@ public class NessPlayer implements AutoCloseable {
 	
 	public void setViolation(Violation v) {
 		violation = v;
-		if(!(v.getDetails()[0]==null)) {
-			player.sendMessage("HACK: " + v.getCheck() + " Module: " + (String) v.getDetails()[0]);
-		}else {
-			player.sendMessage("HACK: " + v.getCheck());
-		}
+		player.sendMessage("HACK: " + v.getCheck() + " Module: " + (String) v.getDetails()[0]);
 	}
 	
 	@Override

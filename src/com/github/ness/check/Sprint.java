@@ -26,39 +26,7 @@ public class Sprint extends AbstractCheck<PlayerMoveEvent> {
 
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
-		Check(e);
 		Check1(e);
-	}
-
-	public void Check(PlayerMoveEvent e) {
-		Player p = e.getPlayer();
-		Vector vector = e.getFrom().toVector();
-		Vector vettore = e.getTo().toVector().subtract(vector);
-		Vector vettorino1 = e.getTo().toVector();
-		Vector vettorino = e.getFrom().toVector().subtract(vettorino1);
-		if (p.hasPotionEffect(PotionEffectType.SPEED) || Utility.hasflybypass(p)
-				|| Math.abs(e.getTo().getYaw() - e.getFrom().getYaw()) > 60) {
-			return;
-		}
-		Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
-			public void run() {
-				String yaw = Utilities.DeterminateDirection(p.getLocation().getYaw());
-				if (p.isSprinting()) {
-					if (yaw.equals("sud") && vettore.getBlockX() == -1 && vettore.getBlockZ() == -1) {
-						checkfailed(p, "Sprint", "(Omni)");
-					} else if (yaw.equals("est") && vettore.getBlockX() == -1 && vettorino.getBlockZ() == -1) {
-						checkfailed(p, "Sprint", "(Omni)");
-					} else if (yaw.equals("ovest") && vettorino.getBlockX() == -1 && vettorino.getBlockZ() == -1) {
-						checkfailed(p, "Sprint", "(Omni)");
-					} else if (yaw.equals("nord") && vettore.getBlockX() == -1 && vettorino.getBlockZ() == -1) {
-						checkfailed(p, "Sprint", "(Omni)");
-					}
-					if (p.getFoodLevel() < 6) {
-						checkfailed(p, "Sprint", "FoodLevel");
-					}
-				}
-			}
-		}, 3L);
 	}
 
 	private  void checkfailed(Player p, String module, String check) {
