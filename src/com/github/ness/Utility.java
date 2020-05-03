@@ -193,25 +193,12 @@ public class Utility {
 	}
 
 	public static boolean hasflybypass(Player player) {
-		ItemStack[] armor = player.getInventory().getArmorContents();
-		if (armor == null || armor[2] == null) {
-			return false;
-		}
 		if (!Bukkit.getVersion().contains("1.8")) {
-			boolean haselytra = armor[2].getType().equals(Material.ELYTRA);
-			if (player.hasPotionEffect(PotionEffectType.LEVITATION) || player.isGliding() || haselytra
-					|| player.isFlying()) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			if (player.isFlying()) {
-				return true;
-			} else {
-				return false;
-			}
+			ItemStack[] armor = player.getInventory().getArmorContents();
+			return (armor != null && armor.length >= 3 && armor[2].getType().name().equals("ELYTRA"))
+					|| player.hasPotionEffect(PotionEffectType.getByName("LEVITATION")) || player.isGliding() || player.isFlying();
 		}
+		return player.isFlying();
 	}
 
 	public boolean isPureAscii(String v) {
