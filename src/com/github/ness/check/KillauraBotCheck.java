@@ -30,7 +30,7 @@ public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent>{
 	
 	@Override
 	void checkEvent(EntityDamageByEntityEvent e) {
-       Check(e);
+       //Check(e);
 	}
 	
 	public static void Check(EntityDamageByEntityEvent event) {

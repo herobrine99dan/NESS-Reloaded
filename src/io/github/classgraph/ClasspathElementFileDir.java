@@ -1,0 +1,561 @@
+/*
+ * This file is part of ClassGraph.
+ *
+ * Author: Luke Hutchison
+ *
+ * Hosted at: https://github.com/classgraph/classgraph
+ *
+ * --
+ *
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Luke Hutchison
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without
+ * limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial
+ * portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+ * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+ * EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+ * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+ * OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+package io.github.classgraph;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import io.github.classgraph.Scanner.ClasspathEntryWorkUnit;
+import nonapi.io.github.classgraph.classloaderhandler.ClassLoaderHandlerRegistry;
+import nonapi.io.github.classgraph.classpath.ClasspathOrder.ClasspathElementAndClassLoader;
+import nonapi.io.github.classgraph.concurrency.WorkQueue;
+import nonapi.io.github.classgraph.fastzipfilereader.LogicalZipFile;
+import nonapi.io.github.classgraph.fastzipfilereader.NestedJarHandler;
+import nonapi.io.github.classgraph.fileslice.FileSlice;
+import nonapi.io.github.classgraph.fileslice.reader.ClassfileReader;
+import nonapi.io.github.classgraph.scanspec.ScanSpec;
+import nonapi.io.github.classgraph.scanspec.ScanSpec.ScanSpecPathMatch;
+import nonapi.io.github.classgraph.utils.FastPathResolver;
+import nonapi.io.github.classgraph.utils.FileUtils;
+import nonapi.io.github.classgraph.utils.LogNode;
+import nonapi.io.github.classgraph.utils.VersionFinder;
+
+/** A directory classpath element, using the {@link File} API. */
+class ClasspathElementFileDir extends ClasspathElement {
+    /** The directory at the root of the classpath element. */
+    private final File classpathEltDir;
+
+    /** The directory at the root of the package hierarchy. */
+    private final File packageRootDir;
+
+    /** Used to ensure that recursive scanning doesn't get into an infinite loop due to a link cycle. */
+    private final Set<String> scannedCanonicalPaths = new HashSet<>();
+
+    /** The nested jar handler. */
+    private final NestedJarHandler nestedJarHandler;
+
+    /**
+     * A directory classpath element.
+     *
+     * @param classpathEltDir
+     *            the classpath element directory
+     * @param classLoader
+     *            the classloader
+     * @param nestedJarHandler
+     *            the nested jar handler
+     * @param scanSpec
+     *            the scan spec
+     */
+    ClasspathElementFileDir(final File classpathEltDir, final String packageRootPrefix,
+            final ClassLoader classLoader, final NestedJarHandler nestedJarHandler, final ScanSpec scanSpec) {
+        super(classLoader, scanSpec);
+        this.classpathEltDir = classpathEltDir;
+        this.packageRootDir = new File(classpathEltDir, packageRootPrefix);
+        this.nestedJarHandler = nestedJarHandler;
+    }
+
+    /* (non-Javadoc)
+     * @see io.github.classgraph.ClasspathElement#open(
+     * nonapi.io.github.classgraph.concurrency.WorkQueue, nonapi.io.github.classgraph.utils.LogNode)
+     */
+    @Override
+    void open(final WorkQueue<ClasspathEntryWorkUnit> workQueue, final LogNode log) {
+        if (!scanSpec.scanDirs) {
+            if (log != null) {
+                log(classpathElementIdx,
+                        "Skipping classpath element, since dir scanning is disabled: " + classpathEltDir, log);
+            }
+            skipClasspathElement = true;
+            return;
+        }
+        try {
+            // Auto-add nested lib dirs
+            int childClasspathEntryIdx = 0;
+            for (final String libDirPrefix : ClassLoaderHandlerRegistry.AUTOMATIC_LIB_DIR_PREFIXES) {
+                final File libDir = new File(classpathEltDir, libDirPrefix);
+                if (FileUtils.canReadAndIsDir(libDir)) {
+                    // Sort directory entries for consistency
+                    final File[] listFiles = libDir.listFiles();
+                    if (listFiles != null) {
+                        Arrays.sort(listFiles);
+                        // Add all jarfiles within lib dir as child classpath entries
+                        for (final File file : listFiles) {
+                            if (file.isFile() && file.getName().endsWith(".jar")) {
+                                if (log != null) {
+                                    log(classpathElementIdx, "Found lib jar: " + file, log);
+                                }
+                                workQueue.addWorkUnit(new ClasspathEntryWorkUnit(
+                                        new ClasspathElementAndClassLoader(file.getPath(), classLoader),
+                                        /* parentClasspathElement = */ this,
+                                        /* orderWithinParentClasspathElement = */ childClasspathEntryIdx++));
+                            }
+                        }
+                    }
+                }
+            }
+            // Only look for package roots if the package root is the root of the classpath element
+            if (packageRootDir.equals(classpathEltDir)) {
+                for (final String packageRootPrefix : ClassLoaderHandlerRegistry.AUTOMATIC_PACKAGE_ROOT_PREFIXES) {
+                    final File packageRootDir = new File(classpathEltDir, packageRootPrefix);
+                    if (FileUtils.canReadAndIsDir(packageRootDir)) {
+                        if (log != null) {
+                            log(classpathElementIdx, "Found package root: " + packageRootDir, log);
+                        }
+                        workQueue
+                                .addWorkUnit(new ClasspathEntryWorkUnit(
+                                        new ClasspathElementAndClassLoader(classpathEltDir, packageRootPrefix,
+                                                classLoader),
+                                        /* parentClasspathElement = */ this,
+                                        /* orderWithinParentClasspathElement = */ childClasspathEntryIdx++));
+                    }
+                }
+            }
+        } catch (final SecurityException e) {
+            if (log != null) {
+                log(classpathElementIdx,
+                        "Skipping classpath element, since dir cannot be accessed: " + classpathEltDir, log);
+            }
+            skipClasspathElement = true;
+            return;
+        }
+    }
+
+    /**
+     * Create a new {@link Resource} object for a resource or classfile discovered while scanning paths.
+     *
+     * @param pathRelativeToPackageRoot
+     *            the path of the resource relative to the package root
+     * @param resourceFile
+     *            the {@link File} for the resource
+     * @param nestedJarHandler
+     *            the nested jar handler
+     * @return the resource
+     */
+    private Resource newResource(final String pathRelativeToPackageRoot, final File resourceFile,
+            final NestedJarHandler nestedJarHandler) {
+        return new Resource(this, resourceFile.length()) {
+            /** The {@link FileSlice} opened on the file. */
+            private FileSlice fileSlice;
+
+            /** True if the resource is open. */
+            protected AtomicBoolean isOpen = new AtomicBoolean();
+
+            @Override
+            public String getPath() {
+                String path = FastPathResolver.resolve(pathRelativeToPackageRoot);
+                while (path.startsWith("/")) {
+                    path = path.substring(1);
+                }
+                return path;
+            }
+
+            @Override
+            public String getPathRelativeToClasspathElement() {
+                // Relativize resource file to classpath element dir
+                final File resourceFile = new File(packageRootDir, pathRelativeToPackageRoot);
+                String pathRelativeToClasspathElt = FastPathResolver
+                        .resolve(resourceFile.getPath().substring(classpathEltDir.getPath().length()));
+                while (pathRelativeToClasspathElt.startsWith("/")) {
+                    pathRelativeToClasspathElt = pathRelativeToClasspathElt.substring(1);
+                }
+                return pathRelativeToClasspathElt;
+            }
+
+            @Override
+            public long getLastModified() {
+                return resourceFile.lastModified();
+            }
+
+            @SuppressWarnings("null")
+            @Override
+            public Set<PosixFilePermission> getPosixFilePermissions() {
+                Set<PosixFilePermission> posixFilePermissions = null;
+                try {
+                    posixFilePermissions = Files.readAttributes(resourceFile.toPath(), PosixFileAttributes.class)
+                            .permissions();
+                } catch (UnsupportedOperationException | IOException | SecurityException e) {
+                    // POSIX attributes not supported
+                }
+                return posixFilePermissions;
+            }
+
+            @Override
+            public ByteBuffer read() throws IOException {
+                if (skipClasspathElement) {
+                    // Shouldn't happen
+                    throw new IOException("Parent directory could not be opened");
+                }
+                if (isOpen.getAndSet(true)) {
+                    throw new IOException(
+                            "Resource is already open -- cannot open it again without first calling close()");
+                }
+                fileSlice = new FileSlice(resourceFile, nestedJarHandler, /* log = */ null);
+                length = fileSlice.sliceLength;
+                byteBuffer = fileSlice.read();
+                return byteBuffer;
+            }
+
+            @Override
+            ClassfileReader openClassfile() throws IOException {
+                if (skipClasspathElement) {
+                    // Shouldn't happen
+                    throw new IOException("Parent directory could not be opened");
+                }
+                if (isOpen.getAndSet(true)) {
+                    throw new IOException(
+                            "Resource is already open -- cannot open it again without first calling close()");
+                }
+                // Classfile won't be compressed, so wrap it in a new FileSlice and then open it
+                fileSlice = new FileSlice(resourceFile, nestedJarHandler, /* log = */ null);
+                length = fileSlice.sliceLength;
+                return new ClassfileReader(fileSlice);
+            }
+
+            @Override
+            public InputStream open() throws IOException {
+                if (skipClasspathElement) {
+                    // Shouldn't happen
+                    throw new IOException("Parent directory could not be opened");
+                }
+                if (isOpen.getAndSet(true)) {
+                    throw new IOException(
+                            "Resource is already open -- cannot open it again without first calling close()");
+                }
+                fileSlice = new FileSlice(resourceFile, nestedJarHandler, /* log = */ null);
+                inputStream = fileSlice.open();
+                length = fileSlice.sliceLength;
+                return inputStream;
+            }
+
+            @Override
+            public byte[] load() throws IOException {
+                read();
+                try (Resource res = this) { // Close this after use
+                    fileSlice = new FileSlice(resourceFile, nestedJarHandler, /* log = */ null);
+                    final byte[] bytes = fileSlice.load();
+                    length = bytes.length;
+                    return bytes;
+                }
+            }
+
+            @Override
+            public void close() {
+                super.close(); // Close inputStream
+                if (isOpen.getAndSet(false)) {
+                    if (byteBuffer != null) {
+                        // Any ByteBuffer ref should be a duplicate, so it doesn't need to be cleaned
+                        byteBuffer = null;
+                    }
+                    if (fileSlice != null) {
+                        fileSlice.close();
+                        nestedJarHandler.markSliceAsClosed(fileSlice);
+                        fileSlice = null;
+                    }
+                }
+            }
+        };
+    }
+
+    /**
+     * Get the {@link Resource} for a given relative path.
+     *
+     * @param pathRelativeToPackageRoot
+     *            The relative path of the {@link Resource} to return.
+     * @return The {@link Resource} for the given relative path, or null if relativePath does not exist in this
+     *         classpath element.
+     */
+    @Override
+    Resource getResource(final String pathRelativeToPackageRoot) {
+        final File resourceFile = new File(packageRootDir, pathRelativeToPackageRoot);
+        return FileUtils.canReadAndIsFile(resourceFile)
+                ? newResource(pathRelativeToPackageRoot, resourceFile, nestedJarHandler)
+                : null;
+    }
+
+    /**
+     * Recursively scan a directory for file path patterns matching the scan spec.
+     *
+     * @param dir
+     *            the directory
+     * @param log
+     *            the log
+     */
+    private void scanDirRecursively(final File dir, final LogNode log) {
+        if (skipClasspathElement) {
+            return;
+        }
+        // See if this canonical path has been scanned before, so that recursive scanning doesn't get stuck in an
+        // infinite loop due to symlinks
+        String canonicalPath;
+        try {
+            canonicalPath = dir.getCanonicalPath();
+            if (!scannedCanonicalPaths.add(canonicalPath)) {
+                if (log != null) {
+                    log.log("Reached symlink cycle, stopping recursion: " + dir);
+                }
+                return;
+            }
+        } catch (final IOException | SecurityException e) {
+            if (log != null) {
+                log.log("Could not canonicalize path: " + dir, e);
+            }
+            return;
+        }
+
+        final String dirPath = dir.getPath();
+        final int ignorePrefixLen = packageRootDir.getPath().length() + 1;
+        final String dirRelativePath = ignorePrefixLen > dirPath.length() ? "/" //
+                : dirPath.substring(ignorePrefixLen).replace(File.separatorChar, '/') + "/";
+        final boolean isDefaultPackage = "/".equals(dirRelativePath);
+
+        if (nestedClasspathRootPrefixes != null && nestedClasspathRootPrefixes.contains(dirRelativePath)) {
+            if (log != null) {
+                log.log("Reached nested classpath root, stopping recursion to avoid duplicate scanning: "
+                        + dirRelativePath);
+            }
+            return;
+        }
+
+        // Ignore versioned sections in exploded jars -- they are only supposed to be used in jars.
+        // TODO: is it necessary to support multi-versioned exploded jars anyway? If so, all the paths in a
+        // directory classpath entry will have to be pre-scanned and masked, as happens in ClasspathElementZip.
+        if (dirRelativePath.startsWith(LogicalZipFile.MULTI_RELEASE_PATH_PREFIX)) {
+            if (log != null) {
+                log.log("Found unexpected nested versioned entry in directory classpath element -- skipping: "
+                        + dirRelativePath);
+            }
+            return;
+        }
+
+        // Whitelist/blacklist classpath elements based on dir resource paths
+        checkResourcePathWhiteBlackList(dirRelativePath, log);
+        if (skipClasspathElement) {
+            return;
+        }
+
+        final ScanSpecPathMatch parentMatchStatus = scanSpec.dirWhitelistMatchStatus(dirRelativePath);
+        if (parentMatchStatus == ScanSpecPathMatch.HAS_BLACKLISTED_PATH_PREFIX) {
+            // Reached a non-whitelisted or blacklisted path -- stop the recursive scan
+            if (log != null) {
+                log.log("Reached blacklisted directory, stopping recursive scan: " + dirRelativePath);
+            }
+            return;
+        }
+        if (parentMatchStatus == ScanSpecPathMatch.NOT_WITHIN_WHITELISTED_PATH) {
+            // Reached a non-whitelisted and non-blacklisted path -- stop the recursive scan
+            return;
+        }
+
+        final LogNode subLog = log == null ? null
+                // Log dirs after files (addWhitelistedResources() precedes log entry with "0:")
+                : log.log("1:" + canonicalPath, "Scanning directory: " + dir
+                        + (dir.getPath().equals(canonicalPath) ? "" : " ; canonical path: " + canonicalPath));
+
+        final File[] filesInDir = dir.listFiles();
+        if (filesInDir == null) {
+            if (log != null) {
+                log.log("Invalid directory " + dir);
+            }
+            return;
+        }
+        Arrays.sort(filesInDir);
+
+        // Determine whether this is a modular jar running under JRE 9+
+        final boolean isModularJar = VersionFinder.JAVA_MAJOR_VERSION >= 9 && getModuleName() != null;
+
+        // Only scan files in directory if directory is not only an ancestor of a whitelisted path
+        if (parentMatchStatus != ScanSpecPathMatch.ANCESTOR_OF_WHITELISTED_PATH) {
+            // Do preorder traversal (files in dir, then subdirs), to reduce filesystem cache misses
+            for (final File fileInDir : filesInDir) {
+                // Process files in dir before recursing
+                if (fileInDir.isFile()) {
+                    final String fileInDirRelativePath = dirRelativePath.isEmpty() || isDefaultPackage
+                            ? fileInDir.getName()
+                            : dirRelativePath + fileInDir.getName();
+                    // If this is a modular jar, ignore all classfiles other than "module-info.class" in the
+                    // default package, since these are disallowed.
+                    if (isModularJar && isDefaultPackage && fileInDirRelativePath.endsWith(".class")
+                            && !fileInDirRelativePath.equals("module-info.class")) {
+                        continue;
+                    }
+
+                    // Whitelist/blacklist classpath elements based on file resource paths
+                    checkResourcePathWhiteBlackList(fileInDirRelativePath, subLog);
+                    if (skipClasspathElement) {
+                        return;
+                    }
+
+                    // If relative path is whitelisted
+                    if (parentMatchStatus == ScanSpecPathMatch.HAS_WHITELISTED_PATH_PREFIX
+                            || parentMatchStatus == ScanSpecPathMatch.AT_WHITELISTED_PATH
+                            || (parentMatchStatus == ScanSpecPathMatch.AT_WHITELISTED_CLASS_PACKAGE
+                                    && scanSpec.classfileIsSpecificallyWhitelisted(fileInDirRelativePath))) {
+                        // Resource is whitelisted
+                        final Resource resource = newResource(fileInDirRelativePath, fileInDir, nestedJarHandler);
+                        addWhitelistedResource(resource, parentMatchStatus, /* isClassfileOnly = */ false, subLog);
+
+                        // Save last modified time  
+                        fileToLastModified.put(fileInDir, fileInDir.lastModified());
+                    } else {
+                        if (subLog != null) {
+                            subLog.log("Skipping non-whitelisted file: " + fileInDirRelativePath);
+                        }
+                    }
+                }
+            }
+        } else if (scanSpec.enableClassInfo && dirRelativePath.equals("/")) {
+            // Always check for module descriptor in package root, even if package root isn't in whitelist
+            for (final File fileInDir : filesInDir) {
+                if (fileInDir.getName().equals("module-info.class") && fileInDir.isFile()) {
+                    final Resource resource = newResource("module-info.class", fileInDir, nestedJarHandler);
+                    addWhitelistedResource(resource, parentMatchStatus, /* isClassfileOnly = */ true, subLog);
+                    fileToLastModified.put(fileInDir, fileInDir.lastModified());
+                    break;
+                }
+            }
+        }
+        // Recurse into subdirectories
+        for (final File fileInDir : filesInDir) {
+            if (fileInDir.isDirectory()) {
+                scanDirRecursively(fileInDir, subLog);
+                // If a blacklisted classpath element resource path was found, it will set skipClasspathElement
+                if (skipClasspathElement) {
+                    if (subLog != null) {
+                        subLog.addElapsedTime();
+                    }
+                    return;
+                }
+            }
+        }
+
+        if (subLog != null) {
+            subLog.addElapsedTime();
+        }
+
+        // Save the last modified time of the directory
+        fileToLastModified.put(dir, dir.lastModified());
+    }
+
+    /**
+     * Hierarchically scan directory structure for classfiles and matching files.
+     *
+     * @param log
+     *            the log
+     */
+    @Override
+    void scanPaths(final LogNode log) {
+        if (skipClasspathElement) {
+            return;
+        }
+        if (scanned.getAndSet(true)) {
+            // Should not happen
+            throw new IllegalArgumentException("Already scanned classpath element " + toString());
+        }
+
+        final LogNode subLog = log == null ? null
+                : log(classpathElementIdx, "Scanning directory classpath element " + packageRootDir, log);
+
+        scanDirRecursively(packageRootDir, subLog);
+
+        finishScanPaths(subLog);
+    }
+
+    /**
+     * Get the module name from module descriptor.
+     *
+     * @return the module name
+     */
+    @Override
+    public String getModuleName() {
+        return moduleNameFromModuleDescriptor == null || moduleNameFromModuleDescriptor.isEmpty() ? null
+                : moduleNameFromModuleDescriptor;
+    }
+
+    /**
+     * Get the directory {@link File}.
+     *
+     * @return The classpath element directory as a {@link File}.
+     */
+    @Override
+    public File getFile() {
+        return classpathEltDir;
+    }
+
+    /* (non-Javadoc)
+     * @see io.github.classgraph.ClasspathElement#getURI()
+     */
+    @Override
+    URI getURI() {
+        return packageRootDir.toURI();
+    }
+
+    /**
+     * Return the classpath element directory as a String.
+     *
+     * @return the string
+     */
+    @Override
+    public String toString() {
+        return packageRootDir.toString();
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(classpathEltDir, packageRootDir);
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == this) {
+            return true;
+        } else if (!(obj instanceof ClasspathElementFileDir)) {
+            return false;
+        }
+        final ClasspathElementFileDir other = (ClasspathElementFileDir) obj;
+        return Objects.equals(this.classpathEltDir, other.classpathEltDir)
+                && Objects.equals(this.packageRootDir, other.packageRootDir);
+    }
+}

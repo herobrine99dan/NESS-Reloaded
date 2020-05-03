@@ -58,7 +58,7 @@ public class NESS extends JavaPlugin implements PluginMessageListener {
 	public static String SCHEMATICA;
 	public static String FML;
 	public static String FMLHS;
-	public static NESS main;
+	//public static NESS main;
 	public TinyProtocol protocol;
 	
 	private NESSAnticheat anticheat;

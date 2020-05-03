@@ -1,10 +1,7 @@
 package com.github.ness;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -12,7 +9,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -38,7 +34,7 @@ public class Utility {
 		String v = Bukkit.getServer().getClass().getPackage().getName();
 		return v.substring(v.lastIndexOf('.') + 1);
 	}
-	
+
 	public static boolean groundAround(final Location loc) {
 		for (int radius = 2, x = -radius; x < radius; ++x) {
 			for (int y = -radius; y < radius; ++y) {
@@ -56,32 +52,84 @@ public class Utility {
 		}
 		return false;
 	}
-	
-	public static List<Block> getBlocksAround(Location loc) {
+
+	public static int getPing(final Player player) {
+		int ping = 900;
+		try {
+			final Object entityPlayer = player.getClass().getMethod("getHandle", (Class<?>[]) new Class[0])
+					.invoke(player, new Object[0]);
+			ping = (int) entityPlayer.getClass().getField("ping").get(entityPlayer);
+		} catch (Exception ex) {
+		}
+		return ping;
+	}
+
+	public static void setPing(Player player, int ping) {
+		try {
+			Class<?> craftPlayerClass = Class.forName("org.bukkit.craftbukkit."
+					+ Bukkit.getServer().getClass().getPackage().getName().substring(23) + ".entity.CraftPlayer");
+			Object handle = craftPlayerClass.getMethod("getHandle", new Class[0]).invoke(craftPlayerClass.cast(player),
+					new Object[0]);
+			handle.getClass().getDeclaredField("ping").set(handle, Integer.valueOf(50));
+		} catch (Exception exception) {
+
+		}
+	}
+
+	public static Integer distToBlock(final Location loc) {
+		Location res;
+		int yDif;
+		for (res = loc, yDif = -1; !res.subtract(0.0, (double) yDif, 0.0).getBlock().getType().isSolid()
+				&& res.subtract(0.0, (double) yDif, 0.0).getY() > 0.0; ++yDif) {
+			res.add(0.0, (double) yDif, 0.0);
+		}
+		return yDif;
+	}
+
+	public static boolean redstoneAround(final Location loc) {
+		for (int radius = 2, x = -radius; x < radius; ++x) {
+			for (int y = -radius; y < radius; ++y) {
+				for (int z = -radius; z < radius; ++z) {
+					final Material mat = loc.getWorld().getBlockAt(loc.add((double) x, (double) y, (double) z))
+							.getType();
+					if (mat.toString().toLowerCase().contains("piston")) {
+						loc.subtract((double) x, (double) y, (double) z);
+						return true;
+					}
+					loc.subtract((double) x, (double) y, (double) z);
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean hasPermissionBypass(Player p, String hack) {
+		return p.hasPermission("ness.bypass." + hack) || p.hasPermission("ness.bypass.*");
+	}
+
+	public static List<Block> getBlocksAround(Location loc, double y) {
 		List<Block> result = new ArrayList<>();
 		result.add(loc.getBlock());
-		result.add(loc.clone().add(0.5D, 0.0D, -0.5D).getBlock());
-		result.add(loc.clone().add(0.5D, 0.0D, 0.0D).getBlock());
-		result.add(loc.clone().add(-0.5D, 0.0D, 0.0D).getBlock());
-		result.add(loc.clone().add(0.0D, 0.0D, -0.5D).getBlock());
-		result.add(loc.clone().add(0.0D, 0.0D, 0.5D).getBlock());
-		result.add(loc.clone().add(-0.5D, 0.0D, -0.5D).getBlock());
-		result.add(loc.clone().add(0.5D, 0.0D, 0.5D).getBlock());
-		result.add(loc.clone().add(-0.5D, 0.0D, 0.5D).getBlock());
+		result.add(loc.clone().add(0.5D, y, -0.5D).getBlock());
+		result.add(loc.clone().add(0.5D, y, 0.0D).getBlock());
+		result.add(loc.clone().add(-0.5D, y, 0.0D).getBlock());
+		result.add(loc.clone().add(0.0D, y, -0.5D).getBlock());
+		result.add(loc.clone().add(0.0D, y, 0.5D).getBlock());
+		result.add(loc.clone().add(-0.5D, y, -0.5D).getBlock());
+		result.add(loc.clone().add(0.5D, y, 0.5D).getBlock());
+		result.add(loc.clone().add(-0.5D, y, 0.5D).getBlock());
 		return result;
 	}
-	
+
 	public static String randomString() {
-	    int leftLimit = 97; // letter 'a'
-	    int rightLimit = 122; // letter 'z'
-	    int targetStringLength = 10;
-	    Random random = new Random();
-	 
-	    String generatedString = random.ints(leftLimit, rightLimit + 1)
-	      .limit(targetStringLength)
-	      .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-	      .toString();
-	    return generatedString;
+		int leftLimit = 97; // letter 'a'
+		int rightLimit = 122; // letter 'z'
+		int targetStringLength = 10;
+		Random random = new Random();
+
+		String generatedString = random.ints(leftLimit, rightLimit + 1).limit(targetStringLength)
+				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
+		return generatedString;
 	}
 
 	public static int getmcd(int n1, int n2) {
@@ -90,14 +138,14 @@ public class Utility {
 		}
 		return getmcd(n2, n1 % n2);
 	}
-	
+
 	public static boolean isLocationOnGround(Location loc) {
-        return Utility.checkGround(loc.getY()) && Utility.isOnGround(loc);
+		return Utility.checkGround(loc.getY()) && Utility.isOnGround(loc);
 	}
-	
+
 	public static boolean isOnGround(Player p) {
 		Location loc = p.getLocation();
-        return Utility.checkGround(loc.getY()) && Utility.isOnGround(loc);
+		return Utility.checkGround(loc.getY()) && Utility.isOnGround(loc);
 	}
 
 	public static double getmcd(double n1, double n2) {
@@ -210,23 +258,23 @@ public class Utility {
 						+ player.getLocation().getZ() * player.getLocation().getZ()))
 				* 180.0D / Math.PI;
 	}
-	
+
 	public static boolean onSteps(Location loc) {
 		ArrayList<Block> list = Utility.getSurrounding(loc.getBlock(), true);
 		boolean bypass = false;
-		for(Block b: list) {
+		for (Block b : list) {
 			String material = b.getType().name().toLowerCase();
-			if(material.contains("anvil")) {
+			if (material.contains("anvil")) {
 				bypass = true;
-			}else if(material.contains("stair")) {
+			} else if (material.contains("stair")) {
 				bypass = true;
-			}else if(material.contains("slab")) {
+			} else if (material.contains("slab")) {
 				bypass = true;
-			}else if(material.contains("step")) {
+			} else if (material.contains("step")) {
 				bypass = true;
-			}else if(material.contains("carpet")) {
+			} else if (material.contains("carpet")) {
 				bypass = true;
-			}else if(material.contains("snow")) {
+			} else if (material.contains("snow")) {
 				bypass = true;
 			}
 		}

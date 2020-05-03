@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.mswsplex.MSWS.NESS.NESS;
 
 import com.github.ness.CheckManager;
+import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.Violation;
 
@@ -48,7 +49,7 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent>{
 		}
 		Location block = event.getClickedBlock().getLocation().add(event.getBlockFace().getModX(),
 				event.getBlockFace().getModY(), event.getBlockFace().getModZ());
-		Bukkit.getScheduler().runTaskLater(NESS.main, new Runnable() {
+		Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
 			public void run() {
 				Location loc1 = player.getLocation();
 				float grade = Math.abs(loc.getYaw() - loc1.getYaw()) + Math.abs(loc.getPitch() - loc1.getPitch());

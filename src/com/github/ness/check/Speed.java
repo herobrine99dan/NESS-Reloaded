@@ -6,15 +6,14 @@ import java.util.HashMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-import org.mswsplex.MSWS.NESS.NESS;
-import org.mswsplex.MSWS.NESS.PlayerManager;
 
 import com.github.ness.CheckManager;
-import com.github.ness.MovementPlayerData;
+import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.Utilities;
 import com.github.ness.Utility;
@@ -22,6 +21,7 @@ import com.github.ness.Violation;
 
 public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	public HashMap<String, Integer> speed = new HashMap<String, Integer>();
+	int maxpackets = 13;
 
 	public Speed(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
@@ -33,11 +33,11 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Check(e);
 		Check1(e);
 		Check2(e);
-		Check3(e);
+		TestingCheck(e);
 	}
 
-	private void punish(Player p) {
-		manager.getPlayer(p).setViolation(new Violation("Speed"));
+	private void punish(Player p, String module) {
+		manager.getPlayer(p).setViolation(new Violation("Speed", module));
 	}
 
 	public void Check(PlayerMoveEvent e) {
@@ -78,13 +78,13 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 					if (Utility.hasflybypass(player)) {
 						return;
 					}
-					punish(player);
-					if (NESS.main.devMode) {
+					punish(player, "MiniJump1");
+					if (NESSAnticheat.main.devMode) {
 						player.sendMessage("y:" + y);
 					}
 				} else if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
-					punish(player);
-					if (NESS.main.devMode) {
+					punish(player, "MiniJump2");
+					if (NESSAnticheat.main.devMode) {
 						player.sendMessage("Ydist: " + y);
 					}
 				}
@@ -106,13 +106,13 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 						&& Utilities.getPlayerUnderBlock(player).getType().name().toLowerCase().contains("ice")) {
 					return;
 				}
-				if (NESS.main.devMode) {
+				if (NESSAnticheat.main.devMode) {
 					event.getPlayer().sendMessage("First Distance: " + dist);
 				}
-				punish(player);
+				punish(player, "MaxDistance");
 			} else if (dist > soulsand && player.getFallDistance() == 0
 					&& player.getLocation().getBlock().getType().equals(Material.SOUL_SAND)) {
-				punish(player);
+				punish(player, "NoSlowDown");
 			}
 		}
 	}
@@ -122,71 +122,53 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (Utility.hasflybypass(p)) {
 			return;
 		}
-		int ping = PlayerManager.getPing(p);
-		int maxPackets = NESS.main.maxpackets * (ping / 100);
+		int ping = Utility.getPing(p);
+		int maxPackets = maxpackets * (ping / 100);
 		if (ping < 150) {
-			maxPackets = NESS.main.maxpackets;
+			maxPackets = maxpackets;
 		}
 		NessPlayer player = new NessPlayer(p);
 		if (player.getOnMoveRepeat() > maxPackets) {
-			punish(p);
+			punish(p, "Timer");
 			// p.sendMessage("Repeat: " + player.getOnMoveRepeat());
 		}
 	}
 
-	public void Check3(PlayerMoveEvent event) {
-		MovementPlayerData mp = MovementPlayerData.getInstance(event.getPlayer());
-		Player player = event.getPlayer();
-
-		if (Utility.hasflybypass(player))
-			return;
-
-		double ydiff = event.getTo().getY() - event.getFrom().getY();
-
-		if (!(mp == null)) {
-			if (Utilities.IsSameBlockAround(player, Material.AIR, 2, 0.5f)
-					&& Utilities.IsSameBlockAround(player, Material.AIR, 0, 0.5f)
-					&& player.getLocation().add(0, -1, 0).getBlock().getType() != Material.SLIME_BLOCK) {
-				if (mp.getLastYDiff() <= 0.f && ydiff > 0.f && ydiff < 0.4
-						|| ydiff != 0.f && ydiff == -(mp.getLastYDiff())) {
-					punish(player);
-				}
-			}
-		}
-		mp.setLastYDiff(ydiff);
-	}
-	
 	public void TestingCheck(PlayerMoveEvent e) {
 		Location to = e.getTo();
 		Location from = e.getFrom();
 		Player p = e.getPlayer();
 		double x = to.getX() - from.getX();
-		double y = around(to.getY() - from.getY(), 5);
+		double y = to.getY() - from.getY();
+		if(Double.toString(y).length()>4) {
+			y = around(y,5);
+		}
 		double z = to.getZ() - from.getZ();
 		Vector v = new Vector(x, y, z);
 		// Vector result = v.subtract(p.getVelocity());
 		Vector result = v.subtract(p.getVelocity().setY(around(p.getVelocity().getY(), 5)));
 		double yresult = 0.0;
+		Entity pe = (Entity) p;
+		if (pe.isOnGround()) {
+			return;
+		}
 		try {
 			yresult = around(result.getY(), 5);
 		} catch (Exception ex) {
 			yresult = result.getY();
 		}
-		int i = 0;
-		for (Block b : Utility.getBlocksAround(to)) {
-			if (b.getType().isSolid()) {
-				i++;
-			}
+		if (!Utilities.isAround(to, to.getBlock().getType())) {
+           return;
 		}
-		if(i>0) {
-			return;
-		}
-		i = 0;
 		if (!(yresult == 0.07)) {
 			if (!(yresult == 0.0)) {
 				if (!(yresult == -0.01)) {
 					if (!(yresult == -0.03)) {
-						if (Math.abs(yresult) > 0.06) {
+						if (Math.abs(yresult) > 0.36) {
+							if(Utility.distToBlock(to)<3){
+								punish(p, "InvalidVelocity");
+							}
+						} else if (Math.abs(yresult) > 0.06) {
 							p.sendMessage("ResultY:" + yresult);
 						}
 					}
@@ -194,7 +176,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 	}
-	
+
 	public static double around(double i, int places) {
 		String around;
 		if (Double.toString(i).length() > places - 2) {

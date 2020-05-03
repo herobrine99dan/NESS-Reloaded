@@ -10,9 +10,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
-import org.mswsplex.MSWS.NESS.MSG;
 import org.mswsplex.MSWS.NESS.NESS;
-import org.mswsplex.MSWS.NESS.PlayerManager;
 import com.github.ness.CheckManager;
 import com.github.ness.Violation;
 
@@ -30,31 +28,7 @@ public class FastEat extends AbstractCheck<FoodLevelChangeEvent> {
 
 	@SuppressWarnings("deprecation")
 	public void Check(FoodLevelChangeEvent event) {
-		if (event.getEntity() instanceof Player) {
-			final Player player = (Player) event.getEntity();
-			final ItemStack hand = player.getItemInHand();
-			if (hand == null || hand.getType() == Material.AIR) {
-				return;
-			}
-			if (!FastEat.isFood(hand.getType())) {
-				return;
-			}
-			if (player.getFoodLevel() >= event.getFoodLevel()) {
-				return;
-			}
-			if (player.hasPotionEffect(PotionEffectType.SATURATION)) {
-				return;
-			}
-			if (PlayerManager.timeSince("lastAte", player) < 1630.0) {
-				manager.getPlayer((Player) event.getEntity()).setViolation(new Violation("FastEat"));
-				if (NESS.main.devMode) {
-					MSG.tell((CommandSender) player,
-							"&9Dev> &7Food delay: " + PlayerManager.timeSince("lastAte", player));
-				}
-			}
-			PlayerManager.addAction("foodTicks", player);
-			PlayerManager.setInfo("lastAte", (OfflinePlayer) player, System.currentTimeMillis());
-		}
+
 	}
 
 	private static boolean isFood(final Material mat) {

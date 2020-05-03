@@ -8,10 +8,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.mswsplex.MSWS.NESS.MSG;
 import org.mswsplex.MSWS.NESS.NESS;
-
 import com.github.ness.CheckManager;
+import com.github.ness.NESSAnticheat;
 import com.github.ness.Utility;
 import com.github.ness.Violation;
 
@@ -35,13 +34,13 @@ public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 			final Player p = player;
 			lastHitBy.put(player, event.getDamager());
 			Location hitAt = event.getEntity().getLocation();
-			Bukkit.getScheduler().scheduleSyncDelayedTask(NESS.main, () -> {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(NESSAnticheat.main, () -> {
 				Location hitTo = event.getEntity().getLocation();
 				double dist = hitAt.distanceSquared(hitTo);
 				if (dist < 0.15D && !Utility.hasKbBypass(player)) {
 					manager.getPlayer((Player) event.getEntity()).setViolation(new Violation("AntiKb"));
-					if (NESS.main.devMode) {
-						MSG.tell(event.getEntity(), "AntiKnockback Detected! &9Dev> &7KB Dist:" + dist);
+					if (NESSAnticheat.main.devMode) {
+						p.sendMessage("AntiKnockback Detected! &9Dev> &7KB Dist:" + dist);
 					}
 				}
 

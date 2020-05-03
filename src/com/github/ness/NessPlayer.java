@@ -15,7 +15,6 @@ import lombok.Setter;
 public class NessPlayer implements AutoCloseable {
 
 	@Getter
-	@Setter
 	private volatile Violation violation;
 	@Getter
 	@Setter
@@ -53,6 +52,9 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	@Setter
 	int onmoverepeat = 0;
+	@Getter
+	@Setter
+	private long lastHittime = 0;
 	@SyncOnly
 	private final Player player;
 
@@ -62,7 +64,16 @@ public class NessPlayer implements AutoCloseable {
 	public NessPlayer(Player player) {
 		this.player = player;
 	}
-
+	
+	public void setViolation(Violation v) {
+		violation = v;
+		if(!(v.getDetails()[0]==null)) {
+			player.sendMessage("HACK: " + v.getCheck() + " Module: " + (String) v.getDetails()[0]);
+		}else {
+			player.sendMessage("HACK: " + v.getCheck());
+		}
+	}
+	
 	@Override
 	public void close() {
 

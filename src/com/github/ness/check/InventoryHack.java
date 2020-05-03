@@ -7,6 +7,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.mswsplex.MSWS.NESS.NESS;
 
 import com.github.ness.CheckManager;
+import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.Utility;
 import com.github.ness.Violation;
@@ -35,7 +36,7 @@ public class InventoryHack extends AbstractCheck<InventoryClickEvent>{
 				manager.getPlayer(player).setViolation(new Violation("InventoryHack"));
 			} else {
 				final Location from = player.getLocation();
-				Bukkit.getScheduler().runTaskLater(NESS.main, new Runnable() {
+				Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
 					public void run() {
 						Location to = player.getLocation();
 						double distance = to.distanceSquared(from) - Math.abs(from.getY() - to.getBlockY());

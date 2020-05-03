@@ -3,10 +3,12 @@ package com.github.ness.check;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.mswsplex.MSWS.NESS.NESS;
+
 import com.github.ness.CheckManager;
+import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.Utilities;
 import com.github.ness.Violation;
@@ -44,7 +46,7 @@ public class PatternKillauraMove extends AbstractCheck<PlayerMoveEvent> {
 
 			if (Math.abs(range - PatternKillauraAttack.lastRange.getOrDefault(uuid, 0.0f)) < 4) {
 				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Killaura"));
-				if (NESS.main.devMode) {
+				if (NESSAnticheat.main.devMode) {
 					p.sendMessage("KillauraPattern: " + Math.abs(range - PatternKillauraAttack.lastRange.getOrDefault(uuid, 0.0f)));
 				}
 			}

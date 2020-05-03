@@ -9,20 +9,25 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+
 import lombok.Getter;
 
 public class NESSAnticheat extends JavaPlugin {
 
 	@Getter
 	private ScheduledExecutorService executor;
-	
+	public static NESSAnticheat main;
 	@Getter
 	private NessConfig nessConfig;
-	
+	public boolean devMode = true;
 	private CheckManager manager;
-	
+    public static ProtocolManager packetmanager;
+
 	@Override
 	public void onEnable() {
+		main = this;
 		String cfg = "config-v2.yml";
 		saveResource(cfg, false);
 		nessConfig = new NessConfig(YamlConfiguration.loadConfiguration(new File(getDataFolder(), cfg)));
@@ -33,7 +38,12 @@ public class NESSAnticheat extends JavaPlugin {
 		executor = Executors.newSingleThreadScheduledExecutor();
 		manager = new CheckManager(this);
 		CompletableFuture<?> future = manager.loadAsync();
+		packetmanager = ProtocolLibrary.getProtocolManager();
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);
+	}
+	
+	public static ProtocolManager getProtocolManager() {
+		return packetmanager;
 	}
 	
 	@Override

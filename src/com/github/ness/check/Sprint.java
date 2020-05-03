@@ -1,14 +1,16 @@
 package com.github.ness.check;
 
 import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-import org.mswsplex.MSWS.NESS.NESS;
+
 import com.github.ness.CheckManager;
+import com.github.ness.NESSAnticheat;
 import com.github.ness.Utilities;
 import com.github.ness.Utility;
 import com.github.ness.Violation;
@@ -26,10 +28,9 @@ public class Sprint extends AbstractCheck<PlayerMoveEvent> {
 	void checkEvent(PlayerMoveEvent e) {
 		Check(e);
 		Check1(e);
-		Check2(e);
 	}
 
-	public  void Check(PlayerMoveEvent e) {
+	public void Check(PlayerMoveEvent e) {
 		Player p = e.getPlayer();
 		Vector vector = e.getFrom().toVector();
 		Vector vettore = e.getTo().toVector().subtract(vector);
@@ -39,7 +40,7 @@ public class Sprint extends AbstractCheck<PlayerMoveEvent> {
 				|| Math.abs(e.getTo().getYaw() - e.getFrom().getYaw()) > 60) {
 			return;
 		}
-		Bukkit.getScheduler().runTaskLater(NESS.main, new Runnable() {
+		Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
 			public void run() {
 				String yaw = Utilities.DeterminateDirection(p.getLocation().getYaw());
 				if (p.isSprinting()) {
@@ -64,7 +65,7 @@ public class Sprint extends AbstractCheck<PlayerMoveEvent> {
 		int failed = sprintcheck.getOrDefault(p.getName(), 0);
 		sprintcheck.put(p.getName(), failed + 1);
 		if (failed > 6) {
-			manager.getPlayer(p).setViolation(new Violation("Sprint"));
+			manager.getPlayer(p).setViolation(new Violation("Sprint",check));
 			// MSG.tell(p, "Sprint(Omni)[nord], VL: orec".replace("nord",
 			// yaw).replace("orec", failed+""));
 		}
@@ -88,33 +89,6 @@ public class Sprint extends AbstractCheck<PlayerMoveEvent> {
 					// MSG.tell(p, "Sprint(Omni)[nord], VL: orec".replace("nord",
 					// yaw).replace("orec", failed+""));
 				}
-			}
-		}
-	}
-
-	public  void Check2(PlayerMoveEvent e) {
-		Player player = e.getPlayer();
-		Location from = e.getFrom();
-		Location to = e.getTo();
-		if (player.hasPotionEffect(PotionEffectType.SPEED) || Utility.hasflybypass(player)
-				|| Math.abs(to.getYaw() - from.getYaw()) > 80) {
-			return;
-		}
-		if (player.isSprinting()) {
-			double deltaX = to.getX() - from.getX();
-			double deltaZ = to.getZ() - from.getZ();
-
-			float yaw = Math.abs(from.getYaw()) % 360;
-
-			if (!player.isSprinting()) {
-				return;
-			}
-
-			if (deltaX < 0.0 && deltaZ > 0.0 && yaw > 180.0f && yaw < 270.0f
-					|| deltaX < 0.0 && deltaZ < 0.0 && yaw > 270.0f && yaw < 360.0f
-					|| deltaX > 0.0 && deltaZ < 0.0 && yaw > 0.0f && yaw < 90.0f
-					|| deltaX > 0.0 && deltaZ > 0.0 && yaw > 90.0f && yaw < 180.0f) {
-				checkfailed(player, "Sprint", "(SecondOmni)");
 			}
 		}
 	}

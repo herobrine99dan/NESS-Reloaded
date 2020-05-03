@@ -12,10 +12,10 @@
 #
 
 enabled-checks:
+  - 'Aimbot'
   - 'AutoClick'
   - 'AntiUnicode'
   - 'AntiKb'
-  - 'AutoClicker'
 #  - 'BadPackets'
   - 'Criticals'
   - 'EntitySpeedCheck'
