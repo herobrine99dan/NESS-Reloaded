@@ -1,11 +1,3 @@
-## Build ##
-# Ignored for now so that you can choose how to resolve dependencies
-
-pom.xml
-
-.classpath
-.project
-
 ## Mac ##
 .DS_Store
 
