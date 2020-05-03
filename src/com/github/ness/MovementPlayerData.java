@@ -2,6 +2,7 @@ package com.github.ness;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -78,7 +79,7 @@ public class MovementPlayerData {
 	public void setStrafeValueZ(double diffZ) {
 		StrafeValuez = diffZ;
 	}
-	
+
 	public double getStrafeValueX() {
 		return StrafeValuex;
 	}
@@ -86,7 +87,7 @@ public class MovementPlayerData {
 	public double getStrafeValueZ() {
 		return StrafeValuez;
 	}
-	
+
 	public int getFlyMoves() {
 		return FlyMoves;
 	}
@@ -94,7 +95,7 @@ public class MovementPlayerData {
 	public void setFlyMoves(int flyMoves) {
 		FlyMoves = flyMoves;
 	}
-	
+
 	public double getLastYDiff() {
 		return FlyMoves;
 	}
@@ -102,7 +103,7 @@ public class MovementPlayerData {
 	public void setLastYDiff(double x) {
 		LastYDIff = x;
 	}
-	
+
 	public long getSprintLastToggle() {
 		return SprintLastToggle;
 	}

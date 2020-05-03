@@ -194,6 +194,9 @@ public class Utility {
 	public static boolean hasflybypass(Player player) {
 		if (!Bukkit.getVersion().contains("1.8")) {
 			ItemStack[] armor = player.getInventory().getArmorContents();
+			if(player.isGliding() || player.isFlying() || player.hasPotionEffect(PotionEffectType.LEVITATION)) {
+				
+			}
 			return (armor != null && armor.length >= 3 && armor[2].getType().name().equals("ELYTRA"))
 					|| player.hasPotionEffect(PotionEffectType.getByName("LEVITATION")) || player.isGliding() || player.isFlying();
 		}

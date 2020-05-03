@@ -4,14 +4,14 @@ import java.awt.Color;
 import java.io.IOException;
 
 import org.bukkit.entity.Player;
-import org.mswsplex.MSWS.NESS.MSG;
-import org.mswsplex.MSWS.NESS.NESS;
+
+import com.github.ness.NESSAnticheat;
 
 public class DiscordHackWarn {
 
 	public static void WebHookSender(Player hacker, String hack, int level, int identifier,
 			String module) {
-		String webhookurl = NESS.main.config.getString("Configuration.WebHookURL");
+		String webhookurl = NESSAnticheat.main.getConfig().getString("Configuration.WebHookURL");
 		if (webhookurl == null || webhookurl == "") {
 			return;
 		}
