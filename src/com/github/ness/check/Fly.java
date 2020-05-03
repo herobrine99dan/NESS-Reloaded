@@ -106,7 +106,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			double deltaY = event.getFrom().getY() - event.getTo().getY();
 			if (deltaY > 1.0D && p.getFallDistance() < 1.0F
 					|| deltaY > 3.0D && !Utility.hasBlock(p, Material.SLIME_BLOCK)) {
-				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly"));
+				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly","AirCheck"));
 			} else {
 				if (p.getFallDistance() >= 1.0F) {
 					airBuffer = 10;
@@ -121,7 +121,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				float maxChange = 0.8F;
 				if (Utility.isInAir(p) && playerLoc.getBlock().getType() == Material.AIR && change > (double) maxChange
 						&& change != 0.5D && !Utility.hasBlock(p, Material.SLIME_BLOCK)) {
-					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly"));
+					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly","AirCheck"));
 				}
 			}
 
