@@ -3,7 +3,6 @@ package com.github.ness.check;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.Utility;

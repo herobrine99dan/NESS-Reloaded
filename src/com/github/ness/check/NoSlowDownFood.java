@@ -1,7 +1,6 @@
 package com.github.ness.check;
 
 import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.Utility;

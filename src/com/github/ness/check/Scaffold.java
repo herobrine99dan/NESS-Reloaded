@@ -7,7 +7,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NESSAnticheat;
 import com.github.ness.Violation;
 
 public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
@@ -24,11 +23,11 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
        Check2(e);
 	}
 
-	public  void Check(BlockPlaceEvent event) {
+	public void Check(BlockPlaceEvent event) {
 
 	}
 
-	public  void Check1(BlockPlaceEvent event) {
+	public void Check1(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		final double MAX_ANGLE = Math.toRadians(90);
 		BlockFace placedFace = event.getBlock().getFace(event.getBlockAgainst());

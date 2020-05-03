@@ -6,7 +6,6 @@ import java.util.HashMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -148,8 +147,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		// Vector result = v.subtract(p.getVelocity());
 		Vector result = v.subtract(p.getVelocity().setY(around(p.getVelocity().getY(), 5)));
 		double yresult = 0.0;
-		Entity pe = (Entity) p;
-		if (pe.isOnGround()) {
+		if (p.isOnGround()) {
 			return;
 		}
 		try {
@@ -189,11 +187,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			around = Math.round(i) + "";
 		}
 		return Double.parseDouble(around);
-	}
-
-	private Vector getHV(Vector V) {
-		V.setY(0);
-		return V;
 	}
 
 }
