@@ -33,7 +33,7 @@ public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent>{
        //Check(e);
 	}
 	
-	public static void Check(EntityDamageByEntityEvent event) {
+	public void Check(EntityDamageByEntityEvent event) {
 		if (event.getDamager() instanceof Player) {
 			Player p = (Player) event.getDamager();
 			Location loc = determinateLocation(p);
@@ -44,7 +44,7 @@ public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent>{
 				net.minecraft.server.v1_12_R1.EntityPlayer npc = NPC1_12.spawn(Utility.randomString(),
 						UUID.randomUUID(), p,loc);
 				npclist.putIfAbsent(p.getName(), Integer.toString(npc.getId()));
-				Bukkit.getScheduler().scheduleSyncDelayedTask(NESS.main, () -> {
+				Bukkit.getScheduler().scheduleSyncDelayedTask(manager.getNess(), () -> {
 					NESS.main.protocol.sendPacket(p, new net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo(
 							net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc));
 					NESS.main.protocol.sendPacket(p, new net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy(npc.getId()));
@@ -55,7 +55,7 @@ public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent>{
 				net.minecraft.server.v1_8_R3.EntityPlayer npc = NPC1_8.spawn(Utility.randomString(),
 						UUID.randomUUID(), p,loc);
 				npclist.putIfAbsent(p.getName(), Integer.toString(npc.getId()));
-				Bukkit.getScheduler().scheduleSyncDelayedTask(NESS.main, () -> {
+				Bukkit.getScheduler().scheduleSyncDelayedTask(manager.getNess(), () -> {
 					NESS.main.protocol.sendPacket(p, new net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo(
 							net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER,
 							npc));
