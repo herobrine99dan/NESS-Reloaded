@@ -1,52 +1,79 @@
 package com.github.ness;
 
-import java.io.File;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.entity.Player;
+
+import com.github.ness.annotation.SyncOnly;
 
 import lombok.Getter;
+import lombok.Setter;
 
-public class NESSAnticheat extends JavaPlugin {
+public class NessPlayer implements AutoCloseable {
 
 	@Getter
-	private ScheduledExecutorService executor;
-	public static NESSAnticheat main;
+	private volatile Violation violation;
 	@Getter
-	private NessConfig nessConfig;
-	public boolean devMode = true;
-	private CheckManager manager;
+	@Setter
+	private boolean moved = false;
+	@Getter
+	@Setter
+	private double anglekillauramachinelearning = 0.0;
+	@Getter
+	@Setter
+	public List<Float> patterns = new ArrayList<Float>();
+	@Getter
+	@Setter
+	double distance = 0.0;
+	@Getter
+	@Setter
+	int onMoveRepeat = 0;
+	@Getter
+	@Setter
+	double YawDelta = 0.0;
+	@Getter
+	@Setter
+	int clicks = 0;
+	@Getter
+	@Setter
+	double oldY = 0;
+	@Getter
+	@Setter
+	int packets =0;
+	@Getter
+	@Setter
+	int drop = 0;
+	@Getter
+	@Setter
+	int blockplace = 0;
+	@Getter
+	@Setter
+	int onmoverepeat = 0;
+	@Getter
+	@Setter
+	private long lastHittime = 0;
+	@SyncOnly
+	private final Player player;
 
-	@Override
-	public void onEnable() {
-		main = this;
-		String cfg = "config-v2.yml";
-		saveResource(cfg, false);
-		nessConfig = new NessConfig(YamlConfiguration.loadConfiguration(new File(getDataFolder(), cfg)));
-		if (!nessConfig.checkVersion()) {
-			getLogger().warning(
-					"Your config is outdated! Until you regenerate it, NESS will use default values for some checks.");
-		}
-		executor = Executors.newSingleThreadScheduledExecutor();
-		manager = new CheckManager(this);
-		CompletableFuture<?> future = manager.loadAsync();
-		getServer().getScheduler().runTaskLater(this, future::join, 1L);
+	@Getter
+	private final Set<Long> clickHistory = ConcurrentHashMap.newKeySet();
+
+	NessPlayer(Player player) {
+		this.player = player;
+	}
+	
+	public void setViolation(Violation violation) {
+		this.violation = violation;
+		player.sendMessage("HACK: " + violation.getCheck() + " Module: " + Arrays.toString(violation.getDetails()));
 	}
 	
 	@Override
-	public void onDisable() {
-		manager.close();
-		executor.shutdown();
-		try {
-			executor.awaitTermination(10L, TimeUnit.SECONDS);
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
-		}
+	public void close() {
+
 	}
-	
-	
+
 }
