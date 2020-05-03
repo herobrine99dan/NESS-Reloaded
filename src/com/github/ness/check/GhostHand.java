@@ -49,17 +49,16 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent>{
 		}
 		Location block = event.getClickedBlock().getLocation().add(event.getBlockFace().getModX(),
 				event.getBlockFace().getModY(), event.getBlockFace().getModZ());
-		Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
-			public void run() {
-				Location loc1 = player.getLocation();
-				float grade = Math.abs(loc.getYaw() - loc1.getYaw()) + Math.abs(loc.getPitch() - loc1.getPitch());
+		Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 
-				if (!(grade == 0)) {
-					return;
-				}
-				if (block.getBlock().getType().isSolid() || !targetBlock.equals(event.getClickedBlock())) {
-					p.setViolation(new Violation("GhostHand"));
-				}
+			Location loc1 = player.getLocation();
+			float grade = Math.abs(loc.getYaw() - loc1.getYaw()) + Math.abs(loc.getPitch() - loc1.getPitch());
+
+			if (!(grade == 0)) {
+				return;
+			}
+			if (block.getBlock().getType().isSolid() || !targetBlock.equals(event.getClickedBlock())) {
+				p.setViolation(new Violation("GhostHand"));
 			}
 		}, 2L);
 	}

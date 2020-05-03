@@ -34,7 +34,7 @@ public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 			final Player p = player;
 			lastHitBy.put(player, event.getDamager());
 			Location hitAt = event.getEntity().getLocation();
-			Bukkit.getScheduler().scheduleSyncDelayedTask(NESSAnticheat.main, () -> {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(manager.getNess(), () -> {
 				Location hitTo = event.getEntity().getLocation();
 				double dist = hitAt.distanceSquared(hitTo);
 				if (dist < 0.15D && !Utility.hasKbBypass(player)) {

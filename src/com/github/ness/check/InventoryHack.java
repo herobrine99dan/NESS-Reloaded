@@ -36,13 +36,11 @@ public class InventoryHack extends AbstractCheck<InventoryClickEvent>{
 				manager.getPlayer(player).setViolation(new Violation("InventoryHack"));
 			} else {
 				final Location from = player.getLocation();
-				Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
-					public void run() {
-						Location to = player.getLocation();
-						double distance = to.distanceSquared(from) - Math.abs(from.getY() - to.getBlockY());
-						if (distance > 0.05) {
-							manager.getPlayer(player).setViolation(new Violation("InventoryHack"));							// MSG.tell(player, "Distance " + distance);
-						}
+				Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
+					Location to = player.getLocation();
+					double distance = to.distanceSquared(from) - Math.abs(from.getY() - to.getBlockY());
+					if (distance > 0.05) {
+						manager.getPlayer(player).setViolation(new Violation("InventoryHack"));							// MSG.tell(player, "Distance " + distance);
 					}
 				}, 2L);
 			}

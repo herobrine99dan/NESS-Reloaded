@@ -46,7 +46,7 @@ public class PatternKillauraMove extends AbstractCheck<PlayerMoveEvent> {
 
 			if (Math.abs(range - PatternKillauraAttack.lastRange.getOrDefault(uuid, 0.0f)) < 4) {
 				np.setViolation(new Violation("Killaura"));
-				if (NESSAnticheat.main.devMode) {
+				if (manager.getNess().devMode) {
 					p.sendMessage("KillauraPattern: " + Math.abs(range - PatternKillauraAttack.lastRange.getOrDefault(uuid, 0.0f)));
 				}
 			}
