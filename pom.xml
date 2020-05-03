@@ -89,12 +89,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot</artifactId>
+			<artifactId>spigot-1.8.8</artifactId>
 			<version>1.8.8-R0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot</artifactId>
+			<artifactId>spigot-1.12.2</artifactId>
 			<version>1.12.2-R0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
