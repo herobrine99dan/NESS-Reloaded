@@ -12,10 +12,10 @@ import com.github.ness.Utility;
 public class BadPackets {
 
 	public static HashMap<String, Integer> repeats = new HashMap<String, Integer>();
-	public HashMap<String, Integer> packetsn = new HashMap<String, Integer>();
-	int maxpackets = 13;
+	public static HashMap<String, Integer> packetsn = new HashMap<String, Integer>();
+	static int maxpackets = 13;
 
-	public void Check(Player sender, Object packet) {
+	public static void Check(Player sender, Object packet) {
 		if (NESSAnticheat.main == null || sender == null) {
 			return;
 		}
@@ -27,10 +27,6 @@ public class BadPackets {
 				maxPackets = maxpackets;
 				maxPacketsrepeat = 3;
 			}
-			if (!packet.toString().contains("Position")) {
-				return;
-			}
-
 			// System.out.println("Packet: " +packet.toString());
 			if (packetsn.get(sender.getName()) == null) {
 				return;
