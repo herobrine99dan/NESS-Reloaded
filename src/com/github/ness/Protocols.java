@@ -1,11 +1,5 @@
 package com.github.ness;
 
-import java.util.UUID;
-
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.mswsplex.MSWS.NESS.Protocollib;
-
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
@@ -38,6 +32,13 @@ public class Protocols {
 							return;
 						}
 						use_entityhandle(event);
+					}
+				});
+		ProtocolLibrary.getProtocolManager().addPacketListener(
+				(PacketListener) new PacketAdapter(NESSAnticheat.main, new PacketType[] { PacketType.Play.Client.SETTINGS }) {
+					@SuppressWarnings("unchecked")
+					public void onPacketReceiving(final PacketEvent event) {
+
 					}
 				});
 	}

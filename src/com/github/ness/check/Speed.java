@@ -32,7 +32,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Check(e);
 		Check1(e);
 		Check2(e);
-		TestingCheck(e);
+		Check3(e);
 	}
 
 	private void punish(Player p, String module) {
@@ -133,14 +133,14 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
-	public void TestingCheck(PlayerMoveEvent e) {
+	public void Check3(PlayerMoveEvent e) {
 		Location to = e.getTo();
 		Location from = e.getFrom();
 		Player p = e.getPlayer();
 		double x = to.getX() - from.getX();
 		double y = to.getY() - from.getY();
-		if(Double.toString(y).length()>4) {
-			y = around(y,5);
+		if (Double.toString(y).length() > 4) {
+			y = around(y, 5);
 		}
 		double z = to.getZ() - from.getZ();
 		Vector v = new Vector(x, y, z);
@@ -156,16 +156,14 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			yresult = result.getY();
 		}
 		if (!Utilities.isAround(to, to.getBlock().getType())) {
-           return;
+			return;
 		}
 		if (!(yresult == 0.07)) {
 			if (!(yresult == 0.0)) {
 				if (!(yresult == -0.01)) {
 					if (!(yresult == -0.03)) {
 						if (Math.abs(yresult) > 0.36) {
-							if(Utility.distToBlock(to)<3){
-								punish(p, "InvalidVelocity");
-							}
+							punish(p, "InvalidVelocity");
 						} else if (Math.abs(yresult) > 0.06) {
 							p.sendMessage("ResultY:" + yresult);
 						}
