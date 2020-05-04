@@ -1,9 +1,8 @@
 package com.github.ness.protocol;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.mswsplex.MSWS.NESS.NESS;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
@@ -25,10 +24,7 @@ public class Packet1_15Helper {
 
 			@Override
 			public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
-				Bukkit.getScheduler().scheduleSyncDelayedTask(NESS.main, () -> {
-					// System.out.println("Packet: " + packet.toString());
-					DefaultPacketListener.Executor(player, packet);
-				}, 0);
+
 				super.channelRead(channelHandlerContext, packet);
 			}
 		};
