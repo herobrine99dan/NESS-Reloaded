@@ -1,0 +1,5 @@
+commands:
+  no-permission: '&cSorry, you cannot use this.'
+  reloaded: '&aReloaded NESS!'
+# If you change this, you will receive warnings in console
+messages-version: 1

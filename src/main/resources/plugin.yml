@@ -1,6 +1,6 @@
 name: NESS
 main: com.github.ness.NESSAnticheat
-version: 2.0
+version: ${project.version}
 authors: [herobrine99dan, A248]
 softdepend: [ProtocolLib]
 commands:
