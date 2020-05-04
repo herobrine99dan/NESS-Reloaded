@@ -1,72 +1,63 @@
 package com.github.ness.check;
 
 import java.util.HashMap;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.mswsplex.MSWS.NESS.NESS;
-import org.mswsplex.MSWS.NESS.PlayerManager;
 
+import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.Utility;
 
 public class BadPackets {
 
 	public static HashMap<String, Integer> repeats = new HashMap<String, Integer>();
+	public HashMap<String, Integer> packetsn = new HashMap<String, Integer>();
+	int maxpackets = 13;
 
-	public static void Check(Player sender, Object packet) {
-		if(NESS.main==null || sender == null) {
+	public void Check(Player sender, Object packet) {
+		if (NESSAnticheat.main == null || sender == null) {
 			return;
 		}
-		Bukkit.getScheduler().scheduleSyncDelayedTask(NESS.main, () -> {
-			int ping = PlayerManager.getPing(sender);
-			int maxPackets = NESS.main.maxpackets * (ping/100);
-			int maxPacketsrepeat = 3 * (ping/100);
-			if(ping<150) {
-				maxPackets = NESS.main.maxpackets;
+		Bukkit.getScheduler().scheduleSyncDelayedTask(NESSAnticheat.main, () -> {
+			int ping = Utility.getPing(sender);
+			int maxPackets = maxpackets * (ping / 100);
+			int maxPacketsrepeat = 3 * (ping / 100);
+			if (ping < 150) {
+				maxPackets = maxpackets;
 				maxPacketsrepeat = 3;
 			}
-			NessPlayer p = new NessPlayer(sender);
 			if (!packet.toString().contains("Position")) {
 				return;
 			}
 
-	//System.out.println("Packet: " +packet.toString());
-			if (p == null) {
+			// System.out.println("Packet: " +packet.toString());
+			if (packetsn.get(sender.getName()) == null) {
 				return;
 			}
-			if(Utility.SpecificBlockNear(sender.getLocation(), Material.PORTAL)) {
+			if (Utility.SpecificBlockNear(sender.getLocation(), Material.PORTAL)) {
 				return;
 			}
-			if (p.getPackets() > 9) {
+			if (packetsn.getOrDefault(sender.getName(), 0) > 9) {
 				if (repeats.get(sender.getName()) == null) {
 					repeats.put(sender.getName(), 1);
 				} else {
 					repeats.put(sender.getName(), repeats.get(sender.getName()) + 1);
 				}
 			}
-			if (NESS.main.debugMode) {
-				sender.sendMessage("Packets:" + p.getPackets());
-			}
-			if(repeats.get(sender.getName())==null) {
+			if (repeats.get(sender.getName()) == null) {
 				return;
 			}
-			if (p.getPackets() > maxPackets) {
-                WarnHacks.warnHacks(sender, "MorePackets", 5, -1.0D, 5, "TooPacket", false);
-                if(NESS.main.devMode) {
-                	sender.sendMessage("Your ping: " + PlayerManager.getPing(sender) + " - your max packets: " + maxPackets);
-                }
+			if (packetsn.getOrDefault(sender.getName(), 0) > maxPackets) {
+				WarnHacks.warnHacks(sender, "MorePackets", 5, -1.0D, 5, "TooPacket", false);
 				return;
-			}else if(repeats.get(sender.getName()) > maxPacketsrepeat){
+			} else if (repeats.get(sender.getName()) > maxPacketsrepeat) {
 				WarnHacks.warnHacks(sender, "MorePackets", 5, -1.0D, 5, "BadPacket", false);
-                if(NESS.main.devMode) {
-                	sender.sendMessage("Your ping: " + PlayerManager.getPing(sender) + " - your max packets repeat: " + maxPacketsrepeat);
-                }
 				repeats.put(sender.getName(), 0);
 			}
-			p.setPackets(p.getPackets() + 1);
-		},0);
+			packetsn.remove(sender.getName());
+			packetsn.put(sender.getName(), packetsn.getOrDefault(sender.getName(), 0) + 1);
+		}, 0);
 	}
 
 }

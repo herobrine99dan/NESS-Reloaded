@@ -1,7 +1,6 @@
 package com.github.ness.check;
 
 import org.bukkit.entity.Player;
-import org.mswsplex.MSWS.NESS.NESS;
 import com.github.ness.MovementPlayerData;
 import com.github.ness.Utility;
 
@@ -12,9 +11,7 @@ public class PingSpoof {
 		mp.pingspooftimer = System.currentTimeMillis();
 		double diff = mp.pingspooftimer - mp.oldpingspooftimer;
 		if (Utility.getPing(sender) > 300 && (diff > 40) && (diff < 65)) {
-			if (NESS.main.devMode) {
-				sender.sendMessage("PingSpoof: difference " + diff + " Ping: " + Utility.getPing(sender));
-			}//To rember this
+
 			HACK!
 			Utility.setPing(sender, 100);
 		}
