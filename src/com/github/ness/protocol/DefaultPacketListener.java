@@ -20,9 +20,9 @@ public class DefaultPacketListener {
 		PacketInEvent event = new PacketInEvent(sender,packet,packetType);
 		Bukkit.getPluginManager().callEvent(event);
 		if (packetType == PacketType.Play.Client.FLYING) {
-			//PingSpoof.Check(sender, packet);
+			new PingSpoof().Check(sender, packet);
 		}else if(packetType == PacketType.Play.Client.POSITION) {
-			//BadPackets.Check(sender, packet);
+			new BadPackets().Check(sender,packet);
 		}
 		return true;
 	}

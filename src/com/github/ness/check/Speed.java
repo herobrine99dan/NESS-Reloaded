@@ -33,6 +33,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Check1(e);
 		Check2(e);
 		Check3(e);
+		Check4(e);
 	}
 
 	private void punish(Player p, String module) {
@@ -91,13 +92,13 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
-	public void Check1(PlayerMoveEvent event) {
-		Player player = event.getPlayer();
+	public void Check1(PlayerMoveEvent e) {
+		Player player = e.getPlayer();
 		if (Utility.hasflybypass(player)) {
 			return;
 		}
 		double soulsand = 0.211;
-		double dist = Utility.getMaxSpeed(event.getFrom(), event.getTo());
+		double dist = Utility.getMaxSpeed(e.getFrom(), e.getTo());
 		if (player.isOnGround() && !player.isInsideVehicle() && !player.isFlying()
 				&& !player.hasPotionEffect(PotionEffectType.SPEED) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 			if (dist > 0.62D) {
@@ -106,7 +107,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 					return;
 				}
 				if (NESSAnticheat.main.devMode) {
-					event.getPlayer().sendMessage("First Distance: " + dist);
+					e.getPlayer().sendMessage("First Distance: " + dist);
 				}
 				punish(player, "MaxDistance");
 			} else if (dist > soulsand && player.getFallDistance() == 0
@@ -173,16 +174,47 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
+	public void Check4(PlayerMoveEvent e) {
+		Location to = e.getTo();
+		Location from = e.getFrom();
+		Player p = e.getPlayer();
+		double x = to.getX() - from.getX();
+		double z = to.getZ() - from.getZ();
+		if (Double.toString(z).length() > 4) {
+			z = around(z, 5);
+		}
+		if (Double.toString(x).length() > 4) {
+			x = around(x, 5);
+		}
+		Vector v = new Vector(x, to.getX(), z);
+		// Vector result = v.subtract(p.getVelocity());
+		Vector result = v.subtract(p.getVelocity().setY(0));
+		double xresult = Math.abs(result.getX());
+		double zresult = Math.abs(result.getZ());
+		if (xresult > 0.38 || zresult > 0.38) {
+			if (!(xresult == 0.36)) {
+				if(!(zresult == 0.36)) {
+					
+					//p.sendMessage("X: " + Math.abs(around(result.getX(), 5)) + " Z: " + Math.abs(around(result.getZ(), 5)));
+				}
+			}
+		}
+	}
+
 	public static double around(double i, int places) {
 		String around;
-		if (Double.toString(i).length() > places - 2) {
-			if (!Double.toString(i).contains("-")) {
-				around = Double.toString(i).substring(0, places - 1);
+		try {
+			if (Double.toString(i).length() > places - 2) {
+				if (!Double.toString(i).contains("-")) {
+					around = Double.toString(i).substring(0, places - 1);
+				} else {
+					around = Double.toString(i).substring(0, places);
+				}
 			} else {
-				around = Double.toString(i).substring(0, places);
+				around = Math.round(i) + "";
 			}
-		} else {
-			around = Math.round(i) + "";
+		} catch (Exception e) {
+			return i;
 		}
 		return Double.parseDouble(around);
 	}

@@ -2,25 +2,16 @@ package com.github.ness.check;
 
 import org.bukkit.entity.Player;
 
+import com.comphenix.protocol.events.PacketContainer;
 import com.github.ness.CheckManager;
 import com.github.ness.MovementPlayerData;
 import com.github.ness.Utility;
 import com.github.ness.Violation;
 import com.github.ness.events.PacketInEvent;
 
-public class PingSpoof extends AbstractCheck<PacketInEvent> {
+public class PingSpoof {
 
-	public PingSpoof(CheckManager manager) {
-		super(manager, CheckInfo.eventOnly(PacketInEvent.class));
-	}
-
-	@Override
-	void checkEvent(PacketInEvent e) {
-		Check(e);
-	}
-
-	public void Check(PacketInEvent e) {
-		Player sender = e.getPlayer();
+	public void Check(Player sender, PacketContainer packet) {
 		if(sender==null) {
 			return;
 		}
@@ -28,7 +19,7 @@ public class PingSpoof extends AbstractCheck<PacketInEvent> {
 		mp.pingspooftimer = System.currentTimeMillis();
 		double diff = mp.pingspooftimer - mp.oldpingspooftimer;
 		if (Utility.getPing(sender) > 300 && (diff > 40) && (diff < 65)) {
-			manager.getPlayer(sender).setViolation(new Violation("PingSpoof", "Experimental"));
+			InventoryHack.manageraccess.getPlayer(sender).setViolation(new Violation("PingSpoof"));
 			Utility.setPing(sender, 100);
 		}
 		mp.oldpingspooftimer = mp.pingspooftimer;
