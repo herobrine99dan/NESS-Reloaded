@@ -64,7 +64,7 @@ public class NPC1_12 {
 		packet.setOptionalSpeedY(0.04);
 		packet.setOptionalSpeedZ(0.1);
 		packet.setPitch(50);
-		packet.sett
+		packet.setYaw(162);
 		packet.setX(loc.getX());
 		packet.setY(loc.getY());
 		packet.setZ(loc.getZ());
@@ -88,7 +88,6 @@ public class NPC1_12 {
 		try {
 			WrapperPlayServerPlayerInfo pacchetto = new WrapperPlayServerPlayerInfo();
             pacchetto.setAction(PlayerInfoAction.ADD_PLAYER);
-            pacchetto.set
 			pacchetto.sendPacket(p);
 		}catch(Exception e) {}
 		//protocol.sendPacket(p, new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, npc));
