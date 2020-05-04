@@ -1,17 +1,10 @@
 package com.github.ness.check;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.MovementPlayerData;
 import com.github.ness.NessPlayer;
 import com.github.ness.Utilities;
 import com.github.ness.Utility;
@@ -31,16 +24,13 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
        Check2(e);
 	}
 
-	private static final Map<UUID, List<Float>> pitchdelta = new HashMap<UUID, List<Float>>();
-	private static final Map<UUID, Float> lastmcdpitch = new HashMap<UUID, Float>();
-
 	public void Check(PlayerMoveEvent e) {
 		int samples = 23;
 		int pitchlimit = 10;
 		Player p = e.getPlayer();
-		UUID uuid = p.getUniqueId();
+		NessPlayer player = manager.getPlayer(p);
 		float deltaPitch = e.getTo().getPitch() - e.getFrom().getPitch();
-		List<Float> lastDeltaPitches = pitchdelta.getOrDefault(uuid, new ArrayList<>());
+		final List<Float> lastDeltaPitches = player.getPitchdelta();
 
 		// ignore if deltaPitch is 0 or >= 10 or if pitch is +/-90.
 		if (deltaPitch != 0 && Math.abs(deltaPitch) <= pitchlimit && Math.abs(e.getTo().getPitch()) != 90) {
@@ -49,17 +39,17 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 
 		if (lastDeltaPitches.size() >= samples) {
 			float deltaPitchGCD = Utility.mcdRational(lastDeltaPitches);
-			float lastDeltaPitchGCD = lastmcdpitch.getOrDefault(uuid, deltaPitchGCD);
+			float lastmcdpitch = player.getLastmcdpitch();
+			float lastDeltaPitchGCD = (lastmcdpitch != Float.MIN_VALUE) ? lastmcdpitch : deltaPitchGCD;
 			float gcdDiff = Math.abs(deltaPitchGCD - lastDeltaPitchGCD);
 			// if GCD is significantly different or if GCD is practically unsolvable
 			if (gcdDiff > 0.001 || deltaPitchGCD < 0.00001) {
 				manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot"));
 			}
 			lastDeltaPitches.clear();
-			lastmcdpitch.put(uuid, deltaPitchGCD);
+			player.setLastmcdpitch(deltaPitchGCD);
 		}
 
-		pitchdelta.put(uuid, lastDeltaPitches);
 	}
 
 	public void Check1(PlayerMoveEvent e) {
@@ -67,7 +57,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		float pitchChange = Math.abs(e.getTo().getPitch() - e.getFrom().getPitch());
 		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {
 			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot"));
-		} else if (yawChange > 1.0f && yawChange % 0.1f == 0.0f) {
+		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {
 			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot"));
 		}
 	}

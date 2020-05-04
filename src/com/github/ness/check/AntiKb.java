@@ -1,12 +1,12 @@
 package com.github.ness.check;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NESSAnticheat;
+import com.github.ness.Violation;
 
 public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 
@@ -24,16 +24,12 @@ public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 		if (event.getEntity() instanceof Player) {
 			Player p = (Player) event.getEntity();
 			final Location from = p.getLocation();
-	        BukkitScheduler scheduler = NESSAnticheat.main.getServer().getScheduler();
-	        scheduler.scheduleSyncDelayedTask(NESSAnticheat.main, new Runnable() {
-	            @Override
-	            public void run() {
-	                Location to = p.getLocation();
-	                if(to.distanceSquared(from)<0.1) {
-	                	
-	                }
-	            }
-	        }, 2L);
+			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
+                Location to = p.getLocation();
+                if(to.distanceSquared(from)<0.1) {
+                	manager.getPlayer(p).setViolation(new Violation("AntiKb"));
+                }
+			}, 2L);
 		}
 	}
 }
