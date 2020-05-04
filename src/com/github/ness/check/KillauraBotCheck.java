@@ -1,5 +1,6 @@
 package com.github.ness.check;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -7,10 +8,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-//import com.comphenix.packetwrapper.WrapperPlayClientUseEntity;
+
+import com.comphenix.packetwrapper.WrapperPlayServerEntityDestroy;
+import com.comphenix.packetwrapper.WrapperPlayServerPlayerInfo;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.EnumWrappers.PlayerInfoAction;
+import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.github.ness.CheckManager;
 import com.github.ness.Utilities;
 import com.github.ness.Utility;
@@ -37,10 +41,19 @@ public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent> {
 					loc);
 			npclist.putIfAbsent(p.getName(), Integer.toString(npc.getId()));
 			Bukkit.getScheduler().scheduleSyncDelayedTask(manager.getNess(), () -> {
-				NESS.main.protocol.sendPacket(p, new net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo(
-						net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc));
-				NESS.main.protocol.sendPacket(p,
-						new net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy(npc.getId()));
+				//ProtocolLibrary.getProtocolManager().sendServerPacket(p, new net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo(
+					//	net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc));
+				try {
+					WrapperPlayServerPlayerInfo pacchetto = new WrapperPlayServerPlayerInfo();
+					pacchetto.setAction(PlayerInfoAction.REMOVE_PLAYER);
+					pacchetto.setData(new ArrayList<PlayerInfoData>(npc));
+					pacchetto.sendPacket(p);
+				}catch(Exception e) {}
+				try {
+					WrapperPlayServerEntityDestroy pacchetto = new WrapperPlayServerEntityDestroy();
+					pacchetto.setEntityIds(new int[npc.getId()]);
+					pacchetto.sendPacket(p);
+				}catch(Exception e) {}
 				npclist.remove(p.getName());
 			}, 15L);
 

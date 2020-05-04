@@ -20,7 +20,8 @@ import com.github.ness.Violation;
 
 public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public HashMap<Player, Entity> lastEntityHit = new HashMap<Player, Entity>();
-    public HashMap<String,UUID> mobinfront = new HashMap<String,UUID>();
+	public HashMap<String, UUID> mobinfront = new HashMap<String, UUID>();
+
 	public Killaura(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
 		// TODO Auto-generated constructor stub
@@ -171,38 +172,38 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			}
 		}
 	}
-	
+
 	public void Check7(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
-            Player player = (Player) e.getDamager();
-            Location location = player.getLocation().toVector().add(player.getLocation().getDirection().multiply(3))
-                    .toLocation(player.getWorld());
-            if(mobinfront.get(player.getName())==null) {
-                ArmorStand as = (ArmorStand) location.getWorld().spawn(location, ArmorStand.class);
-                as.setGravity(false);
-                as.setCanPickupItems(false);
-                as.setCustomNameVisible(false);
-                as.setVisible(true);
-                as.setArms(true);
+			Player player = (Player) e.getDamager();
+			Location location = player.getLocation().toVector().add(player.getLocation().getDirection().multiply(3))
+					.toLocation(player.getWorld());
+			if (mobinfront.get(player.getName()) == null) {
+				ArmorStand as = (ArmorStand) location.getWorld().spawn(location, ArmorStand.class);
+				as.setGravity(false);
+				as.setCanPickupItems(false);
+				as.setCustomNameVisible(false);
+				as.setVisible(true);
+				as.setArms(true);
 
-                int seconds = 2;
-                boolean removed = false;
-                mobinfront.putIfAbsent(player.getName(), as.getUniqueId());
-                Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
-                    public void run() {
-                        if(!as.isDead()) {
-                            as.remove();
-                            mobinfront.remove(player.getName());
-                        }
-                    }
-                }, seconds * 20L);
-            }else {
-            	if(e.getEntity() instanceof ArmorStand) {
-            		UUID u = mobinfront.get(player.getName());
-            		mobinfront.remove(player.getName());
-            		
-            	}
-            }
+				int seconds = 2;
+				boolean removed = false;
+				mobinfront.putIfAbsent(player.getName(), as.getUniqueId());
+				Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
+					public void run() {
+						if (!as.isDead()) {
+							as.remove();
+							mobinfront.remove(player.getName());
+						}
+					}
+				}, seconds * 20L);
+			} else {
+				if (e.getEntity() instanceof ArmorStand) {
+					UUID u = mobinfront.get(player.getName());
+					mobinfront.remove(player.getName());
+
+				}
+			}
 		}
 	}
 
@@ -215,7 +216,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	}
 
 	private void punish(Player p, int i, String module, int vl) {
-		manager.getPlayer(p).setViolation(new Violation("Killaura",module));
+		manager.getPlayer(p).setViolation(new Violation("Killaura", module));
 	}
 
 }
