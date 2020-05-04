@@ -17,7 +17,8 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Pippo/Downloads/1) server backup/my custom anticheat/spigot.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Pippo/Downloads/1) server backup/spigot 1.8/spigot.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Pippo/Downloads/1) server backup/spigot/spigot.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Pippo/Downloads/classgraph-4.8.47.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -1,16 +1,17 @@
 package com.github.ness.check;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
-import org.mswsplex.MSWS.NESS.NESS;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NESSAnticheat;
@@ -19,7 +20,7 @@ import com.github.ness.Violation;
 
 public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public HashMap<Player, Entity> lastEntityHit = new HashMap<Player, Entity>();
-
+    public HashMap<String,UUID> mobinfront = new HashMap<String,UUID>();
 	public Killaura(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
 		// TODO Auto-generated constructor stub
@@ -41,7 +42,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		if (e.getDamager() instanceof Player) {
 			Player pl1 = (Player) e.getDamager();
 			Entity pl2 = e.getEntity();
-			double dist = pl2.getLocation().distanceSquared(pl1.getLocation());
+			double dist = pl1.getLocation().distanceSquared(pl2.getLocation());
 			if (dist > 4.2) {
 				punish(pl1, 19, "Reach", 6);
 				pl1.sendMessage("Reach: " + dist);
@@ -168,6 +169,40 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			if (e.getEntity().getEntityId() == e.getDamager().getEntityId()) {
 				punish((Player) e.getEntity(), 5, "SelfHit", 5);
 			}
+		}
+	}
+	
+	public void Check7(EntityDamageByEntityEvent e) {
+		if (e.getDamager() instanceof Player) {
+            Player player = (Player) e.getDamager();
+            Location location = player.getLocation().toVector().add(player.getLocation().getDirection().multiply(3))
+                    .toLocation(player.getWorld());
+            if(mobinfront.get(player.getName())==null) {
+                ArmorStand as = (ArmorStand) location.getWorld().spawn(location, ArmorStand.class);
+                as.setGravity(false);
+                as.setCanPickupItems(false);
+                as.setCustomNameVisible(false);
+                as.setVisible(true);
+                as.setArms(true);
+
+                int seconds = 2;
+                boolean removed = false;
+                mobinfront.putIfAbsent(player.getName(), as.getUniqueId());
+                Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
+                    public void run() {
+                        if(!as.isDead()) {
+                            as.remove();
+                            mobinfront.remove(player.getName());
+                        }
+                    }
+                }, seconds * 20L);
+            }else {
+            	if(e.getEntity() instanceof ArmorStand) {
+            		UUID u = mobinfront.get(player.getName());
+            		mobinfront.remove(player.getName());
+            		
+            	}
+            }
 		}
 	}
 
