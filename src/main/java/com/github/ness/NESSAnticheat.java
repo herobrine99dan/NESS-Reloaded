@@ -19,29 +19,39 @@ public class NESSAnticheat extends JavaPlugin {
 	@Getter
 	private NessConfig nessConfig;
 	public boolean devMode = true;
-	private CheckManager manager;
+	@Getter
+	private CheckManager checkManager;
 
 	@Override
 	public void onEnable() {
 		main = this;
-		String cfg = "config-v2.yml";
-		saveResource(cfg, false);
-		nessConfig = new NessConfig(YamlConfiguration.loadConfiguration(new File(getDataFolder(), cfg)));
-		if (!nessConfig.checkVersion()) {
+		String cfgYml = "config.yml";
+		String msgsYml = "messages.yml";
+		saveResource(cfgYml, false);
+		saveResource(msgsYml, false);
+		nessConfig = new NessConfig(
+				YamlConfiguration.loadConfiguration(new File(getDataFolder(), cfgYml)),
+				YamlConfiguration.loadConfiguration(new File(getDataFolder(), msgsYml)));
+		if (!nessConfig.checkConfigVersion()) {
 			getLogger().warning(
-					"Your config is outdated! Until you regenerate it, NESS will use default values for some checks.");
+					"Your config.yml is outdated! Until you regenerate it, NESS will use default values for some checks.");
+		}
+		if (!nessConfig.checkMessagesVersion()) {
+			getLogger().warning(
+					"Your messages.yml is outdated! Until you regenerate it, NESS will use default values for some messages.");
 		}
 		executor = Executors.newSingleThreadScheduledExecutor();
-		manager = new CheckManager(this);
+		getServer().getPluginCommand("ness").setExecutor(new NessCommands(this));
+		checkManager = new CheckManager(this);
 		new Scheduler().start();
 		new Protocols();
-		CompletableFuture<?> future = manager.loadAsync();
+		CompletableFuture<?> future = checkManager.loadAsync();
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);
 	}
 	
 	@Override
 	public void onDisable() {
-		manager.close();
+		checkManager.close();
 		executor.shutdown();
 		try {
 			executor.awaitTermination(10L, TimeUnit.SECONDS);
