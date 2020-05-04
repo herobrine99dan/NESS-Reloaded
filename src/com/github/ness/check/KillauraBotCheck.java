@@ -36,7 +36,6 @@ public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent>{
 			if(PlayerManager.hasPermissionBypass(p, "Killaura")) {
 				return;
 			}
-			if (Bukkit.getVersion().contains("1.12")) {
 				net.minecraft.server.v1_12_R1.EntityPlayer npc = NPC1_12.spawn(Utility.randomString(),
 						UUID.randomUUID(), p,loc);
 				npclist.putIfAbsent(p.getName(), Integer.toString(npc.getId()));
@@ -46,19 +45,7 @@ public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent>{
 					NESS.main.protocol.sendPacket(p, new net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy(npc.getId()));
 					npclist.remove(p.getName());
 				}, 15L);
-				
-			} else if (Bukkit.getVersion().contains("1.8.8")) {
-				net.minecraft.server.v1_8_R3.EntityPlayer npc = NPC1_8.spawn(Utility.randomString(),
-						UUID.randomUUID(), p,loc);
-				npclist.putIfAbsent(p.getName(), Integer.toString(npc.getId()));
-				Bukkit.getScheduler().scheduleSyncDelayedTask(manager.getNess(), () -> {
-					NESS.main.protocol.sendPacket(p, new net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo(
-							net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER,
-							npc));
-					NESS.main.protocol.sendPacket(p, new net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy(npc.getId()));
-					npclist.remove(p.getName());
-				}, 15L);
-			}
+
 		}
 	}
 	
