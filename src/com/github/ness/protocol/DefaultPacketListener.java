@@ -1,5 +1,6 @@
 package com.github.ness.protocol;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.comphenix.protocol.PacketType;
@@ -17,10 +18,11 @@ public class DefaultPacketListener {
 		// i controlli prima di tutto
 		// KillauraBotCheck.Check1(packet,sender);
 		PacketInEvent event = new PacketInEvent(sender,packet,packetType);
+		Bukkit.getPluginManager().callEvent(event);
 		if (packetType == PacketType.Play.Client.FLYING) {
-			PingSpoof.Check(sender, packet);
+			//PingSpoof.Check(sender, packet);
 		}else if(packetType == PacketType.Play.Client.POSITION) {
-			BadPackets.Check(sender, packet);
+			//BadPackets.Check(sender, packet);
 		}
 		return true;
 	}

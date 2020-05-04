@@ -1,21 +1,33 @@
 package com.github.ness.check;
 
 import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import com.github.ness.CheckManager;
 import com.github.ness.NESSAnticheat;
-import com.github.ness.NessPlayer;
 import com.github.ness.Utility;
+import com.github.ness.Violation;
+import com.github.ness.events.PacketInEvent;
 
-public class BadPackets {
-
+public class BadPackets extends AbstractCheck<PacketInEvent> {
 	public static HashMap<String, Integer> repeats = new HashMap<String, Integer>();
 	public static HashMap<String, Integer> packetsn = new HashMap<String, Integer>();
 	static int maxpackets = 13;
 
-	public static void Check(Player sender, Object packet) {
+	public BadPackets(CheckManager manager) {
+		super(manager, CheckInfo.eventOnly(PacketInEvent.class));
+	}
+
+	@Override
+	void checkEvent(PacketInEvent e) {
+		Check(e);
+	}
+
+	void Check(PacketInEvent e) {
+		Player sender = e.getPlayer();
 		if (NESSAnticheat.main == null || sender == null) {
 			return;
 		}
@@ -45,10 +57,10 @@ public class BadPackets {
 				return;
 			}
 			if (packetsn.getOrDefault(sender.getName(), 0) > maxPackets) {
-				WarnHacks.warnHacks(sender, "MorePackets", 5, -1.0D, 5, "TooPacket", false);
+				manager.getPlayer(sender).setViolation(new Violation("MorePackets"));
 				return;
 			} else if (repeats.get(sender.getName()) > maxPacketsrepeat) {
-				WarnHacks.warnHacks(sender, "MorePackets", 5, -1.0D, 5, "BadPacket", false);
+				manager.getPlayer(sender).setViolation(new Violation("BadPackets"));
 				repeats.put(sender.getName(), 0);
 			}
 			packetsn.remove(sender.getName());
