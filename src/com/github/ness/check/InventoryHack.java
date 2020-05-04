@@ -12,8 +12,11 @@ import com.github.ness.Violation;
 
 public class InventoryHack extends AbstractCheck<InventoryClickEvent>{
 	
+	public static CheckManager manageraccess;
+	
 	public InventoryHack(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(InventoryClickEvent.class));
+		manageraccess = manager;
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -53,6 +56,7 @@ public class InventoryHack extends AbstractCheck<InventoryClickEvent>{
             if(p.getClicks()>4) {
 				p.setViolation(new Violation("FastClick"));							// MSG.tell(player, "Distance " + distance);
            	 e.setCancelled(true);
+           	 p.setClicks(0);
             }
 		}
 	}

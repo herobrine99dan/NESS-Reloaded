@@ -41,12 +41,11 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
 	public void Check(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
-			Player pl1 = (Player) e.getDamager();
-			Entity pl2 = e.getEntity();
-			double dist = pl1.getLocation().distanceSquared(pl2.getLocation());
-			if (dist > 4.2) {
-				punish(pl1, 19, "Reach", 6);
-				pl1.sendMessage("Reach: " + dist);
+			Player p = (Player) e.getDamager();
+			Entity et = e.getEntity();
+			double dist = Utility.getMaxSpeed(p.getLocation(), et.getLocation());
+			if (dist > 3.6) {
+				punish(p, 19, "Reach", 6);
 			}
 		}
 	}
