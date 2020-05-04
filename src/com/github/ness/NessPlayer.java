@@ -2,8 +2,11 @@ package com.github.ness;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.entity.Player;
@@ -56,6 +59,14 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	@Setter
 	private long lastHittime = 0;
+	
+	// Used for Aimbot check
+	@Getter
+	private List<Float> pitchdelta = new ArrayList<>();
+	@Getter
+	@Setter
+	private float lastmcdpitch = Float.MIN_VALUE;
+	
 	@SyncOnly
 	private final Player player;
 
