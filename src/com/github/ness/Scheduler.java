@@ -20,6 +20,7 @@ public class Scheduler {
                 	np.setDrop(0);
                 	np.setOnMoveRepeat(0);
                 	np.setPackets(0);
+                	np.setPacketscounter(0);
                 }
             }
         }, 0L, 20L);

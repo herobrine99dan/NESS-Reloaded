@@ -186,6 +186,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (Double.toString(x).length() > 4) {
 			x = around(x, 5);
 		}
+		if (!Utilities.isAround(to, to.getBlock().getType())) {
+			return;
+		}
 		Vector v = new Vector(x, to.getX(), z);
 		// Vector result = v.subtract(p.getVelocity());
 		Vector result = v.subtract(p.getVelocity().setY(0));
@@ -193,9 +196,12 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		double zresult = Math.abs(result.getZ());
 		if (xresult > 0.38 || zresult > 0.38) {
 			if (!(xresult == 0.36)) {
-				if(!(zresult == 0.36)) {
-					
-					//p.sendMessage("X: " + Math.abs(around(result.getX(), 5)) + " Z: " + Math.abs(around(result.getZ(), 5)));
+				if (!(zresult == 0.36)) {
+					if (!(xresult > 1) && !(zresult > 1)) {
+						punish(p, "InvalidXZVelocity");
+					}
+					// p.sendMessage("X: " + Math.abs(around(result.getX(), 5)) + " Z: " +
+					// Math.abs(around(result.getZ(), 5)));
 				}
 			}
 		}

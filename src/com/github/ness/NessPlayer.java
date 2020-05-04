@@ -56,6 +56,12 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	@Setter
 	private long lastHittime = 0;
+	@Getter
+	@Setter
+	int packetscounter = 0;
+	@Getter
+	@Setter
+	int packetsrepeat = 0;
 	@SyncOnly
 	private final Player player;
 
