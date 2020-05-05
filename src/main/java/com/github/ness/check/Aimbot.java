@@ -6,9 +6,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
-import com.github.ness.Utilities;
-import com.github.ness.Utility;
 import com.github.ness.Violation;
+import com.github.ness.utility.Utilities;
+import com.github.ness.utility.Utility;
 
 public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	

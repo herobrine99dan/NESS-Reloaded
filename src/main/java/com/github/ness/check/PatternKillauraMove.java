@@ -9,8 +9,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
-import com.github.ness.Utilities;
 import com.github.ness.Violation;
+import com.github.ness.utility.Utilities;
 
 public class PatternKillauraMove extends AbstractCheck<PlayerMoveEvent> {
 	

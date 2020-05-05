@@ -10,8 +10,8 @@ import org.bukkit.entity.Player;
 import com.comphenix.protocol.events.PacketContainer;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
-import com.github.ness.Utility;
 import com.github.ness.Violation;
+import com.github.ness.utility.Utility;
 
 public class BadPackets{
 	int maxpackets = 14;

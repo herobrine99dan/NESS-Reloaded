@@ -5,7 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.github.ness.NESSAnticheat;
-import com.github.ness.Utility;
+import com.github.ness.utility.Utility;
 
 public class Freecam {
 

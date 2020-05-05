@@ -15,8 +15,8 @@ import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NESSAnticheat;
-import com.github.ness.Utility;
 import com.github.ness.Violation;
+import com.github.ness.utility.Utility;
 
 public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public HashMap<Player, Entity> lastEntityHit = new HashMap<Player, Entity>();

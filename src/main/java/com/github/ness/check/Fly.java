@@ -19,9 +19,9 @@ import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
-import com.github.ness.Utilities;
-import com.github.ness.Utility;
 import com.github.ness.Violation;
+import com.github.ness.utility.Utilities;
+import com.github.ness.utility.Utility;
 
 public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
@@ -48,8 +48,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Check12(e);
 		Check16(e);
 		Check17(e);
-		Check19(e);
-		Check21(e);
 	}
 
 	protected List<String> bypasses = Arrays.asList("slab", "stair", "snow", "bed", "skull", "step", "slime");
@@ -348,65 +346,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
-	public void Check17(PlayerMoveEvent e) {
-		Player player = e.getPlayer();
-		if(Utilities.isInWeb(player) || Utilities.isOnWeb(player)) {
-			return;
-		}
-		Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0.0, 1.0, 0.0)).getType();
-		if ((!player.isSneaking() || below != Material.LADDER) && !player.isFlying() && !player.isOnGround()
-				&& player.getLocation().getY() % 1.0 == 0.0
-			&& !below.toString().contains("stairs")) {
-			int failed = noground.getOrDefault(player.getName(), 0);
-			noground.put(player.getName(), failed + 1);
-			if (failed > 4) {
-				// MSG.tell((CommandSender)player, "&7NoGround: &e" + failed);
-				if (!below.equals(Material.SLIME_BLOCK)) {
-					manager.getPlayer(player).setViolation(new Violation("NoGround",Integer.toString(failed)));
-				}
-				noground.put(player.getName(), 0);
-			}
-		}
-	}
-
-	public void Check19(PlayerMoveEvent e) {
-		Player player = e.getPlayer();
-		Location from = e.getFrom();
-		Location to = e.getTo();
-		double dTG = 0.0;
-		for (int x = -1; x <= 1; ++x) {
-			for (int z = -1; z <= 1; ++z) {
-				int y;
-				for (y = 0; !player.getLocation().subtract(x, y, z).getBlock().getType()
-						.isSolid() && y < 20; ++y) {
-				}
-				if (y < dTG || dTG == 0.0) {
-					dTG = y;
-				}
-			}
-		}
-		Material bottom = player.getLocation().getWorld().getBlockAt(player.getLocation().subtract(0.0, dTG, 0.0)).getType();
-		Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0.0, 1.0, 0.0)).getType();
-		boolean groundAround = Utility.groundAround(player.getLocation());
-		double hozDist = to.distanceSquared(from) - (to.getY() - from.getY());
-		double fallDist = player.getFallDistance();
-		if (from.getY() - to.getY() > 0.3 && fallDist <= 0.4 && below != Material.STATIONARY_WATER
-				&& !player.getLocation().getBlock().isLiquid()) {
-			if (hozDist < 0.1 || !groundAround) {
-				if (below != Material.PISTON_BASE
-						&& below != Material.PISTON_STICKY_BASE
-						&& (!player.isInsideVehicle()
-								|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))
-						&& !player.isFlying() && to.getY() > 0.0 && bottom != Material.SLIME_BLOCK) {
-					//NESSPlayer np = NESSPlayer.getInstance(player);
-					manager.getPlayer(player).setViolation(new Violation("NoFall"));
-				}
-			}
-		}
-	}
-
 	
-	public void Check21(PlayerMoveEvent e) {
+	public void Check17(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
 		Location from = e.getFrom();
 		Location to = e.getTo();

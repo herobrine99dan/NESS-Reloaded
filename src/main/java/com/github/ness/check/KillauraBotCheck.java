@@ -20,9 +20,9 @@ import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.github.ness.CheckManager;
-import com.github.ness.Utilities;
-import com.github.ness.Utility;
 import com.github.ness.protocol.NPC1_12;
+import com.github.ness.utility.Utilities;
+import com.github.ness.utility.Utility;
 
 public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent> {
 	public static HashMap<String, String> npclist = new HashMap<String, String>();

@@ -1,4 +1,4 @@
-package com.github.ness;
+package com.github.ness.utility;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

@@ -5,9 +5,9 @@ import org.bukkit.entity.Player;
 import com.comphenix.protocol.events.PacketContainer;
 import com.github.ness.CheckManager;
 import com.github.ness.MovementPlayerData;
-import com.github.ness.Utility;
 import com.github.ness.Violation;
 import com.github.ness.events.PacketInEvent;
+import com.github.ness.utility.Utility;
 
 public class PingSpoof {
 

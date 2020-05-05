@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.ness.Utility;
+import com.github.ness.utility.Utility;
 
 import lombok.AccessLevel;
 import lombok.Getter;

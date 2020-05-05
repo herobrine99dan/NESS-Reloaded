@@ -11,9 +11,9 @@ import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NESSAnticheat;
-import com.github.ness.Utilities;
-import com.github.ness.Utility;
 import com.github.ness.Violation;
+import com.github.ness.utility.Utilities;
+import com.github.ness.utility.Utility;
 
 public class Sprint extends AbstractCheck<PlayerMoveEvent> {
 	public  HashMap<String, Integer> sprintcheck = new HashMap<String, Integer>();

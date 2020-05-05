@@ -7,8 +7,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.CheckManager;
-import com.github.ness.Utility;
 import com.github.ness.Violation;
+import com.github.ness.utility.Utility;
 
 public class Criticals extends AbstractCheck<EntityDamageByEntityEvent>{
 

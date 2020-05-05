@@ -7,8 +7,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
-import com.github.ness.Utility;
 import com.github.ness.Violation;
+import com.github.ness.utility.Utility;
 
 public class InventoryHack extends AbstractCheck<InventoryClickEvent>{
 	

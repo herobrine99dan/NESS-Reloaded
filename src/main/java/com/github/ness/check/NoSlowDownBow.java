@@ -5,8 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
-import com.github.ness.Utility;
 import com.github.ness.Violation;
+import com.github.ness.utility.Utility;
 
 public class NoSlowDownBow extends AbstractCheck<EntityShootBowEvent>{
 

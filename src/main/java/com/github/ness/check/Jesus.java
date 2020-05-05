@@ -9,9 +9,9 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import com.github.ness.CheckManager;
-import com.github.ness.Utilities;
-import com.github.ness.Utility;
 import com.github.ness.Violation;
+import com.github.ness.utility.Utilities;
+import com.github.ness.utility.Utility;
 
 public class Jesus extends AbstractCheck<PlayerMoveEvent>{
 	
