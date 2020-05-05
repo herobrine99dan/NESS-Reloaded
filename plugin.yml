@@ -1,9 +1,0 @@
-name: NESS
-main: com.github.ness.NESSAnticheat
-version: 2.0
-authors: [herobrine99dan, A248]
-softdepend: [ProtocolLib]
-commands:
-   ness:
-      description: Main ness command
-      usage: /<command>

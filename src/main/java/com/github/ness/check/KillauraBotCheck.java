@@ -1,9 +1,7 @@
 package com.github.ness.check;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -13,14 +11,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.comphenix.packetwrapper.WrapperPlayServerEntityDestroy;
 import com.comphenix.packetwrapper.WrapperPlayServerPlayerInfo;
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.EnumWrappers.PlayerInfoAction;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
-import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.github.ness.CheckManager;
 import com.github.ness.Utilities;
 import com.github.ness.Utility;
@@ -49,13 +43,10 @@ public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent> {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(manager.getNess(), () -> {
 				//ProtocolLibrary.getProtocolManager().sendServerPacket(p, new net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo(
 					//	net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc));
-				WrappedGameProfile profile = new WrappedGameProfile(npc.getUniqueID(), npc.getName());
-                Random r = new Random();
 				try {
 					WrapperPlayServerPlayerInfo pacchetto = new WrapperPlayServerPlayerInfo();
 					pacchetto.setAction(PlayerInfoAction.REMOVE_PLAYER);
-					pacchetto.setData(Arrays.asList(new PlayerInfoData(profile, r.nextInt(200), EnumWrappers.NativeGameMode.SURVIVAL,
-			                WrappedChatComponent.fromText("displayname"))));
+					pacchetto.setData(null);
 					pacchetto.sendPacket(p);
 				}catch(Exception e) {}
 				try {
@@ -67,13 +58,6 @@ public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent> {
 			}, 15L);
 
 		}
-	}
-
-	PacketContainer makeInfoDataContainer(PlayerInfoAction action, List<PlayerInfoData> infoData) {
-		PacketContainer packetPlayerInfo = new PacketContainer(PacketType.Play.Server.PLAYER_INFO);
-		packetPlayerInfo.getPlayerInfoAction().write(0, action);
-		packetPlayerInfo.getPlayerInfoDataLists().write(0, infoData);
-		return packetPlayerInfo;
 	}
 
 	private static Location determinateLocation(Player p) {

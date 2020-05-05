@@ -158,6 +158,13 @@ public class CheckManager implements AutoCloseable {
 		return checks;
 	}
 	
+	void reloadChecks() {
+		checks.forEach(AbstractCheck::close);
+		// assignation is atomic
+		checks = getAllChecks();
+		checks.forEach((check) -> check.initiatePeriodicTasks());
+	}
+	
 	@Override
 	public void close() {
 		checks.forEach(AbstractCheck::close);

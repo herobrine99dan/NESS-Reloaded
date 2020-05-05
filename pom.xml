@@ -17,14 +17,12 @@
 	</properties>
 	
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
 		<finalName>${project.name}_${project.version}</finalName>
 		<resources>
 			<resource>
-				<directory>${project.basedir}</directory>
-				<includes>
-					<include>**.yml</include>
-				</includes>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
 			</resource>
 		</resources>
 		<plugins>
