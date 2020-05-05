@@ -17,11 +17,13 @@ import com.github.ness.utility.MSG;
 import com.github.ness.utility.PlayerManager;
 
 public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
-	
+
+	public static HashMap<String, Integer> noground = new HashMap<>();
+
 	HashMap<Player, Location> oldLoc = new HashMap<>();
 	HashMap<Player, Location> safeLoc = new HashMap<>();
 	HashMap<Player, Boolean> legit = new HashMap<>();
-	
+
 	public OldMovementChecks(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
 		// TODO Auto-generated constructor stub
@@ -181,11 +183,13 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 							if (small != Material.TRAP_DOOR && small != Material.IRON_TRAPDOOR) {
 								if (devMode)
 									MSG.tell(player, "&9Dev> &7Speed amo: " + hozDist);
-									if (player.isBlocking()) {
-										manager.getPlayer(player).setViolation(new Violation("NoSlowDown", "HighDistance(OnMove)"));
-									} else {
-										manager.getPlayer(player).setViolation(new Violation("Speed", "MaxDistance(OnMove)"));
-									}
+								if (player.isBlocking()) {
+									manager.getPlayer(player)
+											.setViolation(new Violation("NoSlowDown", "HighDistance(OnMove)"));
+								} else {
+									manager.getPlayer(player)
+											.setViolation(new Violation("Speed", "MaxDistance(OnMove)"));
+								}
 							}
 						}
 					}
@@ -196,8 +200,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 		if (player.isSneaking() && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED)) {
-			if (hozDist > .2 && oldLoc.containsKey(player)
-					&& oldLoc.get(player).getY() == player.getLocation().getY()
+			if (hozDist > .2 && oldLoc.containsKey(player) && oldLoc.get(player).getY() == player.getLocation().getY()
 					&& PlayerManager.timeSince("wasFlight", player) >= 2000
 					&& PlayerManager.timeSince("wasIce", player) >= 1000
 					&& PlayerManager.timeSince("isHit", player) >= 1000
@@ -296,8 +299,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			if (hozDist > .6 && !player.hasPotionEffect(PotionEffectType.SPEED) && !player.isFlying()
 					&& PlayerManager.timeSince("wasFlight", player) >= 3000) {
 				if (oldLoc.containsKey(player)) {
-					if (oldLoc.get(player).getY() < to.getY() + 2
-							&& PlayerManager.timeSince("isHit", player) >= 2000) {
+					if (oldLoc.get(player).getY() < to.getY() + 2 && PlayerManager.timeSince("isHit", player) >= 2000) {
 						if (PlayerManager.timeSince("wasIce", player) >= 1000) {
 							if (devMode)
 								MSG.tell(player, "&9Dev> &7Speed amo: " + hozDist);
@@ -318,8 +320,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			manager.getPlayer(player).setViolation(new Violation("IllegalMovement", "(OnMove)"));
 		}
 		if (dist == 0) {
-			if (!groundAround && !web && !player.isFlying() && bottom != Material.SLIME_BLOCK && bottom != Material.VINE && !cactus
-					&& PlayerManager.timeSince("isHit", player) >= 500) {
+			if (!groundAround && !web && !player.isFlying() && bottom != Material.SLIME_BLOCK && bottom != Material.VINE
+					&& !cactus && PlayerManager.timeSince("isHit", player) >= 500) {
 				manager.getPlayer(player).setViolation(new Violation("Fly", "(OnMove)"));
 			}
 		}
@@ -327,7 +329,13 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				&& player.getLocation().getY() % 1.0 == 0 && PlayerManager.timeSince("lastJoin", player) >= 1000
 				&& PlayerManager.timeSince("teleported", player) >= 5000
 				&& !below.toString().toLowerCase().contains("stairs") && below != Material.SLIME_BLOCK) {
-			manager.getPlayer(player).setViolation(new Violation("NoGround", "(OnMove)"));
+			int failed = ((Integer) noground.getOrDefault(player.getName(), Integer.valueOf(0))).intValue();
+			noground.put(player.getName(), Integer.valueOf(failed + 1));
+			if (failed > 2) {
+				if (!below.equals(Material.SLIME_BLOCK)) {
+					manager.getPlayer(player).setViolation(new Violation("NoGround", "(OnMove)"));
+				}
+			}
 		}
 		if (to.getY() != from.getY()) {
 			if (from.getY() < to.getY()) {

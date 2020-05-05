@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.github.ness.check.InventoryHack;
+import com.github.ness.check.OldMovementChecks;
 
 public class Scheduler {
 
@@ -21,6 +22,7 @@ public class Scheduler {
                 	np.setOnMoveRepeat(0);
                 	np.setPackets(0);
                 	np.setPacketscounter(0);
+                	OldMovementChecks.noground.put(p.getName(), 0);
                 }
             }
         }, 0L, 20L);

@@ -35,6 +35,7 @@ enabled-checks:
   - 'NoSlowDownFood'
   - 'NoSwingAnimation'
   - 'NoSwingAttack'
+  - 'OldMovementChecks'
   - 'PatternKillauraAttack'
   - 'PatternKillauraMove'
   - 'Scaffold'
