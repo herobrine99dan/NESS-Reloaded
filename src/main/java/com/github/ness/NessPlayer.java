@@ -65,6 +65,9 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	@Setter
 	int packetsrepeat = 0;
+	@Getter
+	@Setter
+	double lastDistance = 0.0;
 	
 	// Used for Aimbot check
 	@Getter

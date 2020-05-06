@@ -34,6 +34,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Check2(e);
 		Check3(e);
 		Check4(e);
+		Check5(e);
 	}
 
 	private void punish(Player p, String module) {
@@ -206,8 +207,17 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 	}
+	
+	public void Check5(PlayerMoveEvent event) {
+		Player player = event.getPlayer();
+        NessPlayer np = manager.getPlayer(player);
+        double dist = around(event.getTo().distanceSquared(event.getFrom()),6);
+        double result = around(dist-np.getLastDistance(),6);
+        player.sendMessage("DistResult: " + result);
+        np.setLastDistance(dist);
+	}
 
-	public static double around(double i, int places) {
+	public double around(double i, int places) {
 		String around;
 		try {
 			if (Double.toString(i).length() > places - 2) {
