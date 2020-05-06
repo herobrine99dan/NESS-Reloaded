@@ -354,7 +354,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if(player.isFlying() || player.hasPotionEffect(PotionEffectType.SPEED)) {
 			return;
 		}
-		Double hozDist = to.distanceSquared(from) - (to.getY() - from.getY());
+		Double hozDist = Utility.getMaxSpeed(from, to);
 		if (from.getBlock().getType() == Material.WEB && hozDist > 0.01) {
 			manager.getPlayer(player).setViolation(new Violation("NoWeb"));
 			//player.sendMessage("NoWebDist: " + hozDist);
