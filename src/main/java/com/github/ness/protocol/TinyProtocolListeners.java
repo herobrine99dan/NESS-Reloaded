@@ -6,6 +6,8 @@ import org.bukkit.plugin.Plugin;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.check.BadPackets;
 import com.github.ness.check.PingSpoof;
+import com.github.ness.tinyprotocol.packet.in.WrappedInFlyingPacket;
+import com.github.ness.tinyprotocol.packet.out.WrappedOutPositionPacket;
 
 import io.netty.channel.Channel;
 
