@@ -1,0 +1,9 @@
+name: NESS
+main: org.mswsplex.MSWS.NESS.NESS
+version: 1.9
+author: herobrine99dan
+softdepend: [ProtocolLib, Punish, mcMMO]
+commands:
+   ness:
+      description: Made by herobrine99dan and A248
+      usage: /<command>
