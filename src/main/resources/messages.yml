@@ -1,6 +1,4 @@
 commands:
   no-permission: '&cSorry, you cannot use this.'
-  reloaded: '&aReloaded NESS!'
-  usage: '&cUsage: /ness reload'
 # If you change this, you will receive warnings in console
 messages-version: 1

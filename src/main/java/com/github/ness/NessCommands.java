@@ -1,5 +1,7 @@
 package com.github.ness;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -12,22 +14,39 @@ public class NessCommands implements CommandExecutor {
 
 	private final NESSAnticheat ness;
 	
+	private String getPermission(String arg) {
+		if (arg == null) {
+			return "ness.command.usage";
+		}
+		switch (arg) {
+		case "reload":
+			return "ness.command.reload";
+		case "version":
+			return "ness.command.usage";
+		default:
+			return "ness.command.usage";
+		}
+	}
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (sender.hasPermission("ness.admin")) {
-			if (args.length >= 1) {
+		String firstArg = (args.length >= 1) ? args[0] : null;
+		if (sender.hasPermission(getPermission(firstArg))) {
+			if (firstArg == null) {
+				usage(sender);
+			} else {
 				switch (args[0].toLowerCase()) {
 				case "reload":
 					ness.getCheckManager().reloadChecks();
-					sendMessage(sender, ness.getNessConfig().getMessages().getString(
-							"commands.reloaded", "&aReloaded NESS!"));
+					sendMessage(sender, "&aReloaded NESS!");
+					break;
+				case "version":
+					sendVersion(sender);
 					break;
 				default:
 					usage(sender);
 					break;
 				}
-			} else {
-				usage(sender);
 			}
 		} else {
 			sendMessage(sender, ness.getNessConfig().getMessages().getString(
@@ -36,8 +55,19 @@ public class NessCommands implements CommandExecutor {
 		return true;
 	}
 	
+	private void sendVersion(CommandSender sender) {
+		sendMessage(sender, "&7Version " + ness.getDescription().getVersion());
+	}
+	
 	private void usage(CommandSender sender) {
-		sendMessage(sender, ness.getNessConfig().getMessages().getString("commands.usage", "&cUsage: /ness reload"));
+		sendMessage(sender, "&aNESS Anticheat");
+		sendVersion(sender);
+		sendMessage(sender, '\n'
+				+ "/ness toggle <dev|debug> - Toggle debug or dev mode." + '\n'
+				+ "/ness vl <player> - View player violations." + '\n'
+				+ "/ness reload - Reload configuration." + '\n'
+				+ '\n'
+				+ "&7Authors: " + StringUtils.join(ness.getDescription().getAuthors(), ", "));
 	}
 	
 	private void sendMessage(CommandSender sender, String msg) {
