@@ -183,7 +183,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			}
 			Random r = new Random();
 			Location location = player.getLocation().toVector().add(player.getLocation().getDirection().multiply(1))
-					.toLocation(player.getWorld()).add(0, 2.5, 0);
+					.toLocation(player.getWorld()).add(0, 2.7, 0);
 			Entity et = (Entity) player.getWorld().spawnEntity(location, EntityType.ZOMBIE);
 			et.setFireTicks(r.nextInt());
 			et.setGravity(true);
