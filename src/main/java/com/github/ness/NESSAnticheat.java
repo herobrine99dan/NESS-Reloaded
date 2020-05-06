@@ -7,11 +7,17 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.ness.protocol.TinyProtocol;
+import com.github.ness.protocol.TinyProtocolListeners;
 
 import lombok.Getter;
 
 public class NESSAnticheat extends JavaPlugin {
+    @Getter
+	public TinyProtocol protocol;
 
 	@Getter
 	private ScheduledExecutorService executor;
@@ -44,8 +50,9 @@ public class NESSAnticheat extends JavaPlugin {
 		executor = Executors.newSingleThreadScheduledExecutor();
 		getServer().getPluginCommand("ness").setExecutor(new NessCommands(this));
 		checkManager = new CheckManager(this);
+		this.protocol = (TinyProtocol) new TinyProtocolListeners((Plugin) this);
 		new Scheduler().start();
-		new Protocols();
+		//new Protocols();
 		CompletableFuture<?> future = checkManager.loadAsync();
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);
 	}

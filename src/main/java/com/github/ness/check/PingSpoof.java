@@ -11,7 +11,7 @@ import com.github.ness.utility.Utility;
 
 public class PingSpoof {
 
-	public void Check(Player sender, PacketContainer packet) {
+	public static void Check(Player sender, Object packet) {
 		if(sender==null) {
 			return;
 		}

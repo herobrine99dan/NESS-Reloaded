@@ -44,7 +44,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 			float gcdDiff = Math.abs(deltaPitchGCD - lastDeltaPitchGCD);
 			// if GCD is significantly different or if GCD is practically unsolvable
 			if (gcdDiff > 0.001 || deltaPitchGCD < 0.00001) {
-				manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot"));
+				manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot","PitchPattern"));
 			}
 			lastDeltaPitches.clear();
 			player.setLastmcdpitch(deltaPitchGCD);
@@ -56,9 +56,9 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		float yawChange = Math.abs(e.getTo().getYaw() - e.getFrom().getYaw());
 		float pitchChange = Math.abs(e.getTo().getPitch() - e.getFrom().getPitch());
 		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {
-			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot"));
+			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot","PerfectAura"));
 		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {
-			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot"));
+			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot","PerfectAura"));
 		}
 	}
 
@@ -81,7 +81,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 			if (yaw >= 5.0) {
 				if (yaw % 1.0f == 0.0f) {
 					//WarnHacks.warnHacks(event.getPlayer(), "Aimbot", 3, -1.0D, 2, "PerfectAura", false);
-					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Aimbot"));
+					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Aimbot","PerfectAura"));
 				}
 			}
 		}

@@ -1,6 +1,8 @@
 package com.github.ness.check;
 
+import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -16,11 +18,15 @@ import org.bukkit.util.Vector;
 import com.github.ness.CheckManager;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.Violation;
+import com.github.ness.utility.TimeUtil;
 import com.github.ness.utility.Utility;
 
 public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public HashMap<Player, Entity> lastEntityHit = new HashMap<Player, Entity>();
 	public HashMap<String, UUID> mobinfront = new HashMap<String, UUID>();
+	  private Map<UUID, Map.Entry<Integer, Long>> AimbotTicks = new HashMap<>();
+	  private Map<UUID, Double> Differences = new HashMap<>();
+	  private Map<UUID, Location> LastLocation = new HashMap<>();
 
 	public Killaura(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));

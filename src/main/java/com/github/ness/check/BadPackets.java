@@ -14,9 +14,9 @@ import com.github.ness.Violation;
 import com.github.ness.utility.Utility;
 
 public class BadPackets {
-	int maxpackets = 21;
+	static int maxpackets = 21;
 
-	public void Check(Player sender, PacketContainer packet) {
+	public static void Check(Player sender, Object packet) {
 		if (NESSAnticheat.main == null || sender == null) {
 			return;
 		}
@@ -32,8 +32,11 @@ public class BadPackets {
 			if (Utility.SpecificBlockNear(sender.getLocation(), Material.PORTAL)) {
 				return;
 			}
+			//System.out.println("Sono qua");
+			//sender.sendMessage("MaxPackets: " + maxPackets);
 			NessPlayer np = InventoryHack.manageraccess.getPlayer(sender);
 			np.setPacketscounter(np.getPacketscounter() + 1);
+			//sender.sendMessage("Counter: " + np.getPacketscounter());
 			if (np.getPacketscounter() > maxpackets) {
 				InventoryHack.manageraccess.getPlayer(sender).setViolation(new Violation("MorePackets",np.getPacketscounter()+""));
 			}
