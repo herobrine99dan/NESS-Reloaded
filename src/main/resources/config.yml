@@ -1,0 +1,94 @@
+#
+#
+# NESS Reloaded v2 Configuration
+#
+#
+
+#
+#
+# Enabled checks
+#
+# Comment out a check to disable
+#
+
+enabled-checks:
+  - 'Aimbot'
+  - 'AutoClick'
+  - 'AntiUnicode'
+  - 'AntiKb'
+#  - 'BadPackets'
+  - 'Criticals'
+  - 'EntitySpeedCheck'
+  - 'FastEat'
+  - 'FastPlace'
+#  - 'FastStairs'
+  - 'Fly'
+  - 'GhostHand'
+  - 'Headless'
+  - 'LiquidInteraction'
+  - 'InventoryHack'
+  - 'Jesus'
+  - 'Killaura'
+  - 'KillauraBotCheck'
+  - 'NoClip'
+  - 'NoSlowDownBow'
+  - 'NoSlowDownFood'
+  - 'NoSwingAnimation'
+  - 'NoSwingAttack'
+  - 'OldMovementChecks'
+  - 'PatternKillauraAttack'
+  - 'PatternKillauraMove'
+  - 'Scaffold'
+  - 'SpamBot'
+  - 'Speed'
+  - 'Sprint'
+
+#
+# Check name
+#
+# Description
+#
+# Performance impact: minimal, low, medium, high
+# Effectiveness: medium, high, very high
+#
+
+checks:
+
+#
+# AutoClick
+#
+# Caps clicks per second (CPS) at a hard limit, also calculates
+# the variance in the user's clicks (constancy) and the variance
+# in the variance (constancy super).
+#
+# Performance impact: Minimal
+# Effectiveness: untested
+#
+  autoclick:
+    total-retention-secs: 32
+    hard-limit:
+      cps: 16
+      retention-span-secs: 4
+    constancy:
+      threshold: 4
+      deviation-percent: 20
+      min-sample: 6
+      super:
+        deviation-percent: 10
+        min-sample: 12
+      span-millis: 800
+
+#
+# LiquidInteraction
+#
+# Checks to see if a player placed a block against water.
+#
+# Performance impact: Minimal
+# Effectiveness: High
+#
+  liquidinteraction:
+    whitelisted-materials:
+      - 'WATER_LILY'
+
+# If you change this, you will receive warnings in console
+config-version: 1
