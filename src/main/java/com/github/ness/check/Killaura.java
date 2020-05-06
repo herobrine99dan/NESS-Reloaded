@@ -1,14 +1,13 @@
 package com.github.ness.check;
 
-import java.util.AbstractMap;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -18,15 +17,11 @@ import org.bukkit.util.Vector;
 import com.github.ness.CheckManager;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.Violation;
-import com.github.ness.utility.TimeUtil;
 import com.github.ness.utility.Utility;
 
 public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public HashMap<Player, Entity> lastEntityHit = new HashMap<Player, Entity>();
 	public HashMap<String, UUID> mobinfront = new HashMap<String, UUID>();
-	  private Map<UUID, Map.Entry<Integer, Long>> AimbotTicks = new HashMap<>();
-	  private Map<UUID, Double> Differences = new HashMap<>();
-	  private Map<UUID, Location> LastLocation = new HashMap<>();
 
 	public Killaura(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
@@ -181,34 +176,26 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check7(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player player = (Player) e.getDamager();
-			Location location = player.getLocation().toVector().add(player.getLocation().getDirection().multiply(3))
-					.toLocation(player.getWorld());
-			if (mobinfront.get(player.getName()) == null) {
-				ArmorStand as = (ArmorStand) location.getWorld().spawn(location, ArmorStand.class);
-				as.setGravity(false);
-				as.setCanPickupItems(false);
-				as.setCustomNameVisible(false);
-				as.setVisible(true);
-				as.setArms(true);
-
-				int seconds = 2;
-				boolean removed = false;
-				mobinfront.putIfAbsent(player.getName(), as.getUniqueId());
-				Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
-					public void run() {
-						if (!as.isDead()) {
-							as.remove();
-							mobinfront.remove(player.getName());
-						}
-					}
-				}, seconds * 20L);
-			} else {
-				if (e.getEntity() instanceof ArmorStand) {
-					UUID u = mobinfront.get(player.getName());
-					mobinfront.remove(player.getName());
-
-				}
+			if (e.getEntity().getName().equals("NESSMarker") && e.getEntityType().equals(EntityType.ZOMBIE)) {
+				punish(player, 3, "BotCheck", 5);
+				e.getEntity().remove();
+				return;
 			}
+			Random r = new Random();
+			Location location = player.getLocation().toVector().add(player.getLocation().getDirection().multiply(1))
+					.toLocation(player.getWorld()).add(0, 2.5, 0);
+			Entity et = (Entity) player.getWorld().spawnEntity(location, EntityType.ZOMBIE);
+			et.setFireTicks(r.nextInt());
+			et.setGravity(true);
+			et.setSilent(false);
+			et.setCustomName("NESSMarker");
+			Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
+				public void run() {
+					if (!et.isDead()) {
+						et.remove();
+					}
+				}
+			}, 3L);
 		}
 	}
 

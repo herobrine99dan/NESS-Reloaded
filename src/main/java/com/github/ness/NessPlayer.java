@@ -68,6 +68,9 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	@Setter
 	double lastDistance = 0.0;
+	@Getter
+	@Setter
+	long mobinfrontime = 0;
 	
 	// Used for Aimbot check
 	@Getter

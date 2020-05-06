@@ -26,7 +26,7 @@ import com.github.ness.utility.Utility;
 public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	protected HashMap<String, Integer> noground = new HashMap<String, Integer>();
-	
+
 	public Fly(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
 	}
@@ -48,6 +48,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Check12(e);
 		Check16(e);
 		Check17(e);
+		Check18(e);
 	}
 
 	protected List<String> bypasses = Arrays.asList("slab", "stair", "snow", "bed", "skull", "step", "slime");
@@ -58,10 +59,10 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			if (!event.getPlayer().isOnGround()) {
 				double fallDist = event.getPlayer().getFallDistance();
 				if (event.getPlayer().getVelocity().getY() < -1.0D && fallDist == 0.0D) {
-					if(player.getHealth()>2) {
+					if (player.getHealth() > 2) {
 						player.setHealth(player.getHealth() - 1.0D);
 					}
-					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly"));
+					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly","NoVelocity"));
 				}
 			}
 
@@ -77,7 +78,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 					if (distance == 0.164D || distance == 0.248D || distance == 0.333D || distance == 0.419D) {
 						return;
 					}
-					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly"));
+					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly","FastLadder"));
 				}
 			}
 
@@ -88,7 +89,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Player p = event.getPlayer();
 		if (!bypass(event.getPlayer())) {
 			if (p.getVelocity().getY() < -1.0D && p.isOnGround() && !Utility.hasBlock(p, Material.SLIME_BLOCK)) {
-				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly"));
+				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly","FakeVelocity"));
 			}
 
 		}
@@ -102,7 +103,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			double deltaY = event.getFrom().getY() - event.getTo().getY();
 			if (deltaY > 1.0D && p.getFallDistance() < 1.0F
 					|| deltaY > 3.0D && !Utility.hasBlock(p, Material.SLIME_BLOCK)) {
-				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly","AirCheck"));
+				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly", "AirCheck"));
 			} else {
 				if (p.getFallDistance() >= 1.0F) {
 					airBuffer = 10;
@@ -117,7 +118,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				float maxChange = 0.8F;
 				if (Utility.isInAir(p) && playerLoc.getBlock().getType() == Material.AIR && change > maxChange
 						&& change != 0.5D && !Utility.hasBlock(p, Material.SLIME_BLOCK)) {
-					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly","AirCheck"));
+					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly", "AirCheck"));
 				}
 			}
 
@@ -154,7 +155,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 						}
 
 						if (!bypass) {
-							manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly"));
+							manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly","AirJump"));
 						}
 					} else if (distance == defaultvalue || distance == defaultjump) {
 						Location loc = p.getLocation();
@@ -165,7 +166,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 								&& p.getVelocity().getY() <= -0.078D
 								&& !loc.getBlock().getType().name().contains("STAIR")
 								&& !loc1.getBlock().getType().name().contains("STAIR") && p.getNoDamageTicks() <= 1) {
-							manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly"));
+							manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly","AirJump"));
 						}
 					}
 				}
@@ -226,16 +227,16 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 						&& player.getLocation().getBlock().getRelative(BlockFace.UP).getType() == Material.AIR) {
 					if (Distance > 0.5D && !isonground && e.getTo().getY() > e.getFrom().getY()
 							&& e.getTo().getX() == e.getFrom().getX() && e.getTo().getZ() == e.getFrom().getZ()) {
-						manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly"));
+						manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly","Ascension"));
 					} else if (Distance > 0.9D && !isonground && e.getTo().getY() > e.getFrom().getY()
 							&& e.getTo().getX() == e.getFrom().getX() && e.getTo().getZ() == e.getFrom().getZ()) {
-						manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly"));
+						manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly","Ascension"));
 					} else if (Distance > 1.0D && !isonground && e.getTo().getY() > e.getFrom().getY()
 							&& e.getTo().getX() == e.getFrom().getX() && e.getTo().getZ() == e.getFrom().getZ()) {
-						manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly"));
+						manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly","Ascension"));
 					} else if (Distance > 3.24D && !isonground && e.getTo().getY() > e.getFrom().getY()
 							&& e.getTo().getX() == e.getFrom().getX() && e.getTo().getZ() == e.getFrom().getZ()) {
-						manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly"));
+						manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly","Ascension"));
 					}
 				}
 			}
@@ -248,7 +249,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (!bypass(e.getPlayer())) {
 			if (player.isOnline() && !Utility.hasBlock(player, Material.SLIME_BLOCK) && player.isOnGround()
 					&& !Utility.checkGround(e.getTo().getY())) {
-				manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly"));
+				manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly","FalseGround"));
 			}
 
 		}
@@ -264,7 +265,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				double dist = Math.pow(to.getX() - from.getX(), 2.0D) + Math.pow(to.getZ() - from.getZ(), 2.0D);
 				double motion = dist / 0.9800000190734863D;
 				if (motion >= 1.0D && dist >= 0.8D && !bypass(player)) {
-					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly"));
+					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly","InvalidMotion"));
 				}
 			}
 		}
@@ -334,7 +335,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		boolean groundAround = Utility.groundAround(player.getLocation());
 		if (player.isInsideVehicle() && !groundAround && from.getY() <= to.getY() && (!player.isInsideVehicle()
 				|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))) {
-			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly","nogroundfly"));
+			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly", "nogroundfly"));
 		}
 	}
 
@@ -346,18 +347,56 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
-	
 	public void Check17(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
 		Location from = e.getFrom();
 		Location to = e.getTo();
-		if(player.isFlying() || player.hasPotionEffect(PotionEffectType.SPEED)) {
+		if (player.isFlying() || player.hasPotionEffect(PotionEffectType.SPEED)) {
 			return;
 		}
 		Double hozDist = Utility.getMaxSpeed(from, to);
 		if (from.getBlock().getType() == Material.WEB && hozDist > 0.01) {
 			manager.getPlayer(player).setViolation(new Violation("NoWeb"));
-			//player.sendMessage("NoWebDist: " + hozDist);
+			// player.sendMessage("NoWebDist: " + hozDist);
+		}
+	}
+
+	public void Check18(PlayerMoveEvent e) {
+		Location to = e.getTo();
+		Location from = e.getFrom();
+		Player p = e.getPlayer();
+		double x = to.getX() - from.getX();
+		double y = to.getY() - from.getY();
+		if (Double.toString(y).length() > 4) {
+			y = Utility.around(y, 5);
+		}
+		double z = to.getZ() - from.getZ();
+		Vector v = new Vector(x, y, z);
+		// Vector result = v.subtract(p.getVelocity());
+		Vector result = v.subtract(p.getVelocity().setY(Utility.around(p.getVelocity().getY(), 5)));
+		double yresult = 0.0;
+		if (p.isOnGround()) {
+			return;
+		}
+		try {
+			yresult = Utility.around(result.getY(), 5);
+		} catch (Exception ex) {
+			yresult = result.getY();
+		}
+		if (!Utilities.isAround(to, to.getBlock().getType())) {
+			return;
+		}
+		if (!(yresult == 0.07)) {
+			if (!(yresult == 0.0)) {
+				if (!(yresult == -0.01)) {
+					if (!(yresult == -0.03)) {
+						if(yresult>0.06 && Utilities.getPlayerUnderBlock(p).getType().equals(Material.AIR)) {
+							p.sendMessage("Dist:" + yresult);
+							//manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly", "InvalidVelocity"));
+						}
+					}
+				}
+			}
 		}
 	}
 

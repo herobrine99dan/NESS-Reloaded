@@ -213,7 +213,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
         NessPlayer np = manager.getPlayer(player);
         double dist = around(event.getTo().distanceSquared(event.getFrom()),6);
         double result = around(dist-np.getLastDistance(),6);
-        player.sendMessage("DistResult: " + result);
+        //player.sendMessage("DistResult: " + result);
         np.setLastDistance(dist);
 	}
 
