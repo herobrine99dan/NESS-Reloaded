@@ -310,6 +310,17 @@ public class Utility {
 		}
 		return theta;
 	}
+	
+	public static float clamp180(float theta) {
+		theta %= 360.0D;
+		if (theta >= 180.0D) {
+			theta -= 360.0D;
+		}
+		if (theta < -180.0D) {
+			theta += 360.0D;
+		}
+		return theta;
+	}
 
 	public static double getHorizontalDistance(Location one, Location two) {
 		double toReturn = 0.0D;

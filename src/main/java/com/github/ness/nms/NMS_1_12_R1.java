@@ -12,10 +12,13 @@ import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
+import com.github.ness.NESSAnticheat;
+import com.github.ness.check.KillauraBotCheck;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.server.v1_12_R1.EntityPlayer;
 import net.minecraft.server.v1_12_R1.EnumItemSlot;
+import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityEquipment;
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityMetadata;
 import net.minecraft.server.v1_12_R1.PacketPlayOutNamedEntitySpawn;
@@ -61,6 +64,13 @@ public class NMS_1_12_R1 implements NMSHandler {
 						connection.sendPacket(new PacketPlayOutEntityEquipment(npc.getId(), EnumItemSlot.FEET, CraftItemStack.asNMSCopy(armor[3])));
 					}
 				}
+				KillauraBotCheck.npclist.putIfAbsent(target.getName(), Integer.toString(npc.getId()));
+		        Bukkit.getScheduler().scheduleSyncDelayedTask(NESSAnticheat.main, () -> {
+		        	NESSAnticheat.main.protocol.sendPacket(target, new PacketPlayOutPlayerInfo(
+		                    PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, new EntityPlayer[] { npc }));
+		        	NESSAnticheat.main.protocol.sendPacket(target, new PacketPlayOutEntityDestroy(new int[] { npc.getId() }));
+		              KillauraBotCheck.npclist.remove(target.getName());
+		            },15L);
 			}
 			
 		};

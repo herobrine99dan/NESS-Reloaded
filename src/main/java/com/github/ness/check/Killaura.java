@@ -1,14 +1,14 @@
 package com.github.ness.check;
 
-import java.util.AbstractMap;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -18,19 +18,14 @@ import org.bukkit.util.Vector;
 import com.github.ness.CheckManager;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.Violation;
-import com.github.ness.utility.TimeUtil;
 import com.github.ness.utility.Utility;
 
 public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public HashMap<Player, Entity> lastEntityHit = new HashMap<Player, Entity>();
 	public HashMap<String, UUID> mobinfront = new HashMap<String, UUID>();
-	  private Map<UUID, Map.Entry<Integer, Long>> AimbotTicks = new HashMap<>();
-	  private Map<UUID, Double> Differences = new HashMap<>();
-	  private Map<UUID, Location> LastLocation = new HashMap<>();
 
 	public Killaura(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -43,6 +38,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		Check5(e);
 		Check6(e);
 		Check7(e);
+		Check8(e);
 	}
 
 	public void Check(EntityDamageByEntityEvent e) {
@@ -50,8 +46,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Player p = (Player) e.getDamager();
 			Entity et = e.getEntity();
 			double dist = Utility.getMaxSpeed(p.getLocation(), et.getLocation());
-			if (dist > 3.6) {
-				punish(p, 19, "Reach", 6);
+			if (dist > 4.2) {
+				punish(p, 19, "Reach"+"("+dist+")", 6);
 			}
 		}
 	}
@@ -63,8 +59,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 				Location loc1 = p.getLocation();
 				float grade = loc.getYaw() - loc1.getYaw();
-				float grade1 = Math.abs(loc.getPitch() - loc1.getPitch());
-				if (Math.round(grade) > 170.0 || Math.round(grade1) > 45) {
+				if (Math.round(grade) > 170.0) {
 					punish(p, 19, "Heuristic", 6);
 					if (NESSAnticheat.main.devMode) {
 						p.sendMessage("Heuristic: " + grade);
@@ -97,7 +92,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
 			offset += Math.abs(offsetX);
 			offset += Math.abs(offsetY);
-			if (offset > 290.0D) {
+			if (offset > 230.0D) {
 				punish(player, 20, "Angles/Hitbox", 6);
 			}
 		}
@@ -115,7 +110,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check4(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player damager = (Player) e.getDamager();
-			if (isLookingAt(damager, e.getEntity().getLocation()) < 0.2D) {
+			if (isLookingAt(damager, e.getEntity().getLocation()) < 0.5D) {
 				punish(damager, 23, "Angles/Hitbox", 4);
 				if (manager.getNess().devMode) {
 					damager.sendMessage(
@@ -181,35 +176,39 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check7(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player player = (Player) e.getDamager();
-			Location location = player.getLocation().toVector().add(player.getLocation().getDirection().multiply(3))
-					.toLocation(player.getWorld());
-			if (mobinfront.get(player.getName()) == null) {
-				ArmorStand as = (ArmorStand) location.getWorld().spawn(location, ArmorStand.class);
-				as.setGravity(false);
-				as.setCanPickupItems(false);
-				as.setCustomNameVisible(false);
-				as.setVisible(true);
-				as.setArms(true);
-
-				int seconds = 2;
-				boolean removed = false;
-				mobinfront.putIfAbsent(player.getName(), as.getUniqueId());
-				Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
-					public void run() {
-						if (!as.isDead()) {
-							as.remove();
-							mobinfront.remove(player.getName());
-						}
-					}
-				}, seconds * 20L);
-			} else {
-				if (e.getEntity() instanceof ArmorStand) {
-					UUID u = mobinfront.get(player.getName());
-					mobinfront.remove(player.getName());
-
-				}
+			if (e.getEntity().getName().equals("NESSMarker") && e.getEntityType().equals(EntityType.ZOMBIE)) {
+				punish(player, 3, "BotCheck", 5);
+				e.getEntity().remove();
+				return;
 			}
+			Random r = new Random();
+			Location location = player.getLocation().toVector().add(player.getLocation().getDirection().multiply(1))
+					.toLocation(player.getWorld()).add(0, 2.7, 0);
+			Entity et = (Entity) player.getWorld().spawnEntity(location, EntityType.ZOMBIE);
+			et.setFireTicks(r.nextInt());
+			et.setGravity(true);
+			et.setSilent(false);
+			et.setCustomName("NESSMarker");
+			Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
+				public void run() {
+					if (!et.isDead()) {
+						et.remove();
+					}
+				}
+			}, 3L);
 		}
+	}
+
+	public void Check8(EntityDamageByEntityEvent e) {
+
+	}
+
+	public double AimbotUtility(final List<Double> list) {
+		Double add = 0.0;
+		for (final Double listlist : list) {
+			add += listlist;
+		}
+		return add / list.size();
 	}
 
 	private double isLookingAt(Player player, Location target) {
