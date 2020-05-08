@@ -14,14 +14,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.github.ness.tinyprotocol.reflection.FieldAccessor;
-import com.github.ness.tinyprotocol.reflection.MethodInvoker;
-import com.github.ness.tinyprotocol.reflection.Reflection;
+import com.github.ness.NESSAnticheat;
+import com.github.ness.protocol.Reflection.FieldAccessor;
+import com.github.ness.protocol.Reflection.MethodInvoker;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
 import com.mojang.authlib.GameProfile;
@@ -38,7 +38,8 @@ import io.netty.channel.ChannelPromise;
 /**
  * Represents a very tiny alternative to ProtocolLib.
  * <p>
- * It now supports intercepting packets during login and status ping (such as OUT_SERVER_PING)!
+ * It now supports intercepting packets during login and status ping (such as
+ * OUT_SERVER_PING)!
  * 
  * @author Kristian
  */
@@ -47,27 +48,35 @@ public abstract class TinyProtocol {
 
 	// Used in order to lookup a channel
 	private static final MethodInvoker getPlayerHandle = Reflection.getMethod("{obc}.entity.CraftPlayer", "getHandle");
-	private static final FieldAccessor<Object> getConnection = Reflection.getField("{nms}.EntityPlayer", "playerConnection", Object.class);
-	private static final FieldAccessor<Object> getManager = Reflection.getField("{nms}.PlayerConnection", "networkManager", Object.class);
-	private static final FieldAccessor<Channel> getChannel = Reflection.getField("{nms}.NetworkManager", Channel.class, 0);
+	private static final FieldAccessor<Object> getConnection = Reflection.getField("{nms}.EntityPlayer",
+			"playerConnection", Object.class);
+	private static final FieldAccessor<Object> getManager = Reflection.getField("{nms}.PlayerConnection",
+			"networkManager", Object.class);
+	private static final FieldAccessor<Channel> getChannel = Reflection.getField("{nms}.NetworkManager", Channel.class,
+			0);
 
 	// Looking up ServerConnection
 	private static final Class<Object> minecraftServerClass = Reflection.getUntypedClass("{nms}.MinecraftServer");
 	private static final Class<Object> serverConnectionClass = Reflection.getUntypedClass("{nms}.ServerConnection");
-	private static final FieldAccessor<Object> getMinecraftServer = Reflection.getField("{obc}.CraftServer", minecraftServerClass, 0);
-	private static final FieldAccessor<Object> getServerConnection = Reflection.getField(minecraftServerClass, serverConnectionClass, 0);
-	private static final MethodInvoker getNetworkMarkers = Reflection.getTypedMethod(serverConnectionClass, null, List.class, serverConnectionClass);
+	private static final FieldAccessor<Object> getMinecraftServer = Reflection.getField("{obc}.CraftServer",
+			minecraftServerClass, 0);
+	private static final FieldAccessor<Object> getServerConnection = Reflection.getField(minecraftServerClass,
+			serverConnectionClass, 0);
+	private static final MethodInvoker getNetworkMarkers = Reflection.getTypedMethod(serverConnectionClass, null,
+			List.class, serverConnectionClass);
 
 	// Packets we have to intercept
 	private static final Class<?> PACKET_LOGIN_IN_START = Reflection.getMinecraftClass("PacketLoginInStart");
-	private static final FieldAccessor<GameProfile> getGameProfile = Reflection.getField(PACKET_LOGIN_IN_START, GameProfile.class, 0);
+	private static final FieldAccessor<GameProfile> getGameProfile = Reflection.getField(PACKET_LOGIN_IN_START,
+			GameProfile.class, 0);
 
 	// Speedup channel lookup
 	private Map<String, Channel> channelLookup = new MapMaker().weakValues().makeMap();
 	private Listener listener;
 
 	// Channels that have already been removed
-	private Set<Channel> uninjectedChannels = Collections.newSetFromMap(new MapMaker().weakKeys().<Channel, Boolean>makeMap());
+	private Set<Channel> uninjectedChannels = Collections
+			.newSetFromMap(new MapMaker().weakKeys().<Channel, Boolean>makeMap());
 
 	// List of network markers
 	private List<Object> networkManagers;
@@ -85,7 +94,8 @@ public abstract class TinyProtocol {
 	protected Plugin plugin;
 
 	/**
-	 * Construct a new instance of TinyProtocol, and start intercepting packets for all connected clients and future clients.
+	 * Construct a new instance of TinyProtocol, and start intercepting packets for
+	 * all connected clients and future clients.
 	 * <p>
 	 * You can construct multiple instances per plugin.
 	 * 
@@ -150,7 +160,7 @@ public abstract class TinyProtocol {
 		};
 
 		serverChannelHandler = new ChannelInboundHandlerAdapter() {
-	
+
 			@Override
 			public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 				Channel channel = (Channel) msg;
@@ -170,16 +180,18 @@ public abstract class TinyProtocol {
 		listener = new Listener() {
 
 			@EventHandler(priority = EventPriority.LOWEST)
-			public final void onPlayerLogin(PlayerLoginEvent e) {
-				if (closed)
-					return;
+			public final void onPlayerLogin(PlayerJoinEvent e) {
+				Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, () -> {
+					if (closed)
+						return;
 
-				Channel channel = getChannel(e.getPlayer());
+					Channel channel = getChannel(e.getPlayer());
 
-				// Don't inject players that have been explicitly uninjected
-				if (!uninjectedChannels.contains(channel)) {
-					injectPlayer(e.getPlayer());
-				}
+					// Don't inject players that have been explicitly uninjected
+					if (!uninjectedChannels.contains(channel)) {
+						injectPlayer(e.getPlayer());
+					}
+				}, 5);
 			}
 
 			@EventHandler
@@ -257,8 +269,8 @@ public abstract class TinyProtocol {
 	 * Note that this is not executed on the main thread.
 	 * 
 	 * @param receiver - the receiving player, NULL for early login/status packets.
-	 * @param channel - the channel that received the packet. Never NULL.
-	 * @param packet - the packet being sent.
+	 * @param channel  - the channel that received the packet. Never NULL.
+	 * @param packet   - the packet being sent.
 	 * @return The packet to send instead, or NULL to cancel the transmission.
 	 */
 	public Object onPacketOutAsync(Player receiver, Channel channel, Object packet) {
@@ -270,9 +282,10 @@ public abstract class TinyProtocol {
 	 * <p>
 	 * Use {@link Channel#remoteAddress()} to get the remote address of the client.
 	 * 
-	 * @param sender - the player that sent the packet, NULL for early login/status packets.
+	 * @param sender  - the player that sent the packet, NULL for early login/status
+	 *                packets.
 	 * @param channel - channel that received the packet. Never NULL.
-	 * @param packet - the packet being received.
+	 * @param packet  - the packet being received.
 	 * @return The packet to recieve instead, or NULL to cancel.
 	 */
 	public Object onPacketInAsync(Player sender, Channel channel, Object packet) {
@@ -282,7 +295,8 @@ public abstract class TinyProtocol {
 	/**
 	 * Send a packet to a particular player.
 	 * <p>
-	 * Note that {@link #onPacketOutAsync(Player, Channel, Object)} will be invoked with this packet.
+	 * Note that {@link #onPacketOutAsync(Player, Channel, Object)} will be invoked
+	 * with this packet.
 	 * 
 	 * @param player - the destination player.
 	 * @param packet - the packet to send.
@@ -294,10 +308,11 @@ public abstract class TinyProtocol {
 	/**
 	 * Send a packet to a particular client.
 	 * <p>
-	 * Note that {@link #onPacketOutAsync(Player, Channel, Object)} will be invoked with this packet.
+	 * Note that {@link #onPacketOutAsync(Player, Channel, Object)} will be invoked
+	 * with this packet.
 	 * 
 	 * @param channel - client identified by a channel.
-	 * @param packet - the packet to send.
+	 * @param packet  - the packet to send.
 	 */
 	public void sendPacket(Channel channel, Object packet) {
 		channel.pipeline().writeAndFlush(packet);
@@ -306,7 +321,8 @@ public abstract class TinyProtocol {
 	/**
 	 * Pretend that a given packet has been received from a player.
 	 * <p>
-	 * Note that {@link #onPacketInAsync(Player, Channel, Object)} will be invoked with this packet.
+	 * Note that {@link #onPacketInAsync(Player, Channel, Object)} will be invoked
+	 * with this packet.
 	 * 
 	 * @param player - the player that sent the packet.
 	 * @param packet - the packet that will be received by the server.
@@ -318,19 +334,22 @@ public abstract class TinyProtocol {
 	/**
 	 * Pretend that a given packet has been received from a given client.
 	 * <p>
-	 * Note that {@link #onPacketInAsync(Player, Channel, Object)} will be invoked with this packet.
+	 * Note that {@link #onPacketInAsync(Player, Channel, Object)} will be invoked
+	 * with this packet.
 	 * 
 	 * @param channel - client identified by a channel.
-	 * @param packet - the packet that will be received by the server.
+	 * @param packet  - the packet that will be received by the server.
 	 */
 	public void receivePacket(Channel channel, Object packet) {
 		channel.pipeline().context("encoder").fireChannelRead(packet);
 	}
 
 	/**
-	 * Retrieve the name of the channel injector, default implementation is "tiny-" + plugin name + "-" + a unique ID.
+	 * Retrieve the name of the channel injector, default implementation is "tiny-"
+	 * + plugin name + "-" + a unique ID.
 	 * <p>
-	 * Note that this method will only be invoked once. It is no longer necessary to override this to support multiple instances.
+	 * Note that this method will only be invoked once. It is no longer necessary to
+	 * override this to support multiple instances.
 	 * 
 	 * @return A unique channel handler name.
 	 */
@@ -339,7 +358,8 @@ public abstract class TinyProtocol {
 	}
 
 	/**
-	 * Add a custom channel handler to the given player's channel pipeline, allowing us to intercept sent and received packets.
+	 * Add a custom channel handler to the given player's channel pipeline, allowing
+	 * us to intercept sent and received packets.
 	 * <p>
 	 * This will automatically be called when a player has logged in.
 	 * 
@@ -415,7 +435,8 @@ public abstract class TinyProtocol {
 	/**
 	 * Uninject a specific channel.
 	 * <p>
-	 * This will also disable the automatic channel injection that occurs when a player has properly logged in.
+	 * This will also disable the automatic channel injection that occurs when a
+	 * player has properly logged in.
 	 * 
 	 * @param channel - the injected channel.
 	 */
@@ -457,7 +478,8 @@ public abstract class TinyProtocol {
 	}
 
 	/**
-	 * Cease listening for packets. This is called automatically when your plugin is disabled.
+	 * Cease listening for packets. This is called automatically when your plugin is
+	 * disabled.
 	 */
 	public final void close() {
 		if (!closed) {
@@ -475,7 +497,8 @@ public abstract class TinyProtocol {
 	}
 
 	/**
-	 * Channel handler that is inserted into the player's channel pipeline, allowing us to intercept sent and received packets.
+	 * Channel handler that is inserted into the player's channel pipeline, allowing
+	 * us to intercept sent and received packets.
 	 * 
 	 * @author Kristian
 	 */
