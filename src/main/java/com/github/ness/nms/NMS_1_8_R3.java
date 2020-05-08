@@ -12,8 +12,11 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
+import com.github.ness.NESSAnticheat;
+import com.github.ness.check.KillauraBotCheck;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityEquipment;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityMetadata;
@@ -43,7 +46,7 @@ public class NMS_1_8_R3 implements NMSHandler {
 				npc.triggerHealthUpdate();
 				PlayerConnection connection = ((CraftPlayer) getTargetPlayer()).getHandle().playerConnection;
 				connection.sendPacket(new PacketPlayOutEntityMetadata(npc.getId(), npc.getDataWatcher(), true));
-				connection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, npc));
+				connection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc));
 				connection.sendPacket(new PacketPlayOutNamedEntitySpawn(npc));
 				if (armor != null) {
 					assert armor.length == 4;
@@ -62,6 +65,13 @@ public class NMS_1_8_R3 implements NMSHandler {
 						connection.sendPacket(new PacketPlayOutEntityEquipment(npc.getId(), 1, CraftItemStack.asNMSCopy(armor[3])));
 					}
 				}
+				KillauraBotCheck.npclist.putIfAbsent(target.getName(), Integer.toString(npc.getId()));
+		        Bukkit.getScheduler().scheduleSyncDelayedTask(NESSAnticheat.main, () -> {
+		        	NESSAnticheat.main.protocol.sendPacket(target, new PacketPlayOutPlayerInfo(
+		                    PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, new EntityPlayer[] { npc }));
+		        	NESSAnticheat.main.protocol.sendPacket(target, new PacketPlayOutEntityDestroy(new int[] { npc.getId() }));
+		              KillauraBotCheck.npclist.remove(target.getName());
+		            },15L);
 			}
 			
 		};
