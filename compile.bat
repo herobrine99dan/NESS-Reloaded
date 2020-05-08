@@ -1,1 +1,2 @@
 mvn package
+pause

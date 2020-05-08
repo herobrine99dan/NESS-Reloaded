@@ -26,7 +26,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 
 	public OldMovementChecks(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

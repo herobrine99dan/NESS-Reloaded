@@ -34,14 +34,14 @@ public class InventoryHack extends AbstractCheck<InventoryClickEvent>{
 			}
 			if (player.isSprinting() || player.isSneaking() || player.isBlocking() || player.isSleeping()
 					|| player.isConversing()) {
-				manager.getPlayer(player).setViolation(new Violation("InventoryHack"));
+				manager.getPlayer(player).setViolation(new Violation("InventoryHack","Impossible"));
 			} else {
 				final Location from = player.getLocation();
 				Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 					Location to = player.getLocation();
-					double distance = to.distanceSquared(from) - Math.abs(from.getY() - to.getBlockY());
-					if (distance > 0.05) {
-						manager.getPlayer(player).setViolation(new Violation("InventoryHack"));							// MSG.tell(player, "Distance " + distance);
+					double distance = to.distanceSquared(from);
+					if (distance > 0.1) {
+						manager.getPlayer(player).setViolation(new Violation("InventoryHack","Dist:"+distance));							// MSG.tell(player, "Distance " + distance);
 					}
 				}, 2L);
 			}

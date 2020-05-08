@@ -79,7 +79,7 @@ public class CheckManager implements AutoCloseable {
 							checks.forEach((check) -> check.checkAnyEvent(evt));
 						}
 					} catch (Throwable ex) {
-						throw new EventException(ex, "NESS made a mistake in listening to an event");
+						throw new EventException(ex, "NESS made a mistake in listening to an event. Please report this error on Github.");
 					}
 				}
 

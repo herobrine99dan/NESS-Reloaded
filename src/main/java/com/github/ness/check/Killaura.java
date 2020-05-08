@@ -1,6 +1,7 @@
 package com.github.ness.check;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -25,7 +26,6 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
 	public Killaura(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -38,6 +38,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		Check5(e);
 		Check6(e);
 		Check7(e);
+		Check8(e);
 	}
 
 	public void Check(EntityDamageByEntityEvent e) {
@@ -45,8 +46,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Player p = (Player) e.getDamager();
 			Entity et = e.getEntity();
 			double dist = Utility.getMaxSpeed(p.getLocation(), et.getLocation());
-			if (dist > 3.6) {
-				punish(p, 19, "Reach", 6);
+			if (dist > 4.2) {
+				punish(p, 19, "Reach"+"("+dist+")", 6);
 			}
 		}
 	}
@@ -58,8 +59,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 				Location loc1 = p.getLocation();
 				float grade = loc.getYaw() - loc1.getYaw();
-				float grade1 = Math.abs(loc.getPitch() - loc1.getPitch());
-				if (Math.round(grade) > 170.0 || Math.round(grade1) > 45) {
+				if (Math.round(grade) > 170.0) {
 					punish(p, 19, "Heuristic", 6);
 					if (NESSAnticheat.main.devMode) {
 						p.sendMessage("Heuristic: " + grade);
@@ -92,7 +92,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
 			offset += Math.abs(offsetX);
 			offset += Math.abs(offsetY);
-			if (offset > 290.0D) {
+			if (offset > 230.0D) {
 				punish(player, 20, "Angles/Hitbox", 6);
 			}
 		}
@@ -110,7 +110,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check4(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player damager = (Player) e.getDamager();
-			if (isLookingAt(damager, e.getEntity().getLocation()) < 0.2D) {
+			if (isLookingAt(damager, e.getEntity().getLocation()) < 0.5D) {
 				punish(damager, 23, "Angles/Hitbox", 4);
 				if (manager.getNess().devMode) {
 					damager.sendMessage(
@@ -197,6 +197,18 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 				}
 			}, 3L);
 		}
+	}
+
+	public void Check8(EntityDamageByEntityEvent e) {
+
+	}
+
+	public double AimbotUtility(final List<Double> list) {
+		Double add = 0.0;
+		for (final Double listlist : list) {
+			add += listlist;
+		}
+		return add / list.size();
 	}
 
 	private double isLookingAt(Player player, Location target) {
