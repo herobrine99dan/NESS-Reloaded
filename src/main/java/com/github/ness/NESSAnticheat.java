@@ -50,8 +50,6 @@ public class NESSAnticheat extends JavaPlugin {
 			getLogger().warning(
 					"Your messages.yml is outdated! Until you regenerate it, NESS will use default values for some messages.");
 		}
-		getLogger().info("NESS-Reloaded includes code from NGXDEV.COM, which is licensed under the MIT license");
-
 		NMSHandler nmsHandler = findNMSHandler();
 		if (nmsHandler == null) {
 			getServer().getPluginManager().disablePlugin(this);

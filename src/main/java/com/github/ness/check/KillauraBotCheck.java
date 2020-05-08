@@ -37,7 +37,6 @@ public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent> {
 			ItemStack[] armor = new ItemStack[] { new ItemStack(Material.GOLD_HELMET),
 					new ItemStack(Material.CHAINMAIL_CHESTPLATE), new ItemStack(Material.IRON_LEGGINGS),
 					new ItemStack(Material.DIAMOND_BOOTS) };
-
 			npc.setArmor(armor);
 			npc.spawn();
 		}
