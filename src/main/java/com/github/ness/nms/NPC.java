@@ -57,6 +57,7 @@ public abstract class NPC {
 	 */
 	public void spawn() {
 		spawned = true;
+		completeSpawn();
 	}
 	
 	abstract void completeSpawn();
