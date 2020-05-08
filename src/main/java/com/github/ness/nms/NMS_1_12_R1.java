@@ -48,7 +48,6 @@ public class NMS_1_12_R1 implements NMSHandler {
 				PlayerConnection connection = ((CraftPlayer) getTargetPlayer()).getHandle().playerConnection;
 				connection.sendPacket(new PacketPlayOutEntityMetadata(npc.getId(), npc.getDataWatcher(), true));
 				connection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc));
-				connection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, npc));
 				connection.sendPacket(new PacketPlayOutNamedEntitySpawn(npc));
 				if (armor != null) {
 					assert armor.length == 4;
