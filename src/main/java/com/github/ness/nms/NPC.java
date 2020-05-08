@@ -56,6 +56,9 @@ public abstract class NPC {
 	 * 
 	 */
 	public void spawn() {
+		if (spawned) {
+			throw new IllegalStateException("Already spawned!");
+		}
 		spawned = true;
 		completeSpawn();
 	}
