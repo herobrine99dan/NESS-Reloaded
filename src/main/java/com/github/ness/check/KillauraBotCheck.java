@@ -1,11 +1,13 @@
 package com.github.ness.check;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
@@ -31,29 +33,13 @@ public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent> {
 		if (event.getDamager() instanceof Player) {
 			Player p = (Player) event.getDamager();
 			Location loc = determinateLocation(p);
-			NPC npc = NESSAnticheat.main.getNmsHandler().createFakePlayer(p, loc);
-			/*
-			 * net.minecraft.server.v1_12_R1.EntityPlayer npc =
-			 * NPC1_12.spawn(Utility.randomString(), UUID.randomUUID(), p, loc);
-			 * npclist.putIfAbsent(p.getName(), Integer.toString(npc.getId()));
-			 * Bukkit.getScheduler().scheduleSyncDelayedTask(manager.getNess(), () -> { //
-			 * ProtocolLibrary.getProtocolManager().sendServerPacket(p, new //
-			 * net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo( //
-			 * net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction.
-			 * REMOVE_PLAYER, // npc)); try { Random r = new Random(); WrappedGameProfile
-			 * profile = new WrappedGameProfile(npc.getUniqueID(), npc.getName());
-			 * PlayerInfoData data = new PlayerInfoData(profile, r.nextInt(200),
-			 * EnumWrappers.NativeGameMode.SURVIVAL,
-			 * WrappedChatComponent.fromText("displayname")); WrapperPlayServerPlayerInfo
-			 * pacchetto = new WrapperPlayServerPlayerInfo();
-			 * pacchetto.setAction(PlayerInfoAction.REMOVE_PLAYER);
-			 * pacchetto.setData(Arrays.asList(data)); pacchetto.sendPacket(p); } catch
-			 * (Exception e) { } try { WrapperPlayServerEntityDestroy pacchetto = new
-			 * WrapperPlayServerEntityDestroy(); pacchetto.setEntityIds(new
-			 * int[npc.getId()]); pacchetto.sendPacket(p); } catch (Exception e) { }
-			 * npclist.remove(p.getName()); }, 15L);
-			 */
+			NPC npc = manager.getNess().getNmsHandler().createFakePlayer(p, loc);
+			ItemStack[] armor = new ItemStack[] { new ItemStack(Material.GOLD_HELMET),
+					new ItemStack(Material.CHAINMAIL_CHESTPLATE), new ItemStack(Material.IRON_LEGGINGS),
+					new ItemStack(Material.DIAMOND_BOOTS) };
 
+			npc.setArmor(armor);
+			npc.spawn();
 		}
 	}
 
