@@ -191,7 +191,7 @@ public abstract class TinyProtocol {
 					if (!uninjectedChannels.contains(channel)) {
 						injectPlayer(e.getPlayer());
 					}
-				}, 5);
+				}, 5L);
 			}
 
 			@EventHandler

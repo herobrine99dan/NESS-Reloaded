@@ -5,6 +5,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.check.BadPackets;
+import com.github.ness.check.Killaura;
 import com.github.ness.check.PingSpoof;
 
 import io.netty.channel.Channel;

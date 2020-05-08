@@ -1,27 +1,32 @@
 package com.github.ness.check;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
+import com.github.ness.MovementPlayerData;
 import com.github.ness.NessPlayer;
 import com.github.ness.Violation;
 import com.github.ness.utility.Utilities;
 import com.github.ness.utility.Utility;
 
 public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
-	
+
 	public Aimbot(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
-       Check(e);
-       Check1(e);
-       Check2(e);
+		Check(e);
+		Check1(e);
+		Check2(e);
+		Check3(e);
 	}
 
 	public void Check(PlayerMoveEvent e) {
@@ -44,7 +49,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 			float gcdDiff = Math.abs(deltaPitchGCD - lastDeltaPitchGCD);
 			// if GCD is significantly different or if GCD is practically unsolvable
 			if (gcdDiff > 0.001 || deltaPitchGCD < 0.00001) {
-				manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot","PitchPattern"));
+				manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PitchPattern"));
 			}
 			lastDeltaPitches.clear();
 			player.setLastmcdpitch(deltaPitchGCD);
@@ -56,9 +61,9 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		float yawChange = Math.abs(e.getTo().getYaw() - e.getFrom().getYaw());
 		float pitchChange = Math.abs(e.getTo().getPitch() - e.getFrom().getPitch());
 		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {
-			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot","PerfectAura"));
+			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura"));
 		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {
-			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot","PerfectAura"));
+			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura"));
 		}
 	}
 
@@ -80,11 +85,52 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		if (yaw > 0.0 && yaw < 360.0) {
 			if (yaw >= 5.0) {
 				if (yaw % 1.0f == 0.0f) {
-					//WarnHacks.warnHacks(event.getPlayer(), "Aimbot", 3, -1.0D, 2, "PerfectAura", false);
-					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Aimbot","PerfectAura"));
+					// WarnHacks.warnHacks(event.getPlayer(), "Aimbot", 3, -1.0D, 2, "PerfectAura",
+					// false);
+					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura"));
 				}
 			}
 		}
 		return;
 	}
+
+	public void Check3(PlayerMoveEvent e) {
+		Player player = e.getPlayer();
+		float yawDiff = (float) round(Math.abs(Utility.clamp180(e.getFrom().getYaw() - e.getTo().getYaw())), 3);
+        MovementPlayerData user = MovementPlayerData.getInstance(player);
+		if (user != null && yawDiff > 0.0F) {
+			if (user.getSamples().containsKey(Float.valueOf(yawDiff))) {
+				int patternSamples = ((Integer) user.getSamples().get(Float.valueOf(yawDiff))).intValue();
+				user.getSamples().put(Float.valueOf(yawDiff), Integer.valueOf(patternSamples + 1));
+
+				user.setPatternVerbose(user.getPatternVerbose().intValue() + 1);
+			} else {
+
+				user.getSamples().put(Float.valueOf(yawDiff), Integer.valueOf(1));
+				if (System.currentTimeMillis() - user.getPatternMS() >= 5500L) {
+					int vb = user.getPatternVerbose().intValue();
+					int samples = user.getSamples().size();
+
+					user.setPatternVerbose(0);
+					user.getSamples().clear();
+					user.resetPatternMS();
+
+					int samplesNeeded = 55;
+					if (vb == 0 && samples > samplesNeeded) {
+						manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "Heuristic"));
+					}
+				}
+			}
+		}
+	}
+
+	public static double round(double value, int places) {
+		if (places < 0) {
+			throw new IllegalArgumentException();
+		}
+		BigDecimal bd = new BigDecimal(value);
+		bd = bd.setScale(places, RoundingMode.HALF_UP);
+		return bd.doubleValue();
+	}
+
 }
