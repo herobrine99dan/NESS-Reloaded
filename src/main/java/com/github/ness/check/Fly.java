@@ -37,7 +37,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Check1(e);
 		Check3(e);
 		Check4(e);
-		Check5(e);
 		Check6(e);
 		Check7(e);
 		Check8(e);
