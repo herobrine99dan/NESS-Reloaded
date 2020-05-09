@@ -177,67 +177,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
     /**
-     * Check for high distance, high velocity
-     * @param event
-     */
-	public void Check6(PlayerMoveEvent event) {
-		Player p = event.getPlayer();
-		if (!bypass(event.getPlayer())) {
-			if (!Utility.SpecificBlockNear(event.getTo(), Material.SLIME_BLOCK)
-					&& !Utility.SpecificBlockNear(event.getFrom(), Material.SLIME_BLOCK)
-					&& !Utility.hasBlock(p, Material.SLIME_BLOCK)) {
-				if (p.isOnline()) {
-					double yaw = Math.abs(event.getFrom().getYaw() - event.getTo().getYaw());
-					double pitch = Math.abs(event.getFrom().getPitch() - event.getTo().getPitch());
-					if (Math.abs(p.getVelocity().getY()) > 3.92D) {
-						manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly"));
-					} else if (event.getTo().getY() - event.getFrom().getY() > 0.7D) {
-						manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly"));
-					} else if (event.getFrom().distanceSquared(event.getTo()) == 0.0D
-							&& Utilities.getPlayerUpperBlock(p).getType().equals(Material.AIR) && !Utility.isOnGround(p)
-							&& !Utility.isOnGround(p) && pitch < 0.1D && yaw < 0.1D) {
-						manager.getPlayer(event.getPlayer()).setViolation(new Violation("Fly"));
-					}
-				}
-
-			}
-		}
-	}
-    /**
-     * Check for Ascension
-     * @param e
-     */
-	public void Check7(PlayerMoveEvent e) {
-		Player player = e.getPlayer();
-		Location from = e.getFrom();
-		if (!bypass(e.getPlayer())) {
-			boolean isonground = Utility.isOnGround(player.getLocation());
-			Location to = e.getTo();
-			if (player.isOnline() && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
-				Vector vec = new Vector(to.getX(), to.getY(), to.getZ());
-				double Distance = vec.distance(new Vector(from.getX(), from.getY(), from.getZ()));
-				if (player.getFallDistance() == 0.0F
-						&& player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR
-						&& player.getLocation().getBlock().getRelative(BlockFace.UP).getType() == Material.AIR) {
-					if (Distance > 0.5D && !isonground && e.getTo().getY() > e.getFrom().getY()
-							&& e.getTo().getX() == e.getFrom().getX() && e.getTo().getZ() == e.getFrom().getZ()) {
-						manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly", "Ascension"));
-					} else if (Distance > 0.9D && !isonground && e.getTo().getY() > e.getFrom().getY()
-							&& e.getTo().getX() == e.getFrom().getX() && e.getTo().getZ() == e.getFrom().getZ()) {
-						manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly", "Ascension"));
-					} else if (Distance > 1.0D && !isonground && e.getTo().getY() > e.getFrom().getY()
-							&& e.getTo().getX() == e.getFrom().getX() && e.getTo().getZ() == e.getFrom().getZ()) {
-						manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly", "Ascension"));
-					} else if (Distance > 3.24D && !isonground && e.getTo().getY() > e.getFrom().getY()
-							&& e.getTo().getX() == e.getFrom().getX() && e.getTo().getZ() == e.getFrom().getZ()) {
-						manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly", "Ascension"));
-					}
-				}
-			}
-
-		}
-	}
-    /**
      * Check for abnormal ground packet
      * @param e
      */
@@ -344,7 +283,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		boolean groundAround = Utility.groundAround(player.getLocation());
 		if (player.isInsideVehicle() && !groundAround && from.getY() <= to.getY() && (!player.isInsideVehicle()
 				|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))) {
-			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly", "nogroundfly"));
+			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly", "NoGroundfly"));
 		}
 	}
     /**
