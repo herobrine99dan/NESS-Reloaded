@@ -12,8 +12,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<classgraph.version>4.8.78</classgraph.version>
 		<protocollib.version>4.5.0</protocollib.version>
-		<!-- Not sure what netty version MC uses, so just using latest -->
-		<netty.version>4.1.49.Final</netty.version>
 	</properties>
 	
 	<build>
@@ -79,11 +77,6 @@
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>1.12.2-R0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-all</artifactId>
-			<version>${netty.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
