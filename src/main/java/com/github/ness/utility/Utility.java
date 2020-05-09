@@ -34,12 +34,56 @@ public class Utility {
 		return v.substring(v.lastIndexOf('.') + 1);
 	}
 
+	public static boolean isOnGroundBypassNoFall(Player p) {
+		Block by = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ()))
+				.getBlock();
+		Block bx = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() - 1.0D,
+				p.getLocation().getZ())).getBlock();
+
+		Block b1 = (new Location(p.getWorld(), p.getLocation().getX() + 1.0D, p.getLocation().getY() - 1.0D,
+				p.getLocation().getZ() - 1.0D)).getBlock();
+		Block b2 = (new Location(p.getWorld(), p.getLocation().getX() + 1.0D, p.getLocation().getY() - 1.0D,
+				p.getLocation().getZ() + 1.0D)).getBlock();
+		Block b3 = (new Location(p.getWorld(), p.getLocation().getX() - 1.0D, p.getLocation().getY() - 1.0D,
+				p.getLocation().getZ() - 1.0D)).getBlock();
+		Block b4 = (new Location(p.getWorld(), p.getLocation().getX() - 1.0D, p.getLocation().getY() - 1.0D,
+				p.getLocation().getZ() + 1.0D)).getBlock();
+
+		Block x1 = (new Location(p.getWorld(), p.getLocation().getX() + 1.0D, p.getLocation().getY() - 1.0D,
+				p.getLocation().getZ())).getBlock();
+		Block x2 = (new Location(p.getWorld(), p.getLocation().getX() - 1.0D, p.getLocation().getY() - 1.0D,
+				p.getLocation().getZ())).getBlock();
+		Block x3 = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() - 1.0D,
+				p.getLocation().getZ() + 1.0D)).getBlock();
+		Block x4 = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() - 1.0D,
+				p.getLocation().getZ() - 1.0D)).getBlock();
+
+		Block z1 = (new Location(p.getWorld(), p.getLocation().getX() + 1.0D, p.getLocation().getY(),
+				p.getLocation().getZ())).getBlock();
+		Block z2 = (new Location(p.getWorld(), p.getLocation().getX() - 1.0D, p.getLocation().getY(),
+				p.getLocation().getZ())).getBlock();
+		Block z3 = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY(),
+				p.getLocation().getZ() + 1.0D)).getBlock();
+		Block z4 = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY(),
+				p.getLocation().getZ() - 1.0D)).getBlock();
+		if (bx.getType() == Material.AIR && b1.getType() == Material.AIR && b2.getType() == Material.AIR
+				&& b3.getType() == Material.AIR && b4.getType() == Material.AIR && by.getType() == Material.AIR) {
+			if (z1.getType() == Material.AIR && z2.getType() == Material.AIR && z3.getType() == Material.AIR
+					&& z4.getType() == Material.AIR) {
+				if (x1.getType() == Material.AIR && x2.getType() == Material.AIR && x3.getType() == Material.AIR
+						&& x4.getType() == Material.AIR) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	public static boolean groundAround(final Location loc) {
 		for (int radius = 2, x = -radius; x < radius; ++x) {
 			for (int y = -radius; y < radius; ++y) {
 				for (int z = -radius; z < radius; ++z) {
-					final Material mat = loc.getWorld().getBlockAt(loc.add(x, y, z))
-							.getType();
+					final Material mat = loc.getWorld().getBlockAt(loc.add(x, y, z)).getType();
 					if (mat.isSolid() || mat.name().toLowerCase().contains("lava")
 							|| mat.name().toLowerCase().contains("water")) {
 						loc.subtract(x, y, z);
@@ -55,8 +99,8 @@ public class Utility {
 	public static int getPing(final Player player) {
 		int ping = 900;
 		try {
-			final Object entityPlayer = player.getClass().getMethod("getHandle", new Class[0])
-					.invoke(player, new Object[0]);
+			final Object entityPlayer = player.getClass().getMethod("getHandle", new Class[0]).invoke(player,
+					new Object[0]);
 			ping = (int) entityPlayer.getClass().getField("ping").get(entityPlayer);
 		} catch (Exception ex) {
 		}
@@ -89,8 +133,7 @@ public class Utility {
 		for (int radius = 2, x = -radius; x < radius; ++x) {
 			for (int y = -radius; y < radius; ++y) {
 				for (int z = -radius; z < radius; ++z) {
-					final Material mat = loc.getWorld().getBlockAt(loc.add(x, y, z))
-							.getType();
+					final Material mat = loc.getWorld().getBlockAt(loc.add(x, y, z)).getType();
 					if (mat.toString().toLowerCase().contains("piston")) {
 						loc.subtract(x, y, z);
 						return true;
@@ -310,7 +353,7 @@ public class Utility {
 		}
 		return theta;
 	}
-	
+
 	public static float clamp180(float theta) {
 		theta %= 360.0D;
 		if (theta >= 180.0D) {

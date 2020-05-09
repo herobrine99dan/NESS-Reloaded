@@ -50,6 +50,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Check17(e);
 		Check18(e);
 		Check18(e);
+		Check19(e);
+		Check20(e);
 	}
 
 	protected List<String> bypasses = Arrays.asList("slab", "stair", "snow", "bed", "skull", "step", "slime");
@@ -404,10 +406,28 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	public void Check19(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
-		if (e.getFrom().getY() - e.getTo().getY() > 3) {
+		if (e.getFrom().getY() - e.getTo().getY() > 1) {
 			if (player.isOnGround() || player.getFallDistance() == 0.0F) {
 				manager.getPlayer(player).setViolation(new Violation("NoFall", "FlyCheck"));
 			}
+		}
+	}
+
+	public void Check20(PlayerMoveEvent e) {
+		Player p = e.getPlayer();
+		if (p.isFlying())
+			return;
+		if (e.getTo().getY() > e.getFrom().getY())
+			return;
+		if (p.isOnGround() && !Utility.isOnGroundBypassNoFall(p)) {
+			for (int i = 0; i < 256; i++) {
+				Location l = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() - 1.0D,
+						p.getLocation().getZ())).getBlock().getLocation();
+				if (l.getBlock().getType() == Material.AIR) {
+					manager.getPlayer(p).setViolation(new Violation("NoFall", "FlyCheck1"));
+				}
+			}
+
 		}
 	}
 

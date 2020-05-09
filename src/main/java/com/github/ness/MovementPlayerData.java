@@ -9,6 +9,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.utility.Utility;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class MovementPlayerData {
 	private Player player;
 	double StrafeValuex = 0.0;
@@ -19,7 +22,14 @@ public class MovementPlayerData {
 	public double DistanceFastStairs = 0.0;
 	public long pingspooftimer = 0;
 	public long oldpingspooftimer = 0;
+	@Getter
+	private long PatternMS= (long) 0;
+	@Getter
+	@Setter
+	private Integer PatternVerbose = 0;
 	private double LastYDIff = 0.0;
+	@Getter
+	private Map<Float, Integer> samples = new HashMap<>();
 	private HashMap<String, Double> distance = new HashMap<String, Double>();
 	private Map<String, Location> onground = new HashMap<String, Location>();
 	private static Map<String, MovementPlayerData> nessplayers = new HashMap<String, MovementPlayerData>();
@@ -28,6 +38,8 @@ public class MovementPlayerData {
 		this.player = player;
 		nessplayers.put(player.getName(), this);
 	}
+	
+	public void resetPatternMS() { this.PatternMS = Long.valueOf(System.currentTimeMillis()); }
 
 	// Return a running instance (or create a new one)
 	public static MovementPlayerData getInstance(Player player) {

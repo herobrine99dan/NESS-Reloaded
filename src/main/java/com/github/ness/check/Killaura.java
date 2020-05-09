@@ -3,7 +3,6 @@ package com.github.ness.check;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -16,13 +15,14 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
+import com.github.ness.MovementPlayerData;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.Violation;
 import com.github.ness.utility.Utility;
 
 public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public HashMap<Player, Entity> lastEntityHit = new HashMap<Player, Entity>();
-	public HashMap<String, UUID> mobinfront = new HashMap<String, UUID>();
+	public HashMap<String, String> mobinfront = new HashMap<String, String>();
 
 	public Killaura(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
@@ -47,7 +47,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Entity et = e.getEntity();
 			double dist = Utility.getMaxSpeed(p.getLocation(), et.getLocation());
 			if (dist > 5) {
-				punish(p, 19, "Reach"+"("+dist+")", 6);
+				punish(p, 19, "Reach" + "(" + dist + ")", 6);
 			}
 		}
 	}
@@ -59,11 +59,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 				Location loc1 = p.getLocation();
 				float grade = loc.getYaw() - loc1.getYaw();
-				if (Math.round(grade) > 170.0) {
-					punish(p, 19, "Heuristic", 6);
-					if (NESSAnticheat.main.devMode) {
-						p.sendMessage("Heuristic: " + grade);
-					}
+				if (Math.round(grade) > 250.0) {
+					punish(p, 19, "Heuristic "+grade, 6);
 				}
 			}, 3L);
 		}
@@ -93,7 +90,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			offset += Math.abs(offsetX);
 			offset += Math.abs(offsetY);
 			if (offset > 230.0D) {
-				punish(player, 20, "Angles/Hitbox", 6);
+				punish(player, 20, "Angles/Hitbox "+offset, 6);
 			}
 		}
 	}
@@ -110,12 +107,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check4(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player damager = (Player) e.getDamager();
-			if (isLookingAt(damager, e.getEntity().getLocation()) < 0.5D) {
-				punish(damager, 23, "Angles/Hitbox", 4);
-				if (manager.getNess().devMode) {
-					damager.sendMessage(
-							"isLookingAt: " + Utility.around(isLookingAt(damager, e.getEntity().getLocation()), 6));
-				}
+			if (isLookingAt(damager, e.getEntity().getLocation()) < 0.4D) {
+				punish(damager, 23, "Angles/Hitbox "+isLookingAt(damager, e.getEntity().getLocation()), 4);
 			}
 		}
 	}
@@ -176,9 +169,14 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check7(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player player = (Player) e.getDamager();
-			if (e.getEntity().getName().equals("NESSMarker") && e.getEntityType().equals(EntityType.ZOMBIE)) {
+			if (!mobinfront.getOrDefault(player.getName(), "").equals("")
+					&& e.getEntityType().equals(EntityType.ZOMBIE)) {
 				punish(player, 3, "BotCheck", 5);
 				e.getEntity().remove();
+				mobinfront.remove(player.getName());
+				return;
+			}
+			if (e.getEntityType().equals(EntityType.PLAYER)) {
 				return;
 			}
 			Random r = new Random();
@@ -188,27 +186,21 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			et.setFireTicks(r.nextInt());
 			et.setGravity(true);
 			et.setSilent(false);
-			et.setCustomName("NESSMarker");
+			mobinfront.putIfAbsent(player.getName(), Utility.randomString());
 			Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
 				public void run() {
 					if (!et.isDead()) {
 						et.remove();
 					}
 				}
-			}, 3L);
+			}, 2L);
 		}
 	}
-
+	
 	public void Check8(EntityDamageByEntityEvent e) {
-
-	}
-
-	public double AimbotUtility(final List<Double> list) {
-		Double add = 0.0;
-		for (final Double listlist : list) {
-			add += listlist;
+		if (e.getDamager() instanceof Player) {
+			
 		}
-		return add / list.size();
 	}
 
 	private double isLookingAt(Player player, Location target) {

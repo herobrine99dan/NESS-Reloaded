@@ -44,10 +44,7 @@ public class PatternKillauraMove extends AbstractCheck<PlayerMoveEvent> {
 			float range = Math.abs(patterns.get(patterns.size() - 1) - patterns.get(0));
 
 			if (Math.abs(range - PatternKillauraAttack.lastRange.getOrDefault(uuid, 0.0f)) < 4) {
-				np.setViolation(new Violation("Killaura"));
-				if (manager.getNess().devMode) {
-					p.sendMessage("KillauraPattern: " + Math.abs(range - PatternKillauraAttack.lastRange.getOrDefault(uuid, 0.0f)));
-				}
+				np.setViolation(new Violation("Killaura","Result: "+Math.abs(range - PatternKillauraAttack.lastRange.getOrDefault(uuid, 0.0f))));
 			}
 			// event.getPlayer().sendMessage("Range: " + range);
 
