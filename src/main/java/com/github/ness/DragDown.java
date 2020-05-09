@@ -7,13 +7,19 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class DragDown {
 
+	/**
+	 * DragDown method to teleport the player down
+	 * 
+	 * @param player the corresponding player
+	 */
+
 	protected static void PlayerDragDown(Player p) {
-	      Location Locfrom = p.getLocation().clone();
-	      Block b = Locfrom.clone().subtract(0.0D, 0.5D, 0.0D).getBlock();
-	      if (!b.getType().isSolid()) {
-	        Locfrom = Locfrom.subtract(0.0D, 0.5D, 0.0D);
-	      }
-	      p.teleport(Locfrom, PlayerTeleportEvent.TeleportCause.PLUGIN);
-	      return;
-	}	
+		Location Locfrom = p.getLocation().clone();
+		Block b = Locfrom.clone().subtract(0.0D, 0.5D, 0.0D).getBlock();
+		if (!b.getType().isSolid()) {
+			Locfrom = Locfrom.subtract(0.0D, 0.5D, 0.0D);
+		}
+		p.teleport(Locfrom, PlayerTeleportEvent.TeleportCause.PLUGIN);
+		return;
+	}
 }

@@ -26,9 +26,14 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		Check(e);
 		Check1(e);
 		Check2(e);
-		Check3(e);
 	}
 
+	/**
+	 * All changes in pitch should be divisible by a constant. That constant is
+	 * determined by your mouse sensitivity in game. By calculating the gcd and
+	 * finding that constant, you can detect changes in pitch variation.
+	 * 
+	 */
 	public void Check(PlayerMoveEvent e) {
 		int samples = 23;
 		int pitchlimit = 10;
@@ -56,17 +61,21 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		}
 
 	}
-
+   /**
+    * Check for some Aimbot Pattern
+    */
 	public void Check1(PlayerMoveEvent e) {
 		float yawChange = Math.abs(e.getTo().getYaw() - e.getFrom().getYaw());
 		float pitchChange = Math.abs(e.getTo().getPitch() - e.getFrom().getPitch());
 		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {
 			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura"));
 		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {
-			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura"));
+			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura1"));
 		}
 	}
-
+	   /**
+	    * Check for some Aimbot Pattern
+	    */
 	public void Check2(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		if (event.getFrom().getY() >= event.getTo().getY()) {
@@ -87,41 +96,11 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 				if (yaw % 1.0f == 0.0f) {
 					// WarnHacks.warnHacks(event.getPlayer(), "Aimbot", 3, -1.0D, 2, "PerfectAura",
 					// false);
-					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura"));
+					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura2"));
 				}
 			}
 		}
 		return;
-	}
-
-	public void Check3(PlayerMoveEvent e) {
-		Player player = e.getPlayer();
-		float yawDiff = (float) round(Math.abs(Utility.clamp180(e.getFrom().getYaw() - e.getTo().getYaw())), 3);
-        MovementPlayerData user = MovementPlayerData.getInstance(player);
-		if (user != null && yawDiff > 0.0F) {
-			if (user.getSamples().containsKey(Float.valueOf(yawDiff))) {
-				int patternSamples = ((Integer) user.getSamples().get(Float.valueOf(yawDiff))).intValue();
-				user.getSamples().put(Float.valueOf(yawDiff), Integer.valueOf(patternSamples + 1));
-
-				user.setPatternVerbose(user.getPatternVerbose().intValue() + 1);
-			} else {
-
-				user.getSamples().put(Float.valueOf(yawDiff), Integer.valueOf(1));
-				if (System.currentTimeMillis() - user.getPatternMS() >= 5500L) {
-					int vb = user.getPatternVerbose().intValue();
-					int samples = user.getSamples().size();
-
-					user.setPatternVerbose(0);
-					user.getSamples().clear();
-					user.resetPatternMS();
-
-					int samplesNeeded = 55;
-					if (vb == 0 && samples > samplesNeeded) {
-						manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "Heuristic"));
-					}
-				}
-			}
-		}
 	}
 
 	public static double round(double value, int places) {

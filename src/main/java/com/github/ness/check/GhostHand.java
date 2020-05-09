@@ -26,7 +26,10 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent>{
        Check(e);
 
 	}
-
+    /**
+     * Check for Ghost Hand
+     * @param event
+     */
 	public  void Check(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		final Location loc = player.getLocation();

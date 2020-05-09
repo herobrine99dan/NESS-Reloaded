@@ -19,7 +19,10 @@ public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 	void checkEvent(EntityDamageByEntityEvent e) {
 		Check(e);
 	}
-
+/**
+ * Check if player move a bit
+ * @param event
+ */
 	public void Check(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof Player) {
 			Player p = (Player) event.getEntity();

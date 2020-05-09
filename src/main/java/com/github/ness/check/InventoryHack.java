@@ -25,7 +25,10 @@ public class InventoryHack extends AbstractCheck<InventoryClickEvent>{
        Check(e);
        Check2(e);
 	}
-	
+	/**
+	 * Check for Impossible InventoryHack or big Distance
+	 * @param e
+	 */
 	public void Check(InventoryClickEvent e) {
 		if (e.getWhoClicked() instanceof Player) {
 			Player player = (Player) e.getWhoClicked();
@@ -47,7 +50,10 @@ public class InventoryHack extends AbstractCheck<InventoryClickEvent>{
 			}
 		}
 	}
-	
+	/**
+	 * Check for FastClick
+	 * @param e
+	 */
 	public void Check2(InventoryClickEvent e) {
 		if (e.getWhoClicked() instanceof Player) {
 			Player player = (Player) e.getWhoClicked();

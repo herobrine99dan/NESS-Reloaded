@@ -18,7 +18,10 @@ public class EntitySpeedCheck extends AbstractCheck<PlayerMoveEvent>{
 	void checkEvent(PlayerMoveEvent e) {
        Check(e);
 	}
-	
+	/**
+	 * Check for EntitySpeed
+	 * @param event
+	 */
 	public void Check(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
 		if(p.isInsideVehicle()) {

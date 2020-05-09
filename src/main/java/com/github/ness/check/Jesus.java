@@ -13,23 +13,26 @@ import com.github.ness.Violation;
 import com.github.ness.utility.Utilities;
 import com.github.ness.utility.Utility;
 
-public class Jesus extends AbstractCheck<PlayerMoveEvent>{
-	
+public class Jesus extends AbstractCheck<PlayerMoveEvent> {
+
 	public Jesus(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
-       Check(e);
-       Check1(e);
-       Check2(e);
+		Check(e);
+		Check1(e);
+		Check2(e);
 	}
-	
-	public  List<Player> placedBlockOnWater = new ArrayList<>();
 
-	public  void Check(PlayerMoveEvent event) {
+	public List<Player> placedBlockOnWater = new ArrayList<>();
+    /**
+     * Check for Physics Check
+     * @param event
+     */
+	public void Check(PlayerMoveEvent event) {
 		final Player player = event.getPlayer();
 		final Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0.0, 1.0, 0.0)).getType();
 		final Location from = event.getFrom();
@@ -66,11 +69,14 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent>{
 				&& !player.getWorld().getBlockAt(player.getLocation().add(0.0, 1.0, 0.0)).isLiquid()
 				&& (new StringBuilder(String.valueOf(Math.abs(from.getY() - to.getY()))).toString().contains("00000000")
 						|| to.getY() == from.getY())) {
-			punish(player,3,"Physics");
+			punish(player, 3, "Physics");
 		}
-	}
-
-	protected  void Check1(PlayerMoveEvent event) {
+	} 
+    /**
+     * Another Physics Check
+     * @param event
+     */
+	protected void Check1(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
 		if (!event.isCancelled()
 				&& (event.getFrom().getX() != event.getTo().getX() || event.getFrom().getZ() != event.getTo().getZ())
@@ -79,20 +85,23 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent>{
 				&& !placedBlockOnWater.remove(p)) {
 			if (Utilities.cantStandAtWater(p.getWorld().getBlockAt(p.getLocation()))
 					&& Utilities.isHoveringOverWater(p.getLocation()) && !Utilities.isFullyInWater(p.getLocation())) {
-				      punish(p,2,"Vanilla");
+				punish(p, 2, "Vanilla");
 			}
 		}
 	}
-	
-	private  void punish(Player p,int i,String module) {
-		manager.getPlayer(p).setViolation(new Violation("Jesus"));
-	}
 
-	public  void Check2(PlayerMoveEvent e) {
+	private void punish(Player p, int i, String module) {
+		manager.getPlayer(p).setViolation(new Violation("Jesus",module));
+	}
+    /**
+     * Big Distance
+     * @param e
+     */
+	public void Check2(PlayerMoveEvent e) {
 		double fromy = e.getFrom().getY();
 		double toy = e.getTo().getY();
 		Player player = e.getPlayer();
-		if(Utility.hasflybypass(player)) {
+		if (Utility.hasflybypass(player)) {
 			return;
 		}
 		double resulty = Math.abs(fromy - toy);
@@ -107,7 +116,7 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent>{
 			if (block.isLiquid() && loc.getBlock().isLiquid() && distanceFell < 1 && !underloc.getBlock().isLiquid()) {
 				if (distance > 0.11863034217827088) {
 					// MSG.tell((CommandSender)player, "&7dist: &e" + distance);
-					punish(e.getPlayer(),2,"WaterSpeed");
+					punish(e.getPlayer(), 2, "WaterSpeed");
 				}
 			}
 		}
