@@ -6,6 +6,20 @@
 
 #
 #
+# Violation handling
+#
+# What to do when a player is detected
+#
+violation-handling:
+  notify-staff:
+    enable: true
+    notification: '%PLAYER% was detected for %HACK%. Details: %DETAILS%'
+  execute-command:
+    enable: true
+    command: 'broadcast %PLAYER% was detected for %HACK%'
+
+#
+#
 # Enabled checks
 #
 # Comment out a check to disable

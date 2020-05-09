@@ -2,12 +2,10 @@ package com.github.ness;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.bukkit.entity.Player;
 
@@ -18,8 +16,11 @@ import lombok.Setter;
 
 public class NessPlayer implements AutoCloseable {
 
-	@Getter
-	private volatile Violation violation;
+	/**
+	 * Player's current violation, package visibility for ViolationManager to use
+	 * 
+	 */
+	AtomicReference<Violation> violation;
 	@Getter
 	@Setter
 	private boolean moved = false;
@@ -78,7 +79,7 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	@Setter
 	private float lastmcdpitch = Float.MIN_VALUE;
-	@SyncOnly
+	@Getter
 	private final Player player;
 
 	@Getter
@@ -88,9 +89,14 @@ public class NessPlayer implements AutoCloseable {
 		this.player = player;
 	}
 	
+	public Violation getViolation() {
+		return violation.get();
+	}
+	
 	public void setViolation(Violation violation) {
-		this.violation = violation;
-		player.sendMessage("HACK: " + violation.getCheck() + " Module: " + Arrays.toString(violation.getDetails()));
+		if (this.violation.compareAndSet(null, violation)) {
+			player.sendMessage("HACK: " + violation.getCheck() + " Module: " + Arrays.toString(violation.getDetails()));
+		}
 	}
 	
 	@Override

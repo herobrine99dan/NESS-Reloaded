@@ -9,8 +9,10 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.github.ness.api.NESSApi;
 import com.github.ness.nms.NMSHandler;
 import com.github.ness.protocol.TinyProtocol;
 import com.github.ness.protocol.TinyProtocolListeners;
@@ -29,6 +31,8 @@ public class NESSAnticheat extends JavaPlugin {
 	public boolean devMode = true;
 	@Getter
 	private CheckManager checkManager;
+	@Getter
+	private ViolationManager violationManager;
 	@Getter
 	private NMSHandler nmsHandler;
 
@@ -59,14 +63,20 @@ public class NESSAnticheat extends JavaPlugin {
 
 		executor = Executors.newSingleThreadScheduledExecutor();
 		getServer().getPluginCommand("ness").setExecutor(new NessCommands(this));
+
 		checkManager = new CheckManager(this);
+		CompletableFuture<?> future = checkManager.loadAsync();
+
+		violationManager = new ViolationManager(this);
+		violationManager.initiatePeriodicTask();
 
 		this.protocol = (TinyProtocol) new TinyProtocolListeners((Plugin) this);
 		new Scheduler().start();
 		//new Protocols();
 
-		CompletableFuture<?> future = checkManager.loadAsync();
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);
+
+		getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(this), this, ServicePriority.Low);
 	}
 	
 	private NMSHandler findNMSHandler() {

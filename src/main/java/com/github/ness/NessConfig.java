@@ -36,6 +36,10 @@ public class NessConfig {
 		return config.getStringList("enabled-checks");
 	}
 	
+	ConfigurationSection getViolationHandling() {
+		return config.getConfigurationSection("violation-handling");
+	}
+
 	public ConfigurationSection getCheck(Class<? extends AbstractCheck<?>> check) {
 		return config.getConfigurationSection("checks." + check.getSimpleName().toLowerCase());
 	}
