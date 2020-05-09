@@ -15,7 +15,11 @@ import com.github.ness.utility.Utility;
 
 public class BadPackets {
 	static int maxpackets = 21;
-
+  /**
+   * Simple MaxPackets check
+   * @param sender
+   * @param packet
+   */
 	public static void Check(Player sender, Object packet) {
 		if (NESSAnticheat.main == null || sender == null) {
 			return;
@@ -23,10 +27,8 @@ public class BadPackets {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(NESSAnticheat.main, () -> {
 			int ping = Utility.getPing(sender);
 			int maxPackets = maxpackets * (ping / 100);
-			int maxPacketsrepeat = 3 * (ping / 100);
 			if (ping < 150) {
 				maxPackets = maxpackets;
-				maxPacketsrepeat = 3;
 			}
 			// System.out.println("Packet: " +packet.toString());
 			if (Utility.SpecificBlockNear(sender.getLocation(), Material.PORTAL)) {
@@ -37,7 +39,7 @@ public class BadPackets {
 			NessPlayer np = InventoryHack.manageraccess.getPlayer(sender);
 			np.setPacketscounter(np.getPacketscounter() + 1);
 			//sender.sendMessage("Counter: " + np.getPacketscounter());
-			if (np.getPacketscounter() > maxpackets) {
+			if (np.getPacketscounter() > maxPackets) {
 				InventoryHack.manageraccess.getPlayer(sender).setViolation(new Violation("MorePackets",np.getPacketscounter()+""));
 			}
 		}, 0);

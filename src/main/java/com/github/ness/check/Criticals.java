@@ -21,7 +21,10 @@ public class Criticals extends AbstractCheck<EntityDamageByEntityEvent>{
 	void checkEvent(EntityDamageByEntityEvent e) {
        Check(e);
 	}
-	
+	/**
+	 * Check for Criticals Pattern
+	 * @param event
+	 */
 	public void Check(EntityDamageByEntityEvent event) {
 		if (!(event.getDamager().getType() == EntityType.PLAYER)) {
 			return;
@@ -30,20 +33,12 @@ public class Criticals extends AbstractCheck<EntityDamageByEntityEvent>{
 		if (Utility.hasflybypass(player)) {
 			return;
 		}
-		if (isCritical(player)) {
 			if (player.getLocation().getY() % 1.0D == 0.0D || player.getLocation().getY() % 0.5 == 0) {
-				if (player.getFallDistance() < 0.06251 && !player.isInsideVehicle()
+				if (!player.isInsideVehicle()
 						&& !player.hasPotionEffect(PotionEffectType.BLINDNESS)) {
 					manager.getPlayer((Player) event.getEntity()).setViolation(new Violation("Criticals"));
 				}
 			}
-		}
-	}
-
-	private static boolean isCritical(Player player) {
-		return player.getFallDistance() > 0.0f && !Utility.checkGround(player.getLocation().getY()) && !player.isInsideVehicle()
-				&& !player.hasPotionEffect(PotionEffectType.BLINDNESS)
-				&& player.getEyeLocation().getBlock().getType() != Material.LADDER;
 	}
 
 }

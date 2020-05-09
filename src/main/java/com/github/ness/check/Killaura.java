@@ -40,7 +40,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		Check7(e);
 		Check8(e);
 	}
-
+    
 	public void Check(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();

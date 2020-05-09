@@ -17,7 +17,10 @@ public class FastPlace extends AbstractCheck<BlockPlaceEvent>{
 	void checkEvent(BlockPlaceEvent e) {
        Check(e);
 	}
-
+    /**
+     * A Simple FastPlace check
+     * @param event
+     */
 	public void Check(BlockPlaceEvent event) {
 		NessPlayer player = manager.getPlayer(event.getPlayer());
 		player.setBlockplace(player.getBlockplace()+1);

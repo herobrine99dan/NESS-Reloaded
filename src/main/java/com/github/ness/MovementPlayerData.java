@@ -42,6 +42,11 @@ public class MovementPlayerData {
 	public void resetPatternMS() { this.PatternMS = Long.valueOf(System.currentTimeMillis()); }
 
 	// Return a running instance (or create a new one)
+	/**
+	 * Return a running instance (or create a new one)
+	 * 
+	 * @param player the corresponding player
+	 */
 	public static MovementPlayerData getInstance(Player player) {
 		if (nessplayers == null) {
 			return new MovementPlayerData(player);

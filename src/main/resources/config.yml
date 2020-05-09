@@ -44,7 +44,6 @@ enabled-checks:
   - 'Jesus'
   - 'Killaura'
   - 'KillauraBotCheck'
-  - 'KillauraMove'
   - 'NoClip'
   - 'NoSlowDownBow'
   - 'NoSlowDownFood'
