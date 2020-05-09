@@ -1,13 +1,11 @@
 package com.github.ness;
 
-import java.io.File;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,13 +37,8 @@ public class NESSAnticheat extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		main = this;
-		String cfgYml = "config.yml";
-		String msgsYml = "messages.yml";
-		saveResource(cfgYml, false);
-		saveResource(msgsYml, false);
-		nessConfig = new NessConfig(
-				YamlConfiguration.loadConfiguration(new File(getDataFolder(), cfgYml)),
-				YamlConfiguration.loadConfiguration(new File(getDataFolder(), msgsYml)));
+		nessConfig = new NessConfig("config.yml", "messages.yml");
+		nessConfig.reloadConfiguration(this);
 		if (!nessConfig.checkConfigVersion()) {
 			getLogger().warning(
 					"Your config.yml is outdated! Until you regenerate it, NESS will use default values for some checks.");

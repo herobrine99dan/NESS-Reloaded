@@ -37,6 +37,7 @@ public class NessCommands implements CommandExecutor {
 			} else {
 				switch (args[0].toLowerCase()) {
 				case "reload":
+					ness.getNessConfig().reloadConfiguration(ness);
 					ness.getCheckManager().reloadChecks();
 					sendMessage(sender, "&aReloaded NESS!");
 					break;
