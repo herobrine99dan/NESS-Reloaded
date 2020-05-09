@@ -9,8 +9,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.bukkit.entity.Player;
 
-import com.github.ness.annotation.SyncOnly;
-
 import lombok.Getter;
 import lombok.Setter;
 
