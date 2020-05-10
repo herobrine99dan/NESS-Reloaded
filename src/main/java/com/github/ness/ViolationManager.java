@@ -79,7 +79,7 @@ public class ViolationManager {
 			ness.getCheckManager().forEachPlayer((player) -> {
 
 				// Atomicaly get the existing violation and set it to null
-				final Violation previous = player.violation.getAndUpdate((ignored) -> null);
+				final Violation previous = player.violation.getAndSet(null);
 				if (previous != null) {
 
 					Map<String, Integer> checkViolationCounts = player.checkViolationCounts;
