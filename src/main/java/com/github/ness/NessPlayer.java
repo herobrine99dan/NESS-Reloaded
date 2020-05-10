@@ -122,12 +122,12 @@ public class NessPlayer implements AutoCloseable {
 	 */
 	public void setViolation(Violation violation) {
 		if (this.violation.compareAndSet(null, violation)) {
-			if (player.hasPermission("ness.bypass.*") || player.hasPermission("ness.bypass." + violation.getCheck())) {
+			/*if (player.hasPermission("ness.bypass.*") || player.hasPermission("ness.bypass." + violation.getCheck())) {
 				return;
 			}
 			// player.sendMessage("HACK: " + violation.getCheck() + " Module: " +
 			// Arrays.toString(violation.getDetails()));
-			NessConfig config = new NessConfig("config.yml", "messages.yml");
+			NessConfig config = NESSAnticheat.main.getNessConfig();
 			ConfigurationSection cs = config.getViolationHandling().getConfigurationSection("notify-staff");
 			if(!cs.getBoolean("enable")) {
 				return;
@@ -138,7 +138,7 @@ public class NessPlayer implements AutoCloseable {
 							.replaceFirst("%HACK%", violation.getCheck())
 							.replaceFirst("%DETAILS%", violation.getDetails().toString()));
 				}
-			}
+			}*/
 		}
 	}
 

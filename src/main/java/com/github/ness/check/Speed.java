@@ -39,6 +39,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	private void punish(Player p, String module) {
+		if(Utility.hasflybypass(p)) {
+			return;
+		}
 		manager.getPlayer(p).setViolation(new Violation("Speed", module));
 	}
 
