@@ -41,6 +41,10 @@ public class NessConfig {
 		return messages.getInt("messages-version", -1) == MESSAGES_VERSION;
 	}
 	
+	boolean isDevMode() {
+		return config.getBoolean("dev-mode", false);
+	}
+	
 	List<String> getEnabledChecks() {
 		return config.getStringList("enabled-checks");
 	}
