@@ -61,6 +61,7 @@ public class NESSAnticheat extends JavaPlugin {
 		CompletableFuture<?> future = checkManager.loadAsync();
 
 		violationManager = new ViolationManager(this);
+		violationManager.addDefaultActions();
 		violationManager.initiatePeriodicTask();
 
 		this.protocol = (TinyProtocol) new TinyProtocolListeners((Plugin) this);
