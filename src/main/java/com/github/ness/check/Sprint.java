@@ -2,17 +2,13 @@ package com.github.ness.check;
 
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NESSAnticheat;
 import com.github.ness.Violation;
-import com.github.ness.utility.Utilities;
 import com.github.ness.utility.Utility;
 
 public class Sprint extends AbstractCheck<PlayerMoveEvent> {

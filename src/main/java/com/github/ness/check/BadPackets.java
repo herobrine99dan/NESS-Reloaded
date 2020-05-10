@@ -1,13 +1,9 @@
 package com.github.ness.check;
 
-import java.util.Arrays;
-import java.util.HashMap;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import com.comphenix.protocol.events.PacketContainer;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.Violation;

@@ -10,7 +10,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -375,11 +374,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			}
 
 		}
-	}
-
-	private int calculate(double var0, double var2) {
-		double var4;
-		return (var4 = var0 - var2) == 0.0D ? 0 : (var4 < 0.0D ? -1 : 1);
 	}
 
 	public boolean bypass(Player p) {

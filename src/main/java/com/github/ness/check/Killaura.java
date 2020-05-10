@@ -1,7 +1,6 @@
 package com.github.ness.check;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -15,7 +14,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
-import com.github.ness.MovementPlayerData;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.Violation;
 import com.github.ness.utility.Utility;

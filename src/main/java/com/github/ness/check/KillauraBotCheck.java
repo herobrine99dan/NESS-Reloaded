@@ -1,6 +1,5 @@
 package com.github.ness.check;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 import org.bukkit.Location;
@@ -12,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.github.ness.CheckManager;
-import com.github.ness.NESSAnticheat;
 import com.github.ness.nms.NPC;
 import com.github.ness.utility.Utilities;
 
