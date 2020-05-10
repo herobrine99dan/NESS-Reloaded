@@ -6,6 +6,12 @@
 
 #
 #
+# General settings
+#
+dev-mode: false
+
+#
+#
 # Violation handling
 #
 # What to do when a player is detected
