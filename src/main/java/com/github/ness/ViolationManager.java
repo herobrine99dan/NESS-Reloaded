@@ -1,6 +1,8 @@
 package com.github.ness;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -79,6 +81,13 @@ public class ViolationManager {
 				// Atomicaly get the existing violation and set it to null
 				final Violation previous = player.violation.getAndUpdate((ignored) -> null);
 				if (previous != null) {
+
+					Map<String, Integer> checkViolationCounts = player.checkViolationCounts;
+					if (checkViolationCounts == null) {
+						checkViolationCounts = new HashMap<>();
+						player.checkViolationCounts = checkViolationCounts;
+					}
+					checkViolationCounts.merge(previous.getCheck(), 1, Math::addExact);
 
 					// actions we have to run on the main thread
 					Set<ViolationAction> syncActions = null;

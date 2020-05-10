@@ -2,6 +2,7 @@ package com.github.ness;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -16,10 +17,28 @@ import lombok.Setter;
 public class NessPlayer implements AutoCloseable {
 
 	/**
+	 * Bukkit Player corresponding to this NessPlayer
+	 * 
+	 */
+	@Getter
+	private final Player player;
+	
+	/**
 	 * Player's current violation, package visibility for ViolationManager to use
 	 * 
 	 */
-	AtomicReference<Violation> violation;
+	final AtomicReference<Violation> violation = new AtomicReference<>();
+	/**
+	 * Used by ViolationManager
+	 * 
+	 */
+	Map<String, Integer> checkViolationCounts;
+	
+	/*
+	 * Used for checks
+	 * 
+	 */
+	
 	@Getter
 	@Setter
 	private boolean moved = false;
@@ -78,9 +97,8 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	@Setter
 	private float lastmcdpitch = Float.MIN_VALUE;
-	@Getter
-	private final Player player;
 
+	// Used for AutoClick check
 	@Getter
 	private final Set<Long> clickHistory = ConcurrentHashMap.newKeySet();
 
@@ -88,10 +106,20 @@ public class NessPlayer implements AutoCloseable {
 		this.player = player;
 	}
 
+	/**
+	 * Gets the player's current, latest violation
+	 * 
+	 * @return the latest violation
+	 */
 	public Violation getViolation() {
 		return violation.get();
 	}
 
+	/**
+	 * Used to indicate the player was detected for cheating
+	 * 
+	 * @param violation the violation
+	 */
 	public void setViolation(Violation violation) {
 		if (this.violation.compareAndSet(null, violation)) {
 			if (player.hasPermission("ness.bypass.*") || player.hasPermission("ness.bypass." + violation.getCheck())) {
