@@ -83,15 +83,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 					if (Utility.hasflybypass(player)) {
 						return;
 					}
-					punish(player, "MiniJump1");
-					if (manager.getNess().devMode) {
-						player.sendMessage("y:" + y);
-					}
+					punish(player, "MiniJump1 "+ y );
 				} else if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
-					punish(player, "MiniJump2");
-					if (NESSAnticheat.main.devMode) {
-						player.sendMessage("Ydist: " + y);
-					}
+					punish(player, "MiniJump2" + y);
 				}
 			}
 		}
@@ -111,13 +105,10 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 						&& Utilities.getPlayerUnderBlock(player).getType().name().toLowerCase().contains("ice")) {
 					return;
 				}
-				if (NESSAnticheat.main.devMode) {
-					e.getPlayer().sendMessage("First Distance: " + dist);
-				}
-				punish(player, "MaxDistance");
+				punish(player, "MaxDistance " + dist);
 			} else if (dist > soulsand && player.getFallDistance() == 0
 					&& player.getLocation().getBlock().getType().equals(Material.SOUL_SAND)) {
-				punish(player, "NoSlowDown");
+				punish(player, "NoSlowDown " + dist);
 			}
 		}
 	}
@@ -169,9 +160,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				if (!(yresult == -0.01)) {
 					if (!(yresult == -0.03)) {
 						if (Math.abs(yresult) > 0.36) {
-							punish(p, "InvalidVelocity");
+							punish(p, "InvalidVelocity " + yresult);
 						} else if (Math.abs(yresult) > 0.06) {
-							p.sendMessage("ResultY:" + yresult);
+							//p.sendMessage("ResultY:" + yresult);
 						}
 					}
 				}

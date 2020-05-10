@@ -72,7 +72,7 @@ public class CheckManager implements AutoCloseable {
 					try {
 						if (evt instanceof PlayerJoinEvent) {
 							Player player = ((PlayerJoinEvent) evt).getPlayer();
-							players.put(player.getUniqueId(), new NessPlayer(player));
+							players.put(player.getUniqueId(), new NessPlayer(player, ness.getNessConfig().isDevMode()));
 						} else if (evt instanceof PlayerQuitEvent) {
 							players.remove(((PlayerQuitEvent) evt).getPlayer().getUniqueId()).close();
 						} else {

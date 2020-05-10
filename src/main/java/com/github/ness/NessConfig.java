@@ -45,6 +45,10 @@ public class NessConfig {
 		return config.getStringList("enabled-checks");
 	}
 	
+	boolean isDevMode() {
+		return config.getBoolean("dev-mode", false);
+	}
+	
 	ConfigurationSection getViolationHandling() {
 		return config.getConfigurationSection("violation-handling");
 	}
