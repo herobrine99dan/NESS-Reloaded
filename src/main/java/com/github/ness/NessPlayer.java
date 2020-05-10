@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import lombok.Getter;
@@ -45,7 +47,7 @@ public class NessPlayer implements AutoCloseable {
 	double oldY = 0;
 	@Getter
 	@Setter
-	int packets =0;
+	int packets = 0;
 	@Getter
 	@Setter
 	int drop = 0;
@@ -70,7 +72,7 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	@Setter
 	long mobinfrontime = 0;
-	
+
 	// Used for Aimbot check
 	@Getter
 	private List<Float> pitchdelta = new ArrayList<>();
@@ -86,17 +88,33 @@ public class NessPlayer implements AutoCloseable {
 	NessPlayer(Player player) {
 		this.player = player;
 	}
-	
+
 	public Violation getViolation() {
 		return violation.get();
 	}
-	
+
 	public void setViolation(Violation violation) {
 		if (this.violation.compareAndSet(null, violation)) {
-			player.sendMessage("HACK: " + violation.getCheck() + " Module: " + Arrays.toString(violation.getDetails()));
+			if (player.hasPermission("ness.bypass.*") || player.hasPermission("ness.bypass." + violation.getCheck())) {
+				return;
+			}
+			// player.sendMessage("HACK: " + violation.getCheck() + " Module: " +
+			// Arrays.toString(violation.getDetails()));
+			NessConfig config = new NessConfig("config.yml", "messages.yml");
+			ConfigurationSection cs = config.getViolationHandling().getConfigurationSection("notify-staff");
+			if(!cs.getBoolean("enable")) {
+				return;
+			}
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				if (p.hasPermission("ness.notify.hacks")) {
+					p.sendMessage(cs.getString("notification").replaceFirst("%PLAYER%", player.getName())
+							.replaceFirst("%HACK%", violation.getCheck())
+							.replaceFirst("%DETAILS%", violation.getDetails().toString()));
+				}
+			}
 		}
 	}
-	
+
 	@Override
 	public void close() {
 
