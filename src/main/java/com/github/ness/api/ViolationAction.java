@@ -1,7 +1,5 @@
 package com.github.ness.api;
 
-import java.util.function.BiConsumer;
-
 import org.bukkit.entity.Player;
 
 import com.github.ness.Violation;
@@ -13,7 +11,7 @@ import com.github.ness.Violation;
  * @author A248
  *
  */
-public abstract class ViolationAction implements BiConsumer<Player, Violation> {
+public abstract class ViolationAction {
 
 	private final boolean canRunAsync;
 	
@@ -43,5 +41,16 @@ public abstract class ViolationAction implements BiConsumer<Player, Violation> {
 	public boolean canRunAsync() {
 		return canRunAsync;
 	}
+	
+	/**
+	 * Called when a player is detected for cheating. <br>
+	 * The total number of times the player has violated the check in question
+	 * (from <code>Violation.getCheck()</code>) is given as <i>violationCount</i>.
+	 * 
+	 * @param player the player
+	 * @param violation the violation
+	 * @param violationCount the number of times the player has violated the specific check
+	 */
+	public abstract void actOn(Player player, Violation violation, int violationCount);
 	
 }

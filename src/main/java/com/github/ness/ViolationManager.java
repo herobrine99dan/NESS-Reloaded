@@ -25,11 +25,11 @@ public class ViolationManager {
 
 	private final Set<ViolationAction> actions = ConcurrentHashMap.newKeySet(8);
 
-	private String addViolationVariables(String message, Player player, Violation violation) {
+	private String addViolationVariables(String message, Player player, Violation violation, int violationCount) {
 		return ChatColor.translateAlternateColorCodes('&',
 				message.replace("%PLAYER%", player.getName()).replace("%HACK%", violation.getCheck())
 						.replace("%DETAILS%", StringUtils.join(violation.getDetails(), ", "))
-						.replace("%VL%", Integer.toString(ness.getCheckManager().getPlayer(player).getVL(violation))));
+						.replace("%VL%", Integer.toString(violationCount)));
 	}
 
 	void addDefaultActions() {
@@ -42,11 +42,11 @@ public class ViolationManager {
 					addAction(new ViolationAction(false) {
 
 						@Override
-						public void accept(Player player, Violation violation) {
+						public void actOn(Player player, Violation violation, int violationCount) {
 							if(player.hasPermission("ness.bypass.*") || player.hasPermission("ness.bypass."+violation.getCheck().toLowerCase())) {
 								return;
 							}
-							String notif = addViolationVariables(notification, player, violation);
+							String notif = addViolationVariables(notification, player, violation, violationCount);
 							for (Player staff : Bukkit.getOnlinePlayers()) {
 								if (staff.hasPermission("ness.notify")) {
 									staff.sendMessage(notif);
@@ -64,8 +64,8 @@ public class ViolationManager {
 					addAction(new ViolationAction(false) {
 
 						@Override
-						public void accept(Player player, Violation violation) {
-							String cmd = addViolationVariables(command, player, violation);
+						public void actOn(Player player, Violation violation, int violationCount) {
+							String cmd = addViolationVariables(command, player, violation, violationCount);
 							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
 						}
 
@@ -87,19 +87,24 @@ public class ViolationManager {
 				final Violation previous = player.violation.getAndSet(null);
 				if (previous != null) {
 
-					Map<String, Integer> checkViolationCounts = player.checkViolationCounts;
-					if (checkViolationCounts == null) {
-						checkViolationCounts = new HashMap<>();
-						player.checkViolationCounts = checkViolationCounts;
+					int violationCount;
+					if (player.isDevMode()) {
+						violationCount = player.checkViolationCounts.get(previous.getCheck());
+					} else {
+						Map<String, Integer> checkViolationCounts = player.checkViolationCounts;
+						if (checkViolationCounts == null) {
+							checkViolationCounts = new HashMap<>();
+							player.checkViolationCounts = checkViolationCounts;
+						}
+						violationCount = checkViolationCounts.merge(previous.getCheck(), 1, (c1, c2) -> c1 + c2);
 					}
-					checkViolationCounts.merge(previous.getCheck(), 1, Math::addExact);
 
 					// actions we have to run on the main thread
 					Set<ViolationAction> syncActions = null;
 
 					for (ViolationAction action : actions) {
 						if (action.canRunAsync()) {
-							action.accept(player.getPlayer(), previous);
+							action.actOn(player.getPlayer(), previous, violationCount);
 						} else {
 							if (syncActions == null) {
 								syncActions = new HashSet<>();
@@ -111,7 +116,7 @@ public class ViolationManager {
 						final Set<ViolationAction> syncActionsFinal = syncActions;
 						Bukkit.getScheduler().runTask(ness, () -> {
 							for (ViolationAction syncAction : syncActionsFinal) {
-								syncAction.accept(player.getPlayer(), previous);
+								syncAction.actOn(player.getPlayer(), previous, violationCount);
 							}
 						});
 					}

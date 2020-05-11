@@ -22,24 +22,19 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	private final Player player;
 
-	private final boolean devMode;
-
 	/**
 	 * Player's current violation, package visibility for ViolationManager to use
 	 * 
 	 */
 	final AtomicReference<Violation> violation = new AtomicReference<>();
 	/**
-	 * Used by ViolationManager
+	 * Used by ViolationManager to count violations of specific checks. <br>
+	 * This is usually a lazily initialised HashMap, but if dev mode is enabled,
+	 * this is a ConcurrentHashMap and is accessed concurrently in #setViolation.
 	 * 
 	 */
 	Map<String, Integer> checkViolationCounts;
 
-	/*
-	 * Used for checks
-	 * 
-	 */
-	private List<String> vl = new ArrayList<String>();
 	@Getter
 	@Setter
 	private boolean moved = false;
@@ -105,7 +100,13 @@ public class NessPlayer implements AutoCloseable {
 
 	NessPlayer(Player player, boolean devMode) {
 		this.player = player;
-		this.devMode = devMode;
+		if (devMode) {
+			checkViolationCounts = new ConcurrentHashMap<>();
+		}
+	}
+	
+	boolean isDevMode() {
+		return checkViolationCounts instanceof ConcurrentHashMap<?, ?>;
 	}
 
 	/**
@@ -123,10 +124,12 @@ public class NessPlayer implements AutoCloseable {
 	 * @param violation the violation
 	 */
 	public void setViolation(Violation violation) {
-		if (!this.violation.compareAndSet(null, violation) && devMode) {
+		this.violation.compareAndSet(null, violation);
+		if (isDevMode()) {
 			// sendMessage is thread safe
 			player.sendMessage("Dev mode violation: Check " + violation.getCheck() + ". Details: "
 					+ StringUtils.join(violation.getDetails(), ", "));
+			checkViolationCounts.merge(violation.getCheck(), 1, (c1, c2) -> c1 + c2);
 		}
 		/*
 		 * if (player.hasPermission("ness.bypass.*") ||
