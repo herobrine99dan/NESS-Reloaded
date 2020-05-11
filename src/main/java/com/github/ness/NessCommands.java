@@ -1,11 +1,12 @@
 package com.github.ness;
 
 import org.apache.commons.lang3.StringUtils;
-
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import lombok.AllArgsConstructor;
 
@@ -13,7 +14,7 @@ import lombok.AllArgsConstructor;
 public class NessCommands implements CommandExecutor {
 
 	private final NESSAnticheat ness;
-	
+
 	private String getPermission(String arg) {
 		if (arg == null) {
 			return "ness.command.usage";
@@ -27,7 +28,7 @@ public class NessCommands implements CommandExecutor {
 			return "ness.command.usage";
 		}
 	}
-	
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		String firstArg = (args.length >= 1) ? args[0] : null;
@@ -44,33 +45,43 @@ public class NessCommands implements CommandExecutor {
 				case "version":
 					sendVersion(sender);
 					break;
+				case "clear":
+					ness.getCheckManager().getPlayer(Bukkit.getPlayer(args[1])).cleanViolationList();
+					sendMessage(sender, "Done!");
+					break;
+				case "vl":
+					sendViolationCounter(sender, Bukkit.getPlayer(args[1]));
+					break;
 				default:
 					usage(sender);
 					break;
 				}
 			}
 		} else {
-			sendMessage(sender, ness.getNessConfig().getMessages().getString(
-					"commands.no-permission", "&cSorry, you cannot use this."));
+			sendMessage(sender, ness.getNessConfig().getMessages().getString("commands.no-permission",
+					"&cSorry, you cannot use this."));
 		}
 		return true;
 	}
-	
+
+	private void sendViolationCounter(CommandSender sender, Player p) {
+		sendMessage(sender,
+				"Violation for player " + p.getName() + ": " + ness.getCheckManager().getPlayer(p).getViolationList());
+	}
+
 	private void sendVersion(CommandSender sender) {
 		sendMessage(sender, "&7Version " + ness.getDescription().getVersion());
 	}
-	
+
 	private void usage(CommandSender sender) {
 		sendMessage(sender, "&aNESS Anticheat");
 		sendVersion(sender);
-		sendMessage(sender, '\n'
-				+ "/ness toggle <dev|debug> - Toggle debug or dev mode." + '\n'
-				+ "/ness vl <player> - View player violations." + '\n'
-				+ "/ness reload - Reload configuration." + '\n'
-				+ '\n'
-				+ "&7Authors: " + StringUtils.join(ness.getDescription().getAuthors(), ", "));
+		sendMessage(sender,
+				'\n' + "/ness toggle <dev|debug> - Toggle debug or dev mode." + '\n'
+						+ "/ness vl <player> - View player violations." + '\n' + "/ness reload - Reload configuration."
+						+ '\n' + '\n' + "&7Authors: " + StringUtils.join(ness.getDescription().getAuthors(), ", "));
 	}
-	
+
 	private void sendMessage(CommandSender sender, String msg) {
 		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 	}

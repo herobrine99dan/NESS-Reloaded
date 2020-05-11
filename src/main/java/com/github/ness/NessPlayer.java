@@ -116,6 +116,24 @@ public class NessPlayer implements AutoCloseable {
 	public Violation getViolation() {
 		return violation.get();
 	}
+	
+	public boolean cleanViolationList() {
+		vl.clear();
+		return true;
+	}
+
+	public String getViolationList() {
+		String result = "";
+		for (int i = 0; i < vl.size(); i++) {
+			String s = vl.get(i);
+			String[] args = s.split(":");
+			String check = args[0];
+			int vlint = Integer.valueOf(args[1]);
+			result = check + ": " + vlint + " ";
+
+		}
+		return result;
+	}
 
 	public int getVL(Violation violation) {
 		for (int i = 0; i < vl.size(); i++) {
@@ -129,7 +147,7 @@ public class NessPlayer implements AutoCloseable {
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * Used to indicate the player was detected for cheating
 	 * 
@@ -137,7 +155,7 @@ public class NessPlayer implements AutoCloseable {
 	 */
 	public void setViolation(Violation violation) {
 		if (vl.isEmpty()) {
-			vl.add(violation.getCheck() +":"+ "1");
+			vl.add(violation.getCheck() + ":" + "1");
 		} else {
 			boolean done = false;
 			for (int i = 0; i < vl.size(); i++) {
@@ -146,13 +164,13 @@ public class NessPlayer implements AutoCloseable {
 				String check = args[0];
 				int vlint = Integer.valueOf(args[1]);
 				if (check.equals(violation.getCheck())) {
-					vl.set(i, violation.getCheck() + ":" + (vlint+ 1));
+					vl.set(i, violation.getCheck() + ":" + (vlint + 1));
 					done = true;
 					break;
 				}
 			}
-			if(!done) {
-				vl.add(violation.getCheck() + ":" +"1");
+			if (!done) {
+				vl.add(violation.getCheck() + ":" + "1");
 			}
 		}
 		if (!this.violation.compareAndSet(null, violation) && devMode) {
