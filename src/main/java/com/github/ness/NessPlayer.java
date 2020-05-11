@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.bukkit.entity.Player;
 
 import lombok.Getter;
@@ -22,9 +21,9 @@ public class NessPlayer implements AutoCloseable {
 	 */
 	@Getter
 	private final Player player;
-	
+
 	private final boolean devMode;
-	
+
 	/**
 	 * Player's current violation, package visibility for ViolationManager to use
 	 * 
@@ -35,12 +34,12 @@ public class NessPlayer implements AutoCloseable {
 	 * 
 	 */
 	Map<String, Integer> checkViolationCounts;
-	
+
 	/*
 	 * Used for checks
 	 * 
 	 */
-	
+	private List<String> vl = new ArrayList<String>();
 	@Getter
 	@Setter
 	private boolean moved = false;
@@ -118,34 +117,62 @@ public class NessPlayer implements AutoCloseable {
 		return violation.get();
 	}
 
+	public int getVL(Violation violation) {
+		for (int i = 0; i < vl.size(); i++) {
+			String s = vl.get(i);
+			String[] args = s.split(":");
+			String check = args[0];
+			int vlint = Integer.valueOf(args[1]);
+			if (check.equals(violation.getCheck())) {
+				return vlint;
+			}
+		}
+		return 0;
+	}
+	
 	/**
 	 * Used to indicate the player was detected for cheating
 	 * 
 	 * @param violation the violation
 	 */
 	public void setViolation(Violation violation) {
+		if (vl.isEmpty()) {
+			vl.add(violation.getCheck() +":"+ "1");
+		} else {
+			boolean done = false;
+			for (int i = 0; i < vl.size(); i++) {
+				String s = vl.get(i);
+				String[] args = s.split(":");
+				String check = args[0];
+				int vlint = Integer.valueOf(args[1]);
+				if (check.equals(violation.getCheck())) {
+					vl.set(i, violation.getCheck() + ":" + (vlint+ 1));
+					done = true;
+					break;
+				}
+			}
+			if(!done) {
+				vl.add(violation.getCheck() + ":" +"1");
+			}
+		}
 		if (!this.violation.compareAndSet(null, violation) && devMode) {
 			// sendMessage is thread safe
 			player.sendMessage("Dev mode violation: Check " + violation.getCheck() + ". Details: "
 					+ StringUtils.join(violation.getDetails(), ", "));
 		}
-		/*if (player.hasPermission("ness.bypass.*") || player.hasPermission("ness.bypass." + violation.getCheck())) {
-		return;
-		}	
-		// player.sendMessage("HACK: " + violation.getCheck() + " Module: " +
-		// Arrays.toString(violation.getDetails()));
-		NessConfig config = NESSAnticheat.main.getNessConfig();
-		ConfigurationSection cs = config.getViolationHandling().getConfigurationSection("notify-staff");
-		if(!cs.getBoolean("enable")) {
-		return;
-		}
-		for (Player p : Bukkit.getOnlinePlayers()) {
-			if (p.hasPermission("ness.notify.hacks")) {
-				p.sendMessage(cs.getString("notification").replaceFirst("%PLAYER%", player.getName())
-						.replaceFirst("%HACK%", violation.getCheck())
-						.replaceFirst("%DETAILS%", violation.getDetails().toString()));
-			}
-		}*/
+		/*
+		 * if (player.hasPermission("ness.bypass.*") ||
+		 * player.hasPermission("ness.bypass." + violation.getCheck())) { return; } //
+		 * player.sendMessage("HACK: " + violation.getCheck() + " Module: " + //
+		 * Arrays.toString(violation.getDetails())); NessConfig config =
+		 * NESSAnticheat.main.getNessConfig(); ConfigurationSection cs =
+		 * config.getViolationHandling().getConfigurationSection("notify-staff");
+		 * if(!cs.getBoolean("enable")) { return; } for (Player p :
+		 * Bukkit.getOnlinePlayers()) { if (p.hasPermission("ness.notify.hacks")) {
+		 * p.sendMessage(cs.getString("notification").replaceFirst("%PLAYER%",
+		 * player.getName()) .replaceFirst("%HACK%", violation.getCheck())
+		 * .replaceFirst("%DETAILS%", violation.getDetails().toString())); } }
+		 */
 	}
 
 	@Override

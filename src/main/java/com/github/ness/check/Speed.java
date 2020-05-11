@@ -39,7 +39,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	private void punish(Player p, String module) {
-		if(Utility.hasflybypass(p)) {
+		if (Utility.hasflybypass(p)) {
 			return;
 		}
 		manager.getPlayer(p).setViolation(new Violation("Speed", module));
@@ -53,6 +53,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		// - from.getY(), 6)
 		// + " Dist: " + Utility.around(Utility.getMaxSpeed(from, to), 6));
 		Player player = e.getPlayer();
+		if (Utility.hasflybypass(player)) {
+			return;
+		}
 		if (Utilities.isStairs(Utilities.getPlayerUnderBlock(player)) || Utilities.isStairs(to.getBlock())) {
 			return;
 		}
@@ -83,7 +86,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 					if (Utility.hasflybypass(player)) {
 						return;
 					}
-					punish(player, "MiniJump1 "+ y );
+					punish(player, "MiniJump1 " + y);
 				} else if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 					punish(player, "MiniJump2" + y);
 				}
@@ -97,6 +100,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		double soulsand = 0.211;
+		if (Utility.hasflybypass(player)) {
+			return;
+		}
 		double dist = Utility.getMaxSpeed(e.getFrom(), e.getTo());
 		if (player.isOnGround() && !player.isInsideVehicle() && !player.isFlying()
 				&& !player.hasPotionEffect(PotionEffectType.SPEED) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
@@ -144,7 +150,10 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		// Vector result = v.subtract(p.getVelocity());
 		Vector result = v.subtract(p.getVelocity().setY(around(p.getVelocity().getY(), 5)));
 		double yresult = 0.0;
-		if (p.isOnGround()) {
+		if (Utility.isOnGround(p)) {
+			return;
+		}
+		if (Utility.hasflybypass(p)) {
 			return;
 		}
 		try {
@@ -162,7 +171,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 						if (Math.abs(yresult) > 0.36) {
 							punish(p, "InvalidVelocity " + yresult);
 						} else if (Math.abs(yresult) > 0.06) {
-							//p.sendMessage("ResultY:" + yresult);
+							// p.sendMessage("ResultY:" + yresult);
 						}
 					}
 				}
@@ -181,6 +190,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 		if (Double.toString(x).length() > 4) {
 			x = around(x, 5);
+		}
+		if (Utility.hasflybypass(p)) {
+			return;
 		}
 		if (!Utilities.isAround(to, to.getBlock().getType())) {
 			return;
@@ -213,7 +225,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	public void TestCheck(PlayerMoveEvent e) {
-		
+
 	}
 
 	public double around(double i, int places) {

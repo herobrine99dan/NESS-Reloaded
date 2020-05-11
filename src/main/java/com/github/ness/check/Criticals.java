@@ -35,7 +35,7 @@ public class Criticals extends AbstractCheck<EntityDamageByEntityEvent>{
 			if (player.getLocation().getY() % 1.0D == 0.0D || player.getLocation().getY() % 0.5 == 0) {
 				if (!player.isInsideVehicle()
 						&& !player.hasPotionEffect(PotionEffectType.BLINDNESS)) {
-					manager.getPlayer((Player) event.getEntity()).setViolation(new Violation("Criticals"));
+					manager.getPlayer((Player) event.getDamager()).setViolation(new Violation("Criticals"));
 				}
 			}
 	}

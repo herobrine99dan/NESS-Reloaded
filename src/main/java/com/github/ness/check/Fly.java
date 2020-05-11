@@ -352,7 +352,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				if (!(yresult == -0.01)) {
 					if (!(yresult == -0.03)) {
 						if (yresult > 0.06 && Utilities.getPlayerUnderBlock(p).getType().equals(Material.AIR)) {
-							p.sendMessage("Dist:" + yresult);
+							//p.sendMessage("Dist:" + yresult);
 							// manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly",
 							// "InvalidVelocity"));
 						}

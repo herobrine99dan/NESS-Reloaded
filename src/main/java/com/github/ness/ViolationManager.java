@@ -21,15 +21,15 @@ import lombok.RequiredArgsConstructor;
 public class ViolationManager {
 
 	private final NESSAnticheat ness;
-	
+
 	private final Set<ViolationAction> actions = ConcurrentHashMap.newKeySet(8);
-	
+
 	private String addViolationVariables(String message, Player player, Violation violation) {
-		return message.replace("%PLAYER%", player.getName())
-		.replace("%HACK%", violation.getCheck())
-		.replace("%DETAILS%", StringUtils.join(violation.getDetails(), ", "));
+		return message.replace("%PLAYER%", player.getName()).replace("%HACK%", violation.getCheck())
+				.replace("%DETAILS%", StringUtils.join(violation.getDetails(), ", "))
+				.replace("%VL%", Integer.toString(ness.getCheckManager().getPlayer(player).getVL(violation))).replace("&", "§");
 	}
-	
+
 	void addDefaultActions() {
 		ConfigurationSection section = ness.getNessConfig().getViolationHandling();
 		if (section != null) {
@@ -48,7 +48,7 @@ public class ViolationManager {
 								}
 							}
 						}
-						
+
 					});
 				}
 			}
@@ -69,11 +69,11 @@ public class ViolationManager {
 			}
 		}
 	}
-	
+
 	void addAction(ViolationAction action) {
 		actions.add(action);
 	}
-	
+
 	void initiatePeriodicTask() {
 		ness.getExecutor().scheduleWithFixedDelay(() -> {
 			ness.getCheckManager().forEachPlayer((player) -> {

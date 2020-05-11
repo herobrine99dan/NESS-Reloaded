@@ -24,7 +24,6 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	void checkEvent(PlayerMoveEvent e) {
 		Check(e);
 		Check1(e);
-		Check2(e);
 	}
 
 	/**
@@ -71,35 +70,6 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {
 			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura1"));
 		}
-	}
-	   /**
-	    * Check for some Aimbot Pattern
-	    */
-	public void Check2(PlayerMoveEvent event) {
-		Player player = event.getPlayer();
-		if (event.getFrom().getY() >= event.getTo().getY()) {
-			return;
-		}
-		if (Utilities.isOnStairs(player) || Utilities.isInLiquid(player) || Utilities.isOnWeb(player)) {
-			return;// data.hasBeenDamaged()
-		}
-		if (player.getAllowFlight()) {
-			return;
-		}
-		if (Utility.isOnSlime(player) || Utilities.isOnIce(player, true)) {
-			return;
-		}
-		final double yaw = Math.abs(event.getFrom().getYaw() - event.getTo().getYaw());
-		if (yaw > 0.0 && yaw < 360.0) {
-			if (yaw >= 5.0) {
-				if (yaw % 1.0f == 0.0f) {
-					// WarnHacks.warnHacks(event.getPlayer(), "Aimbot", 3, -1.0D, 2, "PerfectAura",
-					// false);
-					manager.getPlayer(event.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura2"));
-				}
-			}
-		}
-		return;
 	}
 
 	public static double round(double value, int places) {

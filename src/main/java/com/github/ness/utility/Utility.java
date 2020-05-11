@@ -236,11 +236,11 @@ public class Utility {
 
 	public static boolean hasflybypass(Player player) {
 		ItemStack[] armor = player.getInventory().getArmorContents();
-		if (armor == null || armor[2] == null) {
-			return false;
-		}
 		if (!Bukkit.getVersion().contains("1.8")) {
-			boolean haselytra = armor[2].getType().equals(Material.ELYTRA);
+			boolean haselytra = false;
+			if (!(armor == null) && !(armor[2] == null)) {
+				haselytra = armor[2].getType().equals(Material.ELYTRA);
+			}
 			if (player.hasPotionEffect(PotionEffectType.LEVITATION) || player.isGliding() || haselytra
 					|| player.isFlying()) {
 				return true;
