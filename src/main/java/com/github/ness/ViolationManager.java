@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -25,9 +26,10 @@ public class ViolationManager {
 	private final Set<ViolationAction> actions = ConcurrentHashMap.newKeySet(8);
 
 	private String addViolationVariables(String message, Player player, Violation violation) {
-		return message.replace("%PLAYER%", player.getName()).replace("%HACK%", violation.getCheck())
-				.replace("%DETAILS%", StringUtils.join(violation.getDetails(), ", "))
-				.replace("%VL%", Integer.toString(ness.getCheckManager().getPlayer(player).getVL(violation))).replace("&", "§");
+		return ChatColor.translateAlternateColorCodes('&',
+				message.replace("%PLAYER%", player.getName()).replace("%HACK%", violation.getCheck())
+						.replace("%DETAILS%", StringUtils.join(violation.getDetails(), ", "))
+						.replace("%VL%", Integer.toString(ness.getCheckManager().getPlayer(player).getVL(violation))));
 	}
 
 	void addDefaultActions() {
