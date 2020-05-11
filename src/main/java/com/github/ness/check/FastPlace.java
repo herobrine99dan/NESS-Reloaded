@@ -4,7 +4,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
-import com.github.ness.Violation;
+import com.github.ness.api.Violation;
 
 public class FastPlace extends AbstractCheck<BlockPlaceEvent>{
 	

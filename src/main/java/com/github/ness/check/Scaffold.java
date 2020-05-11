@@ -7,7 +7,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
-import com.github.ness.Violation;
+import com.github.ness.api.Violation;
 
 public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 	

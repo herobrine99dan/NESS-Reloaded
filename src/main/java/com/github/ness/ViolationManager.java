@@ -14,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.github.ness.api.Violation;
 import com.github.ness.api.ViolationAction;
 
 import lombok.RequiredArgsConstructor;

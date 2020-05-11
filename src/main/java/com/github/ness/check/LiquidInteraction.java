@@ -5,7 +5,7 @@ import java.util.List;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.Violation;
+import com.github.ness.api.Violation;
 
 public class LiquidInteraction extends AbstractCheck<BlockPlaceEvent>{
 	

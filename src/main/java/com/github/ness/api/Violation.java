@@ -1,4 +1,4 @@
-package com.github.ness;
+package com.github.ness.api;
 
 import lombok.Getter;
 

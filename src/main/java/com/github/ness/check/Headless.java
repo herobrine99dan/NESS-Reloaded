@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.Violation;
+import com.github.ness.api.Violation;
 
 public class Headless extends AbstractCheck<PlayerMoveEvent> {
 	

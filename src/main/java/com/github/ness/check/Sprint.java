@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.CheckManager;
-import com.github.ness.Violation;
+import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
 
 public class Sprint extends AbstractCheck<PlayerMoveEvent> {

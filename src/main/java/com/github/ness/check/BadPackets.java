@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
-import com.github.ness.Violation;
+import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
 
 public class BadPackets {

@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.Violation;
+import com.github.ness.api.Violation;
 
 public class NoSwingAttack extends AbstractCheck<EntityDamageByEntityEvent> {
 	static HashMap<UUID, Long> delay = new HashMap<UUID, Long>();

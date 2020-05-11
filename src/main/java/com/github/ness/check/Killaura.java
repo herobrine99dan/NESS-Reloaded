@@ -15,7 +15,7 @@ import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NESSAnticheat;
-import com.github.ness.Violation;
+import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
 
 public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {

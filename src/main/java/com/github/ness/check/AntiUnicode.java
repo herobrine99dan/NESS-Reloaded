@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.Violation;
+import com.github.ness.api.Violation;
 
 public class AntiUnicode extends AbstractCheck<AsyncPlayerChatEvent>  {
 

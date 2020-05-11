@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
-import com.github.ness.Violation;
+import com.github.ness.api.Violation;
 
 public class GhostHand extends AbstractCheck<PlayerInteractEvent>{
 	

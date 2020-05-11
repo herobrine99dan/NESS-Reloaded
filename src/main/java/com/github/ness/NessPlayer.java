@@ -10,6 +10,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
 
+import com.github.ness.api.Violation;
+
 import lombok.Getter;
 import lombok.Setter;
 
