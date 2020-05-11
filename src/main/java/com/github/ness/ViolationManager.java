@@ -41,6 +41,9 @@ public class ViolationManager {
 
 						@Override
 						public void accept(Player player, Violation violation) {
+							if(player.hasPermission("ness.bypass.*") || player.hasPermission("ness.bypass."+violation.getCheck().toLowerCase())) {
+								return;
+							}
 							String notif = addViolationVariables(notification, player, violation);
 							for (Player staff : Bukkit.getOnlinePlayers()) {
 								if (staff.hasPermission("ness.notify")) {
