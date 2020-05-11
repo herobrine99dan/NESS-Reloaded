@@ -41,6 +41,7 @@ enabled-checks:
   - 'EntitySpeedCheck'
   - 'FastEat'
   - 'FastPlace'
+  - 'ChestESP'
 #  - 'FastStairs'
   - 'Fly'
   - 'GhostHand'
