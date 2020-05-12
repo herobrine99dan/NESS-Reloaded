@@ -12,7 +12,7 @@ import org.bukkit.plugin.Plugin;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.check.BadPackets;
 import com.github.ness.check.PingSpoof;
-import com.github.ness.nms.MovementPacketEvent;
+import com.github.ness.nms.MovementPacketHelper;
 
 import io.netty.channel.Channel;
 
@@ -47,7 +47,7 @@ public class TinyProtocolListeners extends TinyProtocol {
 	}
 	
 	public void callPacketEvent(Location loc,Player sender) {
-		MovementPacketEvent.execute(loc,sender);
+		MovementPacketHelper.execute(loc,sender);
 	}
 	
 	public double getMethodValue(Object clazz,String value) {
