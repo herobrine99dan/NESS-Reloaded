@@ -35,7 +35,7 @@ public final class Reflection {
 		/**
 		 * Invoke a method on a specific target object.
 		 * 
-		 * @param target - the target object, or NULL for a static method.
+		 * @param target    - the target object, or NULL for a static method.
 		 * @param arguments - the arguments to pass to the method.
 		 * @return The return value, or NULL if is void.
 		 */
@@ -60,7 +60,7 @@ public final class Reflection {
 		 * Set the content of a field.
 		 * 
 		 * @param target - the target object, or NULL for a static field.
-		 * @param value - the new value of the field.
+		 * @param value  - the new value of the field.
 		 */
 		public void set(Object target, Object value);
 
@@ -88,8 +88,8 @@ public final class Reflection {
 	/**
 	 * Retrieve a field accessor for a specific field type and name.
 	 * 
-	 * @param target - the target type.
-	 * @param name - the name of the field, or NULL to ignore.
+	 * @param target    - the target type.
+	 * @param name      - the name of the field, or NULL to ignore.
 	 * @param fieldType - a compatible field type.
 	 * @return The field accessor.
 	 */
@@ -97,11 +97,17 @@ public final class Reflection {
 		return getField(target, name, fieldType, 0);
 	}
 
+	public static Object getFieldValue(Object instance, String fieldName) throws Exception {
+		Field field = instance.getClass().getDeclaredField(fieldName);
+		field.setAccessible(true);
+		return field.get(instance);
+	}
+
 	/**
 	 * Retrieve a field accessor for a specific field type and name.
 	 * 
 	 * @param className - lookup name of the class, see {@link #getClass(String)}.
-	 * @param name - the name of the field, or NULL to ignore.
+	 * @param name      - the name of the field, or NULL to ignore.
 	 * @param fieldType - a compatible field type.
 	 * @return The field accessor.
 	 */
@@ -112,9 +118,9 @@ public final class Reflection {
 	/**
 	 * Retrieve a field accessor for a specific field type and name.
 	 * 
-	 * @param target - the target type.
+	 * @param target    - the target type.
 	 * @param fieldType - a compatible field type.
-	 * @param index - the number of compatible fields to skip.
+	 * @param index     - the number of compatible fields to skip.
 	 * @return The field accessor.
 	 */
 	public static <T> FieldAccessor<T> getField(Class<?> target, Class<T> fieldType, int index) {
@@ -126,7 +132,7 @@ public final class Reflection {
 	 * 
 	 * @param className - lookup name of the class, see {@link #getClass(String)}.
 	 * @param fieldType - a compatible field type.
-	 * @param index - the number of compatible fields to skip.
+	 * @param index     - the number of compatible fields to skip.
 	 * @return The field accessor.
 	 */
 	public static <T> FieldAccessor<T> getField(String className, Class<T> fieldType, int index) {
@@ -136,7 +142,8 @@ public final class Reflection {
 	// Common method
 	private static <T> FieldAccessor<T> getField(Class<?> target, String name, Class<T> fieldType, int index) {
 		for (final Field field : target.getDeclaredFields()) {
-			if ((name == null || field.getName().equals(name)) && fieldType.isAssignableFrom(field.getType()) && index-- <= 0) {
+			if ((name == null || field.getName().equals(name)) && fieldType.isAssignableFrom(field.getType())
+					&& index-- <= 0) {
 				field.setAccessible(true);
 
 				// A function for retrieving a specific field value
@@ -178,11 +185,12 @@ public final class Reflection {
 	}
 
 	/**
-	 * Search for the first publicly and privately defined method of the given name and parameter count.
+	 * Search for the first publicly and privately defined method of the given name
+	 * and parameter count.
 	 * 
-	 * @param className - lookup name of the class, see {@link #getClass(String)}.
+	 * @param className  - lookup name of the class, see {@link #getClass(String)}.
 	 * @param methodName - the method name, or NULL to skip.
-	 * @param params - the expected parameters.
+	 * @param params     - the expected parameters.
 	 * @return An object that invokes this specific method.
 	 * @throws IllegalStateException If we cannot find this method.
 	 */
@@ -191,11 +199,12 @@ public final class Reflection {
 	}
 
 	/**
-	 * Search for the first publicly and privately defined method of the given name and parameter count.
+	 * Search for the first publicly and privately defined method of the given name
+	 * and parameter count.
 	 * 
-	 * @param clazz - a class to start with.
+	 * @param clazz      - a class to start with.
 	 * @param methodName - the method name, or NULL to skip.
-	 * @param params - the expected parameters.
+	 * @param params     - the expected parameters.
 	 * @return An object that invokes this specific method.
 	 * @throws IllegalStateException If we cannot find this method.
 	 */
@@ -204,16 +213,18 @@ public final class Reflection {
 	}
 
 	/**
-	 * Search for the first publicly and privately defined method of the given name and parameter count.
+	 * Search for the first publicly and privately defined method of the given name
+	 * and parameter count.
 	 * 
-	 * @param clazz - a class to start with.
+	 * @param clazz      - a class to start with.
 	 * @param methodName - the method name, or NULL to skip.
 	 * @param returnType - the expected return type, or NULL to ignore.
-	 * @param params - the expected parameters.
+	 * @param params     - the expected parameters.
 	 * @return An object that invokes this specific method.
 	 * @throws IllegalStateException If we cannot find this method.
 	 */
-	public static MethodInvoker getTypedMethod(Class<?> clazz, String methodName, Class<?> returnType, Class<?>... params) {
+	public static MethodInvoker getTypedMethod(Class<?> clazz, String methodName, Class<?> returnType,
+			Class<?>... params) {
 		for (final Method method : clazz.getDeclaredMethods()) {
 			if ((methodName == null || method.getName().equals(methodName))
 					&& (returnType == null || method.getReturnType().equals(returnType))
@@ -239,14 +250,16 @@ public final class Reflection {
 		if (clazz.getSuperclass() != null)
 			return getMethod(clazz.getSuperclass(), methodName, params);
 
-		throw new IllegalStateException(String.format("Unable to find method %s (%s).", methodName, Arrays.asList(params)));
+		throw new IllegalStateException(
+				String.format("Unable to find method %s (%s).", methodName, Arrays.asList(params)));
 	}
 
 	/**
-	 * Search for the first publically and privately defined constructor of the given name and parameter count.
+	 * Search for the first publically and privately defined constructor of the
+	 * given name and parameter count.
 	 * 
 	 * @param className - lookup name of the class, see {@link #getClass(String)}.
-	 * @param params - the expected parameters.
+	 * @param params    - the expected parameters.
 	 * @return An object that invokes this constructor.
 	 * @throws IllegalStateException If we cannot find this method.
 	 */
@@ -255,9 +268,10 @@ public final class Reflection {
 	}
 
 	/**
-	 * Search for the first publically and privately defined constructor of the given name and parameter count.
+	 * Search for the first publically and privately defined constructor of the
+	 * given name and parameter count.
 	 * 
-	 * @param clazz - a class to start with.
+	 * @param clazz  - a class to start with.
 	 * @param params - the expected parameters.
 	 * @return An object that invokes this constructor.
 	 * @throws IllegalStateException If we cannot find this method.
@@ -282,11 +296,13 @@ public final class Reflection {
 			}
 		}
 
-		throw new IllegalStateException(String.format("Unable to find constructor for %s (%s).", clazz, Arrays.asList(params)));
+		throw new IllegalStateException(
+				String.format("Unable to find constructor for %s (%s).", clazz, Arrays.asList(params)));
 	}
 
 	/**
-	 * Retrieve a class from its full name, without knowing its type on compile time.
+	 * Retrieve a class from its full name, without knowing its type on compile
+	 * time.
 	 * <p>
 	 * This is useful when looking up fields by a NMS or OBC type.
 	 * <p>
@@ -304,7 +320,8 @@ public final class Reflection {
 	/**
 	 * Retrieve a class from its full name.
 	 * <p>
-	 * Strings enclosed with curly brackets - such as {TEXT} - will be replaced according to the following table:
+	 * Strings enclosed with curly brackets - such as {TEXT} - will be replaced
+	 * according to the following table:
 	 * <p>
 	 * <table border="1">
 	 * <tr>

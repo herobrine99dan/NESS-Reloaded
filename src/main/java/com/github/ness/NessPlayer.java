@@ -81,6 +81,9 @@ public class NessPlayer implements AutoCloseable {
 	int packetscounter = 0;
 	@Getter
 	@Setter
+	long autosneak = 0;
+	@Getter
+	@Setter
 	int packetsrepeat = 0;
 	@Getter
 	@Setter

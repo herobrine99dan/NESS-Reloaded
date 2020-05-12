@@ -46,6 +46,7 @@ enabled-checks:
   - 'Fly'
   - 'GhostHand'
   - 'Headless'
+  - 'FastSneak'
   - 'LiquidInteraction'
   - 'InventoryHack'
   - 'Jesus'
