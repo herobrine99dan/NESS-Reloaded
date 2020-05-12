@@ -45,13 +45,6 @@ public class NessCommands implements CommandExecutor {
 				case "version":
 					sendVersion(sender);
 					break;
-				case "clear":
-					ness.getCheckManager().getPlayer(Bukkit.getPlayer(args[1])).cleanViolationList();
-					sendMessage(sender, "Done!");
-					break;
-				case "vl":
-					sendViolationCounter(sender, Bukkit.getPlayer(args[1]));
-					break;
 				default:
 					usage(sender);
 					break;
@@ -63,12 +56,6 @@ public class NessCommands implements CommandExecutor {
 		}
 		return true;
 	}
-
-	private void sendViolationCounter(CommandSender sender, Player p) {
-		sendMessage(sender,
-				"Violation for player " + p.getName() + ": " + ness.getCheckManager().getPlayer(p).getViolationList());
-	}
-
 	private void sendVersion(CommandSender sender) {
 		sendMessage(sender, "&7Version " + ness.getDescription().getVersion());
 	}

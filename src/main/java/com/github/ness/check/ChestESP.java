@@ -1,35 +1,52 @@
 package com.github.ness.check;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.world.ChunkLoadEvent;
 
 import com.github.ness.CheckManager;
 
-public class ChestESP extends AbstractCheck<PlayerMoveEvent> {
+public class ChestESP extends AbstractCheck<ChunkLoadEvent> {
 	public ChestESP(CheckManager manager) {
-		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
+		super(manager, CheckInfo.eventOnly(ChunkLoadEvent.class));
 		// TODO Auto-generated constructor stub
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
-	void checkEvent(PlayerMoveEvent e) {
-		Bukkit.getScheduler().runTaskAsynchronously(manager.getNess(), () -> {
-			int r = 10;
-			for (int x = r * -1; x <= r; x++) {
-				for (int y = r * -1; y <= r; y++) {
-					for (int z = r * -1; z <= r; z++) {
-						Location loc = new Location(e.getTo().getWorld(), (e.getTo().getBlockX() + x),
-								(e.getTo().getBlockY() + y), (e.getTo().getBlockZ() + z));
-						Block b = loc.getBlock();
-						if (b.getType().name().toLowerCase().contains("chest")) {
-							e.getPlayer().sendBlockChange(loc, Material.STONE, (byte) 0);
+	void checkEvent(ChunkLoadEvent event) {
+		try {
+			Bukkit.getScheduler().runTaskAsynchronously(manager.getNess(), () -> {
+				int X = event.getChunk().getX() * 16;
+				int Z = event.getChunk().getZ() * 16;
+				for (int x = 0; x < 16; x++) {
+					for (int z = 0; z < 16; z++) {
+						for (int y = 0; y < 128; y++) {
+							Block b = event.getWorld().getBlockAt(X + x, y, Z + z);
+							if (b.getType().name().toLowerCase()
+									.contains("chest")
+									|| b.getType().name().toLowerCase()
+											.contains("ore")) {
+								for (Entity e : event.getChunk().getEntities()) {
+									if (e instanceof Player) {
+										Player p = (Player) e;
+										if (p.getLocation().distanceSquared(b.getLocation()) > 30.0D) {
+											p.sendBlockChange(b.getLocation(), Material.AIR, (byte) 0);
+										} else {
+											p.sendBlockChange(b.getLocation(), b.getType(), b.getData());
+										}
+									}
+								}
+							}
 						}
 					}
 				}
-			}
-		});
+			});
+		} catch (Exception ex) {
+		}
 	}
+
 }
