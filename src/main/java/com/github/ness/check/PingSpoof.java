@@ -14,16 +14,14 @@ public class PingSpoof {
 		if(sender==null) {
 			return;
 		}
-		Bukkit.getScheduler().scheduleSyncDelayedTask(NESSAnticheat.main, () -> {
 			MovementPlayerData mp = MovementPlayerData.getInstance(sender);
 			mp.pingspooftimer = System.currentTimeMillis();
 			double diff = mp.pingspooftimer - mp.oldpingspooftimer;
 			if (Utility.getPing(sender) > 300 && (diff > 40) && (diff < 65)) {
-				sender.teleport(OldMovementChecks.safeLoc.getOrDefault(sender, sender.getLocation()));
+				//sender.teleport(OldMovementChecks.safeLoc.getOrDefault(sender, sender.getLocation()));
 				InventoryHack.manageraccess.getPlayer(sender).setViolation(new Violation("PingSpoof"));
 				Utility.setPing(sender, 100);
 			}
 			mp.oldpingspooftimer = mp.pingspooftimer;
-		}, 0);
 	}
 }

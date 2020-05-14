@@ -324,7 +324,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		Double hozDist = Utility.getMaxSpeed(from, to);
-		if (from.getBlock().getType() == Material.WEB && hozDist > 0.02) {
+		if (from.getBlock().getType() == Material.WEB && hozDist > 0.2) {
 			punish(e,player, "NoWeb");
 			// player.sendMessage("NoWebDist: " + hozDist);
 		}

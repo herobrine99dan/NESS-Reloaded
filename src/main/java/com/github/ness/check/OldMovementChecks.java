@@ -24,6 +24,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 
 	HashMap<Player, Location> oldLoc = new HashMap<>();
 	public static HashMap<Player, Location> safeLoc = new HashMap<>();
+	public static HashMap<String, Boolean> blockPackets = new HashMap<>();
 
 	public OldMovementChecks(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
@@ -52,6 +53,10 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		Double dist = from.distance(to);
 		Double hozDist = dist - (to.getY() - from.getY());
 		Double fallDist = (double) player.getFallDistance();
+		if(blockPackets.getOrDefault(player.getName(), false)) {
+			event.setCancelled(true);
+			return;
+		}
 		if (to.getY() < from.getY())
 			hozDist = dist - (from.getY() - to.getY());
 		Double vertDist = Math.abs(dist - hozDist);

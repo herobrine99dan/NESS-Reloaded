@@ -19,11 +19,11 @@ dev-mode: false
 violation-handling:
   notify-staff:
     enable: true
-    vl: 8
+    vl: 6
     notification: '&8[&b&lNESS&8]&r&7> &c%PLAYER% &7failed &c%HACK%&7. VL %VL% Details: %DETAILS%'
   cancel:
     enable: true
-    vl: 4
+    vl: 3
   execute-command:
     enable: true
     vl: 20
