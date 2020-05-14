@@ -45,7 +45,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		manager.getPlayer(p).setViolation(new Violation("Speed", module));
 		ConfigurationSection execCmd = manager.getNess().getNessConfig().getViolationHandling()
 				.getConfigurationSection("cancel");
-		if (manager.getPlayer(p).checkViolationCounts.get(this.getClass().getSimpleName()) > 10) {
+		if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > 10) {
 			e.setCancelled(true);
 		}
 	}
