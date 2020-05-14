@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -26,6 +27,24 @@ public class ViolationManager {
 
 	private final Set<ViolationAction> actions = ConcurrentHashMap.newKeySet(8);
 
+	CompletableFuture<Map<String, Integer>> getCopyOfViolationMap(NessPlayer player) {
+		return (player.isDevMode()) ? CompletableFuture.completedFuture(new HashMap<>(player.checkViolationCounts)) : CompletableFuture.supplyAsync(() -> {
+			return (player.checkViolationCounts == null) ? new HashMap<>() : new HashMap<>(player.checkViolationCounts);
+		}, ness.getExecutor());
+	}
+	
+	CompletableFuture<?> clearViolations(NessPlayer player) {
+		if (player.isDevMode()) {
+			player.checkViolationCounts.clear();
+			return CompletableFuture.completedFuture(null);
+		}
+		return CompletableFuture.runAsync(() -> {
+			if (player.checkViolationCounts != null) {
+				player.checkViolationCounts.clear();
+			}
+		}, ness.getExecutor());
+	}
+	
 	private String addViolationVariables(String message, Player player, Violation violation, int violationCount) {
 		return ChatColor.translateAlternateColorCodes('&',
 				message.replace("%PLAYER%", player.getName()).replace("%HACK%", violation.getCheck())
