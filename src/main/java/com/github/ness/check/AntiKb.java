@@ -2,6 +2,7 @@ package com.github.ness.check;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
@@ -27,6 +28,7 @@ public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 		if (event.getEntity() instanceof Player) {
 			Player p = (Player) event.getEntity();
 			final Location from = p.getLocation();
+			boolean flagged = false;
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
                 Location to = p.getLocation();
                 if(to.distanceSquared(from)<0.1) {

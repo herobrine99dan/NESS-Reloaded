@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -34,15 +35,17 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Check2(e);
 		Check3(e);
 		Check4(e);
-		Check5(e);
-		TestCheck(e);
 	}
 
-	private void punish(Player p, String module) {
+	private void punish(PlayerMoveEvent e, String module) {
+		Player p = e.getPlayer();
 		if (Utility.hasflybypass(p)) {
 			return;
 		}
 		manager.getPlayer(p).setViolation(new Violation("Speed", module));
+		if(manager.getPlayer(p).checkViolationCounts.get(this.getClass().getSimpleName())>10) {
+			e.setCancelled(true);
+		}
 	}
 
 	public void Check(PlayerMoveEvent e) {
@@ -86,9 +89,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 					if (Utility.hasflybypass(player)) {
 						return;
 					}
-					punish(player, "MiniJump1 " + y);
+					punish(e, "MiniJump1 " + y);
 				} else if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
-					punish(player, "MiniJump2" + y);
+					punish(e, "MiniJump2" + y);
 				}
 			}
 		}
@@ -111,10 +114,10 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 						&& Utilities.getPlayerUnderBlock(player).getType().name().toLowerCase().contains("ice")) {
 					return;
 				}
-				punish(player, "MaxDistance " + dist);
+				punish(e, "MaxDistance " + dist);
 			} else if (dist > soulsand && player.getFallDistance() == 0
 					&& player.getLocation().getBlock().getType().equals(Material.SOUL_SAND)) {
-				punish(player, "NoSlowDown " + dist);
+				punish(e, "NoSlowDown " + dist);
 			}
 		}
 	}
@@ -131,7 +134,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 		NessPlayer player = manager.getPlayer(p);
 		if (player.getOnMoveRepeat() > maxPackets) {
-			punish(p, "Timer");
+			punish(event, "Timer");
 			// p.sendMessage("Repeat: " + player.getOnMoveRepeat());
 		}
 	}
@@ -169,7 +172,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				if (!(yresult == -0.01)) {
 					if (!(yresult == -0.03)) {
 						if (Math.abs(yresult) > 0.36) {
-							punish(p, "InvalidVelocity " + yresult);
+							punish(e, "InvalidVelocity " + yresult);
 						} else if (Math.abs(yresult) > 0.06) {
 							// p.sendMessage("ResultY:" + yresult);
 						}
@@ -206,26 +209,13 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			if (!(xresult == 0.36)) {
 				if (!(zresult == 0.36)) {
 					if (!(xresult > 1) && !(zresult > 1)) {
-						punish(p, "InvalidXZVelocity");
+						punish(e, "InvalidXZVelocity");
 					}
 					// p.sendMessage("X: " + Math.abs(around(result.getX(), 5)) + " Z: " +
 					// Math.abs(around(result.getZ(), 5)));
 				}
 			}
 		}
-	}
-
-	public void Check5(PlayerMoveEvent event) {
-		Player player = event.getPlayer();
-		NessPlayer np = manager.getPlayer(player);
-		double dist = around(event.getTo().distanceSquared(event.getFrom()), 6);
-		double result = around(dist - np.getLastDistance(), 6);
-		// player.sendMessage("DistResult: " + result);
-		np.setLastDistance(dist);
-	}
-
-	public void TestCheck(PlayerMoveEvent e) {
-
 	}
 
 	public double around(double i, int places) {

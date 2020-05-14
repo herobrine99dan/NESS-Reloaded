@@ -44,13 +44,17 @@ public class ViolationManager {
 
 						@Override
 						public void actOn(Player player, Violation violation, int violationCount) {
-							if(player.hasPermission("ness.bypass.*") || player.hasPermission("ness.bypass."+violation.getCheck().toLowerCase())) {
+							if (player.hasPermission("ness.bypass.*")
+									|| player.hasPermission("ness.bypass." + violation.getCheck().toLowerCase())) {
 								return;
 							}
-							String notif = addViolationVariables(notification, player, violation, violationCount);
-							for (Player staff : Bukkit.getOnlinePlayers()) {
-								if (staff.hasPermission("ness.notify")) {
-									staff.sendMessage(notif);
+							if (violationCount > (notifyStaff.getInt("vl") - 1)) {
+								String notif = addViolationVariables(notification, player, violation, violationCount);
+								for (Player staff : Bukkit.getOnlinePlayers()) {
+									if (staff.hasPermission("ness.notify")
+											|| staff.hasPermission("ness.notify.hacks")) {
+										staff.sendMessage(notif);
+									}
 								}
 							}
 						}
@@ -66,8 +70,10 @@ public class ViolationManager {
 
 						@Override
 						public void actOn(Player player, Violation violation, int violationCount) {
-							String cmd = addViolationVariables(command, player, violation, violationCount);
-							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+							if (violationCount > (execCmd.getInt("vl") - 1)) {
+								String cmd = addViolationVariables(command, player, violation, violationCount);
+								Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);	
+							}
 						}
 
 					});

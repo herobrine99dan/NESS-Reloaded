@@ -9,17 +9,11 @@ import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
 
-public class BadPackets {
-	static int maxpackets = 21;
-  /**
-   * Simple MaxPackets check
-   * @param sender
-   * @param packet
-   */
+public class MorePackets {
+	
+	static int maxpackets = 60;
+
 	public static void Check(Player sender, Object packet) {
-		if (NESSAnticheat.main == null || sender == null) {
-			return;
-		}
 		Bukkit.getScheduler().scheduleSyncDelayedTask(NESSAnticheat.main, () -> {
 			int ping = Utility.getPing(sender);
 			int maxPackets = maxpackets * (ping / 100);
@@ -30,16 +24,17 @@ public class BadPackets {
 			if (Utility.SpecificBlockNear(sender.getLocation(), Material.PORTAL)) {
 				return;
 			}
-			//System.out.println("Sono qua");
-			//sender.sendMessage("MaxPackets: " + maxPackets);
+			// System.out.println("Sono qua");
+			// sender.sendMessage("MaxPackets: " + maxPackets);
 			NessPlayer np = InventoryHack.manageraccess.getPlayer(sender);
 			if(np==null) {
 				return;
 			}
-			np.setMovementpacketscounter(np.getMovementpacketscounter() + 1);
-			//sender.sendMessage("Counter: " + np.getPacketscounter());
-			if (np.getMovementpacketscounter() > maxPackets) {
-				InventoryHack.manageraccess.getPlayer(sender).setViolation(new Violation("BadPackets",np.getMovementpacketscounter()+""));
+			np.setNormalPacketsCounter(np.getNormalPacketsCounter() + 1);
+			// sender.sendMessage("Counter: " + np.getPacketscounter());
+			if (np.getNormalPacketsCounter() > maxPackets) {
+				InventoryHack.manageraccess.getPlayer(sender)
+						.setViolation(new Violation("MorePackets", np.getNormalPacketsCounter() + ""));
 			}
 		}, 0);
 	}

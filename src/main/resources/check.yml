@@ -19,14 +19,9 @@ dev-mode: false
 violation-handling:
   notify-staff:
     enable: true
-    vl: 5
     notification: '&8[&b&lNESS&8]&r&7> &c%PLAYER% &7failed &c%HACK%&7. VL %VL% Details: %DETAILS%'
-  cancel:
-    enable: true
-    vl: 5
   execute-command:
     enable: true
-    vl: 100
     command: 'broadcast %PLAYER% was detected for %HACK%'
 
 #

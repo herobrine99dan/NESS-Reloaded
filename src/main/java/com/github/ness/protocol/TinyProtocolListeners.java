@@ -11,6 +11,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.check.BadPackets;
+import com.github.ness.check.MorePackets;
 import com.github.ness.check.PingSpoof;
 import com.github.ness.nms.MovementPacketHelper;
 
@@ -33,36 +34,39 @@ public class TinyProtocolListeners extends TinyProtocol {
 		// System.out.println("Pacchetto: " + packet.toString());
 		String packetname = packet.toString().substring(0, packet.toString().indexOf("@"))
 				.replace("net.minecraft.server.v1_12_R1", "");
+		MorePackets.Check(sender,packet);
 		if (!packetname.toLowerCase().endsWith("flying")) {
-			sender.sendMessage("Packet: " + packetname);
+			// sender.sendMessage("Packet: " + packetname);
 		}
 		if (packetname.toLowerCase().contains("position")) {
-			callPacketEvent(new Location(sender.getWorld(),getMethodValue(packet,"a"),getMethodValue(packet,"b"),getMethodValue(packet,"c")),sender);
-			sender.sendMessage("Location1: " + "x:" + getMethodValue(packet,"a") + " y: " + getMethodValue(packet,"b") + " z:" + getMethodValue(packet,"c"));
+			callPacketEvent(new Location(sender.getWorld(), getMethodValue(packet, "a"), getMethodValue(packet, "b"),
+					getMethodValue(packet, "c")), sender);
 			BadPackets.Check(sender, packet);
 		} else if (packetname.toLowerCase().contains("flying")) {
 			PingSpoof.Check(sender, packet);
 		}
 		return packet;
 	}
-	
-	public void callPacketEvent(Location loc,Player sender) {
-		MovementPacketHelper.execute(loc,sender);
+
+	public void callPacketEvent(Location loc, Player sender) {
+		MovementPacketHelper.execute(loc, sender);
 	}
-	
-	public double getMethodValue(Object clazz,String value) {
-		if(Bukkit.getVersion().contains("1.8")) {
-	        try {
-	            Method m = clazz.getClass().getMethod(value);
+
+	public double getMethodValue(Object clazz, String value) {
+		if (Bukkit.getVersion().contains("1.8")) {
+			try {
+				Method m = clazz.getClass().getMethod(value);
 				return (double) m.invoke(clazz);
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+					| NoSuchMethodException | SecurityException e) {
 				return -101010.0;
 			}
-		}else {
-	        try {
-	            Method m = clazz.getClass().getMethod(value,double.class);
-				return (double) m.invoke(clazz,0.0);
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+		} else {
+			try {
+				Method m = clazz.getClass().getMethod(value, double.class);
+				return (double) m.invoke(clazz, 0.0);
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+					| NoSuchMethodException | SecurityException e) {
 				return -101010.0;
 			}
 		}

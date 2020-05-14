@@ -16,7 +16,7 @@ import com.github.ness.NESSAnticheat;
 import com.github.ness.check.KillauraBotCheck;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityEquipment;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityMetadata;

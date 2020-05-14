@@ -3,6 +3,7 @@ package com.github.ness;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -35,7 +36,7 @@ public class NessPlayer implements AutoCloseable {
 	 * this is a ConcurrentHashMap and is accessed concurrently in #setViolation.
 	 * 
 	 */
-	Map<String, Integer> checkViolationCounts;
+	public Map<String, Integer> checkViolationCounts;
 
 	@Getter
 	@Setter
@@ -78,7 +79,10 @@ public class NessPlayer implements AutoCloseable {
 	private long lastHittime = 0;
 	@Getter
 	@Setter
-	int packetscounter = 0;
+	int movementpacketscounter = 0;
+	@Getter
+	@Setter
+	int normalPacketsCounter = 0;
 	@Getter
 	@Setter
 	long autosneak = 0;
@@ -129,6 +133,10 @@ public class NessPlayer implements AutoCloseable {
 	 * @param violation the violation
 	 */
 	public void setViolation(Violation violation) {
+		Random r = new Random();
+		if(!r.nextBoolean()) {
+			return;
+		}
 		this.violation.compareAndSet(null, violation);
 		if (isDevMode()) {
 			// sendMessage is thread safe

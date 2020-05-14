@@ -15,6 +15,7 @@ import com.github.ness.CheckManager;
 import com.github.ness.api.Violation;
 import com.github.ness.utility.MSG;
 import com.github.ness.utility.PlayerManager;
+import com.github.ness.utility.Utilities;
 
 public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 
@@ -328,11 +329,13 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				&& player.getLocation().getY() % 1.0 == 0 && PlayerManager.timeSince("lastJoin", player) >= 1000
 				&& PlayerManager.timeSince("teleported", player) >= 5000
 				&& !below.toString().toLowerCase().contains("stairs") && below != Material.SLIME_BLOCK) {
-			int failed = ((Integer) noground.getOrDefault(player.getName(), Integer.valueOf(0))).intValue();
-			noground.put(player.getName(), Integer.valueOf(failed + 1));
-			if (failed > 2) {
-				if (!below.equals(Material.SLIME_BLOCK)) {
-					manager.getPlayer(player).setViolation(new Violation("NoGround", "(OnMove)"));
+			if(!Utilities.getPlayerUnderBlock(player).getType().name().toLowerCase().contains("ice") && !Utilities.getPlayerUpperBlock(player).getType().isSolid()) {
+				int failed = ((Integer) noground.getOrDefault(player.getName(), Integer.valueOf(0))).intValue();
+				noground.put(player.getName(), Integer.valueOf(failed + 1));
+				if (failed > 3) {
+					if (!below.equals(Material.SLIME_BLOCK)) {
+						manager.getPlayer(player).setViolation(new Violation("NoGround", "(OnMove)"));
+					}
 				}
 			}
 		}

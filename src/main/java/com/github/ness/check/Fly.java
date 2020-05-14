@@ -186,6 +186,9 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
      */
 	public void Check8(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
+		if(Bukkit.getVersion().contains("1.8")) {
+			return;
+		}
 		if (!bypass(e.getPlayer())) {
 			if (player.isOnline() && !Utility.hasBlock(player, Material.SLIME_BLOCK) && player.isOnGround()
 					&& !Utility.checkGround(e.getTo().getY())) {
@@ -313,7 +316,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		Double hozDist = Utility.getMaxSpeed(from, to);
-		if (from.getBlock().getType() == Material.WEB && hozDist > 0.01) {
+		if (from.getBlock().getType() == Material.WEB && hozDist > 0.02) {
 			punish(player, "NoWeb");
 			// player.sendMessage("NoWebDist: " + hozDist);
 		}

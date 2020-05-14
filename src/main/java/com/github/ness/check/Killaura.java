@@ -182,8 +182,6 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 					.toLocation(player.getWorld()).add(0, 2.7, 0);
 			Entity et = (Entity) player.getWorld().spawnEntity(location, EntityType.ZOMBIE);
 			et.setFireTicks(r.nextInt());
-			et.setGravity(true);
-			et.setSilent(false);
 			mobinfront.putIfAbsent(player.getName(), Utility.randomString());
 			Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
 				public void run() {

@@ -1,16 +1,14 @@
 package com.github.ness.check;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.utility.Utilities;
 import com.github.ness.utility.Utility;
 
 public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
@@ -22,8 +20,15 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
-		Check(e);
-		Check1(e);
+		if(Check(e) || Check1(e)) {
+			ConfigurationSection sec = manager.getNess().getNessConfig().getViolationHandling().getConfigurationSection("cancel");
+			if(sec.getBoolean("enabled") && manager.getPlayer(e.getPlayer()).checkViolationCounts.getOrDefault("Aimbot", 0)>5) {
+				int percentageconfig = sec.getInt("percentage");
+				if(Math.random() < percentageconfig / 100.0D) {
+					e.setCancelled(true);
+				}
+			}
+		}
 	}
 
 	/**
@@ -32,11 +37,14 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	 * finding that constant, you can detect changes in pitch variation.
 	 * 
 	 */
-	public void Check(PlayerMoveEvent e) {
+	public boolean Check(PlayerMoveEvent e) {
 		int samples = 23;
 		int pitchlimit = 10;
 		Player p = e.getPlayer();
 		NessPlayer player = manager.getPlayer(p);
+		if (player == null) {
+			return false;
+		}
 		float deltaPitch = e.getTo().getPitch() - e.getFrom().getPitch();
 		final List<Float> lastDeltaPitches = player.getPitchdelta();
 
@@ -53,32 +61,29 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 			// if GCD is significantly different or if GCD is practically unsolvable
 			if (gcdDiff > 0.001 || deltaPitchGCD < 0.00001) {
 				manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PitchPattern"));
+				return true;
 			}
 			lastDeltaPitches.clear();
 			player.setLastmcdpitch(deltaPitchGCD);
 		}
+		return false;
 
 	}
-   /**
-    * Check for some Aimbot Pattern
-    */
-	public void Check1(PlayerMoveEvent e) {
+
+	/**
+	 * Check for some Aimbot Pattern
+	 */
+	public boolean Check1(PlayerMoveEvent e) {
 		float yawChange = Math.abs(e.getTo().getYaw() - e.getFrom().getYaw());
 		float pitchChange = Math.abs(e.getTo().getPitch() - e.getFrom().getPitch());
 		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {
 			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura"));
+			return true;
 		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {
 			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura1"));
+			return true;
 		}
-	}
-
-	public static double round(double value, int places) {
-		if (places < 0) {
-			throw new IllegalArgumentException();
-		}
-		BigDecimal bd = new BigDecimal(value);
-		bd = bd.setScale(places, RoundingMode.HALF_UP);
-		return bd.doubleValue();
+		return false;
 	}
 
 }
