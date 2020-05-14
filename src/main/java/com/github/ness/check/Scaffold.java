@@ -2,6 +2,7 @@ package com.github.ness.check;
 
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.util.Vector;
@@ -35,6 +36,13 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 		float placedAngle = player.getLocation().getDirection().angle(placedVector);
 
 		if (placedAngle > MAX_ANGLE) {
+			try {
+				ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+						.getConfigurationSection("cancel");
+				if (manager.getPlayer(player).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+					event.setCancelled(true);
+				}
+			}catch(Exception ex) {}
 			manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold"));
 		}
 	}
@@ -46,6 +54,13 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 			float pitchNow = player.getLocation().getPitch();
 			float diff = Math.abs(now - pitchNow);
 			if (diff > 20F) {
+				try {
+					ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+							.getConfigurationSection("cancel");
+					if (manager.getPlayer(player).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+						event.setCancelled(true);
+					}
+				}catch(Exception ex) {}
 				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold"));
 			}
 		}, 2L);

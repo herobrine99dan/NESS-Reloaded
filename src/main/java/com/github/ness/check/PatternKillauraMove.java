@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -44,6 +45,13 @@ public class PatternKillauraMove extends AbstractCheck<PlayerMoveEvent> {
 			float range = Math.abs(patterns.get(patterns.size() - 1) - patterns.get(0));
 
 			if (Math.abs(range - PatternKillauraAttack.lastRange.getOrDefault(uuid, 0.0f)) < 4) {
+				try {
+					ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+							.getConfigurationSection("cancel");
+					if (manager.getPlayer(p).checkViolationCounts.getOrDefault("Killaura", 0) > cancelsec.getInt("vl",10)) {
+						event.setCancelled(true);
+					}
+				}catch(Exception ex) {}
 				np.setViolation(new Violation("Killaura","Result: "+Math.abs(range - PatternKillauraAttack.lastRange.getOrDefault(uuid, 0.0f))));
 			}
 			// event.getPlayer().sendMessage("Range: " + range);

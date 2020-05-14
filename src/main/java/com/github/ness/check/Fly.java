@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -50,8 +51,15 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	protected List<String> bypasses = Arrays.asList("slab", "stair", "snow", "bed", "skull", "step", "slime");
 	
-	public void punish(Player p, String module) {
+	public void punish(PlayerMoveEvent e,Player p, String module) {
 		if(!Utility.hasflybypass(p)) {
+			try {
+				ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+						.getConfigurationSection("cancel");
+				if (manager.getPlayer(p).checkViolationCounts.getOrDefault("Fly", 0) > cancelsec.getInt("vl",10)) {
+					e.setCancelled(true);
+				}
+			}catch(Exception ex) {}
 			manager.getPlayer(p).setViolation(new Violation("Fly", module));
 		}
 	}
@@ -69,7 +77,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 					if (player.getHealth() > 2) {
 						player.setHealth(player.getHealth() - 1.0D);
 					}
-					punish(player, "NoVelocity");
+					punish(event,player, "NoVelocity");
 				}
 			}
 
@@ -88,7 +96,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 					if (distance == 0.164D || distance == 0.248D || distance == 0.333D || distance == 0.419D) {
 						return;
 					}
-					punish(p, "FastLadder");
+					punish(event,p, "FastLadder");
 				}
 			}
 
@@ -106,7 +114,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			double deltaY = event.getFrom().getY() - event.getTo().getY();
 			if (deltaY > 1.0D && p.getFallDistance() < 1.0F
 					|| deltaY > 3.0D && !Utility.hasBlock(p, Material.SLIME_BLOCK)) {
-				punish(p, "AirCheck");
+				punish(event,p, "AirCheck");
 			} else {
 				if (p.getFallDistance() >= 1.0F) {
 					airBuffer = 10;
@@ -121,7 +129,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				float maxChange = 0.8F;
 				if (Utility.isInAir(p) && playerLoc.getBlock().getType() == Material.AIR && change > maxChange
 						&& change != 0.5D && !Utility.hasBlock(p, Material.SLIME_BLOCK)) {
-					punish(p, "AirCheck");
+					punish(event,p, "AirCheck");
 				}
 			}
 
@@ -161,7 +169,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 						}
 
 						if (!bypass) {
-							punish(p, "AirJump");
+							punish(e,p, "AirJump");
 						}
 					} else if (distance == defaultvalue || distance == defaultjump) {
 						Location loc = p.getLocation();
@@ -172,7 +180,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 								&& p.getVelocity().getY() <= -0.078D
 								&& !loc.getBlock().getType().name().contains("STAIR")
 								&& !loc1.getBlock().getType().name().contains("STAIR") && p.getNoDamageTicks() <= 1) {
-							punish(p, "AirJump");
+							punish(e,p, "AirJump");
 						}
 					}
 				}
@@ -192,7 +200,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (!bypass(e.getPlayer())) {
 			if (player.isOnline() && !Utility.hasBlock(player, Material.SLIME_BLOCK) && player.isOnGround()
 					&& !Utility.checkGround(e.getTo().getY())) {
-				punish(player, "FalseGround");
+				punish(e,player, "FalseGround");
 			}
 
 		}
@@ -211,7 +219,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				double dist = Math.pow(to.getX() - from.getX(), 2.0D) + Math.pow(to.getZ() - from.getZ(), 2.0D);
 				double motion = dist / 0.9800000190734863D;
 				if (motion >= 1.0D && dist >= 0.8D && !bypass(player)) {
-					punish(player, "InvalidMotion");
+					punish(event,player, "InvalidMotion");
 				}
 			}
 		}
@@ -232,7 +240,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 					&& Math.abs(p.getVelocity().getY() - diff) > 1.0E-6D && e.getFrom().getY() < e.getTo().getY()
 					&& (p.getVelocity().getY() >= 0.0D || p.getVelocity().getY() < -0.392D)
 					&& p.getNoDamageTicks() == 0.0D && bypass(p)) {
-				punish(p, "");
+				punish(e,p, "");
 			}
 
 		}
@@ -268,7 +276,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 						player.setOldY(dist);
 						if (e.getFrom().getY() > e.getTo().getY()) {
 							if (oldY >= dist && oldY != 0.0D) {
-								punish(p, "Glide");
+								punish(e,p, "Glide");
 							}
 						} else {
 							player.setOldY(0.0D);
@@ -290,7 +298,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		boolean groundAround = Utility.groundAround(player.getLocation());
 		if (player.isInsideVehicle() && !groundAround && from.getY() <= to.getY() && (!player.isInsideVehicle()
 				|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))) {
-			punish(player, "NoGround");
+			punish(e,player, "NoGround");
 		}
 	}
     /**
@@ -301,7 +309,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Player player = e.getPlayer();
 		if (player.getLocation().getYaw() > 360.0f || player.getLocation().getYaw() < -360.0f
 				|| player.getLocation().getPitch() > 90.0f || player.getLocation().getPitch() < -90.0f) {
-			punish(player, "IllegalMovement");
+			punish(e,player, "IllegalMovement");
 		}
 	}
     /**
@@ -317,7 +325,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		}
 		Double hozDist = Utility.getMaxSpeed(from, to);
 		if (from.getBlock().getType() == Material.WEB && hozDist > 0.02) {
-			punish(player, "NoWeb");
+			punish(e,player, "NoWeb");
 			// player.sendMessage("NoWebDist: " + hozDist);
 		}
 	}
@@ -379,7 +387,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				Location l = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() - 1.0D,
 						p.getLocation().getZ())).getBlock().getLocation();
 				if (l.getBlock().getType() == Material.AIR) {
-					punish(p, "NoFall");
+					punish(e,p, "NoFall");
 				}
 			}
 

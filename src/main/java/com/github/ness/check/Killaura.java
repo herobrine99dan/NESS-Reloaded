@@ -5,6 +5,7 @@ import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -45,7 +46,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Entity et = e.getEntity();
 			double dist = Utility.getMaxSpeed(p.getLocation(), et.getLocation());
 			if (dist > 5) {
-				punish(p, 19, "Reach" + "(" + dist + ")", 6);
+				punish(e,p, 19, "Reach" + "(" + dist + ")", 6);
 			}
 		}
 	}
@@ -58,7 +59,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 				Location loc1 = p.getLocation();
 				float grade = loc.getYaw() - loc1.getYaw();
 				if (Math.round(grade) > 250.0) {
-					punish(p, 19, "Heuristic "+grade, 6);
+					punish(e,p, 19, "Heuristic "+grade, 6);
 				}
 			}, 3L);
 		}
@@ -87,8 +88,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
 			offset += Math.abs(offsetX);
 			offset += Math.abs(offsetY);
-			if (offset > 230.0D) {
-				punish(player, 20, "Angles/Hitbox "+offset, 6);
+			if (offset > 280.0D) {
+				punish(event,player, 20, "Angles/Hitbox "+offset, 6);
 			}
 		}
 	}
@@ -97,7 +98,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		if (event.getDamager() instanceof Player) {
 			Player player = (Player) event.getDamager();
 			if (player.getLocation().getPitch() == Math.round(player.getLocation().getPitch())) {
-				punish(player, 21, "PerfectAngle", 5);
+				punish(event,player, 21, "PerfectAngle", 5);
 			}
 		}
 	}
@@ -106,7 +107,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		if (e.getDamager() instanceof Player) {
 			Player damager = (Player) e.getDamager();
 			if (isLookingAt(damager, e.getEntity().getLocation()) < 0.4D) {
-				punish(damager, 23, "Angles/Hitbox "+isLookingAt(damager, e.getEntity().getLocation()), 4);
+				punish(e,damager, 23, "Angles/Hitbox "+isLookingAt(damager, e.getEntity().getLocation()), 4);
 			}
 		}
 	}
@@ -151,7 +152,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 						&& l.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType().isSolid());
 			}
 			if (failed) {
-				punish((Player) e.getEntity(), 5, "ThrougWalls", 5);
+				punish(e,(Player) e.getEntity(), 5, "ThrougWalls", 5);
 			}
 		}
 	}
@@ -159,7 +160,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check6(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			if (e.getEntity().getEntityId() == e.getDamager().getEntityId()) {
-				punish((Player) e.getEntity(), 5, "SelfHit", 5);
+				punish(e,(Player) e.getEntity(), 5, "SelfHit", 5);
 			}
 		}
 	}
@@ -169,7 +170,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Player player = (Player) e.getDamager();
 			if (!mobinfront.getOrDefault(player.getName(), "").equals("")
 					&& e.getEntityType().equals(EntityType.ZOMBIE)) {
-				punish(player, 3, "BotCheck", 5);
+				punish(e,player, 3, "BotCheck", 5);
 				e.getEntity().remove();
 				mobinfront.remove(player.getName());
 				return;
@@ -207,7 +208,14 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		return dot;// dot > 0.99D
 	}
 
-	private void punish(Player p, int i, String module, int vl) {
+	private void punish(EntityDamageByEntityEvent e,Player p, int i, String module, int vl) {
+		try {
+			ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+					.getConfigurationSection("cancel");
+			if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+				e.setCancelled(true);
+			}
+		}catch(Exception ex) {}
 		manager.getPlayer(p).setViolation(new Violation("Killaura", module));
 	}
 

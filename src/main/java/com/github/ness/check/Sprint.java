@@ -3,6 +3,7 @@ package com.github.ness.check;
 import java.util.HashMap;
 
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -25,10 +26,17 @@ public class Sprint extends AbstractCheck<PlayerMoveEvent> {
 		Check1(e);
 	}
 
-	private  void checkfailed(Player p, String module, String check) {
+	private  void checkfailed(PlayerMoveEvent e,Player p, String module, String check) {
 		int failed = sprintcheck.getOrDefault(p.getName(), 0);
 		sprintcheck.put(p.getName(), failed + 1);
 		if (failed > 6) {
+			try {
+				ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+						.getConfigurationSection("cancel");
+				if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+					e.setCancelled(true);
+				}
+			}catch(Exception ex) {}
 			manager.getPlayer(p).setViolation(new Violation("Sprint",check));
 			// MSG.tell(p, "Sprint(Omni)[nord], VL: orec".replace("nord",
 			// yaw).replace("orec", failed+""));
@@ -48,7 +56,7 @@ public class Sprint extends AbstractCheck<PlayerMoveEvent> {
 				int failed = speed.getOrDefault(p.getName(), 0);
 				speed.put(p.getName(), failed + 1);
 				if (failed > 1) {
-					checkfailed(p, "Speed", "HighDistance");
+					checkfailed(e,p, "Speed", "HighDistance");
 					speed.put(p.getName(), 0);
 					// MSG.tell(p, "Sprint(Omni)[nord], VL: orec".replace("nord",
 					// yaw).replace("orec", failed+""));

@@ -20,15 +20,8 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
-		if(Check(e) || Check1(e)) {
-			ConfigurationSection sec = manager.getNess().getNessConfig().getViolationHandling().getConfigurationSection("cancel");
-			if(sec.getBoolean("enabled") && manager.getPlayer(e.getPlayer()).checkViolationCounts.getOrDefault("Aimbot", 0)>5) {
-				int percentageconfig = sec.getInt("percentage");
-				if(Math.random() < percentageconfig / 100.0D) {
-					e.setCancelled(true);
-				}
-			}
-		}
+		Check(e);
+		Check1(e);
 	}
 
 	/**
@@ -61,6 +54,15 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 			// if GCD is significantly different or if GCD is practically unsolvable
 			if (gcdDiff > 0.001 || deltaPitchGCD < 0.00001) {
 				manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PitchPattern"));
+				try {
+					ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+							.getConfigurationSection("cancel");
+					if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()),
+							0) > cancelsec.getInt("vl", 10)) {
+						e.setCancelled(true);
+					}
+				} catch (Exception ex) {
+				}
 				return true;
 			}
 			lastDeltaPitches.clear();
@@ -74,12 +76,31 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	 * Check for some Aimbot Pattern
 	 */
 	public boolean Check1(PlayerMoveEvent e) {
+		Player p = e.getPlayer();
 		float yawChange = Math.abs(e.getTo().getYaw() - e.getFrom().getYaw());
 		float pitchChange = Math.abs(e.getTo().getPitch() - e.getFrom().getPitch());
 		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {
+			try {
+				ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+						.getConfigurationSection("cancel");
+				if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()),
+						0) > cancelsec.getInt("vl", 10)) {
+					e.setCancelled(true);
+				}
+			} catch (Exception ex) {
+			}
 			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura"));
 			return true;
 		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {
+			try {
+				ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+						.getConfigurationSection("cancel");
+				if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()),
+						0) > cancelsec.getInt("vl", 10)) {
+					e.setCancelled(true);
+				}
+			} catch (Exception ex) {
+			}
 			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura1"));
 			return true;
 		}

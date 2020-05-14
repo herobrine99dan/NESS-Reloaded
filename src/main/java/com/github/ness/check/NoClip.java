@@ -2,6 +2,7 @@ package com.github.ness.check;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import com.github.ness.CheckManager;
@@ -38,6 +39,13 @@ public class NoClip extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 		if (surrounded && (hozDist > 0.2 || to.getBlockY() < from.getBlockY())) {
+			try {
+				ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+						.getConfigurationSection("cancel");
+				if (manager.getPlayer(player).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+					event.setCancelled(true);
+				}
+			}catch(Exception ex) {}
 			manager.getPlayer(event.getPlayer()).setViolation(new Violation("NoClip"));
 		}
 

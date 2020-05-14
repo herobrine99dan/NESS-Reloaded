@@ -1,6 +1,7 @@
 package com.github.ness.check;
 
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
@@ -37,6 +38,13 @@ public class Criticals extends AbstractCheck<EntityDamageByEntityEvent> {
 		    if (!player.isOnGround() && !player.isFlying()) {
 		      if (player.getLocation().getY() % 1.0D == 0.0D) {
 		        if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
+		    		try {
+		    			ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+		    					.getConfigurationSection("cancel");
+		    			if (manager.getPlayer(player).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+		    				event.setCancelled(true);
+		    			}
+		    		}catch(Exception ex) {}
 		          manager.getPlayer(player).setViolation(new Violation("Criticals"));
 		        }
 		      }

@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -59,6 +60,13 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent>{
 				return;
 			}
 			if (block.getBlock().getType().isSolid() || !targetBlock.equals(event.getClickedBlock())) {
+				try {
+					ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+							.getConfigurationSection("cancel");
+					if (manager.getPlayer(player).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+						event.setCancelled(true);
+					}
+				}catch(Exception ex) {}
 				p.setViolation(new Violation("GhostHand"));
 			}
 		}, 2L);

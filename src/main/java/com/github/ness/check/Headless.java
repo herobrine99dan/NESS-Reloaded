@@ -1,5 +1,6 @@
 package com.github.ness.check;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -26,6 +27,13 @@ public class Headless extends AbstractCheck<PlayerMoveEvent> {
         float pitch = p.getLocation().getPitch();
         if(pitch < -90 || pitch > 90)
         {
+    		try {
+    			ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+    					.getConfigurationSection("cancel");
+    			if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+    				event.setCancelled(true);
+    			}
+    		}catch(Exception ex) {}
             manager.getPlayer(p).setViolation(new Violation("HeadLess"));
         }
 	}

@@ -32,6 +32,13 @@ public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
                 Location to = p.getLocation();
                 if(to.distanceSquared(from)<0.1) {
+            		try {
+            			ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+            					.getConfigurationSection("cancel");
+            			if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+            				event.setCancelled(true);
+            			}
+            		}catch(Exception ex) {}
                 	manager.getPlayer(p).setViolation(new Violation("AntiKb"));
                 }
 			}, 2L);

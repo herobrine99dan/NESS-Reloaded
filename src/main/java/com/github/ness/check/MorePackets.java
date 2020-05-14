@@ -33,6 +33,7 @@ public class MorePackets {
 			np.setNormalPacketsCounter(np.getNormalPacketsCounter() + 1);
 			// sender.sendMessage("Counter: " + np.getPacketscounter());
 			if (np.getNormalPacketsCounter() > maxPackets) {
+				sender.teleport(OldMovementChecks.safeLoc.getOrDefault(sender, sender.getLocation()));
 				InventoryHack.manageraccess.getPlayer(sender)
 						.setViolation(new Violation("MorePackets", np.getNormalPacketsCounter() + ""));
 			}

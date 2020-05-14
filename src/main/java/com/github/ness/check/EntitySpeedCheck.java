@@ -1,5 +1,6 @@
 package com.github.ness.check;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -31,6 +32,13 @@ public class EntitySpeedCheck extends AbstractCheck<PlayerMoveEvent>{
 			}
 			double limit = 5.75;
 			if(Utility.getMaxSpeed(event.getFrom(), event.getTo())>limit) {
+				try {
+					ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+							.getConfigurationSection("cancel");
+					if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+						event.setCancelled(true);
+					}
+				}catch(Exception ex) {}
 				manager.getPlayer(event.getPlayer()).setViolation(new Violation("EntitySpeedCheck"));
 			}
 		}

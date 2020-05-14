@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -70,7 +71,7 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 				&& !player.getWorld().getBlockAt(player.getLocation().add(0.0, 1.0, 0.0)).isLiquid()
 				&& (new StringBuilder(String.valueOf(Math.abs(from.getY() - to.getY()))).toString().contains("00000000")
 						|| to.getY() == from.getY())) {
-			punish(player, 3, "Physics");
+			punish(event,player, 3, "Physics");
 		}
 	} 
     /**
@@ -86,12 +87,19 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 				&& !placedBlockOnWater.remove(p)) {
 			if (Utilities.cantStandAtWater(p.getWorld().getBlockAt(p.getLocation()))
 					&& Utilities.isHoveringOverWater(p.getLocation()) && !Utilities.isFullyInWater(p.getLocation())) {
-				punish(p, 2, "Vanilla");
+				punish(event,p, 2, "Vanilla");
 			}
 		}
 	}
 
-	private void punish(Player p, int i, String module) {
+	private void punish(PlayerMoveEvent e,Player p, int i, String module) {
+		try {
+			ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+					.getConfigurationSection("cancel");
+			if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+				e.setCancelled(true);
+			}
+		}catch(Exception ex) {}
 		manager.getPlayer(p).setViolation(new Violation("Jesus",module));
 	}
     /**
@@ -117,7 +125,7 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 			if (block.isLiquid() && loc.getBlock().isLiquid() && distanceFell < 1 && !underloc.getBlock().isLiquid()) {
 				if (distance > 0.11863034217827088) {
 					// MSG.tell((CommandSender)player, "&7dist: &e" + distance);
-					punish(e.getPlayer(), 2, "WaterSpeed");
+					punish(e,e.getPlayer(), 2, "WaterSpeed");
 				}
 			}
 		}

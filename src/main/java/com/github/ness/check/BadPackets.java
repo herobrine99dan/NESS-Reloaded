@@ -3,6 +3,7 @@ package com.github.ness.check;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
@@ -15,10 +16,11 @@ public class BadPackets {
    * Simple MaxPackets check
    * @param sender
    * @param packet
+ *
    */
 	public static void Check(Player sender, Object packet) {
 		if (NESSAnticheat.main == null || sender == null) {
-			return;
+          return;
 		}
 		Bukkit.getScheduler().scheduleSyncDelayedTask(NESSAnticheat.main, () -> {
 			int ping = Utility.getPing(sender);
@@ -35,10 +37,12 @@ public class BadPackets {
 			NessPlayer np = InventoryHack.manageraccess.getPlayer(sender);
 			if(np==null) {
 				return;
+
 			}
 			np.setMovementpacketscounter(np.getMovementpacketscounter() + 1);
 			//sender.sendMessage("Counter: " + np.getPacketscounter());
 			if (np.getMovementpacketscounter() > maxPackets) {
+				sender.teleport(OldMovementChecks.safeLoc.getOrDefault(sender, sender.getLocation()));
 				InventoryHack.manageraccess.getPlayer(sender).setViolation(new Violation("BadPackets",np.getMovementpacketscounter()+""));
 			}
 		}, 0);

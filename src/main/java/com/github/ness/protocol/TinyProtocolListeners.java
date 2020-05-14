@@ -34,7 +34,6 @@ public class TinyProtocolListeners extends TinyProtocol {
 		// System.out.println("Pacchetto: " + packet.toString());
 		String packetname = packet.toString().substring(0, packet.toString().indexOf("@"))
 				.replace("net.minecraft.server.v1_12_R1", "");
-		MorePackets.Check(sender,packet);
 		if (!packetname.toLowerCase().endsWith("flying")) {
 			// sender.sendMessage("Packet: " + packetname);
 		}
@@ -45,6 +44,7 @@ public class TinyProtocolListeners extends TinyProtocol {
 		} else if (packetname.toLowerCase().contains("flying")) {
 			PingSpoof.Check(sender, packet);
 		}
+			MorePackets.Check(sender,packet);
 		return packet;
 	}
 

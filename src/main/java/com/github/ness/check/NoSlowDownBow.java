@@ -1,5 +1,6 @@
 package com.github.ness.check;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -33,6 +34,13 @@ public class NoSlowDownBow extends AbstractCheck<EntityShootBowEvent>{
 			 * checkfailed(o.getName()); }
 			 */
 			if (distance > 0.2||o.isSprinting()) {
+				try {
+					ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+							.getConfigurationSection("cancel");
+					if (manager.getPlayer(o).checkViolationCounts.getOrDefault("NoSlowDown", 0) > cancelsec.getInt("vl",10)) {
+						e.setCancelled(true);
+					}
+				}catch(Exception ex) {}
 				p.setViolation(new Violation("NoSlowDown"));
 			}
 		}

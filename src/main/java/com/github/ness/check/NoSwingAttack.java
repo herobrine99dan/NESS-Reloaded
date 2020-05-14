@@ -3,6 +3,7 @@ package com.github.ness.check;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
@@ -28,6 +29,13 @@ public class NoSwingAttack extends AbstractCheck<EntityDamageByEntityEvent> {
 		}
 		Player p = (Player) event.getDamager();
 		if (delay.getOrDefault(p.getUniqueId(), (long) 1) > 1) {
+			try {
+				ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+						.getConfigurationSection("cancel");
+				if (manager.getPlayer(p).checkViolationCounts.getOrDefault("NoSwing", 0) > cancelsec.getInt("vl",10)) {
+					event.setCancelled(true);
+				}
+			}catch(Exception ex) {}
 			manager.getPlayer(p).setViolation(new Violation("NoSwing"));
 		}
 		delay.put(p.getUniqueId(), System.currentTimeMillis());

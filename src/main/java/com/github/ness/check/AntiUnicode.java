@@ -24,13 +24,13 @@ public class AntiUnicode extends AbstractCheck<AsyncPlayerChatEvent>  {
 		 */
 		if (!asciiEncoder.get().canEncode(e.getMessage())) {
 			manager.getPlayer(e.getPlayer()).setViolation(new Violation("AntiUnicode", e.getMessage()));
-			ConfigurationSection sec = manager.getNess().getNessConfig().getViolationHandling().getConfigurationSection("cancel");
-			if(sec.getBoolean("enabled") && manager.getPlayer(e.getPlayer()).checkViolationCounts.getOrDefault("AntiUnicode", 0)>5) {
-				int percentageconfig = sec.getInt("percentage");
-				if(Math.random() < percentageconfig / 100.0D) {
+			try {
+				ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+						.getConfigurationSection("cancel");
+				if (manager.getPlayer(e.getPlayer()).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
 					e.setCancelled(true);
 				}
-			}
+			}catch(Exception ex) {}
 		}	
 	}
 
