@@ -33,7 +33,7 @@ public class FastPlace extends AbstractCheck<BlockPlaceEvent>{
 					event.setCancelled(true);
 				}
 			}catch(Exception ex) {}
-			player.setViolation(new Violation("FastPlace"));
+			player.setViolation(new Violation("FastPlace",""));
 			event.setCancelled(true);
 		}
 		

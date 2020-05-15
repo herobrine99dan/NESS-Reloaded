@@ -36,7 +36,7 @@ public class NoSwingAttack extends AbstractCheck<EntityDamageByEntityEvent> {
 					event.setCancelled(true);
 				}
 			}catch(Exception ex) {}
-			manager.getPlayer(p).setViolation(new Violation("NoSwing"));
+			manager.getPlayer(p).setViolation(new Violation("NoSwing",""));
 		}
 		delay.put(p.getUniqueId(), System.currentTimeMillis());
 	}

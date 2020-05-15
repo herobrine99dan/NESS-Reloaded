@@ -39,89 +39,20 @@ public class TinyProtocolListeners extends TinyProtocol {
 		 */
 		// System.out.println("Pacchetto: " + packet.toString());
 		String packetname = packet.toString().substring(0, packet.toString().indexOf("@"))
-				.replace("net.minecraft.server.v1_12_R1", "");
+				.replace("net.minecraft.server.", "");
 		if (!packetname.toLowerCase().endsWith("flying")) {
 			// sender.sendMessage("Packet: " + packetname);
 		}
 		if (packetname.toLowerCase().contains("position")) {
 			callPacketEvent(new Location(sender.getWorld(), getMethodValue(packet, "a"), getMethodValue(packet, "b"),
 					getMethodValue(packet, "c")), sender);
-			return BadPacketsCheck(sender, packet);
+			return PacketListener.BadPacketsCheck(sender, packet);
 		} else if (packetname.toLowerCase().contains("flying")) {
 			PingSpoof.Check(sender, packet);
 		}
-		return MorePacketsCheck(sender, packet);
+		return PacketListener.MorePacketsCheck(sender, packet);
 	}
 	
-	private Object BadPacketsCheck(Player sender, Object packet) {
-		int ping = Utility.getPing(sender);
-		int maxpackets = 21;
-		int maxPackets = maxpackets * (ping / 100);
-		if (ping < 150) {
-			maxPackets = maxpackets;
-		}
-		// System.out.println("Packet: " +packet.toString());
-		if (Utility.SpecificBlockNear(sender.getLocation(), Material.PORTAL)) {
-			return packet;
-		}
-		//System.out.println("Sono qua");
-		//sender.sendMessage("MaxPackets: " + maxPackets);
-		NessPlayer np = InventoryHack.manageraccess.getPlayer(sender);
-		if(np==null) {
-			return packet;
-
-		}
-		np.setMovementpacketscounter(np.getMovementpacketscounter() + 1);
-		//sender.sendMessage("Counter: " + np.getPacketscounter());
-		if (np.getMovementpacketscounter() > maxPackets) {
-			/*new BukkitRunnable() {
-				@Override
-				public void run() {
-					// What you want to schedule goes here
-					sender.teleport(OldMovementChecks.safeLoc.getOrDefault(sender, sender.getLocation()));
-				}
-			}.runTask(NESSAnticheat.main);*/
-			OldMovementChecks.blockPackets.put(sender.getName(), true);
-			InventoryHack.manageraccess.getPlayer(sender).setViolation(new Violation("BadPackets",np.getMovementpacketscounter()+""));
-			return null;
-		}
-		return packet;
-	}
-
-	private Object MorePacketsCheck(Player sender, Object packet) {
-		int ping = Utility.getPing(sender);
-		int maxpackets = 60;
-		int maxPackets = maxpackets * (ping / 100);
-		if (ping < 150) {
-			maxPackets = maxpackets;
-		}
-		// System.out.println("Packet: " +packet.toString());
-		if (Utility.SpecificBlockNear(sender.getLocation(), Material.PORTAL)) {
-			return packet;
-		}
-		// System.out.println("Sono qua");
-		// sender.sendMessage("MaxPackets: " + maxPackets);
-		NessPlayer np = InventoryHack.manageraccess.getPlayer(sender);
-		if (np == null) {
-			return packet;
-		}
-		np.setNormalPacketsCounter(np.getNormalPacketsCounter() + 1);
-		// sender.sendMessage("Counter: " + np.getPacketscounter());
-		if (np.getNormalPacketsCounter() > maxPackets) {
-			/*
-			 * new BukkitRunnable() {
-			 * 
-			 * @Override public void run() { // What you want to schedule goes here
-			 * sender.teleport(OldMovementChecks.safeLoc.getOrDefault(sender,
-			 * sender.getLocation())); } }.runTask(NESSAnticheat.main);
-			 */
-			OldMovementChecks.blockPackets.put(sender.getName(), true);
-			InventoryHack.manageraccess.getPlayer(sender)
-					.setViolation(new Violation("MorePackets", np.getNormalPacketsCounter() + ""));
-			return null;
-		}
-		return packet;
-	}
 
 	public void callPacketEvent(Location loc, Player sender) {
 		MovementPacketHelper.execute(loc, sender);

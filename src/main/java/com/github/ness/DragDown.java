@@ -13,7 +13,7 @@ public class DragDown {
 	 * @param player the corresponding player
 	 */
 
-	protected static void PlayerDragDown(Player p) {
+	public static void PlayerDragDown(Player p) {
 		Location Locfrom = p.getLocation().clone();
 		Block b = Locfrom.clone().subtract(0.0D, 0.5D, 0.0D).getBlock();
 		if (!b.getType().isSolid()) {

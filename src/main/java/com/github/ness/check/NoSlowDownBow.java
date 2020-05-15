@@ -41,7 +41,7 @@ public class NoSlowDownBow extends AbstractCheck<EntityShootBowEvent>{
 						e.setCancelled(true);
 					}
 				}catch(Exception ex) {}
-				p.setViolation(new Violation("NoSlowDown"));
+				p.setViolation(new Violation("NoSlowDown",""));
 			}
 		}
 	}

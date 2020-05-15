@@ -150,12 +150,12 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		double x = to.getX() - from.getX();
 		double y = to.getY() - from.getY();
 		if (Double.toString(y).length() > 4) {
-			y = around(y, 5);
+			y = Utility.around(y, 5);
 		}
 		double z = to.getZ() - from.getZ();
 		Vector v = new Vector(x, y, z);
 		// Vector result = v.subtract(p.getVelocity());
-		Vector result = v.subtract(p.getVelocity().setY(around(p.getVelocity().getY(), 5)));
+		Vector result = v.subtract(p.getVelocity().setY(Utility.around(p.getVelocity().getY(), 5)));
 		double yresult = 0.0;
 		if (Utility.isOnGround(p)) {
 			return;
@@ -164,7 +164,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		try {
-			yresult = around(result.getY(), 5);
+			yresult = Utility.around(result.getY(), 5);
 		} catch (Exception ex) {
 			yresult = result.getY();
 		}
@@ -193,10 +193,10 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		double x = to.getX() - from.getX();
 		double z = to.getZ() - from.getZ();
 		if (Double.toString(z).length() > 4) {
-			z = around(z, 5);
+			z = Utility.around(z, 5);
 		}
 		if (Double.toString(x).length() > 4) {
-			x = around(x, 5);
+			x = Utility.around(x, 5);
 		}
 		if (Utility.hasflybypass(p)) {
 			return;
@@ -221,23 +221,4 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 	}
-
-	public double around(double i, int places) {
-		String around;
-		try {
-			if (Double.toString(i).length() > places - 2) {
-				if (!Double.toString(i).contains("-")) {
-					around = Double.toString(i).substring(0, places - 1);
-				} else {
-					around = Double.toString(i).substring(0, places);
-				}
-			} else {
-				around = Math.round(i) + "";
-			}
-		} catch (Exception e) {
-			return i;
-		}
-		return Double.parseDouble(around);
-	}
-
 }

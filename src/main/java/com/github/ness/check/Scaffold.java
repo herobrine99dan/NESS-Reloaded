@@ -43,7 +43,7 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 					event.setCancelled(true);
 				}
 			}catch(Exception ex) {}
-			manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold"));
+			manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold",""));
 		}
 	}
 
@@ -61,7 +61,7 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 						event.setCancelled(true);
 					}
 				}catch(Exception ex) {}
-				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold"));
+				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold",""));
 			}
 		}, 2L);
 	}

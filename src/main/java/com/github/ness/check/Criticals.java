@@ -45,7 +45,7 @@ public class Criticals extends AbstractCheck<EntityDamageByEntityEvent> {
 		    				event.setCancelled(true);
 		    			}
 		    		}catch(Exception ex) {}
-		          manager.getPlayer(player).setViolation(new Violation("Criticals"));
+		          manager.getPlayer(player).setViolation(new Violation("Criticals",""));
 		        }
 		      }
 		    }

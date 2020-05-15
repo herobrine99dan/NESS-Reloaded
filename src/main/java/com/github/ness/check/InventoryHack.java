@@ -82,7 +82,7 @@ public class InventoryHack extends AbstractCheck<InventoryClickEvent>{
         				e.setCancelled(true);
         			}
         		}catch(Exception ex) {}
-				p.setViolation(new Violation("FastClick"));							// MSG.tell(player, "Distance " + distance);
+				p.setViolation(new Violation("FastClick",""));							// MSG.tell(player, "Distance " + distance);
            	 e.setCancelled(true);
            	 p.setClicks(0);
             }

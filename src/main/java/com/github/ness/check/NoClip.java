@@ -46,7 +46,7 @@ public class NoClip extends AbstractCheck<PlayerMoveEvent> {
 					event.setCancelled(true);
 				}
 			}catch(Exception ex) {}
-			manager.getPlayer(event.getPlayer()).setViolation(new Violation("NoClip"));
+			manager.getPlayer(event.getPlayer()).setViolation(new Violation("NoClip",""));
 		}
 
 	}

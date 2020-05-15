@@ -34,7 +34,7 @@ public class Headless extends AbstractCheck<PlayerMoveEvent> {
     				event.setCancelled(true);
     			}
     		}catch(Exception ex) {}
-            manager.getPlayer(p).setViolation(new Violation("HeadLess"));
+            manager.getPlayer(p).setViolation(new Violation("HeadLess",""));
         }
 	}
 

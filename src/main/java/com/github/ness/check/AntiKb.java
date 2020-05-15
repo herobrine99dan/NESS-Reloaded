@@ -39,7 +39,7 @@ public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
             				event.setCancelled(true);
             			}
             		}catch(Exception ex) {}
-                	manager.getPlayer(p).setViolation(new Violation("AntiKb"));
+                	manager.getPlayer(p).setViolation(new Violation("AntiKb",""));
                 }
 			}, 2L);
 		}

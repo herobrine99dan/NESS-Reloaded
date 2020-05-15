@@ -434,14 +434,18 @@ public class Utility {
 
 	public static double around(double i, int places) {
 		String around;
-		if (Double.toString(i).length() > places - 2) {
-			if (!Double.toString(i).contains("-")) {
-				around = Double.toString(i).substring(0, places - 1);
+		try {
+			if (Double.toString(i).length() > places - 2) {
+				if (!Double.toString(i).contains("-")) {
+					around = Double.toString(i).substring(0, places - 1);
+				} else {
+					around = Double.toString(i).substring(0, places);
+				}
 			} else {
-				around = Double.toString(i).substring(0, places);
+				around = Math.round(i) + "";
 			}
-		} else {
-			around = Math.round(i) + "";
+		} catch (Exception e) {
+			return i;
 		}
 		return Double.parseDouble(around);
 	}

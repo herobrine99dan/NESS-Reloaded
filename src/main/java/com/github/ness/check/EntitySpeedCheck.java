@@ -39,7 +39,7 @@ public class EntitySpeedCheck extends AbstractCheck<PlayerMoveEvent>{
 						event.setCancelled(true);
 					}
 				}catch(Exception ex) {}
-				manager.getPlayer(event.getPlayer()).setViolation(new Violation("EntitySpeedCheck"));
+				manager.getPlayer(event.getPlayer()).setViolation(new Violation("EntitySpeedCheck","MaxSpeed"));
 			}
 		}
 		

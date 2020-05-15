@@ -67,7 +67,7 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent>{
 						event.setCancelled(true);
 					}
 				}catch(Exception ex) {}
-				p.setViolation(new Violation("GhostHand"));
+				p.setViolation(new Violation("GhostHand",""));
 			}
 		}, 2L);
 	}

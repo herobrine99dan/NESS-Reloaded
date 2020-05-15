@@ -33,7 +33,7 @@ public class NoSlowDownFood extends AbstractCheck<PlayerItemConsumeEvent> {
 					e.setCancelled(true);
 				}
 			}catch(Exception ex) {}
-			p.setViolation(new Violation("NoSlowDown"));
+			p.setViolation(new Violation("NoSlowDown",""));
 		}
 	}
 }

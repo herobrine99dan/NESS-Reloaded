@@ -12,13 +12,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ness.api.NESSApi;
 import com.github.ness.nms.NMSHandler;
+import com.github.ness.protocol.Packet1_15Helper;
 import com.github.ness.protocol.TinyProtocol;
 import com.github.ness.protocol.TinyProtocolListeners;
 
 import lombok.Getter;
 
 public class NESSAnticheat extends JavaPlugin {
-    @Getter
+
+	public static boolean use1_15Helper = false;
+	@Getter
 	public TinyProtocol protocol;
 
 	@Getter
@@ -64,15 +67,22 @@ public class NESSAnticheat extends JavaPlugin {
 		violationManager.addDefaultActions();
 		violationManager.initiatePeriodicTask();
 
-		this.protocol = (TinyProtocol) new TinyProtocolListeners((Plugin) this);
+        if(Bukkit.getVersion().contains("1.15")) {
+      	  getLogger().info("Enabling Default Packet Listener for 1.15");
+      	  use1_15Helper = true;
+      	  getServer().getPluginManager().registerEvents(new Packet1_15Helper(), this);
+        }else {
+		  this.protocol = (TinyProtocol) new TinyProtocolListeners((Plugin) this);
+      	  getLogger().warning("Enabling Tiny Protocol Listener!");
+        }
 		new Scheduler().start();
-		//new Protocols();
+		// new Protocols();
 
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);
 
 		getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(this), this, ServicePriority.Low);
 	}
-	
+
 	private NMSHandler findNMSHandler() {
 		String packageName = Bukkit.getServer().getClass().getPackage().getName(); // org.bukkit.craftbukkit.v1_8_R3
 		String nmsVersion = packageName.substring("org.bukkit.craftbukkit.v".length()); // 1_8_R3
@@ -88,7 +98,7 @@ public class NESSAnticheat extends JavaPlugin {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public void onDisable() {
 		try {
@@ -96,9 +106,8 @@ public class NESSAnticheat extends JavaPlugin {
 			executor.shutdown();
 			executor.awaitTermination(10L, TimeUnit.SECONDS);
 		} catch (Exception ex) {
-			//ex.printStackTrace();
+			// ex.printStackTrace();
 		}
 	}
-	
-	
+
 }

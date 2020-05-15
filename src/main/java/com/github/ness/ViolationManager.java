@@ -48,8 +48,8 @@ public class ViolationManager {
 	private String addViolationVariables(String message, Player player, Violation violation, int violationCount) {
 		return ChatColor.translateAlternateColorCodes('&',
 				message.replace("%PLAYER%", player.getName()).replace("%HACK%", violation.getCheck())
-						.replace("%DETAILS%", StringUtils.join(violation.getDetails(), ", "))
-						.replace("%VL%", Integer.toString(violationCount)));
+						.replace("%DETAILS%", violation.getDetails().toString() + ", "))
+						.replace("%VL%", Integer.toString(violationCount));
 	}
 
 	void addDefaultActions() {

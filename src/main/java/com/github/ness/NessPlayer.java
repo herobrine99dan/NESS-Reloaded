@@ -141,7 +141,7 @@ public class NessPlayer implements AutoCloseable {
 		if (isDevMode()) {
 			// sendMessage is thread safe
 			player.sendMessage("Dev mode violation: Check " + violation.getCheck() + ". Details: "
-					+ StringUtils.join(violation.getDetails(), ", "));
+					+ violation.getDetails());
 			checkViolationCounts.merge(violation.getCheck(), 1, (c1, c2) -> c1 + c2);
 		}
 		/*
