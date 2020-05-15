@@ -91,12 +91,12 @@ public class NESSAnticheat extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		checkManager.close();
-		executor.shutdown();
 		try {
+			checkManager.close();
+			executor.shutdown();
 			executor.awaitTermination(10L, TimeUnit.SECONDS);
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
+		} catch (Exception ex) {
+			//ex.printStackTrace();
 		}
 	}
 	
