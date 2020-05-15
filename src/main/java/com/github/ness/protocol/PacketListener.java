@@ -61,7 +61,7 @@ public class PacketListener {
 		// System.out.println("Sono qua");
 		// sender.sendMessage("MaxPackets: " + maxPackets);
 		NessPlayer np = InventoryHack.manageraccess.getPlayer(sender);
-		if (np == null) {
+		if (np == null || sender.isInsideVehicle()) {
 			return packet;
 		}
 		np.setNormalPacketsCounter(np.getNormalPacketsCounter() + 1);

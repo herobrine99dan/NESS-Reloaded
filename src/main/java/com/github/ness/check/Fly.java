@@ -213,7 +213,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (Bukkit.getVersion().contains("1.8")) {
 			return;
 		}
-		if (!bypass(e.getPlayer())) {
+		if (!bypass(e.getPlayer()) && player.getNearbyEntities(2, 2, 2).isEmpty()) {
 			if (player.isOnline() && !Utility.hasBlock(player, Material.SLIME_BLOCK) && player.isOnGround()
 					&& !Utility.checkGround(e.getTo().getY())) {
 				punish(e, player, "FalseGround");
