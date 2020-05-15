@@ -57,6 +57,9 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			event.setCancelled(true);
 			return;
 		}
+		if(player.isFlying() || player.getAllowFlight()) {
+			return;
+		}
 		if (to.getY() < from.getY())
 			hozDist = dist - (from.getY() - to.getY());
 		Double vertDist = Math.abs(dist - hozDist);

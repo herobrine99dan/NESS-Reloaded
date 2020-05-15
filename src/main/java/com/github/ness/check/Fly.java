@@ -54,6 +54,9 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	public void punish(PlayerMoveEvent e, Player p, String module) {
 		if (!Utility.hasflybypass(p)) {
+			if(p.getAllowFlight()) {
+				return;
+			}
 			try {
 				ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
 						.getConfigurationSection("cancel");
