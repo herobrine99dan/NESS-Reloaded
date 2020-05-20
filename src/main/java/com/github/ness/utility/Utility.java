@@ -33,9 +33,19 @@ public class Utility {
 		String v = Bukkit.getServer().getClass().getPackage().getName();
 		return v.substring(v.lastIndexOf('.') + 1);
 	}
-	
+
 	public static boolean isOnGround(Location loc) {
-		return loc.subtract(0, 0.001, 0).getBlock().getType().isSolid();
+		if (loc.getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR) {
+			return true;
+		}
+		Location a = loc;
+		a.setY(a.getY() - 0.5);
+		if (a.getBlock().getType() != Material.AIR) {
+			return true;
+		}
+		a = loc;
+		a.setY(a.getY() + 0.5);
+		return a.getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR;
 	}
 
 	public static boolean isOnGroundBypassNoFall(Player p) {
@@ -184,7 +194,7 @@ public class Utility {
 		}
 		return getmcd(n2, n1 % n2);
 	}
-	
+
 	public static double getmcd(double n1, double n2) {
 		if (n2 == 0.0) {
 			return n1;
@@ -510,7 +520,7 @@ public class Utility {
 		}
 		return blocks;
 	}
-	
+
 	public static double round(double value, int places) {
 		if (places < 0) {
 			throw new IllegalArgumentException();
