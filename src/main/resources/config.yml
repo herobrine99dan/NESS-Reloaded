@@ -52,6 +52,7 @@ enabled-checks:
   - 'Fly'
   - 'GhostHand'
   - 'Headless'
+  - 'TeleportEvent'
 #  - 'FastSneak'
   - 'LiquidInteraction'
   - 'InventoryHack'

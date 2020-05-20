@@ -64,7 +64,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 					if(Bukkit.getVersion().contains("1.15")) {
 						e.setCancelled(true);
 					}else {
-						DragDown.PlayerDragDown(p);
+						DragDown.PlayerDragDown(p,e);
 					}
 				}
 			} catch (Exception ex) {

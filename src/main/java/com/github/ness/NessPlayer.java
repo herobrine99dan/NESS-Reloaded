@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
 
 import com.github.ness.api.Violation;
@@ -24,6 +23,10 @@ public class NessPlayer implements AutoCloseable {
 	 */
 	@Getter
 	private final Player player;
+	
+	@Getter
+	@Setter
+	private boolean teleported = false;
 
 	/**
 	 * Player's current violation, package visibility for ViolationManager to use

@@ -20,6 +20,7 @@ public class Scheduler {
 						np.setBlockplace(0);
 						np.setClicks(0);
 						np.setDrop(0);
+						np.setTeleported(false);
 						np.setOnMoveRepeat(0);
 						np.setNormalPacketsCounter(0);
 						np.setPackets(0);

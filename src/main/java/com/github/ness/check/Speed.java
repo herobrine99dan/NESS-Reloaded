@@ -39,7 +39,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 
 	private void punish(PlayerMoveEvent e, String module) {
 		Player p = e.getPlayer();
-		if (Utility.hasflybypass(p)) {
+		if (Utility.hasflybypass(p) || manager.getPlayer(e.getPlayer()).isTeleported()) {
 			return;
 		}
 		manager.getPlayer(p).setViolation(new Violation("Speed", module));
@@ -121,7 +121,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 					return;
 				}
 				punish(e, "MaxDistance " + dist);
-			} else if (dist > soulsand && player.getLocation().getBlock().getType().equals(Material.SOUL_SAND) && Utility.isOnGround(e.getFrom())) {
+			} else if (dist > soulsand && player.getLocation().getBlock().getType().equals(Material.SOUL_SAND)
+					&& Utility.isOnGround(e.getFrom()) && player.getFallDistance() == 0.0 && e.getTo().getY()-e.getFrom().getY() == 0.0) {
 				punish(e, "NoSlowDown " + dist);
 			}
 		}
