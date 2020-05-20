@@ -28,6 +28,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	 * All changes in pitch should be divisible by a constant. That constant is
 	 * determined by your mouse sensitivity in game. By calculating the gcd and
 	 * finding that constant, you can detect changes in pitch variation.
+	 * This Check was made by IslandScout! (@Islandscout#2588)
 	 * 
 	 */
 	public boolean Check(PlayerMoveEvent e) {
