@@ -46,10 +46,12 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		try {
 			ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
 					.getConfigurationSection("cancel");
-			if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+			if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec
+					.getInt("vl", 10)) {
 				e.setCancelled(true);
 			}
-		}catch(Exception ex) {}
+		} catch (Exception ex) {
+		}
 	}
 
 	public void Check(PlayerMoveEvent e) {
@@ -111,7 +113,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		double dist = Utility.getMaxSpeed(e.getFrom(), e.getTo());
-		if (player.isOnGround() && !player.isInsideVehicle() && !player.isFlying()
+		if (Utility.isOnGround(e.getTo()) && !player.isInsideVehicle() && !player.isFlying()
 				&& !player.hasPotionEffect(PotionEffectType.SPEED) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 			if (dist > 0.62D) {
 				if (Utilities.getPlayerUpperBlock(player).getType().isSolid()
@@ -119,8 +121,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 					return;
 				}
 				punish(e, "MaxDistance " + dist);
-			} else if (dist > soulsand && player.getFallDistance() == 0
-					&& player.getLocation().getBlock().getType().equals(Material.SOUL_SAND)) {
+			} else if (dist > soulsand && player.getLocation().getBlock().getType().equals(Material.SOUL_SAND) && Utility.isOnGround(e.getFrom())) {
 				punish(e, "NoSlowDown " + dist);
 			}
 		}
@@ -157,7 +158,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		// Vector result = v.subtract(p.getVelocity());
 		Vector result = v.subtract(p.getVelocity().setY(Utility.around(p.getVelocity().getY(), 5)));
 		double yresult = 0.0;
-		if (Utility.isOnGround(p)) {
+		if (Utility.isOnGround(to)) {
 			return;
 		}
 		if (Utility.hasflybypass(p)) {

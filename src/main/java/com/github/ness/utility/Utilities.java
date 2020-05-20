@@ -427,7 +427,7 @@ public final class Utilities {
 	}
 
 	public static boolean isOnIce(Player p, boolean strict) {
-		if (Utility.isOnGround(p) || strict) {
+		if (Utility.isOnGround(p.getLocation()) || strict) {
 
 			List<Material> materials = getMaterialsAround(p.getLocation().clone().add(0.0D, -0.001D, 0.0D));
 			return !(!materials.contains(Material.ICE) && !materials.contains(Material.PACKED_ICE));

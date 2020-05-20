@@ -1,6 +1,7 @@
 package com.github.ness.check;
 
 import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -25,7 +26,18 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 	}
 
 	public void Check(BlockPlaceEvent event) {
-
+		Player p = event.getPlayer();
+		Block b = event.getBlockPlaced();
+		Block target = p.getTargetBlock(null, 5);
+		   if(!(target.getY()==b.getY() && target.getX()==b.getX() && target.getZ()==b.getZ())) {
+				try {
+					ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
+							.getConfigurationSection("cancel");
+					if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+						event.setCancelled(true);
+					}
+				}catch(Exception ex) {}
+		  }		
 	}
 
 	public void Check1(BlockPlaceEvent event) {

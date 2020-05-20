@@ -10,7 +10,7 @@ import com.github.ness.utility.Utility;
 public class Freecam {
 
 	public static void Check(Player p) {
-		if (!Utility.isOnGround(p)) {
+		if (!Utility.isOnGround(p.getLocation())) {
 			return;
 		}
 	      final Location first = p.getLocation();

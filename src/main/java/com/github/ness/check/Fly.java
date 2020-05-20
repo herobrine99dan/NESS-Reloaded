@@ -259,7 +259,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			if (p.getLocation().getBlock().getType() != Material.CHEST
 					&& p.getLocation().getBlock().getType() != Material.TRAPPED_CHEST
 					&& p.getLocation().getBlock().getType() != Material.ENDER_CHEST
-					&& !Utility.checkGround(p.getLocation().getY()) && !Utility.isOnGround(p)
+					&& !Utility.checkGround(p.getLocation().getY()) && !Utility.isOnGround(e.getTo())
 					&& Math.abs(p.getVelocity().getY() - diff) > 1.0E-6D && e.getFrom().getY() < e.getTo().getY()
 					&& (p.getVelocity().getY() >= 0.0D || p.getVelocity().getY() < -0.392D)
 					&& p.getNoDamageTicks() == 0.0D && bypass(p)) {
@@ -278,7 +278,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		if (!bypass(e.getPlayer())) {
 			if (!p.getLocation().getBlock().isLiquid()) {
-				if (!Utility.checkGround(p.getLocation().getY()) && !Utility.isOnGround(p)) {
+				if (!Utility.checkGround(p.getLocation().getY()) && !Utility.isOnGround(e.getTo())) {
 					ArrayList<Block> blocks = Utility.getSurrounding(p.getLocation().getBlock(), true);
 					Iterator<Block> var4 = blocks.iterator();
 
@@ -355,7 +355,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		Double hozDist = Utility.getMaxSpeed(from, to);
-		if (from.getBlock().getType() == Material.WEB && hozDist > 0.2) {
+		if (from.getBlock().getType() == Material.WEB && hozDist > 0.2 && Utility.isOnGround(to)) {
 			punish(e, player, "NoWeb");
 			// player.sendMessage("NoWebDist: " + hozDist);
 		}
