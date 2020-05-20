@@ -11,22 +11,22 @@ import com.github.ness.utility.Utility;
 
 public class PacketListener {
 
-	public static Object BadPacketsCheck(Player sender, Object packet) {
+	public static void BadPacketsCheck(Player sender, Object packet) {
 		int ping = Utility.getPing(sender);
 		int maxpackets = 21;
 		int maxPackets = maxpackets * (ping / 100);
-		if (ping < 150) {
+		if (ping < 100) {
 			maxPackets = maxpackets;
 		}
 		// System.out.println("Packet: " +packet.toString());
 		if (Utility.SpecificBlockNear(sender.getLocation(), Material.PORTAL)) {
-			return packet;
+			return;
 		}
 		// System.out.println("Sono qua");
 		// sender.sendMessage("MaxPackets: " + maxPackets);
 		NessPlayer np = InventoryHack.manageraccess.getPlayer(sender);
 		if (np == null) {
-			return packet;
+			return;
 
 		}
 		np.setMovementpacketscounter(np.getMovementpacketscounter() + 1);
@@ -42,9 +42,9 @@ public class PacketListener {
 			OldMovementChecks.blockPackets.put(sender.getName(), true);
 			InventoryHack.manageraccess.getPlayer(sender)
 					.setViolation(new Violation("BadPackets", np.getMovementpacketscounter() + ""));
-			return null;
+			return;
 		}
-		return packet;
+		return;
 	}
 
 	public static Object MorePacketsCheck(Player sender, Object packet) {

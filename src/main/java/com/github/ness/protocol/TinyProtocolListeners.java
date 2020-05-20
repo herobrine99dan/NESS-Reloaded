@@ -46,7 +46,8 @@ public class TinyProtocolListeners extends TinyProtocol {
 		if (packetname.toLowerCase().contains("position")) {
 			callPacketEvent(new Location(sender.getWorld(), getMethodValue(packet, "a"), getMethodValue(packet, "b"),
 					getMethodValue(packet, "c")), sender);
-			return PacketListener.BadPacketsCheck(sender, packet);
+			PacketListener.BadPacketsCheck(sender, packet);
+			return packet;
 		} else if (packetname.toLowerCase().contains("flying")) {
 			PingSpoof.Check(sender, packet);
 		}

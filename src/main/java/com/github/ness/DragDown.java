@@ -19,7 +19,7 @@ public class DragDown {
 		if (!b.getType().isSolid()) {
 			Locfrom = Locfrom.subtract(0.0D, 0.5D, 0.0D);
 		}
-		p.teleport(Locfrom, PlayerTeleportEvent.TeleportCause.PLUGIN);
+		//p.teleport(Locfrom, PlayerTeleportEvent.TeleportCause.PLUGIN);
 		return;
 	}
 }
