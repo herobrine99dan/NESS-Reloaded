@@ -11,7 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BlockProperties {
-
+/**
+ * Made by Vibemaster
+ * https://www.spigotmc.org/resources/block-properties.26651/
+ */
 	private static final Map<Material, BlockConfiguration> blocks = new HashMap<>();
 
 	static {
