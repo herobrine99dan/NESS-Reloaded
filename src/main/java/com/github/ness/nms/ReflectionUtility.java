@@ -9,7 +9,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-public class Reflection {
+public class ReflectionUtility {
    
     public static String cbVer() {
         return "org.bukkit.craftbukkit."+ver()+".";
