@@ -51,7 +51,7 @@ public class NewPacketListener implements Listener {
 			public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
 				String packetname = packet.toString().substring(0, packet.toString().indexOf("@"))
 						.replace("net.minecraft.server.", "");
-				player.sendMessage(packetname);
+				player.sendMessage(packetname);//Example
 				super.channelRead(channelHandlerContext, packet);
 			}
 		};
