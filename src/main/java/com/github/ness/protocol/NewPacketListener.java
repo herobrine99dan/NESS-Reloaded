@@ -1,13 +1,11 @@
 package com.github.ness.protocol;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import com.github.ness.check.PingSpoof;
+
 import com.github.ness.nms.ReflectionUtility;
 
 import io.netty.channel.Channel;
@@ -48,13 +46,12 @@ public class NewPacketListener implements Listener {
 
 	public void injectPlayer(Player player)
 			throws Exception {
-		player.sendMessage("Injecting...");
 		ChannelDuplexHandler channelDuplexHandler = new ChannelDuplexHandler() {
 			@Override
 			public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
 				String packetname = packet.toString().substring(0, packet.toString().indexOf("@"))
 						.replace("net.minecraft.server.", "");
-				player.sendMessage(packet.toString());
+				player.sendMessage(packetname);
 				super.channelRead(channelHandlerContext, packet);
 			}
 		};
@@ -63,23 +60,17 @@ public class NewPacketListener implements Listener {
 		// player).getHandle().playerConnection.networkManager.channel
 		ChannelPipeline pipeline = getChannel(player).pipeline();
 		pipeline.addBefore("packet_handler", player.getName(), channelDuplexHandler);
-		player.sendMessage("Added!");
 	}
 
 	public Channel getChannel(Player player) {
 		try {
-		player.sendMessage("GetClass...");
 		Class<?> craftplayerclass = (Class<?>) Class
 				.forName("org.bukkit.craftbukkit." + ReflectionUtility.ver() + ".entity.CraftPlayer");
 		// Object craftedplayer = craftplayerclass.cast(player);
-		player.sendMessage("Getting Handle...");
 		Object handle = craftplayerclass.getMethod("getHandle").invoke(player);
-		player.sendMessage("PlayerConnection...");
 		Object playerConnection = handle.getClass().getDeclaredField("playerConnection").get(handle);
-		player.sendMessage("NetWorkManager...");
-		Object networkManager = playerConnection.getClass().getDeclaredField("networkManager").get(handle);
-		player.sendMessage("Channel...");
-		Channel channel = (Channel) networkManager.getClass().getDeclaredField("channel").get(handle);
+		Object networkManager = playerConnection.getClass().getDeclaredField("networkManager").get(playerConnection);
+		Channel channel = (Channel) networkManager.getClass().getDeclaredField("channel").get(networkManager);
 		return channel;
 		}catch(Exception ex) {
 			ex.printStackTrace();
