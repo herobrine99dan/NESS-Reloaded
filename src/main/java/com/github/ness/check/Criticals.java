@@ -36,7 +36,7 @@ public class Criticals extends AbstractCheck<EntityDamageByEntityEvent> {
 		    }
 		    
 		    if (!player.isOnGround() && !player.isFlying()) {
-		      if (player.getLocation().getY() % 1.0D == 0.0D) {
+		      if (player.getLocation().getY() % 1.0D == 0.0D || player.getLocation().getY() % 0.5D == 0.0D) {
 		        if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
 		    		try {
 		    			ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()

@@ -17,7 +17,7 @@ public class PingSpoof {
 			MovementPlayerData mp = MovementPlayerData.getInstance(sender);
 			mp.pingspooftimer = System.currentTimeMillis();
 			double diff = mp.pingspooftimer - mp.oldpingspooftimer;
-			if (Utility.getPing(sender) > 300 && (diff > 40) && (diff < 65)) {
+			if (Utility.getPing(sender) > 150 && (diff > 40) && (diff < 65)) {
 				//sender.teleport(OldMovementChecks.safeLoc.getOrDefault(sender, sender.getLocation()));
 				InventoryHack.manageraccess.getPlayer(sender).setViolation(new Violation("PingSpoof",""));
 				Utility.setPing(sender, 100);

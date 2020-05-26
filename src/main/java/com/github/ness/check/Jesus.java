@@ -26,7 +26,6 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 	void checkEvent(PlayerMoveEvent e) {
 		Check(e);
 		Check1(e);
-		Check2(e);
 	}
 
 	public List<Player> placedBlockOnWater = new ArrayList<>();
@@ -74,23 +73,6 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 			punish(event,player, 3, "Physics");
 		}
 	} 
-    /**
-     * Another Physics Check
-     * @param event
-     */
-	protected void Check1(PlayerMoveEvent event) {
-		Player p = event.getPlayer();
-		if (!event.isCancelled()
-				&& (event.getFrom().getX() != event.getTo().getX() || event.getFrom().getZ() != event.getTo().getZ())
-				&& !p.getAllowFlight() && !Utilities.isOnLilyPad(p)
-				&& !p.getLocation().clone().add(0.0D, 0.4D, 0.0D).getBlock().getType().isSolid()
-				&& !placedBlockOnWater.remove(p)) {
-			if (Utilities.cantStandAtWater(p.getWorld().getBlockAt(p.getLocation()))
-					&& Utilities.isHoveringOverWater(p.getLocation()) && !Utilities.isFullyInWater(p.getLocation())) {
-				punish(event,p, 2, "Vanilla");
-			}
-		}
-	}
 
 	private void punish(PlayerMoveEvent e,Player p, int i, String module) {
 		try {
@@ -106,7 +88,7 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
      * Big Distance
      * @param e
      */
-	public void Check2(PlayerMoveEvent e) {
+	public void Check1(PlayerMoveEvent e) {
 		double fromy = e.getFrom().getY();
 		double toy = e.getTo().getY();
 		Player player = e.getPlayer();
