@@ -36,8 +36,7 @@ public class NewPacketListener implements Listener {
 	}
 
 	public void removePlayer(Player player)
-			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException,
-			ClassNotFoundException, InvocationTargetException, NoSuchMethodException {
+			throws Exception {
 		Channel channel = getChannel(player);
 		// Channel channel = ((CraftPlayer)
 		// player).getHandle().playerConnection.networkManager.channel;
@@ -48,8 +47,7 @@ public class NewPacketListener implements Listener {
 	}
 
 	public void injectPlayer(Player player)
-			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException,
-			InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
+			throws Exception {
 		player.sendMessage("Injecting...");
 		ChannelDuplexHandler channelDuplexHandler = new ChannelDuplexHandler() {
 			@Override
@@ -68,9 +66,8 @@ public class NewPacketListener implements Listener {
 		player.sendMessage("Added!");
 	}
 
-	public Channel getChannel(Player player)
-			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException,
-			InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
+	public Channel getChannel(Player player) {
+		try {
 		player.sendMessage("GetClass...");
 		Class<?> craftplayerclass = (Class<?>) Class
 				.forName("org.bukkit.craftbukkit." + ReflectionUtility.ver() + ".entity.CraftPlayer");
@@ -84,6 +81,10 @@ public class NewPacketListener implements Listener {
 		player.sendMessage("Channel...");
 		Channel channel = (Channel) networkManager.getClass().getDeclaredField("channel").get(handle);
 		return channel;
+		}catch(Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
 	}
 
 }
