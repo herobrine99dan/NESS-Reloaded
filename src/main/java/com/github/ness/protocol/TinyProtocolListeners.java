@@ -53,29 +53,22 @@ public class TinyProtocolListeners extends TinyProtocol {
 		}
 		return PacketListener.MorePacketsCheck(sender, packet);
 	}
-	
 
 	public void callPacketEvent(Location loc, Player sender) {
 		MovementPacketHelper.execute(loc, sender);
 	}
 
 	public double getMethodValue(Object clazz, String value) {
-		if (Bukkit.getVersion().contains("1.8")) {
-			try {
+		try {
+			if (Bukkit.getVersion().contains("1.8")) {
 				Method m = clazz.getClass().getMethod(value);
 				return (double) m.invoke(clazz);
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-					| NoSuchMethodException | SecurityException e) {
-				return -101010.0;
-			}
-		} else {
-			try {
+			} else {
 				Method m = clazz.getClass().getMethod(value, double.class);
 				return (double) m.invoke(clazz, 0.0);
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-					| NoSuchMethodException | SecurityException e) {
-				return -101010.0;
 			}
+		} catch (Exception ex) {
+			return -101010.0;
 		}
 	}
 

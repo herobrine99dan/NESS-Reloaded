@@ -8,7 +8,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.ness.nms.ReflectionUtility;
-import com.github.ness.packetswrapper.PacketPlayInFlying;
 import com.github.ness.packetswrapper.PacketPlayInPositionLook;
 import com.github.ness.packetswrapper.PacketPlayInUseEntity;
 import com.github.ness.packetswrapper.SimplePacket;
@@ -53,7 +52,7 @@ public class NewPacketListener implements Listener {
 			@Override
 			public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
 				SimplePacket packetconverted = convertPacket(player, packet);
-
+				player.sendMessage(packetconverted.getName());
 				super.channelRead(channelHandlerContext, packet);
 			}
 		};
@@ -78,11 +77,6 @@ public class NewPacketListener implements Listener {
 			p.sendMessage("PositionPacket: " + new Location(p.getWorld(), positionpacket.getX(), positionpacket.getY(),
 					positionpacket.getZ(), positionpacket.getYaw(), positionpacket.getPitch()));
 			packetconverted = positionpacket;
-			return packetconverted;
-		} else if (packetname.toLowerCase().contains("inflying")) {
-			PacketPlayInFlying flyingpacket = new PacketPlayInFlying(packet);
-			p.sendMessage("inFlyingPacket: " + flyingpacket.isOnGround());
-			packetconverted = flyingpacket;
 			return packetconverted;
 		} else {
 			return packetconverted;
