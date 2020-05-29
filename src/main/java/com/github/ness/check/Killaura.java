@@ -166,32 +166,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	}
 
 	public void Check7(EntityDamageByEntityEvent e) {
-		if (e.getDamager() instanceof Player) {
-			Player player = (Player) e.getDamager();
-			if (!mobinfront.getOrDefault(player.getName(), "").equals("")
-					&& e.getEntityType().equals(EntityType.ZOMBIE)) {
-				punish(e,player, 3, "BotCheck", 5);
-				e.getEntity().remove();
-				mobinfront.remove(player.getName());
-				return;
-			}
-			if (e.getEntityType().equals(EntityType.PLAYER)) {
-				return;
-			}
-			Random r = new Random();
-			Location location = player.getLocation().toVector().add(player.getLocation().getDirection().multiply(1))
-					.toLocation(player.getWorld()).add(0, 2.7, 0);
-			Entity et = (Entity) player.getWorld().spawnEntity(location, EntityType.ZOMBIE);
-			et.setFireTicks(r.nextInt());
-			mobinfront.putIfAbsent(player.getName(), Utility.randomString());
-			Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable() {
-				public void run() {
-					if (!et.isDead()) {
-						et.remove();
-					}
-				}
-			}, 2L);
-		}
+
 	}
 	
 	public void Check8(EntityDamageByEntityEvent e) {

@@ -21,7 +21,7 @@ public class DragDown {
 			if (!b.getType().isSolid()) {
 				Locfrom = Locfrom.subtract(0.0D, 0.3D, 0.0D);
 			}
-			p.teleport(Locfrom, PlayerTeleportEvent.TeleportCause.PLUGIN);
+			//p.teleport(Locfrom, PlayerTeleportEvent.TeleportCause.PLUGIN);
 		}catch(Exception ex) {
 			e.setCancelled(true);
 		}
