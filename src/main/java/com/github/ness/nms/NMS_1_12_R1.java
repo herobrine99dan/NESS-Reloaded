@@ -42,38 +42,44 @@ public class NMS_1_12_R1 implements NMSHandler {
 				Location loc = getLocation();
 				npc.setLocation(loc.getX(), loc.getY(), loc.getZ(), 0, 0);
 				Random r = ThreadLocalRandom.current();
-				npc.setAbsorptionHearts(r.nextInt(10)+1);
-				npc.setHealth(r.nextInt(18)+1);
+				npc.setAbsorptionHearts(r.nextInt(10) + 1);
+				npc.setHealth(r.nextInt(18) + 1);
 				npc.triggerHealthUpdate();
 				PlayerConnection connection = ((CraftPlayer) getTargetPlayer()).getHandle().playerConnection;
 				connection.sendPacket(new PacketPlayOutEntityMetadata(npc.getId(), npc.getDataWatcher(), true));
-				connection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc));
-				connection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, npc));
+				connection.sendPacket(
+						new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, npc));
+				connection.sendPacket(
+						new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, npc));
 				connection.sendPacket(new PacketPlayOutNamedEntitySpawn(npc));
 				if (armor != null) {
 					assert armor.length == 4;
 					if (armor[0] != null && armor[0].getType() != Material.AIR) {
-						connection.sendPacket(new PacketPlayOutEntityEquipment(npc.getId(), EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(armor[0])));
+						connection.sendPacket(new PacketPlayOutEntityEquipment(npc.getId(), EnumItemSlot.HEAD,
+								CraftItemStack.asNMSCopy(armor[0])));
 					}
 					if (armor[1] != null && armor[1].getType() != Material.AIR) {
-						connection.sendPacket(new PacketPlayOutEntityEquipment(npc.getId(), EnumItemSlot.CHEST, CraftItemStack.asNMSCopy(armor[1])));
+						connection.sendPacket(new PacketPlayOutEntityEquipment(npc.getId(), EnumItemSlot.CHEST,
+								CraftItemStack.asNMSCopy(armor[1])));
 					}
 					if (armor[2] != null && armor[2].getType() != Material.AIR) {
-						connection.sendPacket(new PacketPlayOutEntityEquipment(npc.getId(), EnumItemSlot.LEGS, CraftItemStack.asNMSCopy(armor[2])));
+						connection.sendPacket(new PacketPlayOutEntityEquipment(npc.getId(), EnumItemSlot.LEGS,
+								CraftItemStack.asNMSCopy(armor[2])));
 					}
 					if (armor[3] != null && armor[3].getType() != Material.AIR) {
-						connection.sendPacket(new PacketPlayOutEntityEquipment(npc.getId(), EnumItemSlot.FEET, CraftItemStack.asNMSCopy(armor[3])));
+						connection.sendPacket(new PacketPlayOutEntityEquipment(npc.getId(), EnumItemSlot.FEET,
+								CraftItemStack.asNMSCopy(armor[3])));
 					}
 				}
 				KillauraBotCheck.npclist.putIfAbsent(target.getName(), Integer.toString(npc.getId()));
-		        Bukkit.getScheduler().scheduleSyncDelayedTask(NESSAnticheat.main, () -> {
-		        	NESSAnticheat.main.protocol.sendPacket(target, new PacketPlayOutPlayerInfo(
-		                    PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, new EntityPlayer[] { npc }));
-		        	NESSAnticheat.main.protocol.sendPacket(target, new PacketPlayOutEntityDestroy(new int[] { npc.getId() }));
-		              KillauraBotCheck.npclist.remove(target.getName());
-		            },15L);
+				Bukkit.getScheduler().scheduleSyncDelayedTask(NESSAnticheat.main, () -> {
+					connection.sendPacket(new PacketPlayOutPlayerInfo(
+							PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, new EntityPlayer[] { npc }));
+					connection.sendPacket(new PacketPlayOutEntityDestroy(new int[] { npc.getId() }));
+					KillauraBotCheck.npclist.remove(target.getName());
+				}, 15L);
 			}
-			
+
 		};
 	}
 

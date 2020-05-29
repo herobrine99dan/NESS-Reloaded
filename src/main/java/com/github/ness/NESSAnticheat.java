@@ -6,24 +6,18 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ness.api.NESSApi;
 import com.github.ness.nms.NMSHandler;
 import com.github.ness.protocol.NewPacketListener;
-import com.github.ness.protocol.Packet1_15Helper;
-import com.github.ness.protocol.TinyProtocol;
-import com.github.ness.protocol.TinyProtocolListeners;
 
 import lombok.Getter;
 
 public class NESSAnticheat extends JavaPlugin {
 
 	public static boolean use1_15Helper = false;
-	@Getter
-	public TinyProtocol protocol;
 
 	@Getter
 	private ScheduledExecutorService executor;
@@ -68,14 +62,6 @@ public class NESSAnticheat extends JavaPlugin {
 		violationManager.addDefaultActions();
 		violationManager.initiatePeriodicTask();
 		getServer().getPluginManager().registerEvents(new NewPacketListener(), this);
-		if (Bukkit.getVersion().contains("1.15")) {
-			getLogger().info("Enabling Default Packet Listener for 1.15");
-			use1_15Helper = true;
-			getServer().getPluginManager().registerEvents(new Packet1_15Helper(), this);
-		} else {
-			this.protocol = (TinyProtocol) new TinyProtocolListeners((Plugin) this);
-			getLogger().warning("Enabling Tiny Protocol Listener!");
-		}
 		new Scheduler().start();
 		// new Protocols();
 

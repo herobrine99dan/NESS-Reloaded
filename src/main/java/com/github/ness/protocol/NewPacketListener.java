@@ -7,6 +7,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import com.github.ness.NESSAnticheat;
+import com.github.ness.check.PingSpoof;
 import com.github.ness.nms.ReflectionUtility;
 import com.github.ness.packetswrapper.PacketPlayInPositionLook;
 import com.github.ness.packetswrapper.PacketPlayInUseEntity;
@@ -37,22 +39,34 @@ public class NewPacketListener implements Listener {
 		}
 	}
 
+	/**
+	 * remove the Channel Handler from a player
+	 * 
+	 * @param player
+	 * @throws Exception
+	 */
+
 	public void removePlayer(Player player) throws Exception {
 		Channel channel = getChannel(player);
 		// Channel channel = ((CraftPlayer)
 		// player).getHandle().playerConnection.networkManager.channel;
 		channel.eventLoop().submit(() -> {
 			channel.pipeline().remove(player.getName());
-			return;
 		});
 	}
+
+	/**
+	 * inject the Channel Handler inside a player
+	 * 
+	 * @param player
+	 * @throws Exception
+	 */
 
 	public void injectPlayer(Player player) throws Exception {
 		ChannelDuplexHandler channelDuplexHandler = new ChannelDuplexHandler() {
 			@Override
 			public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
-				SimplePacket packetconverted = convertPacket(player, packet);
-				player.sendMessage(packetconverted.getName());
+				executeActions(player, packet);
 				super.channelRead(channelHandlerContext, packet);
 			}
 		};
@@ -62,6 +76,36 @@ public class NewPacketListener implements Listener {
 		ChannelPipeline pipeline = getChannel(player).pipeline();
 		pipeline.addBefore("packet_handler", player.getName(), channelDuplexHandler);
 	}
+
+	/**
+	 * Execute all the packet checks
+	 * 
+	 * @param p
+	 * @param packet
+	 */
+
+	public void executeActions(Player p, Object packet) {
+		if (p == null || packet == null || NESSAnticheat.main == null) {
+			return;
+		}
+		String packetname = packet.toString().substring(0, packet.toString().indexOf("@"))
+				.replace("net.minecraft.server.", "");
+		if (packetname.toLowerCase().contains("position")) {
+			PacketListener.BadPacketsCheck(p, packet);
+		} else if (packetname.toLowerCase().contains("flying")) {
+			PingSpoof.Check(p, packet);
+		}
+		PacketListener.MorePacketsCheck(p, packet);
+	}
+
+	/**
+	 * Get A SimplePacket Object, which can be a PacketPlayInUseEntity, a
+	 * PacketPlayInPositionLook or a simple object.
+	 * 
+	 * @param p
+	 * @param packet
+	 * @return SimplePacket Object
+	 */
 
 	public SimplePacket convertPacket(Player p, Object packet) {
 		SimplePacket packetconverted = new SimplePacket(packet);
@@ -83,6 +127,12 @@ public class NewPacketListener implements Listener {
 		}
 	}
 
+	/**
+	 * Get the Channel of a Player
+	 * @param player
+	 * @return
+	 */
+	
 	public Channel getChannel(Player player) {
 		try {
 			Class<?> craftplayerclass = (Class<?>) Class
