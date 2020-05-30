@@ -1,13 +1,11 @@
 package com.github.ness.check;
 
 import java.util.HashMap;
-import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -15,7 +13,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NESSAnticheat;
 import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
 
@@ -36,8 +33,6 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		Check4(e);
 		Check5(e);
 		Check6(e);
-		Check7(e);
-		Check8(e);
 	}
     
 	public void Check(EntityDamageByEntityEvent e) {
@@ -162,16 +157,6 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			if (e.getEntity().getEntityId() == e.getDamager().getEntityId()) {
 				punish(e,(Player) e.getEntity(), 5, "SelfHit", 5);
 			}
-		}
-	}
-
-	public void Check7(EntityDamageByEntityEvent e) {
-
-	}
-	
-	public void Check8(EntityDamageByEntityEvent e) {
-		if (e.getDamager() instanceof Player) {
-			
 		}
 	}
 

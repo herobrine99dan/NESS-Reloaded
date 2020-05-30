@@ -39,6 +39,8 @@ violation-handling:
 enabled-checks:
   - 'Aimbot'
   - 'AutoClick'
+  - 'AntiBot'
+  - 'AntiBotWhitelist'
   - 'AntiUnicode'
   - 'AntiKb'
 #  - 'BadPackets'

@@ -23,7 +23,7 @@ public class NessPlayer implements AutoCloseable {
 	 */
 	@Getter
 	private final Player player;
-	
+
 	@Getter
 	@Setter
 	private boolean teleported = false;
@@ -116,7 +116,7 @@ public class NessPlayer implements AutoCloseable {
 			checkViolationCounts = new ConcurrentHashMap<>();
 		}
 	}
-	
+
 	boolean isDevMode() {
 		return checkViolationCounts instanceof ConcurrentHashMap<?, ?>;
 	}
@@ -137,14 +137,16 @@ public class NessPlayer implements AutoCloseable {
 	 */
 	public void setViolation(Violation violation) {
 		Random r = new Random();
-		if(!r.nextBoolean()) {
+		if (!r.nextBoolean()) {
 			return;
 		}
+		this.checkViolationCounts.put(violation.getCheck(),
+				this.checkViolationCounts.getOrDefault(violation.getCheck(), 0));
 		this.violation.compareAndSet(null, violation);
 		if (isDevMode()) {
 			// sendMessage is thread safe
-			player.sendMessage("Dev mode violation: Check " + violation.getCheck() + ". Details: "
-					+ violation.getDetails());
+			player.sendMessage(
+					"Dev mode violation: Check " + violation.getCheck() + ". Details: " + violation.getDetails());
 			checkViolationCounts.merge(violation.getCheck(), 1, (c1, c2) -> c1 + c2);
 		}
 		/*
