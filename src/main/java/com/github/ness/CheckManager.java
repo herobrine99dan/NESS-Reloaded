@@ -123,12 +123,16 @@ public class CheckManager implements AutoCloseable {
 
 			for (ClassInfo eventInfo : eventInfos) {
 
+				String className = eventInfo.getName();
+				if (!className.startsWith("org.bukkit") && !className.startsWith("org.spigotmc")) {
+					continue;
+				}
 				@SuppressWarnings("unchecked")
-				Class<? extends Event> eventClass = (Class<? extends Event>) Class.forName(eventInfo.getName());
+				Class<? extends Event> eventClass = (Class<? extends Event>) Class.forName(className);
 
 				boolean found_getHandlers = false;
 				boolean found_getHandlerList = false;
-				for (Method method : eventClass.getDeclaredMethods()) {
+				for (Method method : eventClass.getMethods()) {
 					if (method.getParameterCount() != 0) {
 						continue;
 					}
