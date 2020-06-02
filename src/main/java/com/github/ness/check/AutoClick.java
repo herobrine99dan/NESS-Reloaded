@@ -55,25 +55,25 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		constancySpan = section.getLong("constancy.span-millis", 800);
 	}
 	
-	private long convertSecsToNanos(int seconds) {
-		return TimeUnit.NANOSECONDS.convert(seconds, TimeUnit.SECONDS);
+	private long totalRetentionMillis() {
+		return totalRetentionSecs * 1_000L;
 	}
 	
-	private long totalRetentionNanos() {
-		return convertSecsToNanos(totalRetentionSecs);
+	private long hardLimitRetentionMillis() {
+		return hardLimitRetentionSecs * 1_000L;
 	}
 	
-	private long hardLimitRetentionNanos() {
-		return convertSecsToNanos(hardLimitRetentionSecs);
+	private static long monotonicMillis() {
+		return System.nanoTime() / 1_000_000L;
 	}
 
 	@Override
 	void checkAsyncPeriodic(NessPlayer player) {
 		// Cleanup old history
 		Set<Long> clickHistory = player.getClickHistory();
-		long now1 = System.nanoTime();
-		long totalRetentionNanos = totalRetentionNanos();
-		clickHistory.removeIf((time) -> time - now1 > totalRetentionNanos);
+		long now1 = monotonicMillis();
+		long totalRetentionMillis = totalRetentionMillis();
+		clickHistory.removeIf((time) -> time - now1 > totalRetentionMillis);
 
 		if (clickHistory.isEmpty()) {
 			return; // Don't check players who aren't clicking
@@ -85,9 +85,9 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
 		// Hard limit check
 
-		long now2 = System.nanoTime();
-		long hardLimitRetentionNanos = hardLimitRetentionNanos();
-		copy1.removeIf((time) -> time - now2 > hardLimitRetentionNanos);
+		long now2 = monotonicMillis();
+		long hardLimitRetentionMillis = hardLimitRetentionMillis();
+		copy1.removeIf((time) -> time - now2 > hardLimitRetentionMillis);
 		int cps = copy1.size() / hardLimitRetentionSecs;
 		logger.debug("Clicks Per Second: {}", cps);
 		if (cps > hardLimit) {
@@ -152,13 +152,15 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		}
 	}
 	
-	private static int getStdDevPercent(List<Long> periods) {
-		// Calculate the average
-		long average = 0L;
-		for (long period : periods) {
-			average += period;
-		}
-		average = average / periods.size();
+	/**
+	 * Visible for testing. <br>
+	 * Calculates the standard deviation as a percent of the average
+	 * 
+	 * @param periods the numbers from which to calculate the standard deviation percentage
+	 * @return the percentage
+	 */
+	static int getStdDevPercent(List<Long> periods) {
+		long average = calculateAverage(periods);
 
 		double stdDevPercent = 0;
 		for (long period : periods) {
@@ -166,12 +168,27 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		}
 		return (int) (100 * Math.sqrt(stdDevPercent / periods.size()) / average);
 	}
+	
+	/**
+	 * Visible for testing. <br>
+	 * Calculates the average from a list of samples
+	 * 
+	 * @param samples the numbers from which to calculate the average
+	 * @return the average
+	 */
+	static long calculateAverage(List<Long> samples) {
+		long sum = 0L;
+		for (long period : samples) {
+			sum += period;
+		}
+		return sum / samples.size();
+	}
 
 	@Override
 	void checkEvent(PlayerInteractEvent evt) {
 		Action action = evt.getAction();
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-			manager.getPlayer(evt.getPlayer()).getClickHistory().add(System.nanoTime());
+			manager.getPlayer(evt.getPlayer()).getClickHistory().add(monotonicMillis());
 		}
 	}
 
