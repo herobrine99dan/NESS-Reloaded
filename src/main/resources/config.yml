@@ -101,7 +101,7 @@ checks:
       cps: 16
       retention-span-secs: 4
     constancy:
-      threshold: 4
+      threshold: 4 #The amount of clicks before the constancy check is used
       deviation-percent: 20
       min-sample: 6
       super:

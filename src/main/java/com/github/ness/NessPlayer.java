@@ -140,8 +140,6 @@ public class NessPlayer implements AutoCloseable {
 		if (!r.nextBoolean()) {
 			return;
 		}
-		this.checkViolationCounts.put(violation.getCheck(),
-				this.checkViolationCounts.getOrDefault(violation.getCheck(), 0));
 		this.violation.compareAndSet(null, violation);
 		if (isDevMode()) {
 			// sendMessage is thread safe

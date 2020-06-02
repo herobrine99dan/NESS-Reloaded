@@ -48,7 +48,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Check18(e);
 		Check18(e);
 		Check19(e);
-		Check20(e);
 	}
 
 	protected List<String> bypasses = Arrays.asList("slab", "stair", "snow", "bed", "skull", "step", "slime");
@@ -427,21 +426,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				}
 			}
 
-		}
-	}
-
-	/**
-	 * Another Check to detect NoFall(Experimental)
-	 * 
-	 * @param e
-	 */
-
-	public void Check20(PlayerMoveEvent e) {
-		final Player p = e.getPlayer();
-		if (e.getTo().getBlockY() < e.getFrom().getBlockY()) {
-			if (p.getFallDistance() % 1 == 0) {
-				punish(e, p, "NoFall-Experimental");
-			}
 		}
 	}
 

@@ -151,13 +151,13 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		for (long period : periods) {
 			average += period;
 		}
-		average = average/periods.size();
+		average = average / periods.size();
 
 		double stdDevPercent = 0;
 		for (long period : periods) {
 			stdDevPercent += Math.pow(period - average, 2);
 		}
-		return (int) (100 * Math.sqrt(stdDevPercent/periods.size()) / average);
+		return (int) (100 * Math.sqrt(stdDevPercent / periods.size()) / average);
 	}
 
 	@Override
@@ -167,5 +167,5 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 			manager.getPlayer(evt.getPlayer()).getClickHistory().add(System.nanoTime());
 		}
 	}
-	
+
 }
