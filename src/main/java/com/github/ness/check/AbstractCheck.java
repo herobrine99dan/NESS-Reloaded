@@ -73,7 +73,8 @@ public abstract class AbstractCheck<T extends Event> {
 	}
 	
 	/**
-	 * Called synchronously when this check's event is fired
+	 * Called when this check's event is fired, whether synchronously depends on whether
+	 * the event is fired synchronously
 	 * 
 	 * @param evt the event
 	 */
