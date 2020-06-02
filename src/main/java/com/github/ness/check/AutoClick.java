@@ -17,7 +17,7 @@ import com.github.ness.api.Violation;
 public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
 	private int hardLimit;
-	private int hardLimitRetention;
+	private int hardLimitRetentionSecs;
 
 	private int constancyThreshold;
 	private int constancyDeviation;
@@ -28,14 +28,17 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
 	private long constancySpan;
 
-	private int totalRetention;
+	private int totalRetentionSecs;
 	
 	public AutoClick(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerInteractEvent.class, 4, TimeUnit.SECONDS));
+
 		ConfigurationSection section = manager.getNess().getNessConfig().getCheck(AutoClick.class);
-		totalRetention = 1000 * section.getInt("total-retention-secs", 32);
+
+		totalRetentionSecs = section.getInt("total-retention-secs", 32);
+
 		hardLimit = section.getInt("hard-limit.cps", 16);
-		hardLimitRetention = 1000 * section.getInt("hard-limit.retention-span-secs", 4);
+		hardLimitRetentionSecs = section.getInt("hard-limit.retention-span-secs", 4);
 
 		constancyThreshold = section.getInt("constancy.threshold", 4);
 		constancyDeviation = section.getInt("constancy.deviation-percent", 20);
@@ -46,13 +49,26 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
 		constancySpan = section.getLong("constancy.span-millis", 800);
 	}
+	
+	private long convertSecsToNanos(int seconds) {
+		return TimeUnit.NANOSECONDS.convert(seconds, TimeUnit.SECONDS);
+	}
+	
+	private long totalRetentionNanos() {
+		return convertSecsToNanos(totalRetentionSecs);
+	}
+	
+	private long hardLimitRetentionNanos() {
+		return convertSecsToNanos(hardLimitRetentionSecs);
+	}
 
 	@Override
 	void checkAsyncPeriodic(NessPlayer player) {
 		// Cleanup old history
 		Set<Long> clickHistory = player.getClickHistory();
-		long now1 = System.currentTimeMillis();
-		clickHistory.removeIf((time) -> time - now1 > totalRetention);
+		long now1 = System.nanoTime();
+		long totalRetentionNanos = totalRetentionNanos();
+		clickHistory.removeIf((time) -> time - now1 > totalRetentionNanos);
 
 		if (clickHistory.isEmpty()) {
 			return; // Don't check players who aren't clicking
@@ -64,9 +80,10 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
 		// Hard limit check
 
-		long now2 = System.currentTimeMillis();
-		copy1.removeIf((time) -> time - now2 > hardLimitRetention);
-		int cps = copy1.size() / hardLimitRetention;
+		long now2 = System.nanoTime();
+		long hardLimitRetentionNanos = hardLimitRetentionNanos();
+		copy1.removeIf((time) -> time - now2 > hardLimitRetentionNanos);
+		int cps = copy1.size() / hardLimitRetentionSecs;
 		if (cps > hardLimit) {
 			player.setViolation(new Violation("AutoClick", Integer.toString(cps)));
 			return;
@@ -74,54 +91,61 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
 		// Constancy check
 
-		if (cps > constancyThreshold) {
-			/*
-			 * Task:
-			 * Measure the standard deviation of the intervals between clicks
-			 * 
-			 */
-			copy2.sort(null);
-			List<Integer> periods = new ArrayList<>();
+		if (cps <= constancyThreshold) {
+			return;
+		}
+		/*
+		 * Task: Measure the standard deviation of the intervals between clicks
+		 * 
+		 */
+		List<Long> periods = new ArrayList<>();
 
-			/*
-			 * Centering our numbers such that the first is zero
-			 */
-			long initial = copy2.get(0); // we center at this number
-			long start = 0L;
-			for (int n = 1; n < copy2.size(); n++) {
-				long end = copy2.get(n) - initial;
-				periods.add((int) (end - start));
-				start = end;
-			}
+		/*
+		 * Centering our numbers such that the first is zero
+		 */
+		long initial = copy2.get(0); // we center at this number
+		long start = 0L;
+		for (int n = 1; n < copy2.size(); n++) {
+			long end = copy2.get(n) - initial;
+			periods.add(end - start);
+			start = end;
+		}
 
-			List<Integer> subPeriods = new ArrayList<>();
-			List<Integer> superPeriods = new ArrayList<>();
-			for (int n = 0; n < periods.size(); n++) {
-				int subStart = periods.get(n);
-				int subPeriod;
-				for (int m = n; (subPeriod = periods.get(m)) - subStart < constancySpan; m++) {
-					subPeriods.add(subPeriod);
-				}
-				if (subPeriods.size() >= constancyMinSample) {
-					int stdDevPercent = getStdDevPercent(subPeriods);
-					if (stdDevPercent < constancyDeviation) {
-						player.setViolation(new Violation("AutoClick", Integer.toString(cps) + " "+stdDevPercent));
-						return;
-					}
-					superPeriods.add(stdDevPercent);
-				}
-				subPeriods.clear();
+		/*
+		 * Sublist of the total list of periods
+		 * 
+		 */
+		List<Long> subPeriods = new ArrayList<>();
+		/*
+		 * Standard deviation percentages of all the subspans
+		 * 
+		 */
+		List<Long> standardDeviations = new ArrayList<>();
+		for (int n = 0; n < periods.size(); n++) {
+			long subStart = periods.get(n);
+			long subPeriod;
+			for (int m = n; (subPeriod = periods.get(m)) - subStart < constancySpan; m++) {
+				subPeriods.add(subPeriod);
 			}
-			if (superPeriods.size() >= constancySuperMinSample) {
-				int superStdDevPercent = getStdDevPercent(superPeriods);
-				if (superStdDevPercent < constancySuperDeviation) {
-					player.setViolation(new Violation("AutoClick", cps + " "+ superStdDevPercent));
+			if (subPeriods.size() >= constancyMinSample) {
+				int stdDevPercent = getStdDevPercent(subPeriods);
+				if (stdDevPercent < constancyDeviation) {
+					player.setViolation(new Violation("AutoClick", cps + " " + stdDevPercent));
+					return;
 				}
+				standardDeviations.add((long) stdDevPercent);
+			}
+			subPeriods.clear();
+		}
+		if (standardDeviations.size() >= constancySuperMinSample) {
+			int superStdDevPercent = getStdDevPercent(standardDeviations);
+			if (superStdDevPercent < constancySuperDeviation) {
+				player.setViolation(new Violation("AutoClick", cps + " " + superStdDevPercent));
 			}
 		}
 	}
 	
-	private int getStdDevPercent(List<Integer> periods) {
+	private static int getStdDevPercent(List<Long> periods) {
 		// Calculate the average
 		long average = 0L;
 		for (long period : periods) {
@@ -140,7 +164,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 	void checkEvent(PlayerInteractEvent evt) {
 		Action action = evt.getAction();
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-			manager.getPlayer(evt.getPlayer()).getClickHistory().add(System.currentTimeMillis());
+			manager.getPlayer(evt.getPlayer()).getClickHistory().add(System.nanoTime());
 		}
 	}
 	
