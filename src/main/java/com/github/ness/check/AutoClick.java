@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -29,6 +32,8 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 	private long constancySpan;
 
 	private int totalRetentionSecs;
+	
+	private static final Logger logger = LoggerFactory.getLogger(AutoClick.class);
 	
 	public AutoClick(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerInteractEvent.class, 4, TimeUnit.SECONDS));
@@ -84,6 +89,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		long hardLimitRetentionNanos = hardLimitRetentionNanos();
 		copy1.removeIf((time) -> time - now2 > hardLimitRetentionNanos);
 		int cps = copy1.size() / hardLimitRetentionSecs;
+		logger.debug("Clicks Per Second: {}", cps);
 		if (cps > hardLimit) {
 			player.setViolation(new Violation("AutoClick", Integer.toString(cps)));
 			return;
