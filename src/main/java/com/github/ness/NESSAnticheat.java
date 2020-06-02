@@ -41,6 +41,7 @@ public class NESSAnticheat extends JavaPlugin {
 	public void onEnable() {
 		main = this;
 		logger.info("NESS uses slf4j for logging");
+		logger.warn("NESS warn messages look like this");
 		logger.debug("NESS debug messages look like this");
 		
 		nessConfig = new NessConfig("config.yml", "messages.yml");
