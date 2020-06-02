@@ -11,6 +11,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<classgraph.version>4.8.78</classgraph.version>
+		<slf4j.version>1.7.25</slf4j.version>
 		<protocollib.version>4.5.0</protocollib.version>
 	</properties>
 	
@@ -26,7 +27,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
+				<version>3.8.1</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -35,6 +36,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.2.3</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -42,12 +44,19 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
-							<minimizeJar>true</minimizeJar>
 							<artifactSet>
 								<includes>
+									<include>org.slf4j:slf4j-api</include>
+									<include>org.slf4j:slf4j-jdk14</include>
 									<include>io.github.classgraph:classgraph</include>
 								</includes>
 							</artifactSet>
+							<relocations>
+								<relocation>
+									<pattern>org.slf4j</pattern>
+									<shadedPattern>com.github.ness.shaded.org.slf4j</shadedPattern>
+								</relocation>
+							</relocations>
 						</configuration>
 					</execution>
 				</executions>
@@ -68,16 +77,31 @@
 			<artifactId>classgraph</artifactId>
 			<version>${classgraph.version}</version>
 		</dependency>
+		<!-- slf4j dependency and binding -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- ProtocolLib -->
 		<dependency>
 			<groupId>com.comphenix.protocol</groupId>
 			<artifactId>ProtocolLib</artifactId>
 			<version>${protocollib.version}</version>
 		</dependency>
+		<!-- Spigot API -->
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>1.12.2-R0.1-SNAPSHOT</version>
 		</dependency>
+		<!-- NMS & OBC -->
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-1.8.8</artifactId>
