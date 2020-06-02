@@ -1,6 +1,7 @@
 package com.github.ness;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +22,8 @@ public class NESSAnticheat extends JavaPlugin {
 
 	@Getter
 	private ScheduledExecutorService executor;
+	@Getter
+	private Executor syncExecutor;
 	public static NESSAnticheat main;
 	@Getter
 	private NessConfig nessConfig;
@@ -53,6 +56,7 @@ public class NESSAnticheat extends JavaPlugin {
 		this.nmsHandler = nmsHandler;
 
 		executor = Executors.newSingleThreadScheduledExecutor();
+		syncExecutor = (cmd) -> Bukkit.getScheduler().runTask(this, cmd);
 		getServer().getPluginCommand("ness").setExecutor(new NessCommands(this));
 
 		checkManager = new CheckManager(this);
