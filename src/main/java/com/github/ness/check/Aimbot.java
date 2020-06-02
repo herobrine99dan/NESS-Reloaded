@@ -108,5 +108,9 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		}
 		return false;
 	}
+	
+	/**
+	 * Check for some
+	 */
 
 }

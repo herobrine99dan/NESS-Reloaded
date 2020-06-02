@@ -48,23 +48,24 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Check18(e);
 		Check18(e);
 		Check19(e);
+		Check20(e);
 	}
 
 	protected List<String> bypasses = Arrays.asList("slab", "stair", "snow", "bed", "skull", "step", "slime");
 
 	public void punish(PlayerMoveEvent e, Player p, String module) {
 		if (!Utility.hasflybypass(p)) {
-			if(p.getAllowFlight()) {
+			if (p.getAllowFlight()) {
 				return;
 			}
 			try {
 				ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
 						.getConfigurationSection("cancel");
 				if (manager.getPlayer(p).checkViolationCounts.getOrDefault("Fly", 0) > cancelsec.getInt("vl", 10)) {
-					if(Bukkit.getVersion().contains("1.15")) {
+					if (Bukkit.getVersion().contains("1.15")) {
 						e.setCancelled(true);
-					}else {
-						DragDown.PlayerDragDown(p,e);
+					} else {
+						DragDown.PlayerDragDown(p, e);
 					}
 				}
 			} catch (Exception ex) {
@@ -426,6 +427,21 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				}
 			}
 
+		}
+	}
+
+	/**
+	 * Another Check to detect NoFall(Experimental)
+	 * 
+	 * @param e
+	 */
+
+	public void Check20(PlayerMoveEvent e) {
+		final Player p = e.getPlayer();
+		if (e.getTo().getBlockY() < e.getFrom().getBlockY()) {
+			if (p.getFallDistance() % 1 == 0) {
+				punish(e, p, "NoFall-Experimental");
+			}
 		}
 	}
 
