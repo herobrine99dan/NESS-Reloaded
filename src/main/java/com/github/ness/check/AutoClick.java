@@ -18,10 +18,11 @@ import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 
+import lombok.AllArgsConstructor;
+
 public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
-	private final int hardLimit;
-	private final int hardLimitRetentionSecs;
+	private List<HardLimitEntry> hardLimits;
 
 	private final int constancyThreshold;
 	private final int constancyDeviation;
@@ -43,8 +44,13 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
 		totalRetentionSecs = section.getInt("total-retention-secs", 32);
 
-		hardLimit = section.getInt("hard-limit.cps", 16);
-		hardLimitRetentionSecs = section.getInt("hard-limit.retention-span-secs", 4);
+		List<String> hardLimitList = section.getStringList("hard-limit.cps-and-required-span");
+		if (hardLimitList == null) {
+			hardLimits = makeDefaultHardLimits();
+		} else {
+			hardLimits = parseHardLimits(hardLimitList);
+		}
+		hardLimits.sort(null);
 
 		constancyThreshold = section.getInt("constancy.threshold", 4);
 		constancyDeviation = section.getInt("constancy.deviation-percent", 20);
@@ -54,18 +60,49 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		constancySuperMinSample = section.getInt("constancy.super.min-sample", 12);
 
 		constancySpan = section.getLong("constancy.span-millis", 800);
-		logger.debug("Check configuration: totalRetentionSecs {}, hardLimit {}, hardLimitRetentionSecs {}, "
+		logger.debug("Check configuration: totalRetentionSecs {}, hardLimits {}, "
 				+ "constancyThreshold {}, constancyDeviation {}, constancyMinSample {},"
-				+ "constancySuperDeviation {}, constancySuperMinSample{}", totalRetentionSecs, hardLimit, hardLimitRetentionSecs,
+				+ "constancySuperDeviation {}, constancySuperMinSample{}", totalRetentionSecs, hardLimits,
 				constancyThreshold, constancyDeviation, constancyMinSample, constancySuperDeviation, constancySuperMinSample);
+	}
+	
+	private List<HardLimitEntry> makeDefaultHardLimits() {
+		List<HardLimitEntry> list = new ArrayList<>();
+		list.add(new HardLimitEntry(16, 3));
+		list.add(new HardLimitEntry(20, 4));
+		return list;
+	}
+	
+	private List<HardLimitEntry> parseHardLimits(List<String> configValues) {
+		List<HardLimitEntry> list = new ArrayList<>();
+		for (String str : configValues) {
+			String[] info = str.split(":");
+			if (info.length == 2) {
+				try {
+					list.add(new HardLimitEntry(Integer.parseInt(info[0]), Integer.parseInt(info[1])));
+				} catch (NumberFormatException ignored) {
+					logger.debug("Cannot format {}:{} to integers", info[0], info[1]);
+				}
+			} else {
+				logger.debug("Cannot format illegal entry length of {}", (Object) info);
+			}
+		}
+		return list;
+	}
+	
+	@AllArgsConstructor
+	private static class HardLimitEntry implements Comparable<HardLimitEntry> {
+		final int maxCps;
+		final int retentionSecs;
+		// Reverse order
+		@Override
+		public int compareTo(HardLimitEntry o) {
+			return o.retentionSecs - retentionSecs;
+		}
 	}
 	
 	private long totalRetentionMillis() {
 		return totalRetentionSecs * 1_000L;
-	}
-	
-	private long hardLimitRetentionMillis() {
-		return hardLimitRetentionSecs * 1_000L;
 	}
 	
 	private static long monotonicMillis() {
@@ -88,23 +125,25 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		Set<Long> copy1 = new HashSet<>(clickHistory);
 		List<Long> copy2 = new ArrayList<>(copy1);
 
-		// Hard limit check
+		// Hard limit checks
 
-		long now2 = monotonicMillis();
-		long hardLimitRetentionMillis = hardLimitRetentionMillis();
-		copy1.removeIf((time) -> time - now2 > hardLimitRetentionMillis);
-		int cps = copy1.size() / hardLimitRetentionSecs;
-		logger.debug("Clicks Per Second: {}", cps);
-		if (cps > hardLimit) {
-			player.setViolation(new Violation("AutoClick", Integer.toString(cps)));
-			return;
+		for (HardLimitEntry hardLimitEntry : hardLimits) {
+			long now2 = monotonicMillis();
+			Set<Long> copy = new HashSet<>(copy1);
+			int span = hardLimitEntry.retentionSecs * 1_000;
+			copy.removeIf((time) -> time - now2 > span);
+			int cps = copy.size() / hardLimitEntry.retentionSecs;
+
+			int maxCps = hardLimitEntry.maxCps;
+			logger.debug("Clicks Per Second: {}. Limit: {}", cps, maxCps);
+			if (cps > maxCps) {
+				player.setViolation(new Violation("AutoClick", Integer.toString(cps)));
+				return;
+			}
 		}
 
 		// Constancy check
 
-		if (cps <= constancyThreshold) {
-			return;
-		}
 		/*
 		 * Task: Measure the standard deviation of the intervals between clicks
 		 * 
@@ -143,7 +182,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 			if (subPeriods.size() >= constancyMinSample) {
 				int stdDevPercent = getStdDevPercent(subPeriods);
 				if (stdDevPercent < constancyDeviation) {
-					player.setViolation(new Violation("AutoClick", cps + " " + stdDevPercent));
+					player.setViolation(new Violation("AutoClick", "StdDev: " + stdDevPercent));
 					return;
 				}
 				standardDeviations.add((long) stdDevPercent);
@@ -154,7 +193,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		if (standardDeviations.size() >= constancySuperMinSample) {
 			int superStdDevPercent = getStdDevPercent(standardDeviations);
 			if (superStdDevPercent < constancySuperDeviation) {
-				player.setViolation(new Violation("AutoClick", cps + " " + superStdDevPercent));
+				player.setViolation(new Violation("AutoClick", "SuperStdDev: " + superStdDevPercent));
 			}
 		}
 	}
