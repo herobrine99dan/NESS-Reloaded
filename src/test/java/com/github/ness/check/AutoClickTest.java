@@ -18,10 +18,10 @@ public class AutoClickTest {
 	
 	@RepeatedTest(5)
 	public void testStandardDeviationOfSameValues() {
-		long longToTest = ThreadLocalRandom.current().nextLong(10000);
+		long longToTest = ThreadLocalRandom.current().nextLong(Integer.MIN_VALUE, Integer.MAX_VALUE);
 		logger.info("Testing standard deviation using same value of {}", longToTest);
 		List<Long> listOfSameValues = new ArrayList<>();
-		int max = 1 + ThreadLocalRandom.current().nextInt(14);
+		int max = 1 + ThreadLocalRandom.current().nextInt(31);
 		for (int n = 0; n < max; n++) {
 			listOfSameValues.add(longToTest);
 		}
@@ -30,6 +30,7 @@ public class AutoClickTest {
 	
 	@Test
 	public void testCalculationsPreCalculated() {
+		logger.info("Testing precalculated average and standard deviation");
 		List<Long> values = Arrays.asList(12L, 100L, 79L, 22L);
 		long average = AutoClick.calculateAverage(values);
 		assertToDegreeOfAccuracy(53, (int) average, 1);
