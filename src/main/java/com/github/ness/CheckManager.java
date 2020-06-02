@@ -14,6 +14,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -40,6 +43,8 @@ public class CheckManager implements AutoCloseable {
 	
 	private Set<AbstractCheck<?>> checks;
 	
+	private static final Logger logger = LoggerFactory.getLogger(CheckManager.class);
+	
 	@Getter
 	private final NESSAnticheat ness;
 	
@@ -49,6 +54,7 @@ public class CheckManager implements AutoCloseable {
 	
 	CompletableFuture<?> loadAsync() {
 		int parallelism = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
+		logger.debug("Using parallelism {} for class scanning", parallelism);
 		ExecutorService tempExecService = Executors.newWorkStealingPool(parallelism);
 		Future<ScanResult> scanFuture = new ClassGraph().enableClassInfo().scanAsync(tempExecService, parallelism);
 
@@ -56,7 +62,9 @@ public class CheckManager implements AutoCloseable {
 			this.checks = checks;
 
 			try {
-				return scanFuture.get();
+				ScanResult result = scanFuture.get();
+				logger.debug("ScanResult completed");
+				return result;
 			} catch (InterruptedException | ExecutionException ex) {
 				ex.printStackTrace();
 			} finally {
@@ -64,38 +72,43 @@ public class CheckManager implements AutoCloseable {
 			}
 			return null;
 
-		}).thenApply(this::getEventsToListen).thenAccept((evtClasses) -> {
-			if (evtClasses == null) {
-				// TODO Handle previous failure?
-				return;
-			}
-			EventExecutor eventExecutor = new EventExecutor() {
-				@Override
-				public void execute(Listener listener, Event evt) throws EventException {
-					try {
-						if (evt instanceof PlayerJoinEvent) {
-							Player player = ((PlayerJoinEvent) evt).getPlayer();
-							players.put(player.getUniqueId(), new NessPlayer(player, ness.getNessConfig().isDevMode()));
-						} else if (evt instanceof PlayerQuitEvent) {
-							players.remove(((PlayerQuitEvent) evt).getPlayer().getUniqueId()).close();
-						} else {
-							checks.forEach((check) -> check.checkAnyEvent(evt));
-						}
-					} catch (Throwable ex) {
-						throw new EventException(ex, "NESS made a mistake in listening to an event. Please report this error on Github.");
+			// Log messages are more readable using method references
+		}).thenApply(this::getEventsToListen).thenAccept(this::processEventClasses);
+	}
+	
+	private void processEventClasses(Set<Class<? extends Event>> evtClasses) {
+		if (evtClasses == null) {
+			logger.warn("ClassGraph scan future failed, so no events could be registered");
+			return;
+		}
+		logger.trace("All event classes found: {}", evtClasses);
+		EventExecutor eventExecutor = new EventExecutor() {
+			@Override
+			public void execute(Listener listener, Event evt) throws EventException {
+				try {
+					if (evt instanceof PlayerJoinEvent) {
+						Player player = ((PlayerJoinEvent) evt).getPlayer();
+						players.put(player.getUniqueId(), new NessPlayer(player, ness.getNessConfig().isDevMode()));
+					} else if (evt instanceof PlayerQuitEvent) {
+						players.remove(((PlayerQuitEvent) evt).getPlayer().getUniqueId()).close();
+					} else {
+						checks.forEach((check) -> check.checkAnyEvent(evt));
 					}
+				} catch (Throwable ex) {
+					throw new EventException(ex, "NESS made a mistake in listening to an event. Please report this error on Github.");
 				}
-			};
-			Listener blankListener = new Listener() {};
-			
-			Bukkit.getScheduler().runTask(ness, () -> {
-				PluginManager pm = Bukkit.getPluginManager();
-				evtClasses.forEach((eventClass) -> {
-					pm.registerEvent(eventClass, blankListener, EventPriority.NORMAL, eventExecutor, ness);
-				});
+			}
+		};
+		Listener blankListener = new Listener() {};
+		
+		Bukkit.getScheduler().runTask(ness, () -> {
+			PluginManager pm = Bukkit.getPluginManager();
+			evtClasses.forEach((eventClass) -> {
+				pm.registerEvent(eventClass, blankListener, EventPriority.NORMAL, eventExecutor, ness);
 			});
-			checks.forEach((check) -> check.initiatePeriodicTasks());
 		});
+		logger.debug("Registered events, starting periodic tasks");
+		checks.forEach((check) -> check.initiatePeriodicTasks());
 	}
 	
 	private Set<Class<? extends Event>> getEventsToListen(ScanResult scanResult) {
@@ -130,12 +143,15 @@ public class CheckManager implements AutoCloseable {
 					}
 				}
 				if (found_getHandlers && found_getHandlerList) {
+					logger.trace("Listening to {}", eventClass);
 					result.add(eventClass);
+				} else {
+					logger.trace("Not listening to {}", eventClass);
 				}
 			}
 
 		} catch (ClassNotFoundException ex) {
-			throw new RuntimeException("This can't happen", ex);
+			logger.error("ClassNotFoundException on a class we just scanned for ", ex);
 
 		}
 		return result;
@@ -152,18 +168,19 @@ public class CheckManager implements AutoCloseable {
 						checks.add((AbstractCheck<?>) constructor.newInstance(this));
 					} else {
 						// This is our fault
+						logger.warn("Check class {} does not extend AbstractCheck", clazz);
 					}
 				} catch (ClassNotFoundException ex) {
 
 					// No class found!
 					// This is the user's fault
-					ex.printStackTrace();
+					logger.warn("Check {} from the config does not exist", checkName, ex);
 				} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
 						| IllegalArgumentException | InvocationTargetException ex) {
 
 					// Reflection error!
 					// This is our fault
-					ex.printStackTrace();
+					logger.warn("Could not instantiate check {}", checkName, ex);
 				}
 			}
 		}
@@ -171,6 +188,7 @@ public class CheckManager implements AutoCloseable {
 	}
 	
 	void reloadChecks() {
+		logger.debug("Reloading all checks");
 		checks.forEach(AbstractCheck::close);
 		// assignation is atomic
 		checks = getAllChecks();
@@ -179,6 +197,7 @@ public class CheckManager implements AutoCloseable {
 	
 	@Override
 	public void close() {
+		logger.debug("Closing all checks");
 		checks.forEach(AbstractCheck::close);
 		checks.clear();
 		HandlerList.unregisterAll(ness);
