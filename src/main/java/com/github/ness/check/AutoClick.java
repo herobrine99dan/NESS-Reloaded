@@ -94,7 +94,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 	private static class HardLimitEntry implements Comparable<HardLimitEntry> {
 		final int maxCps;
 		final int retentionSecs;
-		// Reverse order
+		// We reverse the order to make it descending, so that entries with the most retentionSecs come first
 		@Override
 		public int compareTo(HardLimitEntry o) {
 			return o.retentionSecs - retentionSecs;
@@ -129,10 +129,9 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
 		for (HardLimitEntry hardLimitEntry : hardLimits) {
 			long now2 = monotonicMillis();
-			Set<Long> copy = new HashSet<>(copy1);
 			int span = hardLimitEntry.retentionSecs * 1_000;
-			copy.removeIf((time) -> time - now2 > span);
-			int cps = copy.size() / hardLimitEntry.retentionSecs;
+			copy1.removeIf((time) -> time - now2 > span);
+			int cps = copy1.size() / hardLimitEntry.retentionSecs;
 
 			int maxCps = hardLimitEntry.maxCps;
 			logger.debug("Clicks Per Second: {}. Limit: {}", cps, maxCps);
