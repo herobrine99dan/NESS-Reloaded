@@ -97,6 +97,9 @@ public class NESSAnticheat extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
+		if (checkManager != null) {
+			checkManager.close();
+		}
 		if (executor != null) {
 			try {
 				executor.shutdown();
@@ -104,9 +107,6 @@ public class NESSAnticheat extends JavaPlugin {
 			} catch (Exception ex) {
 				// ex.printStackTrace();
 			}
-		}
-		if (checkManager != null) {
-			checkManager.close();
 		}
 	}
 
