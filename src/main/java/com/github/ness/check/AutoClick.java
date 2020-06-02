@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -19,19 +20,19 @@ import com.github.ness.api.Violation;
 
 public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
-	private int hardLimit;
-	private int hardLimitRetentionSecs;
+	private final int hardLimit;
+	private final int hardLimitRetentionSecs;
 
-	private int constancyThreshold;
-	private int constancyDeviation;
-	private int constancyMinSample;
+	private final int constancyThreshold;
+	private final int constancyDeviation;
+	private final int constancyMinSample;
 
-	private int constancySuperDeviation;
-	private int constancySuperMinSample;
+	private final int constancySuperDeviation;
+	private final int constancySuperMinSample;
 
-	private long constancySpan;
+	private final long constancySpan;
 
-	private int totalRetentionSecs;
+	private final int totalRetentionSecs;
 	
 	private static final Logger logger = LoggerFactory.getLogger(AutoClick.class);
 	
@@ -53,6 +54,10 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		constancySuperMinSample = section.getInt("constancy.super.min-sample", 12);
 
 		constancySpan = section.getLong("constancy.span-millis", 800);
+		logger.debug("Check configuration: totalRetentionSecs {}, hardLimit {}, hardLimitRetentionSecs {}, "
+				+ "constancyThreshold {}, constancyDeviation {}, constancyMinSample {},"
+				+ "constancySuperDeviation {}, constancySuperMinSample{}", totalRetentionSecs, hardLimit, hardLimitRetentionSecs,
+				constancyThreshold, constancyDeviation, constancyMinSample, constancySuperDeviation, constancySuperMinSample);
 	}
 	
 	private long totalRetentionMillis() {
@@ -117,6 +122,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 			periods.add(end - start);
 			start = end;
 		}
+		logger.debug("Click periods: {}", periods);
 
 		/*
 		 * Sublist of the total list of periods
@@ -142,6 +148,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 				}
 				standardDeviations.add((long) stdDevPercent);
 			}
+			logger.debug("Sub click periods: {}", subPeriods);
 			subPeriods.clear();
 		}
 		if (standardDeviations.size() >= constancySuperMinSample) {
@@ -181,14 +188,18 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		for (long period : samples) {
 			sum += period;
 		}
-		return sum / samples.size();
+		long result = sum / samples.size();
+		logger.trace("Calculated average is {}", result);
+		return result;
 	}
 
 	@Override
 	void checkEvent(PlayerInteractEvent evt) {
 		Action action = evt.getAction();
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-			manager.getPlayer(evt.getPlayer()).getClickHistory().add(monotonicMillis());
+			Player player = evt.getPlayer();
+			logger.trace("Added click from {}", player);
+			manager.getPlayer(player).getClickHistory().add(monotonicMillis());
 		}
 	}
 
