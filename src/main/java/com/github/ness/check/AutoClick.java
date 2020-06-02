@@ -169,11 +169,13 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 	static int getStdDevPercent(List<Long> periods) {
 		long average = calculateAverage(periods);
 
-		double stdDevPercent = 0;
+		double standardDeviation = 0;
 		for (long period : periods) {
-			stdDevPercent += Math.pow(period - average, 2);
+			standardDeviation += Math.pow(period - average, 2);
 		}
-		return (int) (100 * Math.sqrt(stdDevPercent / periods.size()) / average);
+		standardDeviation = Math.sqrt(standardDeviation / periods.size());
+		logger.trace("Standard deviation is calculated to be {}", standardDeviation);
+		return (int) (100 * standardDeviation / average);
 	}
 	
 	/**
