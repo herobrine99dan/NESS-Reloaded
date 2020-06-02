@@ -37,7 +37,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 	private static final Logger logger = LogManager.getLogger(AutoClick.class);
 	
 	public AutoClick(CheckManager manager) {
-		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerInteractEvent.class, 4, TimeUnit.SECONDS));
+		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerInteractEvent.class, 2, TimeUnit.SECONDS));
 
 		ConfigurationSection section = manager.getNess().getNessConfig().getCheck(AutoClick.class);
 
