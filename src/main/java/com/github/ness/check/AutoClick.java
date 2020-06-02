@@ -104,6 +104,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		 * Task: Measure the standard deviation of the intervals between clicks
 		 * 
 		 */
+		copy2.sort(null);
 		List<Long> periods = new ArrayList<>();
 
 		/*
