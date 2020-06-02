@@ -29,7 +29,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 	private long constancySpan;
 
 	private int totalRetention;
-	
+
 	public AutoClick(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerInteractEvent.class, 4, TimeUnit.SECONDS));
 		ConfigurationSection section = manager.getNess().getNessConfig().getCheck(AutoClick.class);
@@ -67,6 +67,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		long now2 = System.currentTimeMillis();
 		copy1.removeIf((time) -> time - now2 > hardLimitRetention);
 		int cps = copy1.size() / hardLimitRetention;
+		player.getPlayer().sendMessage("CPS: " + cps);
 		if (cps > hardLimit) {
 			player.setViolation(new Violation("AutoClick", Integer.toString(cps)));
 			return;
@@ -76,8 +77,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
 		if (cps > constancyThreshold) {
 			/*
-			 * Task:
-			 * Measure the standard deviation of the intervals between clicks
+			 * Task: Measure the standard deviation of the intervals between clicks
 			 * 
 			 */
 			copy2.sort(null);
@@ -104,8 +104,9 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 				}
 				if (subPeriods.size() >= constancyMinSample) {
 					int stdDevPercent = getStdDevPercent(subPeriods);
+					player.getPlayer().sendMessage("stdDevPercent: " + stdDevPercent);
 					if (stdDevPercent < constancyDeviation) {
-						player.setViolation(new Violation("AutoClick", Integer.toString(cps) + " "+stdDevPercent));
+						player.setViolation(new Violation("AutoClick", Integer.toString(cps) + " " + stdDevPercent));
 						return;
 					}
 					superPeriods.add(stdDevPercent);
@@ -114,26 +115,27 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 			}
 			if (superPeriods.size() >= constancySuperMinSample) {
 				int superStdDevPercent = getStdDevPercent(superPeriods);
+				player.getPlayer().sendMessage("superStdDevPercent: " + superStdDevPercent);
 				if (superStdDevPercent < constancySuperDeviation) {
-					player.setViolation(new Violation("AutoClick", cps + " "+ superStdDevPercent));
+					player.setViolation(new Violation("AutoClick", cps + " " + superStdDevPercent));
 				}
 			}
 		}
 	}
-	
+
 	private int getStdDevPercent(List<Integer> periods) {
 		// Calculate the average
 		long average = 0L;
 		for (long period : periods) {
 			average += period;
 		}
-		average = average/periods.size();
+		average = average / periods.size();
 
 		double stdDevPercent = 0;
 		for (long period : periods) {
 			stdDevPercent += Math.pow(period - average, 2);
 		}
-		return (int) (100 * Math.sqrt(stdDevPercent/periods.size()) / average);
+		return (int) (100 * Math.sqrt(stdDevPercent / periods.size()) / average);
 	}
 
 	@Override
@@ -143,5 +145,5 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 			manager.getPlayer(evt.getPlayer()).getClickHistory().add(System.currentTimeMillis());
 		}
 	}
-	
+
 }
