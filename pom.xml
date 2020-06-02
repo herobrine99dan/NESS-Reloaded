@@ -11,7 +11,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<classgraph.version>4.8.78</classgraph.version>
-		<slf4j.version>1.7.25</slf4j.version>
 		<junit.version>5.6.2</junit.version>
 		<protocollib.version>4.5.0</protocollib.version>
 	</properties>
@@ -82,8 +81,6 @@
 						<configuration>
 							<artifactSet>
 								<includes>
-									<include>org.slf4j:slf4j-api</include>
-									<include>org.slf4j:slf4j-jdk14</include>
 									<include>io.github.classgraph:classgraph</include>
 								</includes>
 							</artifactSet>
@@ -106,18 +103,6 @@
 			<groupId>io.github.classgraph</groupId>
 			<artifactId>classgraph</artifactId>
 			<version>${classgraph.version}</version>
-		</dependency>
-		<!-- slf4j dependency and binding -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>runtime</scope>
 		</dependency>
 		<!-- Testing -->
 		<dependency>

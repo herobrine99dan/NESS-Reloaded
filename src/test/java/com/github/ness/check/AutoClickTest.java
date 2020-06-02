@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class AutoClickTest {
 
-	private static final Logger logger = LoggerFactory.getLogger(AutoClickTest.class);
+	private static final Logger logger = LogManager.getLogger(AutoClickTest.class);
 	
 	@RepeatedTest(5)
 	public void testStandardDeviationOfSameValues() {

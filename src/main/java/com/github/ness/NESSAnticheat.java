@@ -5,8 +5,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
@@ -35,19 +35,12 @@ public class NESSAnticheat extends JavaPlugin {
 	@Getter
 	private NMSHandler nmsHandler;
 	
-	private static final Logger logger = LoggerFactory.getLogger(NESSAnticheat.class);
+	private static final Logger logger = LogManager.getLogger(NESSAnticheat.class);
 
 	@Override
 	public void onEnable() {
 		main = this;
-		logger.info("NESS uses slf4j for logging");
-		logger.warn("NESS slf4j - WARN");
-		logger.debug("NESS slf4j - DEBUG");
-		getLogger().warning("Bukkit JUL - WARNING");
-		getLogger().fine("Bukkit JUL - FINE");
-		java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger(getClass().getName());
-		julLogger.warning("Direct JUL - WARNING");
-		julLogger.fine("Direct JUL - FINE");
+		logger.info("NESS uses log4j2 for logging");
 		
 		nessConfig = new NessConfig("config.yml", "messages.yml");
 		nessConfig.reloadConfiguration(this);

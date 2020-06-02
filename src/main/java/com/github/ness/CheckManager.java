@@ -14,8 +14,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -43,7 +43,7 @@ public class CheckManager implements AutoCloseable {
 	
 	private Set<AbstractCheck<?>> checks;
 	
-	private static final Logger logger = LoggerFactory.getLogger(CheckManager.class);
+	private static final Logger logger = LogManager.getLogger(CheckManager.class);
 	
 	@Getter
 	private final NESSAnticheat ness;
