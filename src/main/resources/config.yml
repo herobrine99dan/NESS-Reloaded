@@ -96,18 +96,38 @@ checks:
 # Effectiveness: untested
 #
   autoclick:
+      # Clicks older than this are completely ignored
     total-retention-secs: 32
+    # A basic CPS cap
     hard-limit:
+      # These are pairs of CPS limits and required time spans
+      #
+      # If the player's CPS measured over the time span is greater than the CPS limit, a violation is triggered.
+      #
+      # For example, '16:3' means that if the player's clicks in the past 3 seconds average 16 CPS, trigger a violation.
       cps-and-required-span:
         - '16:3'
         - '20:1'
+    # A more advanced consistency check
     constancy:
-      threshold: 4 #The amount of clicks before the constancy check is used
-      deviation-percent: 20
-      min-sample: 6
-      super:
-        deviation-percent: 10
-        min-sample: 12
+      # These are pairs of standard deviation percentages and sample counts
+      #
+      # The standard deviation is calculated based on the interval between clicks in the sample.
+      # The second number in the pair determines the sample size.
+      # Then, the standard deviation percentage is calculated as the standard deviation as percent of the average.
+      # If this percent is less than the first number in the pair, a violation is triggered.
+      #
+      # For example, '30:8' means that if the standard deviation in the interval between clicks over a sample
+      # of 8 intervals, divided by the average interval, is greater than 30%, trigger a violation.
+      deviation-and-sample:
+        - '30:8'
+        - '15:16'
+      # These are pairs of standard deviation percentages and sample counts
+      #
+      # These are conceptually similar to the previous. However, this measures the standard deviations between
+      # the standard deviations. Thus, it is called the "super deviation".
+      superdeviation-and-supersample:
+        - '10:8'
       span-millis: 800
 
 #

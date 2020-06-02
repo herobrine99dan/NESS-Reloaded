@@ -1,10 +1,13 @@
 package com.github.ness.check;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.IntBinaryOperator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,19 +22,15 @@ import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 
 public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
-	private List<HardLimitEntry> hardLimits;
-
-	private final int constancyThreshold;
-	private final int constancyDeviation;
-	private final int constancyMinSample;
-
-	private final int constancySuperDeviation;
-	private final int constancySuperMinSample;
-
-	private final long constancySpan;
+	private List<HardLimitEntry> hardLimits = new ArrayList<>();
+	
+	private Set<DeviationEntry> deviationRequirements = new HashSet<>();
+	
+	private Set<DeviationEntry> superDeviationRequirements = new HashSet<>();
 
 	private final int totalRetentionSecs;
 	
@@ -46,40 +45,47 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
 		List<String> hardLimitList = section.getStringList("hard-limit.cps-and-required-span");
 		if (hardLimitList == null) {
-			hardLimits = makeDefaultHardLimits();
+			makeDefaultHardLimits(hardLimits);
 		} else {
-			hardLimits = parseHardLimits(hardLimitList);
+			parseHardLimits(hardLimitList, hardLimits);
 		}
 		hardLimits.sort(null);
+		
+		List<String> deviationRequirementList = section.getStringList("constancy.deviation-and-sample");
+		if (deviationRequirementList == null) {
+			makeDefaultDeviationRequirements(deviationRequirements);
+		} else {
+			parseDeviationRequirements(deviationRequirementList, deviationRequirements);
+		}
+		
+		List<String> superDeviationRequirementList = section.getStringList("constancy.superdeviation-and-supersample");
+		if (superDeviationRequirementList == null) {
+			makeDefaultSuperDeviationRequirements(superDeviationRequirements);
+		} else {
+			parseDeviationRequirements(superDeviationRequirementList, superDeviationRequirements);
+		}
+		
+		logger.trace("Configuration: {}", this);
+	}
 
-		constancyThreshold = section.getInt("constancy.threshold", 4);
-		constancyDeviation = section.getInt("constancy.deviation-percent", 20);
-		constancyMinSample = section.getInt("constancy.min-sample", 6);
+	@Override
+	public String toString() {
+		return "AutoClick [hardLimits=" + hardLimits + ", deviationRequirements=" + deviationRequirements
+				+ ", superDeviationRequirements=" + superDeviationRequirements + ", totalRetentionSecs="
+				+ totalRetentionSecs + "]";
+	}
 
-		constancySuperDeviation = section.getInt("constancy.super.deviation-percent", 10);
-		constancySuperMinSample = section.getInt("constancy.super.min-sample", 12);
-
-		constancySpan = section.getLong("constancy.span-millis", 800);
-		logger.debug("Check configuration: totalRetentionSecs {}, hardLimits {}, "
-				+ "constancyThreshold {}, constancyDeviation {}, constancyMinSample {},"
-				+ "constancySuperDeviation {}, constancySuperMinSample{}", totalRetentionSecs, hardLimits,
-				constancyThreshold, constancyDeviation, constancyMinSample, constancySuperDeviation, constancySuperMinSample);
+	private void makeDefaultHardLimits(List<HardLimitEntry> listToMutate) {
+		listToMutate.add(new HardLimitEntry(16, 3));
+		listToMutate.add(new HardLimitEntry(20, 4));
 	}
 	
-	private List<HardLimitEntry> makeDefaultHardLimits() {
-		List<HardLimitEntry> list = new ArrayList<>();
-		list.add(new HardLimitEntry(16, 3));
-		list.add(new HardLimitEntry(20, 4));
-		return list;
-	}
-	
-	private List<HardLimitEntry> parseHardLimits(List<String> configValues) {
-		List<HardLimitEntry> list = new ArrayList<>();
+	private void parseIntegerPairStringList(List<String> configValues, IntBinaryOperator whenParsed) {
 		for (String str : configValues) {
 			String[] info = str.split(":");
 			if (info.length == 2) {
 				try {
-					list.add(new HardLimitEntry(Integer.parseInt(info[0]), Integer.parseInt(info[1])));
+					whenParsed.applyAsInt(Integer.parseInt(info[0]), Integer.parseInt(info[1]));
 				} catch (NumberFormatException ignored) {
 					logger.debug("Cannot format {}:{} to integers", info[0], info[1]);
 				}
@@ -87,7 +93,29 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 				logger.debug("Cannot format illegal entry length of {}", (Object) info);
 			}
 		}
-		return list;
+	}
+	
+	private void parseHardLimits(List<String> configValues, List<HardLimitEntry> listToMutate) {
+		parseIntegerPairStringList(configValues, (i1, i2) -> {
+			listToMutate.add(new HardLimitEntry(i1, i2));
+			return 0;
+		});
+	}
+	
+	private void makeDefaultDeviationRequirements(Set<DeviationEntry> setToMutate) {
+		setToMutate.add(new DeviationEntry(30, 8));
+		setToMutate.add(new DeviationEntry(15, 16));
+	}
+	
+	private void makeDefaultSuperDeviationRequirements(Set<DeviationEntry> setToMutate) {
+		setToMutate.add(new DeviationEntry(10, 8));
+	}
+	
+	private void parseDeviationRequirements(List<String> configValues, Set<DeviationEntry> setToMutate) {
+		parseIntegerPairStringList(configValues, (i1, i2) -> {
+			setToMutate.add(new DeviationEntry(i1, i2));
+			return 0;
+		});
 	}
 	
 	@AllArgsConstructor
@@ -99,6 +127,13 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		public int compareTo(HardLimitEntry o) {
 			return o.retentionSecs - retentionSecs;
 		}
+	}
+	
+	@AllArgsConstructor
+	@EqualsAndHashCode
+	private static class DeviationEntry {
+		final int deviationPercentage;
+		final int sampleCount;
 	}
 	
 	private long totalRetentionMillis() {
@@ -164,35 +199,38 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
 		/*
 		 * Sublist of the total list of periods
-		 * 
 		 */
 		List<Long> subPeriods = new ArrayList<>();
 		/*
 		 * Standard deviation percentages of all the subspans
-		 * 
 		 */
-		List<Long> standardDeviations = new ArrayList<>();
+		Map<DeviationEntry, List<Long>> standardDeviationMap = new HashMap<>();
 		for (int n = 0; n < periods.size(); n++) {
-			long subStart = periods.get(n);
-			long subPeriod;
-			for (int m = n; (subPeriod = periods.get(m)) - subStart < constancySpan; m++) {
-				subPeriods.add(subPeriod);
-			}
-			if (subPeriods.size() >= constancyMinSample) {
-				int stdDevPercent = getStdDevPercent(subPeriods);
-				if (stdDevPercent < constancyDeviation) {
-					player.setViolation(new Violation("AutoClick", "StdDev: " + stdDevPercent));
-					return;
+
+			for (DeviationEntry deviationRequirement : deviationRequirements) {
+				for (int m = n; m < periods.size() && subPeriods.size() < deviationRequirement.sampleCount; m++) {
+					subPeriods.add(periods.get(m));
 				}
-				standardDeviations.add((long) stdDevPercent);
+				if (subPeriods.size() == deviationRequirement.sampleCount) {
+					int stdDevPercent = getStdDevPercent(subPeriods);
+					if (stdDevPercent < deviationRequirement.deviationPercentage) {
+						player.setViolation(new Violation("AutoClick", "StdDevPercent: " + stdDevPercent));
+						return;
+					}
+					standardDeviationMap.computeIfAbsent(deviationRequirement, (d) -> new ArrayList<>()).add((long) stdDevPercent);
+				}
+				subPeriods.clear();
 			}
-			logger.debug("Sub click periods: {}", subPeriods);
-			subPeriods.clear();
 		}
-		if (standardDeviations.size() >= constancySuperMinSample) {
-			int superStdDevPercent = getStdDevPercent(standardDeviations);
-			if (superStdDevPercent < constancySuperDeviation) {
-				player.setViolation(new Violation("AutoClick", "SuperStdDev: " + superStdDevPercent));
+		for (List<Long> standardDeviations : standardDeviationMap.values()) {
+			for (DeviationEntry superDeviationRequirement : superDeviationRequirements) {
+				if (standardDeviations.size() >= superDeviationRequirement.sampleCount) {
+					int superStdDevPercent = getStdDevPercent(standardDeviations);
+					if (superStdDevPercent < superDeviationRequirement.deviationPercentage) {
+						player.setViolation(new Violation("AutoClick", "SuperStdDevPercent: " + superStdDevPercent));
+						return;
+					}
+				}
 			}
 		}
 	}
