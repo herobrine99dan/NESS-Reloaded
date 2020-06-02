@@ -57,6 +57,7 @@ public class NESSAnticheat extends JavaPlugin {
 			return;
 		}
 		this.nmsHandler = nmsHandler;
+		logger.debug("Configuration loaded and NMS version detected. Initiating checks...");
 
 		executor = Executors.newSingleThreadScheduledExecutor();
 		getServer().getPluginCommand("ness").setExecutor(new NessCommands(this));
@@ -80,15 +81,16 @@ public class NESSAnticheat extends JavaPlugin {
 	private NMSHandler findNMSHandler() {
 		String packageName = Bukkit.getServer().getClass().getPackage().getName(); // org.bukkit.craftbukkit.v1_8_R3
 		String nmsVersion = packageName.substring("org.bukkit.craftbukkit.v".length()); // 1_8_R3
+		logger.debug("NMS version {}", nmsVersion);
 		try {
 			Class<?> handlerClass = Class.forName("com.github.ness.nms.NMS_" + nmsVersion);
 			if (NMSHandler.class.isAssignableFrom(handlerClass)) {
 				return (NMSHandler) handlerClass.newInstance();
 			}
 		} catch (ClassNotFoundException ex) {
-			getLogger().warning("Your server's version (" + nmsVersion + ") is not recognised.");
+			logger.warn("Your server's version ({}) is not recognised.", nmsVersion);
 		} catch (InstantiationException | IllegalAccessException ex) {
-			ex.printStackTrace();
+			logger.warn("Could not determine server version / NMS handler", ex);
 		}
 		return null;
 	}
