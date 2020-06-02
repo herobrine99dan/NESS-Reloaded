@@ -47,8 +47,9 @@ public class CheckManager implements AutoCloseable {
 	}
 	
 	CompletableFuture<?> loadAsync() {
-		ExecutorService tempExecService = Executors.newWorkStealingPool();
-		Future<ScanResult> scanFuture = new ClassGraph().enableClassInfo().scanAsync(tempExecService, Runtime.getRuntime().availableProcessors());
+		int parallelism = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
+		ExecutorService tempExecService = Executors.newWorkStealingPool(parallelism);
+		Future<ScanResult> scanFuture = new ClassGraph().enableClassInfo().scanAsync(tempExecService, parallelism);
 
 		return CompletableFuture.supplyAsync(this::getAllChecks, ness.getExecutor()).thenApplyAsync((checks) -> {
 			this.checks = checks;
@@ -61,7 +62,7 @@ public class CheckManager implements AutoCloseable {
 				tempExecService.shutdown();
 			}
 			return null;
-		}).thenAccept((scanResult) -> {
+		}).thenAcceptAsync((scanResult) -> { // Should really be thenAcceptSYNC because we're using the sync executor
 			if (scanResult == null) {
 				return;
 			}
@@ -87,7 +88,7 @@ public class CheckManager implements AutoCloseable {
 			registerListener(eventExecutor, scanResult);
 
 			checks.forEach((check) -> check.initiatePeriodicTasks());
-		});
+		}, ness.getSyncExecutor());
 	}
 	
 	private void registerListener(EventExecutor eventExecutor, ScanResult scanResult) {
