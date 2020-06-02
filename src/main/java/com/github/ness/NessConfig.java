@@ -26,10 +26,16 @@ public class NessConfig {
 
 	void reloadConfiguration(NESSAnticheat ness) {
 		File dataFolder = ness.getDataFolder();
-		ness.saveResource(cfgFileName, false);
-		ness.saveResource(msgsFileName, false);
-		config = YamlConfiguration.loadConfiguration(new File(dataFolder, cfgFileName));
-		messages = YamlConfiguration.loadConfiguration(new File(dataFolder, msgsFileName));
+		File cfgFile = new File(dataFolder, cfgFileName);
+		File msgsFile = new File(dataFolder, msgsFileName);
+		if (!cfgFile.exists()) {
+			ness.saveResource(cfgFileName, false);
+		}
+		if (!msgsFile.exists()) {
+			ness.saveResource(msgsFileName, false);
+		}
+		config = YamlConfiguration.loadConfiguration(cfgFile);
+		messages = YamlConfiguration.loadConfiguration(msgsFile);
 	}
 
 	boolean checkConfigVersion() {
