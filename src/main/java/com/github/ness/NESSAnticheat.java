@@ -50,7 +50,7 @@ public class NESSAnticheat extends JavaPlugin {
 		}
 		NMSHandler nmsHandler = findNMSHandler();
 		if (nmsHandler == null) {
-			getServer().getPluginManager().disablePlugin(this);
+			setEnabled(false);
 			return;
 		}
 		this.nmsHandler = nmsHandler;
@@ -93,12 +93,16 @@ public class NESSAnticheat extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		try {
+		if (executor != null) {
+			try {
+				executor.shutdown();
+				executor.awaitTermination(10L, TimeUnit.SECONDS);
+			} catch (Exception ex) {
+				// ex.printStackTrace();
+			}
+		}
+		if (checkManager != null) {
 			checkManager.close();
-			executor.shutdown();
-			executor.awaitTermination(10L, TimeUnit.SECONDS);
-		} catch (Exception ex) {
-			// ex.printStackTrace();
 		}
 	}
 
