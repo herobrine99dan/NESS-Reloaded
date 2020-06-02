@@ -16,6 +16,33 @@
 		<protocollib.version>4.5.0</protocollib.version>
 	</properties>
 	
+	<licenses>
+		<license>
+			<name>GNU General Public License, Version 3</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0-standalone.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<developers>
+		<developer>
+			<id>herobrine99dan</id>
+			<roles>
+				<role>creator</role>
+				<role>developer</role>
+			</roles>
+			<timezone>Europe/Rome</timezone>
+		</developer>
+		<developer>
+			<id>anandbeh</id>
+			<name>Anand Beh</name>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>America/New_York</timezone>
+		</developer>
+	</developers>
+	
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<finalName>${project.name}_${project.version}</finalName>
