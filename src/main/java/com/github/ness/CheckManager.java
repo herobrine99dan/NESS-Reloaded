@@ -24,6 +24,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.EventExecutor;
+import org.bukkit.plugin.PluginManager;
 
 import com.github.ness.check.AbstractCheck;
 
@@ -62,12 +63,13 @@ public class CheckManager implements AutoCloseable {
 				tempExecService.shutdown();
 			}
 			return null;
-		}).thenAcceptAsync((scanResult) -> { // Should really be thenAcceptSYNC because we're using the sync executor
-			if (scanResult == null) {
+
+		}).thenApply(this::getEventsToListen).thenAccept((evtClasses) -> {
+			if (evtClasses == null) {
+				// TODO Handle previous failure?
 				return;
 			}
 			EventExecutor eventExecutor = new EventExecutor() {
-
 				@Override
 				public void execute(Listener listener, Event evt) throws EventException {
 					try {
@@ -83,16 +85,24 @@ public class CheckManager implements AutoCloseable {
 						throw new EventException(ex, "NESS made a mistake in listening to an event. Please report this error on Github.");
 					}
 				}
-
 			};
-			registerListener(eventExecutor, scanResult);
-
+			Listener blankListener = new Listener() {};
+			
+			Bukkit.getScheduler().runTask(ness, () -> {
+				PluginManager pm = Bukkit.getPluginManager();
+				evtClasses.forEach((eventClass) -> {
+					pm.registerEvent(eventClass, blankListener, EventPriority.NORMAL, eventExecutor, ness);
+				});
+			});
 			checks.forEach((check) -> check.initiatePeriodicTasks());
-		}, ness.getSyncExecutor());
+		});
 	}
 	
-	private void registerListener(EventExecutor eventExecutor, ScanResult scanResult) {
-		Listener blankListener = new Listener() {};
+	private Set<Class<? extends Event>> getEventsToListen(ScanResult scanResult) {
+		if (scanResult == null) {
+			return null;
+		}
+		Set<Class<? extends Event>> result = new HashSet<>();
 
 		try (ScanResult scan = scanResult) {
 			ClassInfoList eventInfos = scan.getClassInfo(Event.class.getName())
@@ -120,7 +130,7 @@ public class CheckManager implements AutoCloseable {
 					}
 				}
 				if (found_getHandlers && found_getHandlerList) {
-					Bukkit.getPluginManager().registerEvent(eventClass, blankListener, EventPriority.NORMAL, eventExecutor, ness);
+					result.add(eventClass);
 				}
 			}
 
@@ -128,6 +138,7 @@ public class CheckManager implements AutoCloseable {
 			throw new RuntimeException("This can't happen", ex);
 
 		}
+		return result;
 	}
 	
 	private Set<AbstractCheck<?>> getAllChecks() {
