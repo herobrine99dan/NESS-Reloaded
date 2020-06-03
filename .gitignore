@@ -24,6 +24,9 @@ local.properties
 
 .externalToolBuilders/
 
+# Surefire log
+logs/
+
 # Locally stored "Eclipse launch configurations"
 *.launch
 
