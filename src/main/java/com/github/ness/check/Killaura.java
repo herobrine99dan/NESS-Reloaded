@@ -13,6 +13,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
+import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
 
@@ -33,15 +34,16 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		Check4(e);
 		Check5(e);
 		Check6(e);
+		Check7(e);
 	}
-    
+
 	public void Check(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
 			Entity et = e.getEntity();
 			double dist = Utility.getMaxSpeed(p.getLocation(), et.getLocation());
 			if (dist > 5) {
-				punish(e,p, 19, "Reach" + "(" + dist + ")", 6);
+				punish(e, p, 19, "Reach" + "(" + dist + ")", 6);
 			}
 		}
 	}
@@ -54,7 +56,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 				Location loc1 = p.getLocation();
 				float grade = loc.getYaw() - loc1.getYaw();
 				if (Math.round(grade) > 250.0) {
-					punish(e,p, 19, "Heuristic "+grade, 6);
+					punish(e, p, 19, "Heuristic " + grade, 6);
 				}
 			}, 3L);
 		}
@@ -84,7 +86,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			offset += Math.abs(offsetX);
 			offset += Math.abs(offsetY);
 			if (offset > 280.0D) {
-				punish(event,player, 20, "Angles/Hitbox "+offset, 6);
+				punish(event, player, 20, "Angles/Hitbox " + offset, 6);
 			}
 		}
 	}
@@ -93,7 +95,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		if (event.getDamager() instanceof Player) {
 			Player player = (Player) event.getDamager();
 			if (player.getLocation().getPitch() == Math.round(player.getLocation().getPitch())) {
-				punish(event,player, 21, "PerfectAngle", 5);
+				punish(event, player, 21, "PerfectAngle", 5);
 			}
 		}
 	}
@@ -102,7 +104,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		if (e.getDamager() instanceof Player) {
 			Player damager = (Player) e.getDamager();
 			if (isLookingAt(damager, e.getEntity().getLocation()) < 0.4D) {
-				punish(e,damager, 23, "Angles/Hitbox "+isLookingAt(damager, e.getEntity().getLocation()), 4);
+				punish(e, damager, 23, "Angles/Hitbox " + isLookingAt(damager, e.getEntity().getLocation()), 4);
 			}
 		}
 	}
@@ -147,7 +149,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 						&& l.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType().isSolid());
 			}
 			if (failed) {
-				punish(e,(Player) e.getEntity(), 5, "ThrougWalls", 5);
+				punish(e, (Player) e.getEntity(), 5, "ThrougWalls", 5);
 			}
 		}
 	}
@@ -155,8 +157,27 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check6(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			if (e.getEntity().getEntityId() == e.getDamager().getEntityId()) {
-				punish(e,(Player) e.getEntity(), 5, "SelfHit", 5);
+				punish(e, (Player) e.getEntity(), 5, "SelfHit", 5);
 			}
+		}
+	}
+
+	public void Check7(EntityDamageByEntityEvent e) {
+		if (!e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK))
+			return;
+		if (e.getDamager() instanceof Player) {
+			Player p = (Player) e.getDamager();
+			NessPlayer np = manager.getPlayer(p);
+			float pitch = p.getEyeLocation().getPitch();
+			if (np.lastPitch > pitch - 10.5D) {
+				np.lastPitchCount++;
+				p.sendMessage(String.valueOf(pitch - 10.5D) + " | " + np.lastPitch);
+			}
+			if (np.lastPitchCount >= 14) {
+				p.sendMessage("Cheats!");
+				np.lastPitchCount = 0;
+			}
+			np.lastPitch = pitch;
 		}
 	}
 
@@ -168,14 +189,16 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		return dot;// dot > 0.99D
 	}
 
-	private void punish(EntityDamageByEntityEvent e,Player p, int i, String module, int vl) {
+	private void punish(EntityDamageByEntityEvent e, Player p, int i, String module, int vl) {
 		try {
 			ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
 					.getConfigurationSection("cancel");
-			if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+			if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec
+					.getInt("vl", 10)) {
 				e.setCancelled(true);
 			}
-		}catch(Exception ex) {}
+		} catch (Exception ex) {
+		}
 		manager.getPlayer(p).setViolation(new Violation("Killaura", module));
 	}
 

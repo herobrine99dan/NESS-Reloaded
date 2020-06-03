@@ -107,6 +107,8 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	@Setter
 	long CPSlastDelay = 0;
+	public float lastPitch = 0;
+	public int lastPitchCount = 0;
 
 	// Used for Aimbot check
 	@Getter

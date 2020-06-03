@@ -18,7 +18,7 @@ public class ChestESP extends AbstractCheck<ChunkLoadEvent> {
 	@SuppressWarnings("deprecation")
 	@Override
 	void checkEvent(ChunkLoadEvent event) {
-		try {
+		/*try {
 			Bukkit.getScheduler().runTaskAsynchronously(manager.getNess(), () -> {
 				int X = event.getChunk().getX() * 16;
 				int Z = event.getChunk().getZ() * 16;
@@ -46,7 +46,7 @@ public class ChestESP extends AbstractCheck<ChunkLoadEvent> {
 				}
 			});
 		} catch (Exception ex) {
-		}
+		}*/
 	}
 
 }
