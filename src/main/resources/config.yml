@@ -107,7 +107,7 @@ checks:
       # For example, '16:3' means that if the player's clicks in the past 3 seconds average 16 CPS, trigger a violation.
       cps-and-required-span:
         - '16:3'
-        - '20:1'
+        - '16:1'
     # A more advanced consistency check
     constancy:
       # These are pairs of standard deviation percentages and sample counts

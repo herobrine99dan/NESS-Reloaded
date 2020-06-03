@@ -25,7 +25,7 @@ public class FastPlace extends AbstractCheck<BlockPlaceEvent>{
 	public void Check(BlockPlaceEvent event) {
 		NessPlayer player = manager.getPlayer(event.getPlayer());
 		player.setBlockplace(player.getBlockplace()+1);
-		if(player.getBlockplace()>5) {
+		if(player.getBlockplace()>6) {
 			try {
 				ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
 						.getConfigurationSection("cancel");
