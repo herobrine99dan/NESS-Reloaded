@@ -211,6 +211,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 				for (int m = n; m < periods.size() && subPeriods.size() < deviationRequirement.sampleCount; m++) {
 					subPeriods.add(periods.get(m));
 				}
+				logger.trace("SubPeriods for iteration {} and deviation requirement {} are {}", n, deviationRequirement, subPeriods);
 				if (subPeriods.size() == deviationRequirement.sampleCount) {
 					int stdDevPercent = getStdDevPercent(subPeriods);
 					if (stdDevPercent < deviationRequirement.deviationPercentage) {
@@ -223,6 +224,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 			}
 		}
 		for (List<Long> standardDeviations : standardDeviationMap.values()) {
+			logger.trace("StandardDeviations are {}", standardDeviations);
 			for (DeviationEntry superDeviationRequirement : superDeviationRequirements) {
 				if (standardDeviations.size() >= superDeviationRequirement.sampleCount) {
 					int superStdDevPercent = getStdDevPercent(standardDeviations);
