@@ -101,6 +101,12 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	@Setter
 	int CPS = 0;
+	@Getter
+	@Setter
+	long CPSDelay = 0;
+	@Getter
+	@Setter
+	long CPSlastDelay = 0;
 
 	// Used for Aimbot check
 	@Getter

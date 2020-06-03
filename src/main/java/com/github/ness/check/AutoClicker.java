@@ -13,7 +13,6 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 
 	public AutoClicker(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerInteractEvent.class, 1, TimeUnit.SECONDS));
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -21,23 +20,32 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 		Check(e);
 		Check1(e);
 	}
-	
-	
+
 	void Check(PlayerInteractEvent e) {
 		Action action = e.getAction();
-		if(action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
+		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
 			NessPlayer player = manager.getPlayer(e.getPlayer());
-			player.setCPS(player.getCPS()+1);
-			if(player.getCPS()>14) {
-				player.setViolation(new Violation("AutoClicker","MaxCPS: " + player.getCPS()));
+			player.setCPS(player.getCPS() + 1);
+			if (player.getCPS() > 14) {
+				player.setViolation(new Violation("AutoClicker", "MaxCPS: " + player.getCPS()));
 			}
 		}
 	}
-	
+
 	void Check1(PlayerInteractEvent e) {
-		
+		NessPlayer player = manager.getPlayer(e.getPlayer());
+		long delay = System.currentTimeMillis()-player.getCPSDelay();
+		long lastDelay = delay-player.getCPSlastDelay();
+		if(delay>145) {
+			e.getPlayer().sendMessage("Delay: " + delay);
+			player.setCPSDelay(System.currentTimeMillis());
+			return;
+		}
+		player.setViolation(new Violation("AutoClicker", "RepeatedDelay: " + delay + " Result: " + lastDelay));
+		player.setCPSlastDelay(delay);
+		player.setCPSDelay(System.currentTimeMillis());
 	}
-	
+
 	@Override
 	void checkAsyncPeriodic(NessPlayer player) {
 		player.setCPS(0);
