@@ -97,7 +97,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 					}
 					punish(e, "MiniJump1 " + y);
 				} else if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
-					punish(e, "MiniJump2" + y);
+					punish(e, "MiniJump2 " + y);
 				}
 			}
 		}
