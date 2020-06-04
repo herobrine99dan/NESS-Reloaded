@@ -98,15 +98,9 @@ public class CheckManager implements AutoCloseable {
 		
 		Bukkit.getScheduler().runTask(ness, () -> {
 			PluginManager pm = Bukkit.getPluginManager();
+			
+			// Cleaner
 			pm.registerEvents(new Listener() {
-				
-				@EventHandler(priority = EventPriority.LOWEST)
-				public void onJoin(PlayerJoinEvent evt) {
-					Player player = evt.getPlayer();
-					logger.debug("Adding player {}", player);
-					NessPlayer previous = players.put(player.getUniqueId(), new NessPlayer(player, ness.getNessConfig().isDevMode()));
-					assert previous == null : previous;
-				}
 				
 				@EventHandler(priority = EventPriority.MONITOR)
 				public void onQuit(PlayerQuitEvent evt) {
@@ -116,6 +110,8 @@ public class CheckManager implements AutoCloseable {
 				}
 				
 			}, ness);
+			
+			// All events
 			evtClasses.forEach((eventClass) -> {
 				pm.registerEvent(eventClass, blankListener, EventPriority.NORMAL, eventExecutor, ness);
 			});
@@ -227,9 +223,10 @@ public class CheckManager implements AutoCloseable {
 	 * @return the ness player
 	 */
 	public NessPlayer getPlayer(Player player) {
-		NessPlayer nessPlayer = players.get(player.getUniqueId());
-		assert nessPlayer != null : player;
-		return nessPlayer;
+		return players.computeIfAbsent(player.getUniqueId(), (u) -> {
+			logger.debug("Adding player {}", player);
+			return new NessPlayer(player, ness.getNessConfig().isDevMode());
+		});
 	}
 	
 	/**
