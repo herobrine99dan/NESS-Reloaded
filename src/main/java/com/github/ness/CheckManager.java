@@ -21,6 +21,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventException;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -44,7 +45,7 @@ public class CheckManager implements AutoCloseable {
 	private Set<AbstractCheck<?>> checks;
 	
 	private static final Logger logger = LogManager.getLogger(CheckManager.class);
-	
+	 
 	@Getter
 	private final NESSAnticheat ness;
 	
@@ -85,18 +86,7 @@ public class CheckManager implements AutoCloseable {
 			@Override
 			public void execute(Listener listener, Event evt) throws EventException {
 				try {
-					if (evt instanceof PlayerJoinEvent) {
-						Player player = ((PlayerJoinEvent) evt).getPlayer();
-						logger.debug("Adding player {}", player);
-						NessPlayer previous = players.put(player.getUniqueId(), new NessPlayer(player, ness.getNessConfig().isDevMode()));
-						assert previous == null : previous;
-
-					} else if (evt instanceof PlayerQuitEvent) {
-						Player player = ((PlayerQuitEvent) evt).getPlayer();
-						logger.debug("Removing player {}", player);
-						players.remove(player.getUniqueId()).close();
-
-					} else {
+					if (!(evt instanceof PlayerJoinEvent) && !(evt instanceof PlayerQuitEvent)) {
 						checks.forEach((check) -> check.checkAnyEvent(evt));
 					}
 				} catch (Throwable ex) {
@@ -108,6 +98,24 @@ public class CheckManager implements AutoCloseable {
 		
 		Bukkit.getScheduler().runTask(ness, () -> {
 			PluginManager pm = Bukkit.getPluginManager();
+			pm.registerEvents(new Listener() {
+				
+				@EventHandler(priority = EventPriority.LOWEST)
+				public void onJoin(PlayerJoinEvent evt) {
+					Player player = evt.getPlayer();
+					logger.debug("Adding player {}", player);
+					NessPlayer previous = players.put(player.getUniqueId(), new NessPlayer(player, ness.getNessConfig().isDevMode()));
+					assert previous == null : previous;
+				}
+				
+				@EventHandler(priority = EventPriority.MONITOR)
+				public void onQuit(PlayerQuitEvent evt) {
+					Player player = evt.getPlayer();
+					logger.debug("Removing player {}", player);
+					players.remove(player.getUniqueId()).close();
+				}
+				
+			}, ness);
 			evtClasses.forEach((eventClass) -> {
 				pm.registerEvent(eventClass, blankListener, EventPriority.NORMAL, eventExecutor, ness);
 			});
