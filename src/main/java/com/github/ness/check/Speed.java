@@ -13,7 +13,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.utility.Utilities;
@@ -35,6 +34,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Check2(e);
 		Check3(e);
 		Check4(e);
+		Check5(e);
 	}
 
 	private void punish(PlayerMoveEvent e, String module) {
@@ -113,7 +113,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		double dist = Utility.getMaxSpeed(e.getFrom(), e.getTo());
-		if (Utility.isOnGround(e.getTo()) && !player.isInsideVehicle() && !player.isFlying()
+		if (Utility.checkGround(e.getTo().getY()) && !player.isInsideVehicle() && !player.isFlying()
 				&& !player.hasPotionEffect(PotionEffectType.SPEED) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 			if (dist > 0.62D) {
 				if (Utilities.getPlayerUpperBlock(player).getType().isSolid()
@@ -122,7 +122,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				}
 				punish(e, "MaxDistance " + dist);
 			} else if (dist > soulsand && player.getLocation().getBlock().getType().equals(Material.SOUL_SAND)
-					&& Utility.isOnGround(e.getFrom()) && player.getFallDistance() == 0.0 && e.getTo().getY()-e.getFrom().getY() == 0.0) {
+					&& Utility.checkGround(e.getFrom().getY()) && player.getFallDistance() == 0.0
+					&& e.getTo().getY() - e.getFrom().getY() == 0.0) {
 				punish(e, "NoSlowDown " + dist);
 			}
 		}
@@ -159,7 +160,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		// Vector result = v.subtract(p.getVelocity());
 		Vector result = v.subtract(p.getVelocity().setY(Utility.around(p.getVelocity().getY(), 5)));
 		double yresult = 0.0;
-		if (Utility.isOnGround(to)) {
+		if (Utility.checkGround(to.getY())) {
 			return;
 		}
 		if (Utility.hasflybypass(p)) {
@@ -214,7 +215,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (xresult > 0.38 || zresult > 0.38) {
 			if (!(xresult == 0.36)) {
 				if (!(zresult == 0.36)) {
-					if (!(xresult > 1) && !(zresult > 1)) {
+					if (!(xresult > 1) && !(zresult > 1) && !(xresult == 0.54) && !(zresult == 0.54)) {
 						punish(e, "InvalidXZVelocity");
 					}
 					// p.sendMessage("X: " + Math.abs(around(result.getX(), 5)) + " Z: " +
@@ -223,4 +224,19 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 	}
+
+	public void Check5(PlayerMoveEvent event) {
+		double delta = event.getTo().getY() - event.getFrom().getY();
+		NessPlayer p = manager.getPlayer(event.getPlayer());
+		if (Utilities.isClimbableBlock(event.getFrom().getBlock())
+				|| Utilities.isClimbableBlock(event.getTo().getBlock())
+				|| Utility.blockAdjacentIsLiquid(event.getFrom()) || Utility.blockAdjacentIsLiquid(event.getTo())) {
+			return;
+		}
+		if (delta == -p.lastYDelta && delta != 0) {
+			punish(event, "RepeatedMovement");
+		}
+		p.lastYDelta = delta;
+	}
+
 }

@@ -39,8 +39,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Check3(e);
 		Check4(e);
 		Check8(e);
-		Check9(e);
-		Check10(e);
 		Check11(e);
 		Check12(e);
 		Check16(e);
@@ -226,50 +224,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	/**
-	 * Check for Invalid Velocity
-	 * 
-	 * @param event
-	 */
-	public void Check9(PlayerMoveEvent event) {
-		Player player = event.getPlayer();
-		if (player.isOnline() && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
-			Location to = event.getTo();
-			Location from = event.getFrom();
-			if (!player.getAllowFlight() && player.getVehicle() == null
-					&& !player.hasPotionEffect(PotionEffectType.SPEED)) {
-				double dist = Math.pow(to.getX() - from.getX(), 2.0D) + Math.pow(to.getZ() - from.getZ(), 2.0D);
-				double motion = dist / 0.9800000190734863D;
-				if (motion >= 1.0D && dist >= 0.8D && !bypass(player)) {
-					punish(event, player, "InvalidMotion");
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * Check for High Distance
-	 * 
-	 * @param e
-	 */
-	public void Check10(PlayerMoveEvent e) {
-		Player p = e.getPlayer();
-		double diff = e.getTo().getY() - e.getFrom().getY();
-		if (e.getTo().getY() >= e.getFrom().getY()) {
-			if (p.getLocation().getBlock().getType() != Material.CHEST
-					&& p.getLocation().getBlock().getType() != Material.TRAPPED_CHEST
-					&& p.getLocation().getBlock().getType() != Material.ENDER_CHEST
-					&& !Utility.checkGround(p.getLocation().getY()) && !Utility.isOnGround(e.getTo())
-					&& Math.abs(p.getVelocity().getY() - diff) > 1.0E-6D && e.getFrom().getY() < e.getTo().getY()
-					&& (p.getVelocity().getY() >= 0.0D || p.getVelocity().getY() < -0.392D)
-					&& p.getNoDamageTicks() == 0.0D && bypass(p)) {
-				punish(e, p, "");
-			}
-
-		}
-	}
-
-	/**
 	 * Check for glide cheat
 	 * 
 	 * @param e
@@ -355,7 +309,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		Double hozDist = Utility.getMaxSpeed(from, to);
-		if (from.getBlock().getType() == Material.WEB && hozDist > 0.2 && Utility.isOnGround(to)) {
+		if (from.getBlock().getType() == Material.WEB && hozDist > 0.2 && Utility.checkGround(to.getY())) {
 			punish(e, player, "NoWeb");
 			// player.sendMessage("NoWebDist: " + hozDist);
 		}
