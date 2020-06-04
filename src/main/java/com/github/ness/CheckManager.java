@@ -63,7 +63,6 @@ public class CheckManager implements AutoCloseable {
 
 			try {
 				ScanResult result = scanFuture.get();
-				logger.debug("ScanResult completed");
 				return result;
 			} catch (InterruptedException | ExecutionException ex) {
 				ex.printStackTrace();
@@ -88,9 +87,15 @@ public class CheckManager implements AutoCloseable {
 				try {
 					if (evt instanceof PlayerJoinEvent) {
 						Player player = ((PlayerJoinEvent) evt).getPlayer();
-						players.put(player.getUniqueId(), new NessPlayer(player, ness.getNessConfig().isDevMode()));
+						logger.debug("Adding player {}", player);
+						NessPlayer previous = players.put(player.getUniqueId(), new NessPlayer(player, ness.getNessConfig().isDevMode()));
+						assert previous == null : previous;
+
 					} else if (evt instanceof PlayerQuitEvent) {
-						players.remove(((PlayerQuitEvent) evt).getPlayer().getUniqueId()).close();
+						Player player = ((PlayerQuitEvent) evt).getPlayer();
+						logger.debug("Removing player {}", player);
+						players.remove(player.getUniqueId()).close();
+
 					} else {
 						checks.forEach((check) -> check.checkAnyEvent(evt));
 					}
@@ -214,7 +219,9 @@ public class CheckManager implements AutoCloseable {
 	 * @return the ness player
 	 */
 	public NessPlayer getPlayer(Player player) {
-		return players.get(player.getUniqueId());
+		NessPlayer nessPlayer = players.get(player.getUniqueId());
+		assert nessPlayer != null : player;
+		return nessPlayer;
 	}
 	
 	/**
