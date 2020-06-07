@@ -4,6 +4,7 @@ version: ${project.version}
 authors: [herobrine99dan, A248]
 softdepend: [ProtocolLib]
 description: 'A free, open-source anticheat which seeks to block hackers with simple yet effective checks.'
+api-version: 1.13
 
 commands:
   ness:
