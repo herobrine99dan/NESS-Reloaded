@@ -64,8 +64,6 @@ enabled-checks:
   - 'NoClip'
   - 'NoSlowDownBow'
   - 'NoSlowDownFood'
-  - 'NoSwingAnimation'
-  - 'NoSwingAttack'
   - 'OldMovementChecks'
   - 'PatternKillauraAttack'
   - 'PatternKillauraMove'
