@@ -3,8 +3,6 @@ package com.github.ness.check.killaura.heuristics;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.ness.check.machinelearning.test.Utility;
-
 public class AngleHeuristics {
 
 	/**
@@ -31,7 +29,6 @@ public class AngleHeuristics {
 	}
 
 	public float getMineResult(float[] values) {
-		List<Float> floatvalues = new ArrayList<Float>();
 		float firstdist = 0;
 		float seconddist = 0;
 		for (int i = 0; i < floatpatterns.size(); i++) {

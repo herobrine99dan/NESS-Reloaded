@@ -1,12 +1,11 @@
-package com.github.ness.check.machinelearning.test;
+package com.github.ness.check.killaura.heuristics;
 
 import java.util.Arrays;
 
 public class Testing {
 
 	public static void main(String[] args) {
-		KnnAlghorithm alghorithm = new KnnAlghorithm(
-				Arrays.asList("0.75", "0.75", "0.59"));
+		AngleHeuristics alghorithm = new AngleHeuristics(Arrays.asList(0.75f, 0.75f, 0.59f));
 		/*
 		 * float legit[]={0.72f,0.92f,0.87f,0.45f,0.87f,0.98f}; float
 		 * b[]={0.99f,0.91f,0.89f,0.94f,0.87f,0.98f}; float
