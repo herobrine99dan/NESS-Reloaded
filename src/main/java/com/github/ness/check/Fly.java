@@ -39,13 +39,13 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Check3(e);
 		Check4(e);
 		Check8(e);
-		Check11(e);
 		Check12(e);
 		Check16(e);
 		Check17(e);
 		Check18(e);
 		Check18(e);
 		Check19(e);
+		Check20(e);
 	}
 
 	protected List<String> bypasses = Arrays.asList("slab", "stair", "snow", "bed", "skull", "step", "slime");
@@ -224,50 +224,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	/**
-	 * Check for glide cheat
-	 * 
-	 * @param e
-	 */
-	public void Check11(PlayerMoveEvent e) {
-		Player p = e.getPlayer();
-		if (!bypass(e.getPlayer())) {
-			if (!p.getLocation().getBlock().isLiquid()) {
-				if (!Utility.checkGround(p.getLocation().getY()) && !Utility.isOnGround(e.getTo())) {
-					ArrayList<Block> blocks = Utility.getSurrounding(p.getLocation().getBlock(), true);
-					Iterator<Block> var4 = blocks.iterator();
-
-					while (var4.hasNext()) {
-						Block b = var4.next();
-						if (b.isLiquid()) {
-							return;
-						}
-
-						if (b.getType().isSolid()) {
-							return;
-						}
-					}
-
-					if (!bypass(e.getPlayer()) && !e.getFrom().getBlock().getType().isSolid()
-							&& !e.getTo().getBlock().getType().isSolid()) {
-						double dist = e.getFrom().getY() - e.getTo().getY();
-						NessPlayer player = manager.getPlayer(p);
-						double oldY = player.getOldY();
-						player.setOldY(dist);
-						if (e.getFrom().getY() > e.getTo().getY()) {
-							if (oldY >= dist && oldY != 0.0D) {
-								punish(e, p, "Glide");
-							}
-						} else {
-							player.setOldY(0.0D);
-						}
-
-					}
-				}
-			}
-		}
-	}
-
-	/**
 	 * Check for NoGroundFly
 	 * 
 	 * @param e
@@ -380,6 +336,13 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				}
 			}
 
+		}
+	}
+	
+	public void Check20(PlayerMoveEvent e) {
+		double yDist = Math.abs(e.getTo().getY()-e.getFrom().getY());
+		if(yDist>0.7 && !bypass(e.getPlayer())) {
+			punish(e, e.getPlayer(), "HighDistance");
 		}
 	}
 

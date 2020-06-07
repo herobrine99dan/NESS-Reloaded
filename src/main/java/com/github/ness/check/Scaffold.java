@@ -30,6 +30,7 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 		Block b = event.getBlockPlaced();
 		Block target = p.getTargetBlock(null, 5);
 		   if(!(target.getY()==b.getY() && target.getX()==b.getX() && target.getZ()==b.getZ())) {
+			   manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold","InvalidBlock"));
 				try {
 					ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
 							.getConfigurationSection("cancel");
@@ -55,7 +56,7 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 					event.setCancelled(true);
 				}
 			}catch(Exception ex) {}
-			manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold",""));
+			manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold","HighAngle"));
 		}
 	}
 
@@ -73,8 +74,11 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 						event.setCancelled(true);
 					}
 				}catch(Exception ex) {}
-				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold",""));
+				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold","HighPitch"));
 			}
 		}, 2L);
 	}
+	
+	
+	
 }

@@ -42,6 +42,10 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
+	/**
+	 * 
+	 */
+	
 	@Override
 	void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
