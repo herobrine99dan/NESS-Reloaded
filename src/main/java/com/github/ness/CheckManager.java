@@ -66,7 +66,7 @@ public class CheckManager implements AutoCloseable {
 				ScanResult result = scanFuture.get();
 				return result;
 			} catch (InterruptedException | ExecutionException ex) {
-				ex.printStackTrace();
+				logger.warn("Failed to scan event classes; no events will be listened to", ex);
 			} finally {
 				tempExecService.shutdown();
 			}
@@ -78,7 +78,6 @@ public class CheckManager implements AutoCloseable {
 	
 	private void processEventClasses(Set<Class<? extends Event>> evtClasses) {
 		if (evtClasses == null) {
-			logger.warn("ClassGraph scan future failed, so no events could be registered");
 			return;
 		}
 		logger.trace("All event classes found: {}", evtClasses);
@@ -220,7 +219,7 @@ public class CheckManager implements AutoCloseable {
 	 * Gets a NessPlayer or creates one if it does not exist
 	 * 
 	 * @param player the corresponding player
-	 * @return the ness player
+	 * @return the ness player, never null
 	 */
 	public NessPlayer getPlayer(Player player) {
 		return players.computeIfAbsent(player.getUniqueId(), (u) -> {
