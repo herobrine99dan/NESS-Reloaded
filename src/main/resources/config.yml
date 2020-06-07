@@ -50,7 +50,7 @@ enabled-checks:
   - 'FastEat'
   - 'FastPlace'
   - 'ChestESP'
-#  - 'FastStairs'
+  - 'FastStairs'
   - 'Fly'
   - 'GhostHand'
   - 'Headless'
