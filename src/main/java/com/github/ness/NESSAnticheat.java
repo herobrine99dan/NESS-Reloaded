@@ -105,8 +105,8 @@ public class NESSAnticheat extends JavaPlugin {
 			try {
 				executor.shutdown();
 				executor.awaitTermination(10L, TimeUnit.SECONDS);
-			} catch (Exception ex) {
-				// ex.printStackTrace();
+			} catch (InterruptedException ex) {
+				logger.warn("Failed to complete thread pool termination", ex);
 			}
 		}
 	}
