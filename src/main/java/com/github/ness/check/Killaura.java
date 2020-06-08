@@ -10,6 +10,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
@@ -112,44 +113,13 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check5(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
-			Entity damaged = e.getEntity();
-			Location to = p.getLocation();
-			Location from = damaged.getLocation();
-			double x = Math.abs(from.getX() - to.getX());
-			double z = Math.abs(from.getX() - to.getX());
-			if (!e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK)) {
-				return;
-			}
-			if (x == 0.0D || z == 0.0D) {
-				return;
-			}
-			if (Math.abs(from.getY() - to.getY()) >= 0.6D) {
-				return;
-			}
-			Location l = null;
-			if (x <= 0.5D && z >= 1.0D) {
-				if (e.getDamager().getLocation().getZ() > e.getEntity().getLocation().getZ()) {
-					l = e.getDamager().getLocation().clone().add(0.0D, 0.0D, -1.0D);
-				} else {
-
-					l = e.getDamager().getLocation().clone().add(0.0D, 0.0D, 1.0D);
+			final BlockIterator iterator = new BlockIterator(p.getEyeLocation(), 0.0, 3);
+			while (iterator.hasNext()) {
+				final Location current = iterator.next().getLocation();
+				if(current.getBlock().getType().isSolid()) {
+					punish(e, p, 19, "WallHit", 6);
+					break;
 				}
-
-			} else if (z <= 0.5D && x >= 1.0D) {
-				if (e.getDamager().getLocation().getX() > e.getEntity().getLocation().getX()) {
-					l = e.getDamager().getLocation().clone().add(-1.0D, 0.0D, 0.0D);
-				} else {
-
-					l = e.getDamager().getLocation().clone().add(-1.0D, 0.0D, 0.0D);
-				}
-			}
-			boolean failed = false;
-			if (l != null) {
-				failed = (l.getBlock().getType().isSolid()
-						&& l.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType().isSolid());
-			}
-			if (failed) {
-				punish(e, (Player) e.getEntity(), 5, "ThrougWalls", 5);
 			}
 		}
 	}
