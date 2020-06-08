@@ -110,7 +110,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		}
 	}
  /**
-  * @author projectwoosh (https://github.com/projectwoosh)
+  * @author theWoosh (https://github.com/projectwoosh)
   * from https://github.com/projectwoosh/AntiCheat/blob/master/src/tk/thewoosh/plugins/wac/checks/combat/WallHit.java
   * @param e
   */
