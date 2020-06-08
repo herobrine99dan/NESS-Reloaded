@@ -113,7 +113,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check5(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
-			final BlockIterator iterator = new BlockIterator(p.getEyeLocation(), 0.0, 3);
+			long dist = Math.round(e.getDamager().getLocation().distanceSquared(e.getEntity().getLocation()));
+			final BlockIterator iterator = new BlockIterator(p.getEyeLocation(), 0.0, (int) dist);
 			while (iterator.hasNext()) {
 				final Location current = iterator.next().getLocation();
 				if(current.getBlock().getType().isSolid()) {

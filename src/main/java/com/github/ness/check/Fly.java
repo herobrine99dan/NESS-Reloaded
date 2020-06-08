@@ -104,7 +104,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			if (Utilities.isClimbableBlock(p.getLocation().getBlock()) && !Utilities.isInWater(p)) {
 				double distance = Utility.around(event.getTo().getY() - event.getFrom().getY(), 6);
 				if (distance > 0.12D) {
-					if (distance == 0.164D || distance == 0.248D || distance == 0.333D || distance == 0.419D) {
+					if (distance == 0.164D || distance == 0.248D || distance == 0.333D || distance == 0.419D || distance == 0.154D) {
 						return;
 					}
 					punish(event, p, "FastLadder: " + distance);
@@ -339,7 +339,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	}
 	
 	public void Check20(PlayerMoveEvent e) {
-		double yDist = Math.abs(e.getTo().getY()-e.getFrom().getY());
+		double yDist = e.getTo().getY()-e.getFrom().getY();
 		if(yDist>0.7 && !bypass(e.getPlayer())) {
 			punish(e, e.getPlayer(), "HighDistance");
 		}

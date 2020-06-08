@@ -29,7 +29,7 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 		Player p = event.getPlayer();
 		Block b = event.getBlockPlaced();
 		Block target = p.getTargetBlock(null, 6);
-		if(event.getBlockAgainst().getType().name().toLowerCase().contains("fence")) {
+		if(event.getBlockAgainst().getType().name().toLowerCase().contains("fence") || event.getBlockPlaced().getType().name().toLowerCase().contains("ladder")) {
 			return;
 		}
 		   if(!(target.getY()==b.getY() && target.getX()==b.getX() && target.getZ()==b.getZ())) {
