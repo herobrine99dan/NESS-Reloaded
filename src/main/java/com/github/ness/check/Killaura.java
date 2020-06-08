@@ -109,18 +109,47 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			}
 		}
 	}
-
+ /**
+  * @author projectwoosh (https://github.com/projectwoosh)
+  * from https://github.com/projectwoosh/AntiCheat/blob/master/src/tk/thewoosh/plugins/wac/checks/combat/WallHit.java
+  * @param e
+  */
 	public void Check5(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
-			long dist = Math.round(e.getDamager().getLocation().distanceSquared(e.getEntity().getLocation()));
-			final BlockIterator iterator = new BlockIterator(p.getEyeLocation(), 0.0, (int) dist);
-			while (iterator.hasNext()) {
-				final Location current = iterator.next().getLocation();
-				if(current.getBlock().getType().isSolid()) {
-					punish(e, p, 19, "WallHit", 6);
-					break;
+			Entity entity = e.getEntity();
+			double x = Math.abs(p.getLocation().getX() - e.getEntity().getLocation().getX());
+			double z = Math.abs(p.getLocation().getZ() - e.getEntity().getLocation().getZ());
+
+			if (x == 0 || z == 0) {
+				return;
+			}
+
+			if (p.getLocation().getY() - e.getEntity().getLocation().getY() >= .6) // TODO Change .6 to height of entity
+																					// / height of player
+				return;
+
+			Location l = null;
+
+			if (x <= .5 && z >= 1) {
+				if (p.getLocation().getZ() > entity.getLocation().getZ()) {
+					l = p.getLocation().clone().add(0, 0, -1);
+				} else {
+					l = p.getLocation().clone().add(0, 0, 1);
 				}
+			} else if (z <= .5 && x >= 1) {
+				if (p.getLocation().getX() > entity.getLocation().getX()) {
+					l = p.getLocation().clone().add(-1, 0, 0);
+				} else {
+					l = p.getLocation().clone().add(-1, 0, 0);
+				}
+			}
+			boolean failed = false;
+
+			if (l != null)
+				failed = l.getBlock().getType().isSolid() && l.clone().add(0, 1, 0).getBlock().getType().isSolid();
+			if(failed) {
+				punish(e, p, 23, "WallHit", 4);
 			}
 		}
 	}
@@ -151,7 +180,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			np.lastPitch = pitch;
 		}
 	}
-	
+
 	private double isLookingAt(Player player, Location target) {
 		Location eye = player.getEyeLocation();
 		Vector toEntity = target.toVector().subtract(eye.toVector());
