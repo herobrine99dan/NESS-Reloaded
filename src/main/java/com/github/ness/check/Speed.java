@@ -73,7 +73,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.SpecificBlockNear(player.getLocation(), Material.WATER)
 				|| Utility.SpecificBlockNear(player.getLocation(), Material.LAVA)
 				|| Utility.SpecificBlockNear(player.getLocation(), Material.STATIONARY_WATER)
-				|| Utility.hasflybypass(player)) {
+				|| Utility.hasflybypass(player) || Utility.SpecificBlockNear(player.getLocation(), Material.SNOW)) {
 			return;
 		}
 		if (!player.getNearbyEntities(5, 5, 5).isEmpty()) {
@@ -117,7 +117,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				&& !player.hasPotionEffect(PotionEffectType.SPEED) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 			if (dist > 0.62D) {
 				if (Utilities.getPlayerUpperBlock(player).getType().isSolid()
-						&& Utilities.getPlayerUnderBlock(player).getType().name().toLowerCase().contains("ice")) {
+						&& Utilities.getLocationUnderBlock(e.getTo()).getType().name().toLowerCase().contains("ice") && Utilities.getLocationUnderBlock(e.getFrom()).getType().name().toLowerCase().contains("ice")) {
 					return;
 				}
 				punish(e, "MaxDistance " + dist);

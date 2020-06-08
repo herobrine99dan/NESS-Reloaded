@@ -150,7 +150,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			np.lastPitch = pitch;
 		}
 	}
-
+	
 	private double isLookingAt(Player player, Location target) {
 		Location eye = player.getEyeLocation();
 		Vector toEntity = target.toVector().subtract(eye.toVector());

@@ -261,6 +261,14 @@ public final class Utilities {
 	public static Block getPlayerUnderBlock(Player p) {
 		return p.getLocation().getBlock().getRelative(BlockFace.DOWN);
 	}
+	
+	public static Block getLocationUnderBlock(Location l) {
+		return l.getBlock().getRelative(BlockFace.DOWN);
+	}
+	
+	public static Block getLocationUpperBlock(Location l) {
+		return l.getBlock().getRelative(BlockFace.UP);
+	}
 
 	public static Block getPlayerUpperBlock(Player p) {
 		return p.getLocation().getBlock().getRelative(BlockFace.UP);

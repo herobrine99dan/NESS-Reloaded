@@ -107,10 +107,9 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 					if (distance == 0.164D || distance == 0.248D || distance == 0.333D || distance == 0.419D) {
 						return;
 					}
-					punish(event, p, "FastLadder");
+					punish(event, p, "FastLadder: " + distance);
 				}
 			}
-
 		}
 	}
 
@@ -195,7 +194,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 								&& p.getVelocity().getY() <= -0.078D
 								&& !loc.getBlock().getType().name().contains("STAIR")
 								&& !loc1.getBlock().getType().name().contains("STAIR") && p.getNoDamageTicks() <= 1) {
-							punish(e, p, "AirJump");
+							punish(e, p, "AirJump1");
 						}
 					}
 				}

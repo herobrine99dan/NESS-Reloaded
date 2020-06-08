@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.check.PingSpoof;
+import com.github.ness.check.killaura.heuristics.KillauraFalseFlyingPacket;
 import com.github.ness.nms.ReflectionUtility;
 import com.github.ness.packetswrapper.PacketPlayInPositionLook;
 import com.github.ness.packetswrapper.PacketPlayInUseEntity;
@@ -95,12 +96,13 @@ public class NewPacketListener implements Listener {
 		} else if (packetname.toLowerCase().contains("flying")) {
 			PingSpoof.Check(p, packet);
 		}
+		KillauraFalseFlyingPacket.Check(packet, p);
 		PacketListener.MorePacketsCheck(p, packet);
 	}
 
 	/**
 	 * Get A SimplePacket Object, which can be a PacketPlayInUseEntity, a
-	 * PacketPlayInPositionLook or a simple object.
+	 * PacketPlayInPositionLook or a simple packet object.
 	 * 
 	 * @param p
 	 * @param packet

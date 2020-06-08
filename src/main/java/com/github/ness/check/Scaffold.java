@@ -28,7 +28,10 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 	public void Check(BlockPlaceEvent event) {
 		Player p = event.getPlayer();
 		Block b = event.getBlockPlaced();
-		Block target = p.getTargetBlock(null, 5);
+		Block target = p.getTargetBlock(null, 6);
+		if(event.getBlockAgainst().getType().name().toLowerCase().contains("fence")) {
+			return;
+		}
 		   if(!(target.getY()==b.getY() && target.getX()==b.getX() && target.getZ()==b.getZ())) {
 			   manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold","InvalidBlock"));
 				try {
