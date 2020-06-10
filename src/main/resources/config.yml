@@ -46,7 +46,6 @@ enabled-checks:
 #  - 'BadPackets'
   - 'BlockBreakChecks'
   - 'Criticals'
-  - 'EntitySpeedCheck'
   - 'FastEat'
   - 'FastPlace'
   - 'ChestESP'

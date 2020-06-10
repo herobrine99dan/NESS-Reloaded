@@ -36,10 +36,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	void checkEvent(PlayerMoveEvent e) {
 		Check(e);
 		Check1(e);
-		Check3(e);
 		Check4(e);
 		Check8(e);
-		Check12(e);
 		Check16(e);
 		Check17(e);
 		Check18(e);
@@ -114,41 +112,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	/**
-	 * Check for high y distance
-	 * 
-	 * @param event
-	 */
-	public void Check3(PlayerMoveEvent event) {
-		int airBuffer = 0;
-		double lastYOffset = 0.0D;
-		Player p = event.getPlayer();
-		if (!bypass(event.getPlayer())) {
-			double deltaY = event.getFrom().getY() - event.getTo().getY();
-			if (deltaY > 1.0D && p.getFallDistance() < 1.0F
-					|| deltaY > 3.0D && !Utility.hasBlock(p, Material.SLIME_BLOCK)) {
-				punish(event, p, "AirCheck");
-			} else {
-				if (p.getFallDistance() >= 1.0F) {
-					airBuffer = 10;
-				}
-
-				if (airBuffer > 0) {
-					return;
-				}
-
-				Location playerLoc = p.getLocation();
-				double change = Math.abs(deltaY - lastYOffset);
-				float maxChange = 0.8F;
-				if (Utility.isInAir(p) && playerLoc.getBlock().getType() == Material.AIR && change > maxChange
-						&& change != 0.5D && !Utility.hasBlock(p, Material.SLIME_BLOCK)) {
-					punish(event, p, "AirCheck");
-				}
-			}
-
-		}
-	}
-
-	/**
 	 * Check to detect AirJump
 	 * 
 	 * @param e
@@ -219,22 +182,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				punish(e, player, "FalseGround");
 			}
 
-		}
-	}
-
-	/**
-	 * Check for NoGroundFly
-	 * 
-	 * @param e
-	 */
-	public void Check12(PlayerMoveEvent e) {
-		Player player = e.getPlayer();
-		Location from = e.getFrom();
-		Location to = e.getTo();
-		boolean groundAround = Utility.groundAround(player.getLocation());
-		if (player.isInsideVehicle() && !groundAround && from.getY() <= to.getY() && (!player.isInsideVehicle()
-				|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))) {
-			punish(e, player, "NoGround");
 		}
 	}
 
@@ -326,7 +273,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		if (e.getTo().getY() > e.getFrom().getY())
 			return;
-		if (p.isOnGround() && !Utility.isOnGroundBypassNoFall(p)) {
+		if (p.isOnGround() && !Utility.isOnGroundBypassNoFall(p) && !bypass(p)) {
 			for (int i = 0; i < 256; i++) {
 				Location l = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() - 1.0D,
 						p.getLocation().getZ())).getBlock().getLocation();

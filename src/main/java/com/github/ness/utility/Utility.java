@@ -20,6 +20,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -32,6 +33,15 @@ public class Utility {
 	public static String getNMS() {
 		String v = Bukkit.getServer().getClass().getPackage().getName();
 		return v.substring(v.lastIndexOf('.') + 1);
+	}
+	
+	public static boolean hasHorseNear(Player p) {
+		for(Entity e : p.getNearbyEntities(2, 2, 2)) {
+			if(e instanceof Vehicle) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static boolean isOnGround(Location loc) {

@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
@@ -17,6 +18,7 @@ import com.github.ness.api.Violation;
 import com.github.ness.utility.MSG;
 import com.github.ness.utility.PlayerManager;
 import com.github.ness.utility.Utilities;
+import com.github.ness.utility.Utility;
 
 public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 
@@ -61,7 +63,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			event.setCancelled(true);
 			return;
 		}
-		if(player.isFlying() || player.getAllowFlight()) {
+		if(player.isFlying() || player.getAllowFlight() || player.isInsideVehicle() || Utility.hasHorseNear(player)) {
 			return;
 		}
 		if (to.getY() < from.getY())
@@ -124,8 +126,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		for (int x = -radius; x < radius; x++) {
 			for (int y = -1; y < radius; y++) {
 				for (int z = -radius; z < radius; z++) {
-					Material mat = to.getWorld().getBlockAt(player.getLocation().add(x, y, z)).getType();
-					if (mat.isSolid())
+					Block b = to.getWorld().getBlockAt(player.getLocation().add(x, y, z));
+					if (b.isLiquid())
 						waterAround = true;
 				}
 			}
