@@ -8,5 +8,11 @@ commands:
   clear-violations:
     starting: '&7Clearing violations...'
     complete: '&7Cleared violations for &e%TARGET%'
+  report-command:
+    missing-reason: '&cYou must specify a reason!'
+    missing-arguments: '&cPlease use /report USERNAME REASON!'
+    player-notonline: '&cThis player isn''t online'
+    staff-message: '&cPlayer {sender} reported {cheater} for {cheat}'
+    
 # If you change this, you will receive warnings in console
 messages-version: 1

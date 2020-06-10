@@ -17,7 +17,6 @@ public class KillauraFalseFlyingPacket {
 				return;
 			}
 			long time = elapsed(lastFlying.get(p));
-			p.sendMessage("Executing UseEntity Check");
 			if (time < 10L) {
 				InventoryHack.manageraccess.getPlayer(p).setViolation(new Violation("Killaura", "BadPackets: " + time));
 			}

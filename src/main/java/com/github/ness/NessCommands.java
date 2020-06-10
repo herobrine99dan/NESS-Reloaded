@@ -3,12 +3,13 @@ package com.github.ness;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import lombok.AllArgsConstructor;
@@ -54,6 +55,9 @@ public class NessCommands implements CommandExecutor {
 				case "version":
 					sendVersion(sender);
 					break;
+				case "report":
+					reportCommand(sender, args);
+					break;
 				default:
 					usage(sender);
 					break;
@@ -65,7 +69,38 @@ public class NessCommands implements CommandExecutor {
 		}
 		return true;
 	}
-	
+
+	private void reportCommand(CommandSender sender, String[] args) {
+		ConfigurationSection reportconfig = ness.getNessConfig().getMessages().getConfigurationSection("commands")
+				.getConfigurationSection("report-command");
+		if (args.length != 0) {
+			if (args.length < 2) {
+				sender.sendMessage(
+						ChatColor.translateAlternateColorCodes('&', reportconfig.getString("missing-reason")));
+			} else {
+				if (Bukkit.getPlayer(args[0]) == null) {
+					sender.sendMessage(
+							ChatColor.translateAlternateColorCodes('&', reportconfig.getString("player-notonline")));
+					return;
+				}
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					if (p.hasPermission("ness.report")) {
+						p.sendMessage(ChatColor.translateAlternateColorCodes('&',
+								reportconfig.getString("staff-message").replace("sender", sender.getName())
+										.replace("{cheater}", args[0]).replace("{cheat}", args[1])));
+						// all.sendMessage(ChatColor.RED + "There has been a report for " +
+						// ChatColor.GOLD + args[0]
+						// + ChatColor.RED + "! They were reported for" + ChatColor.GOLD + " " + args[1]
+						// + ChatColor.RED + "!");
+					}
+				}
+			}
+		} else {
+			sender.sendMessage(
+					ChatColor.translateAlternateColorCodes('&', reportconfig.getString("missing-arguments")));
+		}
+	}
+
 	private void showViolations(CommandSender sender, Player target) {
 		if (target == null) {
 			sendMessage(sender, ness.getNessConfig().getMessages().getString("commands.not-found-player",
@@ -73,21 +108,23 @@ public class NessCommands implements CommandExecutor {
 			return;
 		}
 		String name = target.getName();
-		sendMessage(sender, ness.getNessConfig().getMessages().getString("commands.show-violations.starting",
-				"7Listing violations...").replace("%TARGET%", name));
+		sendMessage(sender, ness.getNessConfig().getMessages()
+				.getString("commands.show-violations.starting", "7Listing violations...").replace("%TARGET%", name));
 		String header = ness.getNessConfig().getMessages().getString("commands.show-violations.header",
 				"&7Violations for &e%TARGET%");
 		String body = ness.getNessConfig().getMessages().getString("commands.show-violations.body",
 				"&7Hack: &e%HACK%&7. Count: %VL%");
 
-		ness.getViolationManager().getCopyOfViolationMap(ness.getCheckManager().getPlayer(target)).thenAccept((violations) -> {
-			sendMessage(sender, header.replace("%TARGET%", name));
-			for (Map.Entry<String, Integer> entry : violations.entrySet()) {
-				sendMessage(sender, body.replace("%HACK%", entry.getKey()).replace("%VL%", Integer.toString(entry.getValue())));
-			}
-		});
+		ness.getViolationManager().getCopyOfViolationMap(ness.getCheckManager().getPlayer(target))
+				.thenAccept((violations) -> {
+					sendMessage(sender, header.replace("%TARGET%", name));
+					for (Map.Entry<String, Integer> entry : violations.entrySet()) {
+						sendMessage(sender, body.replace("%HACK%", entry.getKey()).replace("%VL%",
+								Integer.toString(entry.getValue())));
+					}
+				});
 	}
-	
+
 	private void clearViolations(CommandSender sender, Player target) {
 		if (target == null) {
 			sendMessage(sender, ness.getNessConfig().getMessages().getString("commands.not-found-player",
@@ -95,15 +132,15 @@ public class NessCommands implements CommandExecutor {
 			return;
 		}
 		String name = target.getName();
-		sendMessage(sender, ness.getNessConfig().getMessages().getString("commands.clear-violations.starting",
-				"7Clearing violations...").replace("%TARGET%", name));
+		sendMessage(sender, ness.getNessConfig().getMessages()
+				.getString("commands.clear-violations.starting", "7Clearing violations...").replace("%TARGET%", name));
 		String completeMsg = ness.getNessConfig().getMessages().getString("", "&7Cleared violations for &e%TARGET%");
 
 		ness.getViolationManager().clearViolations(ness.getCheckManager().getPlayer(target)).thenRun(() -> {
 			sendMessage(sender, completeMsg.replace("%TAGET%", name));
 		});
 	}
-	
+
 	private void sendVersion(CommandSender sender) {
 		sendMessage(sender, "&7Version " + ness.getDescription().getVersion());
 	}

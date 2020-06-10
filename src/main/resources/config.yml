@@ -39,7 +39,7 @@ violation-handling:
 
 enabled-checks:
   - 'Aimbot'
-  - 'AutoClick'
+  - 'AutoClicker'
   - 'AntiBot'
   - 'AntiBotWhitelist'
   - 'AntiUnicode'
@@ -60,7 +60,6 @@ enabled-checks:
   - 'InventoryHack'
   - 'Jesus'
   - 'Killaura'
-  - 'KillauraBotCheck'
   - 'NoClip'
   - 'NoSlowDownBow'
   - 'NoSlowDownFood'

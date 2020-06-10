@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import com.github.ness.api.Violation;
 
@@ -58,7 +59,7 @@ public class NessPlayer implements AutoCloseable {
 	int onMoveRepeat = 0;
 	@Getter
 	@Setter
-	double YawDelta = 0.0;
+	float YawDelta = 0.0f;
 	@Getter
 	@Setter
 	int clicks = 0;

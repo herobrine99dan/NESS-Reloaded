@@ -22,6 +22,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	void checkEvent(PlayerMoveEvent e) {
 		Check(e);
 		Check1(e);
+		Check2(e);
 	}
 
 	/**
@@ -110,7 +111,19 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	}
 	
 	/**
-	 * Check for some
+	 * Check for some Aimbot Pattern
 	 */
-
+	public void Check2(PlayerMoveEvent e) {
+	    float diff = Math.abs(e.getTo().getYaw() - e.getFrom().getYaw()) % 180.0F;
+	    NessPlayer p = this.manager.getPlayer(e.getPlayer());
+	    if (diff > 1.0F && Math.round(diff) == diff) {
+	      if (diff == p.getYawDelta()) {
+	    	  p.setViolation(new Violation("Aimbot","Pattern"));
+	      } 
+	      p.setYawDelta(Math.round(diff));
+	    } else {
+	    	 p.setYawDelta(0.0F);
+	    } 
+	}
+	
 }
