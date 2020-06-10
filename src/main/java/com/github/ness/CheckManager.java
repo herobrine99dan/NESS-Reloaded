@@ -16,7 +16,6 @@ import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -118,7 +117,21 @@ public class CheckManager implements AutoCloseable {
 		logger.debug("Registered events, starting periodic tasks");
 		checks.forEach((check) -> check.initiatePeriodicTasks());
 	}
+	/*
+	 * Other code that we can use:
+	 * 	public void onEnable() {
+		RegisteredListener registeredListener = new RegisteredListener(this, (listener, event) -> onEvent(event),
+				EventPriority.NORMAL, this, false);
+		for (HandlerList handler : HandlerList.getHandlerLists()) {
+			handler.register(registeredListener);
+		}
+	}
 	
+	public Object onEvent(Event event) {
+		System.out.println(event.getEventName());
+		return event;
+	}
+	 */
 	private Set<Class<? extends Event>> getEventsToListen(ScanResult scanResult) {
 		if (scanResult == null) {
 			return null;

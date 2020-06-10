@@ -12,7 +12,6 @@ public class TeleportEvent extends AbstractCheck<PlayerTeleportEvent> {
 
 	public TeleportEvent(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerTeleportEvent.class, 2, TimeUnit.SECONDS));
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
