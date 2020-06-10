@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 
 import com.github.ness.api.Violation;
 import com.github.ness.api.ViolationAction;
+import com.github.ness.discord.DiscordHackWarn;
 
 import lombok.RequiredArgsConstructor;
 
@@ -56,6 +57,7 @@ public class ViolationManager {
 			ConfigurationSection notifyStaff = section.getConfigurationSection("notify-staff");
 			if (notifyStaff != null && notifyStaff.getBoolean("enable", false)) {
 				final String notification = notifyStaff.getString("notification");
+				final String webhook = notifyStaff.getString("discord-webhook");
 				if (notification != null) {
 					addAction(new ViolationAction(false) {
 
@@ -67,6 +69,7 @@ public class ViolationManager {
 							}
 							if (violationCount > (notifyStaff.getInt("vl") - 1)) {
 								String notif = addViolationVariables(notification, player, violation, violationCount);
+								DiscordHackWarn.WebHookSender(player, violation.getCheck(), violationCount, violation.getDetails());
 								for (Player staff : Bukkit.getOnlinePlayers()) {
 									if (staff.hasPermission("ness.notify")
 											|| staff.hasPermission("ness.notify.hacks")) {
