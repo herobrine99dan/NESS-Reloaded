@@ -6,14 +6,18 @@ import org.bukkit.entity.Player;
 
 import com.github.ness.api.Violation;
 import com.github.ness.check.InventoryHack;
+import com.github.ness.packets.ReflectionUtility;
 
 public class KillauraFalseFlyingPacket {
 	private static HashMap<Player, Long> lastFlying = new HashMap<Player, Long>();
 
 	public static void Check(Object packet, Player p) {
-		
-		if (packet.toString().toLowerCase().contains("useentity") && !lastFlying.containsKey(p)) {
+		if (ReflectionUtility.getPacketName(packet).toLowerCase().contains("useentity")) {
+			if(!lastFlying.containsKey(p)) {
+				return;
+			}
 			long time = elapsed(lastFlying.get(p));
+			p.sendMessage("Executing UseEntity Check");
 			if (time < 10L) {
 				InventoryHack.manageraccess.getPlayer(p).setViolation(new Violation("Killaura", "BadPackets: " + time));
 			}

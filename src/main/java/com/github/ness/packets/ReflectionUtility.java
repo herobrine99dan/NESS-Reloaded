@@ -24,6 +24,10 @@ public class ReflectionUtility {
 		return pkg.substring(pkg.lastIndexOf(".") + 1);
 	}
 
+	public static String getPacketName(Object packet) {
+		return packet.toString().substring(0, packet.toString().indexOf("@")).replace("net.minecraft.server.", "").replace(ver()+".", "");
+	}
+
 	public static Class<?> wrapperToPrimitive(Class<?> clazz) {
 		if (clazz == Boolean.class)
 			return boolean.class;

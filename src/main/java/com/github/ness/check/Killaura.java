@@ -171,10 +171,10 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			float pitch = p.getEyeLocation().getPitch();
 			if (np.lastPitch > pitch - 10.5D) {
 				np.lastPitchCount++;
-				p.sendMessage(String.valueOf(pitch - 10.5D) + " | " + np.lastPitch);
+				//p.sendMessage(String.valueOf(pitch - 10.5D) + " | " + np.lastPitch);
 			}
 			if (np.lastPitchCount >= 14) {
-				p.sendMessage("Cheats!");
+				//p.sendMessage("Cheats!");
 				np.lastPitchCount = 0;
 			}
 			np.lastPitch = pitch;
