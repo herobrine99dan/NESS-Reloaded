@@ -28,6 +28,8 @@ public class NessCommands implements CommandExecutor {
 			return "ness.command.reload";
 		case "version":
 			return "ness.command.usage";
+		case "report":
+			return "ness.command.report";
 		default:
 			return "ness.command.usage";
 		}
@@ -73,32 +75,51 @@ public class NessCommands implements CommandExecutor {
 	private void reportCommand(CommandSender sender, String[] args) {
 		ConfigurationSection reportconfig = ness.getNessConfig().getMessages().getConfigurationSection("commands")
 				.getConfigurationSection("report-command");
-		if (args.length != 0) {
-			if (args.length < 2) {
-				sender.sendMessage(
-						ChatColor.translateAlternateColorCodes('&', reportconfig.getString("missing-reason")));
-			} else {
-				if (Bukkit.getPlayer(args[0]) == null) {
-					sender.sendMessage(
-							ChatColor.translateAlternateColorCodes('&', reportconfig.getString("player-notonline")));
+		if (args.length > 1) {
+			if (args.length > 2) {
+				if (Bukkit.getPlayer(args[1]) == null) {
+					sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+							reportconfig.getString("player-notonline").replace("{cheater}", args[1])));
 					return;
 				}
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', reportconfig.getString("report-done")
+						.replace("{cheater}", args[1]).replace("{cheat}", args[2])));
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					if (p.hasPermission("ness.report")) {
 						p.sendMessage(ChatColor.translateAlternateColorCodes('&',
-								reportconfig.getString("staff-message").replace("sender", sender.getName())
-										.replace("{cheater}", args[0]).replace("{cheat}", args[1])));
+								reportconfig.getString("staff-message").replace("{sender}", sender.getName())
+										.replace("{cheater}", Bukkit.getPlayer(args[1]).getName()).replace("{cheat}", args[2])));
 						// all.sendMessage(ChatColor.RED + "There has been a report for " +
 						// ChatColor.GOLD + args[0]
 						// + ChatColor.RED + "! They were reported for" + ChatColor.GOLD + " " + args[1]
 						// + ChatColor.RED + "!");
 					}
 				}
+			} else {
+				sender.sendMessage(
+						ChatColor.translateAlternateColorCodes('&', reportconfig.getString("missing-reason")));
 			}
 		} else {
 			sender.sendMessage(
 					ChatColor.translateAlternateColorCodes('&', reportconfig.getString("missing-arguments")));
 		}
+		/*
+		 * if (args.length != 0) { if (args.length < 2) { sender.sendMessage(
+		 * ChatColor.translateAlternateColorCodes('&',
+		 * reportconfig.getString("missing-reason"))); } else { if
+		 * (Bukkit.getPlayer(args[0]) == null) { sender.sendMessage(
+		 * ChatColor.translateAlternateColorCodes('&',
+		 * reportconfig.getString("player-notonline"))); return; } for (Player p :
+		 * Bukkit.getOnlinePlayers()) { if (p.hasPermission("ness.report")) {
+		 * p.sendMessage(ChatColor.translateAlternateColorCodes('&',
+		 * reportconfig.getString("staff-message").replace("sender", sender.getName())
+		 * .replace("{cheater}", args[0]).replace("{cheat}", args[1]))); //
+		 * all.sendMessage(ChatColor.RED + "There has been a report for " + //
+		 * ChatColor.GOLD + args[0] // + ChatColor.RED + "! They were reported for" +
+		 * ChatColor.GOLD + " " + args[1] // + ChatColor.RED + "!"); } } } } else {
+		 * sender.sendMessage( ChatColor.translateAlternateColorCodes('&',
+		 * reportconfig.getString("missing-arguments"))); }
+		 */
 	}
 
 	private void showViolations(CommandSender sender, Player target) {
