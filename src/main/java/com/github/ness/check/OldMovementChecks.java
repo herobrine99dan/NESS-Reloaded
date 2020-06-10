@@ -506,17 +506,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						&& PlayerManager.timeSince("wasIce", player) >= 1000)
 					manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistance6(OnMove)"));
 				// Block rightBelow = player.getLocation().subtract(0, .1, 0).getBlock();
-				if (player.getLocation().getY() % .5 != 0.0 && !player.isFlying()
-						&& PlayerManager.timeSince("wasGround", player) > 1000
-						&& PlayerManager.timeSince("sincePlace", player) >= 1500
-						&& !bottom.toString().toLowerCase().contains("fence")
-						&& !bottom.toString().toLowerCase().contains("wall") && !web && !carpet
-						&& !below.toString().toLowerCase().contains("diode")
-						&& !below.toString().toLowerCase().contains("comparator") && below != Material.SNOW && !lilypad
-						&& !waterAround) {
-					punish(event, "Fly");
-					manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistance7(OnMove)"));
-				}
 			}
 			if (player.getWorld().getBlockAt(player.getLocation()).getType() == Material.WEB) {
 				if (dist > .2 && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED))

@@ -11,7 +11,7 @@ public class KillauraFalseFlyingPacket {
 		if (packet.toString().toLowerCase().contains("useentity") && !lastFlying.containsKey(p)) {
 			long time = elapsed(lastFlying.get(p));
 			if (time < 10L) {
-
+				p.sendMessage("Cheating");
 			}
 		} else {
 			if (!lastFlying.containsKey(p)) {
