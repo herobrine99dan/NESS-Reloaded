@@ -14,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ness.api.NESSApi;
 import com.github.ness.nms.NMSHandler;
-import com.github.ness.protocol.NewPacketListener;
+import com.github.ness.packets.NewPacketListener;
 
 import lombok.Getter;
 

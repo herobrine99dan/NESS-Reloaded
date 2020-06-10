@@ -1,4 +1,4 @@
-package com.github.ness.protocol;
+package com.github.ness.packets;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -10,10 +10,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.check.PingSpoof;
 import com.github.ness.check.killaura.heuristics.KillauraFalseFlyingPacket;
-import com.github.ness.nms.ReflectionUtility;
-import com.github.ness.packetswrapper.PacketPlayInPositionLook;
-import com.github.ness.packetswrapper.PacketPlayInUseEntity;
-import com.github.ness.packetswrapper.SimplePacket;
+import com.github.ness.packets.wrappers.PacketPlayInPositionLook;
+import com.github.ness.packets.wrappers.PacketPlayInUseEntity;
+import com.github.ness.packets.wrappers.SimplePacket;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;

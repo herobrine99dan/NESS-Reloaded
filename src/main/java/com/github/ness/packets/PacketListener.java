@@ -1,4 +1,4 @@
-package com.github.ness.protocol;
+package com.github.ness.packets;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

@@ -1,4 +1,4 @@
-package com.github.ness.packetswrapper;
+package com.github.ness.packets.wrappers;
 
 import java.lang.reflect.Method;
 import org.bukkit.Bukkit;

@@ -1,4 +1,4 @@
-package com.github.ness.packetswrapper;
+package com.github.ness.packets.wrappers;
 
 public class SimplePacket {
 	private Object packet;
