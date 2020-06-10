@@ -34,9 +34,10 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 
 	void Check1(PlayerInteractEvent e) {
 		NessPlayer player = manager.getPlayer(e.getPlayer());
-		long delay = System.currentTimeMillis()-player.getCPSDelay();
-		long lastDelay = delay-player.getCPSlastDelay();
-		if(delay>140) {
+		long delay = System.currentTimeMillis() - player.getCPSDelay();
+		long lastDelay = delay - player.getCPSlastDelay();
+		if (delay > 140
+				&& (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK))) {
 			player.setCPSDelay(System.currentTimeMillis());
 			return;
 		}
