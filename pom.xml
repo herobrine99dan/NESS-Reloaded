@@ -79,6 +79,7 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
+							<minimizeJar>true</minimizeJar>
 							<artifactSet>
 								<includes>
 									<include>io.github.classgraph:classgraph</include>
