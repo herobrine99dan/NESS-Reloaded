@@ -28,7 +28,6 @@ public class Scheduler {
 						np.setMovementpacketscounter(0);
 						OldMovementChecks.blockPackets.put(p.getName(), false);
 						OldMovementChecks.noground.put(p.getName(), 0);
-
 					}
 				}
 			}

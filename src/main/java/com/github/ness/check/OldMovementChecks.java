@@ -47,7 +47,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 	/**
 	 * 
 	 */
-	
+
 	@Override
 	void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
@@ -59,11 +59,11 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		Double dist = from.distance(to);
 		Double hozDist = dist - (to.getY() - from.getY());
 		Double fallDist = (double) player.getFallDistance();
-		if(Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player,4)) {
+		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)) {
 			event.setCancelled(false);
 			return;
 		}
-		if(blockPackets.getOrDefault(player.getName(), false)) {
+		if (blockPackets.getOrDefault(player.getName(), false)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -249,7 +249,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				if (hozDist > .35 && PlayerManager.timeSince("wasIce", player) >= 1000) {
 					if (!player.isFlying()) {
 						punish(event, "Fly");
-						manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistance(NoGround OnMove)"));
+						manager.getPlayer(player)
+								.setViolation(new Violation("Fly", "InvalidDistance(NoGround OnMove)"));
 					}
 				}
 			} else {
@@ -265,7 +266,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 										if (!player.getWorld().getBlockAt(from).getType().isSolid()
 												&& !player.getWorld().getBlockAt(to).getType().isSolid()) {
 											punish(event, "Fly");
-											manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistancenoHit(OnMove)"));
+											manager.getPlayer(player)
+													.setViolation(new Violation("Fly", "InvalidDistancenoHit(OnMove)"));
 										}
 									}
 								}
@@ -366,9 +368,10 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				punish(event, "Fly");
 				manager.getPlayer(player).setViolation(new Violation("Fly", "NoDist(OnMove)"));
 			}
-		}
-		if (!(player.isSneaking() && below == Material.LADDER) && !player.isFlying() && !player.isOnGround()
-				&& player.getLocation().getY() % 1.0 == 0 && PlayerManager.timeSince("lastJoin", player) >= 1000
+		} // Changing isOnGround method, check in server side
+		if (!(player.isSneaking() && below == Material.LADDER) && !player.isFlying()
+				&& !Utility.isOnGround(to) && to.getY() % 1.0 == 0
+				&& PlayerManager.timeSince("lastJoin", player) >= 1000
 				&& PlayerManager.timeSince("teleported", player) >= 5000
 				&& !below.toString().toLowerCase().contains("stairs") && below != Material.SLIME_BLOCK) {
 			if (!Utilities.getPlayerUnderBlock(player).getType().name().toLowerCase().contains("ice")
