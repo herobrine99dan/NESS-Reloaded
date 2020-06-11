@@ -63,7 +63,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			event.setCancelled(true);
 			return;
 		}
-		if(Utility.hasflybypass(player) || player.getAllowFlight() || player.isInsideVehicle() || Utility.hasHorseNear(player,4)) {
+		if(Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player,4)) {
 			return;
 		}
 		if (to.getY() < from.getY())

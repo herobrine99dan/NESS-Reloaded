@@ -26,7 +26,7 @@ public class ViolationManager {
 
 	private final Set<ViolationAction> actions = ConcurrentHashMap.newKeySet(8);
 
-	CompletableFuture<Map<String, Integer>> getCopyOfViolationMap(NessPlayer player) {
+	public CompletableFuture<Map<String, Integer>> getCopyOfViolationMap(NessPlayer player) {
 		return (player.isDevMode()) ? CompletableFuture.completedFuture(new HashMap<>(player.checkViolationCounts)) : CompletableFuture.supplyAsync(() -> {
 			return (player.checkViolationCounts == null) ? new HashMap<>() : new HashMap<>(player.checkViolationCounts);
 		}, ness.getExecutor());

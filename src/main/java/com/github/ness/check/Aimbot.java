@@ -38,7 +38,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		int pitchlimit = 10;
 		Player p = e.getPlayer();
 		NessPlayer player = manager.getPlayer(p);
-		if (player == null) {
+		if (player == null || Utility.hasVehicleNear(p, 3)) {
 			return false;
 		}
 		float deltaPitch = e.getTo().getPitch() - e.getFrom().getPitch();

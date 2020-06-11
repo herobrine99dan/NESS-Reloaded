@@ -35,7 +35,10 @@ public class Utility {
 		return v.substring(v.lastIndexOf('.') + 1);
 	}
 	
-	public static boolean hasHorseNear(Player p,int range) {
+	public static boolean hasVehicleNear(Player p,int range) {
+		if(p.isInsideVehicle()) {
+			return true;
+		}
 		for(Entity e : p.getNearbyEntities(range, range, range)) {
 			if(e instanceof Vehicle) {
 				return true;

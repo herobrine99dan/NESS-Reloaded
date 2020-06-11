@@ -5,12 +5,16 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import com.github.ness.gui.ViolationGUI;
+import com.github.ness.utility.IconMenu;
 
 import lombok.AllArgsConstructor;
 
@@ -30,6 +34,8 @@ public class NessCommands implements CommandExecutor {
 			return "ness.command.usage";
 		case "report":
 			return "ness.command.report";
+		case "gui":
+			return "ness.command.gui";
 		default:
 			return "ness.command.usage";
 		}
@@ -60,6 +66,9 @@ public class NessCommands implements CommandExecutor {
 				case "report":
 					reportCommand(sender, args);
 					break;
+				case "gui":
+					guiCommand(sender);
+					break;
 				default:
 					usage(sender);
 					break;
@@ -70,6 +79,12 @@ public class NessCommands implements CommandExecutor {
 					"&cSorry, you cannot use this."));
 		}
 		return true;
+	}
+
+	private void guiCommand(CommandSender sender) {
+		if (sender instanceof Player) {
+			new ViolationGUI(sender);
+		}
 	}
 
 	private void reportCommand(CommandSender sender, String[] args) {
@@ -88,7 +103,8 @@ public class NessCommands implements CommandExecutor {
 					if (p.hasPermission("ness.report")) {
 						p.sendMessage(ChatColor.translateAlternateColorCodes('&',
 								reportconfig.getString("staff-message").replace("{sender}", sender.getName())
-										.replace("{cheater}", Bukkit.getPlayer(args[1]).getName()).replace("{cheat}", args[2])));
+										.replace("{cheater}", Bukkit.getPlayer(args[1]).getName())
+										.replace("{cheat}", args[2])));
 						// all.sendMessage(ChatColor.RED + "There has been a report for " +
 						// ChatColor.GOLD + args[0]
 						// + ChatColor.RED + "! They were reported for" + ChatColor.GOLD + " " + args[1]
