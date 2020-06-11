@@ -7,12 +7,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
 import com.github.ness.api.Violation;
-import com.github.ness.utility.Utilities;
 import com.github.ness.utility.Utility;
 
 public class Jesus extends AbstractCheck<PlayerMoveEvent> {
@@ -92,7 +92,7 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 		double fromy = e.getFrom().getY();
 		double toy = e.getTo().getY();
 		Player player = e.getPlayer();
-		if (Utility.hasflybypass(player)) {
+		if (Utility.hasflybypass(player) && !player.getNearbyEntities(2, 2, 2).isEmpty()) {
 			return;
 		}
 		double resulty = Math.abs(fromy - toy);

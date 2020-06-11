@@ -14,7 +14,8 @@ import com.github.ness.utility.IconMenu;
 
 public class ViolationGUI {
 
-	CommandSender sender;
+	private CommandSender sender;
+	private String violationsStringBuilderResult;
 
 	public ViolationGUI(CommandSender send) {
 		this.sender = send;
@@ -29,25 +30,24 @@ public class ViolationGUI {
 				event.setWillClose(true);
 			}
 		}, NESSAnticheat.main);
-		int i;
-		for(Player cheater : Bukkit.getOnlinePlayers()) {
+		int i = 0;
+		for (Player cheater : Bukkit.getOnlinePlayers()) {
 			i++;
-			menu.setOption(i, getPlayerHead(cheater), cheater.getName(), "Cheats: ");
+			menu.setOption(i, getPlayerHead(cheater), cheater.getName(), "Cheats: " + getViolationsString(cheater));
 		}
 		menu.open(p);
 	}
-	
-	private String getViolations(Player target) {
-		String result = "";
-		NESSAnticheat.main.getViolationManager().getCopyOfViolationMap(NESSAnticheat.main.getCheckManager().getPlayer(target))
-		.thenAccept((violations) -> {
-			for (Map.Entry<String, Integer> entry : violations.entrySet()) {
-				
-				sendMessage(sender, body.replace("%HACK%", entry.getKey()).replace("%VL%",
-						Integer.toString(entry.getValue())));
-			}
-		});
-		return result;
+
+	private String getViolationsString(Player target) {
+		violationsStringBuilderResult = "";
+		NESSAnticheat.main.getViolationManager()
+				.getCopyOfViolationMap(NESSAnticheat.main.getCheckManager().getPlayer(target))
+				.thenAccept((violations) -> {
+					for (Map.Entry<String, Integer> entry : violations.entrySet()) {
+						violationsStringBuilderResult = violationsStringBuilderResult + "," +entry.getKey();
+					}
+				});
+		return violationsStringBuilderResult;
 	}
 
 	public ItemStack getPlayerHead(Player player) {

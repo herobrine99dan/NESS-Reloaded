@@ -59,11 +59,12 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		Double dist = from.distance(to);
 		Double hozDist = dist - (to.getY() - from.getY());
 		Double fallDist = (double) player.getFallDistance();
-		if(blockPackets.getOrDefault(player.getName(), false)) {
-			event.setCancelled(true);
+		if(Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player,4)) {
+			event.setCancelled(false);
 			return;
 		}
-		if(Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player,4)) {
+		if(blockPackets.getOrDefault(player.getName(), false)) {
+			event.setCancelled(true);
 			return;
 		}
 		if (to.getY() < from.getY())
