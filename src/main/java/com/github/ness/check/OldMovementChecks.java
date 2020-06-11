@@ -25,7 +25,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 	public static HashMap<String, Integer> noground = new HashMap<>();
 
 	HashMap<Player, Location> oldLoc = new HashMap<>();
-	public static HashMap<Player, Location> safeLoc = new HashMap<>();
 	public static HashMap<String, Boolean> blockPackets = new HashMap<>();
 
 	public OldMovementChecks(CheckManager manager) {
@@ -369,9 +368,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				manager.getPlayer(player).setViolation(new Violation("Fly", "NoDist(OnMove)"));
 			}
 		} // Changing isOnGround method, check in server side
-		if (!(player.isSneaking() && below == Material.LADDER) && !player.isFlying()
-				&& !Utility.isOnGround(to) && to.getY() % 1.0 == 0
-				&& PlayerManager.timeSince("lastJoin", player) >= 1000
+		if (!(player.isSneaking() && below == Material.LADDER) && !player.isFlying() && !Utility.isOnGround(to)
+				&& to.getY() % 1.0 == 0 && PlayerManager.timeSince("lastJoin", player) >= 1000
 				&& PlayerManager.timeSince("teleported", player) >= 5000
 				&& !below.toString().toLowerCase().contains("stairs") && below != Material.SLIME_BLOCK) {
 			if (!Utilities.getPlayerUnderBlock(player).getType().name().toLowerCase().contains("ice")
@@ -478,32 +476,22 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						manager.getPlayer(player).setViolation(new Violation("Speed", "BunnyHop (OnMove)"));
 					}
 				}
-				boolean flag = true;
-				if (fallDist > 1 || PlayerManager.timeSince("wasFlight", player) <= 500) {
-					flag = false;
-				} else {
-					for (Double amo : new Double[] { .7684762, .46415937 }) {
-						if ((fallDist - amo) < .01) {
-							flag = false;
-						}
-					}
-				}
-
-				if (to.getY() > from.getY()) {
-					double lastDTG = PlayerManager.getAction("lastDTG", player);
-					String diff = Math.abs(dTG - lastDTG) + "";
-					if (player.getLocation().getY() % .5 != 0 && !player.isFlying() && !below.isSolid()
-							&& (((dTG + "").contains("99999999") || (dTG + "").contains("00000000"))
-									|| diff.contains("000000") || diff.startsWith("0.286"))
-							&& PlayerManager.timeSince("isHit", player) >= 500
-							&& !below.toString().toLowerCase().contains("water")
-							&& !below.toString().toLowerCase().contains("lava")) {
-						punish(event, "Spider");
-						manager.getPlayer(player).setViolation(new Violation("Spider", "(OnMove)"));
-						if (devMode)
-							MSG.tell(player, "&9Dev> &7dTG: " + dTG + " diff: " + diff);
-					}
-				}
+				/*
+				 * boolean flag = true; if (fallDist > 1 || PlayerManager.timeSince("wasFlight",
+				 * player) <= 500) { flag = false; } else { for (Double amo : new Double[] {
+				 * .7684762, .46415937 }) { if ((fallDist - amo) < .01) { flag = false; } } }
+				 * 
+				 * if (to.getY() > from.getY()) { double lastDTG =
+				 * PlayerManager.getAction("lastDTG", player); String diff = Math.abs(dTG -
+				 * lastDTG) + ""; if (player.getLocation().getY() % .5 != 0 &&
+				 * !player.isFlying() && !below.isSolid() && (((dTG + "").contains("99999999")
+				 * || (dTG + "").contains("00000000")) || diff.contains("000000") ||
+				 * diff.startsWith("0.286")) && PlayerManager.timeSince("isHit", player) >= 500
+				 * && !below.toString().toLowerCase().contains("water") &&
+				 * !below.toString().toLowerCase().contains("lava")) { punish(event, "Spider");
+				 * manager.getPlayer(player).setViolation(new Violation("Spider", "(OnMove)"));
+				 * if (devMode) MSG.tell(player, "&9Dev> &7dTG: " + dTG + " diff: " + diff); } }
+				 */
 			} else {
 				if (!groundAround && hozDist > .32 && vertDist == 0 && !player.isFlying()
 						&& PlayerManager.timeSince("sincePlace", player) >= 1000
@@ -516,8 +504,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 					punish(event, "NoWeb");
 				manager.getPlayer(player).setViolation(new Violation("NoWeb", "(OnMove)"));
 			}
-			if (below.isSolid()) {
-				safeLoc.put(player, event.getFrom());
+			if (below.isSolid() && Utility.isOnGround(from)) {
+				this.manager.getPlayer(player).safeLoc = from;
 			}
 		}
 	}

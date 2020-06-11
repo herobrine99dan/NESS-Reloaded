@@ -8,8 +8,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
+import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.api.Violation;
 
@@ -111,8 +114,7 @@ public class NessPlayer implements AutoCloseable {
 	public float lastPitch = 0;
 	public int lastPitchCount = 0;
 	public double lastYDelta = 0.0;
-	
-	
+	public Location safeLoc;
 
 	// Used for Aimbot check
 	@Getter
@@ -180,6 +182,21 @@ public class NessPlayer implements AutoCloseable {
 	@Override
 	public void close() {
 
+	}
+
+	public boolean shouldCancel(Event e, Violation v) {
+		boolean cancel = false;
+		ConfigurationSection cancelsec = NESSAnticheat.main.getNessConfig().getViolationHandling()
+				.getConfigurationSection("cancel");
+		if (checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl", 10)) {
+			cancel = true;
+		}
+		if (e instanceof PlayerMoveEvent) {
+			if (cancel) {
+				((PlayerMoveEvent) e).getPlayer().teleport(safeLoc);
+			}
+		}
+		return cancel;
 	}
 
 }
