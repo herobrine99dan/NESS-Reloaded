@@ -83,7 +83,7 @@ public class NessCommands implements CommandExecutor {
 
 	private void guiCommand(CommandSender sender) {
 		if (sender instanceof Player) {
-			new ViolationGUI(sender);
+			new ViolationGUI(sender).createGUI();
 		}
 	}
 

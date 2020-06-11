@@ -20,7 +20,7 @@ public class Scheduler {
 					NessPlayer np = InventoryHack.manageraccess.getPlayer(p);
 					if (!(np == null)) {
 						np.setBlockplace(-2);
-						np.setClicks(0);
+						np.setClicks(-2);
 						np.setDrop(0);
 						np.setOnMoveRepeat(0);
 						np.setNormalPacketsCounter(0);

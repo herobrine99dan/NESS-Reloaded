@@ -28,6 +28,7 @@ public class ViolationGUI {
 			public void onOptionClick(IconMenu.OptionClickEvent event) {
 				event.getPlayer().sendMessage("You have chosen " + event.getName());
 				event.setWillClose(true);
+				event.setWillDestroy(true);
 			}
 		}, NESSAnticheat.main);
 		int i = 0;
@@ -44,7 +45,7 @@ public class ViolationGUI {
 				.getCopyOfViolationMap(NESSAnticheat.main.getCheckManager().getPlayer(target))
 				.thenAccept((violations) -> {
 					for (Map.Entry<String, Integer> entry : violations.entrySet()) {
-						violationsStringBuilderResult = violationsStringBuilderResult + "," +entry.getKey();
+						violationsStringBuilderResult = violationsStringBuilderResult + "," + entry.getKey();
 					}
 				});
 		return violationsStringBuilderResult;
