@@ -147,7 +147,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			// p.sendMessage("Repeat: " + player.getOnMoveRepeat());
 		}
 	}
-	//Can Be Better
+
+	// Can Be Better
 	public void Check3(PlayerMoveEvent e) {
 		Location to = e.getTo();
 		Location from = e.getFrom();
@@ -183,10 +184,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 					if (!(yresult == -0.03)) {
 						if (Math.abs(yresult) > 0.36) {
 							punish(e, "InvalidVelocity " + yresult);
-						} else if (Math.abs(yresult) > 0.06) {
-							if (np.isDevMode()) {
-								p.sendMessage("YResult: " + yresult);
-							}
+						}
+						if (np.isDevMode()) {
+							p.sendMessage("YResult: " + yresult);
 						}
 					}
 				}
@@ -229,14 +229,15 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	public void Check5(PlayerMoveEvent event) {
 		double delta = event.getTo().getY() - event.getFrom().getY();
 		NessPlayer p = manager.getPlayer(event.getPlayer());
-		if (Utilities.isClimbableBlock(event.getFrom().getBlock())
-				|| Utilities.isClimbableBlock(event.getTo().getBlock())
+		if (Utilities.isClimbableBlock(event.getFrom().getBlock()) || Utilities.isStairs(event.getTo().getBlock())
+				|| Utilities.isClimbableBlock(event.getTo().getBlock()) || Utilities.isOnStairs(event.getPlayer())
 				|| Utility.blockAdjacentIsLiquid(event.getFrom()) || Utility.blockAdjacentIsLiquid(event.getTo())) {
 			return;
 		}
 		if (delta != 0) {
 			if (p.isDevMode()) {
-				//event.getPlayer().sendMessage("Delta: " + delta + " LastDelta: " + p.lastYDelta);
+				// event.getPlayer().sendMessage("Delta: " + delta + " LastDelta: " +
+				// p.lastYDelta);
 			}
 			if (delta == -p.lastYDelta || delta == p.lastYDelta) {
 				punish(event, "RepeatedMovement: " + delta);
