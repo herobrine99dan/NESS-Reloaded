@@ -7,7 +7,7 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import com.github.ness.CheckManager;
 
 public class AntiBot extends AbstractCheck<AsyncPlayerPreLoginEvent> {
-	int maxPlayers = 20;
+	int maxPlayers = 10;
 	public static int playerCounter = 0;
 	public static ArrayList<String> whitelistbypass = new ArrayList<String>();
 	

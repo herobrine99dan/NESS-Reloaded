@@ -27,7 +27,6 @@ public class NESSAnticheat extends JavaPlugin {
 	public static NESSAnticheat main;
 	@Getter
 	private NessConfig nessConfig;
-	public boolean devMode = true;
 	@Getter
 	private CheckManager checkManager;
 	@Getter

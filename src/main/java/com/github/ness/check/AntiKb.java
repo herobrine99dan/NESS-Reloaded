@@ -34,7 +34,7 @@ public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 			final Location from = p.getLocation();
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 				Location to = p.getLocation();
-				if (to.distanceSquared(from) < 0.1 && !Utility.hasKbBypass(p)) {
+				if (to.distanceSquared(from) < 0.15 && !Utility.hasKbBypass(p)) {
 					try {
 						ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
 								.getConfigurationSection("cancel");

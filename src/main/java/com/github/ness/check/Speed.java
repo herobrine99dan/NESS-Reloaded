@@ -117,7 +117,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				&& !player.hasPotionEffect(PotionEffectType.SPEED) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 			if (dist > 0.62D) {
 				if (Utilities.getPlayerUpperBlock(player).getType().isSolid()
-						&& Utilities.getLocationUnderBlock(e.getTo()).getType().name().toLowerCase().contains("ice") && Utilities.getLocationUnderBlock(e.getFrom()).getType().name().toLowerCase().contains("ice")) {
+						&& Utilities.getLocationUnderBlock(e.getTo()).getType().name().toLowerCase().contains("ice")
+						&& Utilities.getLocationUnderBlock(e.getFrom()).getType().name().toLowerCase()
+								.contains("ice")) {
 					return;
 				}
 				punish(e, "MaxDistance " + dist);
@@ -145,11 +147,12 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			// p.sendMessage("Repeat: " + player.getOnMoveRepeat());
 		}
 	}
-
+	//Can Be Better
 	public void Check3(PlayerMoveEvent e) {
 		Location to = e.getTo();
 		Location from = e.getFrom();
 		Player p = e.getPlayer();
+		NessPlayer np = this.manager.getPlayer(p);
 		double x = to.getX() - from.getX();
 		double y = to.getY() - from.getY();
 		if (Double.toString(y).length() > 4) {
@@ -181,7 +184,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 						if (Math.abs(yresult) > 0.36) {
 							punish(e, "InvalidVelocity " + yresult);
 						} else if (Math.abs(yresult) > 0.06) {
-							// p.sendMessage("ResultY:" + yresult);
+							if (np.isDevMode()) {
+								p.sendMessage("YResult: " + yresult);
+							}
 						}
 					}
 				}
@@ -213,15 +218,11 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		double xresult = Math.abs(result.getX());
 		double zresult = Math.abs(result.getZ());
 		if (xresult > 0.38 || zresult > 0.38) {
-			if (!(xresult == 0.36)) {
-				if (!(zresult == 0.36)) {
-					if (!(xresult > 1) && !(zresult > 1) && !(xresult == 0.54) && !(zresult == 0.54)) {
-						punish(e, "InvalidXZVelocity");
-					}
-					// p.sendMessage("X: " + Math.abs(around(result.getX(), 5)) + " Z: " +
-					// Math.abs(around(result.getZ(), 5)));
-				}
+			if (!(xresult > 1) && !(zresult > 1) && !(xresult == 0.54) && !(zresult == 0.54)) {
+				punish(e, "InvalidXZVelocity");
 			}
+			// p.sendMessage("X: " + Math.abs(around(result.getX(), 5)) + " Z: " +
+			// Math.abs(around(result.getZ(), 5)));
 		}
 	}
 
@@ -233,8 +234,14 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.blockAdjacentIsLiquid(event.getFrom()) || Utility.blockAdjacentIsLiquid(event.getTo())) {
 			return;
 		}
-		if (delta == -p.lastYDelta && delta != 0) {
-			punish(event, "RepeatedMovement");
+		if (delta != 0) {
+			if (p.isDevMode()) {
+				//event.getPlayer().sendMessage("Delta: " + delta + " LastDelta: " + p.lastYDelta);
+			}
+			if (delta == -p.lastYDelta || delta == p.lastYDelta) {
+				punish(event, "RepeatedMovement: " + delta);
+
+			}
 		}
 		p.lastYDelta = delta;
 	}

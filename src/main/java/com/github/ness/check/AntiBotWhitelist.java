@@ -26,6 +26,6 @@ public class AntiBotWhitelist extends AbstractCheck<PlayerJoinEvent> {
 					}
 				}
 			}
-		}.runTaskLater(manager.getNess(), maxSeconds*20L);
+		}.runTaskLater(manager.getNess(), maxSeconds*10L);
 	}
 }

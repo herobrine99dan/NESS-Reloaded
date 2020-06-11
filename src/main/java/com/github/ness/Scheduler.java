@@ -19,7 +19,7 @@ public class Scheduler {
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					NessPlayer np = InventoryHack.manageraccess.getPlayer(p);
 					if (!(np == null)) {
-						np.setBlockplace(-2);
+						np.setBlockplace(-3);
 						np.setClicks(-2);
 						np.setDrop(0);
 						np.setOnMoveRepeat(0);

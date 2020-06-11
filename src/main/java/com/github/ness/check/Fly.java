@@ -11,7 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -40,8 +39,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Check8(e);
 		Check16(e);
 		Check17(e);
-		Check18(e);
-		Check18(e);
 		Check19(e);
 		Check20(e);
 	}
@@ -98,13 +95,11 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	 */
 	public void Check1(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
+		NessPlayer np = this.manager.getPlayer(p);
 		if (!bypass(event.getPlayer())) {
 			if (Utilities.isClimbableBlock(p.getLocation().getBlock()) && !Utilities.isInWater(p)) {
 				double distance = Utility.around(event.getTo().getY() - event.getFrom().getY(), 6);
-				if (distance > 0.12D) {
-					if (distance == 0.164D || distance == 0.248D || distance == 0.333D || distance == 0.419D || distance == 0.154D) {
-						return;
-					}
+				if (distance > 0.12D && distance==Utility.around(np.lastYDelta, 6)) {
 					punish(event, p, "FastLadder: " + distance);
 				}
 			}
@@ -116,6 +111,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	 * 
 	 * @param e
 	 */
+	//BadCheck
 	public void Check4(PlayerMoveEvent e) {
 		final Location from = e.getFrom();
 		final Location to = e.getTo();
@@ -218,51 +214,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	/**
-	 * Another Velocity Check
-	 * 
-	 * @param e
-	 */
-	public void Check18(PlayerMoveEvent e) {
-		Location to = e.getTo();
-		Location from = e.getFrom();
-		Player p = e.getPlayer();
-		double x = to.getX() - from.getX();
-		double y = to.getY() - from.getY();
-		if (Double.toString(y).length() > 4) {
-			y = Utility.around(y, 5);
-		}
-		double z = to.getZ() - from.getZ();
-		Vector v = new Vector(x, y, z);
-		// Vector result = v.subtract(p.getVelocity());
-		Vector result = v.subtract(p.getVelocity().setY(Utility.around(p.getVelocity().getY(), 5)));
-		double yresult = 0.0;
-		if (p.isOnGround()) {
-			return;
-		}
-		try {
-			yresult = Utility.around(result.getY(), 5);
-		} catch (Exception ex) {
-			yresult = result.getY();
-		}
-		if (!Utilities.isAround(to, to.getBlock().getType())) {
-			return;
-		}
-		if (!(yresult == 0.07)) {
-			if (!(yresult == 0.0)) {
-				if (!(yresult == -0.01)) {
-					if (!(yresult == -0.03)) {
-						if (yresult > 0.06 && Utilities.getPlayerUnderBlock(p).getType().equals(Material.AIR)) {
-							// p.sendMessage("Dist:" + yresult);
-							// manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly",
-							// "InvalidVelocity"));
-						}
-					}
-				}
-			}
-		}
-	}
-
-	/**
 	 * Check to detect NoFall
 	 * 
 	 * @param e
@@ -287,7 +238,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	
 	public void Check20(PlayerMoveEvent e) {
 		double yDist = e.getTo().getY()-e.getFrom().getY();
-		if(yDist>0.7 && !bypass(e.getPlayer())) {
+		if(yDist>0.6 && !bypass(e.getPlayer())) {
 			punish(e, e.getPlayer(), "HighDistance");
 		}
 	}

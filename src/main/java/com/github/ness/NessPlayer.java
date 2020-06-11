@@ -112,6 +112,7 @@ public class NessPlayer implements AutoCloseable {
 	public int lastPitchCount = 0;
 	public double lastYDelta = 0.0;
 	
+	
 
 	// Used for Aimbot check
 	@Getter
@@ -131,7 +132,7 @@ public class NessPlayer implements AutoCloseable {
 		}
 	}
 
-	boolean isDevMode() {
+	public boolean isDevMode() {
 		return checkViolationCounts instanceof ConcurrentHashMap<?, ?>;
 	}
 
