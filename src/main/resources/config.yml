@@ -28,7 +28,7 @@ violation-handling:
   execute-command:
     enable: true
     vl: 20
-    command: 'kick %PLAYER% Please Do not use Cheats! If you think this is an error, contact a staffer'
+    command: 'kick %PLAYER% Please Do not use Cheats! If you think this is an error, contact staff'
 
 #
 #
