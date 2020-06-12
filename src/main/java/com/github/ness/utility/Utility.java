@@ -61,7 +61,7 @@ public class Utility {
 		return a.getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR;
 	}
 
-	public static boolean isOnGroundBypassNoFall(Player p) {
+	public static boolean isOnGroudBypassNoFall(Player p) {
 		Block by = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ()))
 				.getBlock();
 		Block bx = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() - 1.0D,
@@ -105,6 +105,19 @@ public class Utility {
 		}
 		return true;
 	}
+	
+	public static boolean newisOnGroundBypassNoFall(Location loc) {
+		int counter = 0;
+		for(Block b : Utility.getNearbyBlocks(loc, 2)) {
+			if(!b.getType().isSolid()) {
+				counter++;
+			}
+		}
+		if(counter==9) {
+			return false;
+		}
+		return true;
+	}
 
 	public static boolean groundAround(final Location loc) {
 		for (int radius = 2, x = -radius; x < radius; ++x) {
@@ -122,6 +135,18 @@ public class Utility {
 		}
 		return false;
 	}
+	
+    public static List<Block> getNearbyBlocks(Location location, int radius) {
+        List<Block> blocks = new ArrayList<Block>();
+        for(int x = location.getBlockX() - radius; x <= location.getBlockX() + radius; x++) {
+            for(int y = location.getBlockY() - radius; y <= location.getBlockY() + radius; y++) {
+                for(int z = location.getBlockZ() - radius; z <= location.getBlockZ() + radius; z++) {
+                   blocks.add(location.getWorld().getBlockAt(x, y, z));
+                }
+            }
+        }
+        return blocks;
+    }
 
 	public static int getPing(final Player player) {
 		int ping = 900;
