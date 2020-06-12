@@ -1,4 +1,4 @@
-package com.github.ness.check.killaura.heuristics;
+package com.github.ness.check.killaura;
 
 import java.util.HashMap;
 
