@@ -26,7 +26,7 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
 			NessPlayer player = manager.getPlayer(e.getPlayer());
 			player.setCPS(player.getCPS() + 1);
-			if (player.getCPS() > 14) {
+			if (player.getCPS() > 14 && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
 				player.setViolation(new Violation("AutoClicker", "MaxCPS: " + player.getCPS()));
 			}
 		}
@@ -36,11 +36,11 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 		NessPlayer player = manager.getPlayer(e.getPlayer());
 		long delay = System.currentTimeMillis() - player.getCPSDelay();
 		long lastDelay = delay - player.getCPSlastDelay();
-		if (delay > 80) {
+		if (delay > 80 && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
 			player.setCPSDelay(System.currentTimeMillis());
 			return;
 		}
-		
+
 		player.setViolation(new Violation("AutoClicker", "RepeatedDelay: " + delay + " Result: " + lastDelay));
 		player.setCPSlastDelay(delay);
 		player.setCPSDelay(System.currentTimeMillis());

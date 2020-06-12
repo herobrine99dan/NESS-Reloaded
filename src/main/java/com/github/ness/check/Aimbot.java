@@ -23,14 +23,16 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		Check(e);
 		Check1(e);
 		Check2(e);
+		Check3(e);
 	}
 
 	/**
 	 * All changes in pitch should be divisible by a constant. That constant is
 	 * determined by your mouse sensitivity in game. By calculating the gcd and
-	 * finding that constant, you can detect changes in pitch variation.
-	 * This Check was made by Islandscout! (@Islandscout#2588 on Discord)
-	 * His AntiCheat: Hawk AntiCheat https://www.spigotmc.org/resources/hawk-anticheat-mc-1-7-10-1-8-8.40343/
+	 * finding that constant, you can detect changes in pitch variation. This Check
+	 * was made by Islandscout! (@Islandscout#2588 on Discord) His AntiCheat: Hawk
+	 * AntiCheat
+	 * https://www.spigotmc.org/resources/hawk-anticheat-mc-1-7-10-1-8-8.40343/
 	 * 
 	 */
 	public boolean Check(PlayerMoveEvent e) {
@@ -109,21 +111,36 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Check for some Aimbot Pattern
 	 */
 	public void Check2(PlayerMoveEvent e) {
-	    float diff = Math.abs(e.getTo().getYaw() - e.getFrom().getYaw()) % 180.0F;
-	    NessPlayer p = this.manager.getPlayer(e.getPlayer());
-	    if (diff > 1.0F && Math.round(diff) == diff) {
-	      if (diff == p.getYawDelta()) {
-	    	  p.setViolation(new Violation("Aimbot","Pattern"));
-	      } 
-	      p.setYawDelta(Math.round(diff));
-	    } else {
-	    	 p.setYawDelta(0.0F);
-	    } 
+		float diff = Math.abs(e.getTo().getYaw() - e.getFrom().getYaw()) % 180.0F;
+		NessPlayer p = this.manager.getPlayer(e.getPlayer());
+		if (diff > 1.0F && Math.round(diff) == diff) {
+			if (diff == p.getYawDelta()) {
+				p.setViolation(new Violation("Aimbot", "Pattern"));
+			}
+			p.setYawDelta(Math.round(diff));
+		} else {
+			p.setYawDelta(0.0F);
+		}
 	}
-	
+
+	public void Check3(PlayerMoveEvent e) {
+		float yawChange = Math.abs(e.getFrom().getYaw() - e.getTo().getYaw());
+		float pitchChange = Math.abs(e.getFrom().getPitch() - e.getTo().getPitch());
+		NessPlayer np = this.manager.getPlayer(e.getPlayer());
+		if (yawChange >= 1.0F && yawChange % 0.1F == 0.0F) {
+			if (yawChange % 1.0F == 0.0F || yawChange % 10.0F == 0.0F || yawChange % 30.0F == 0.0F) {
+				np.setViolation(new Violation("Aimbot", "Pattern"));
+			}
+		} else if (pitchChange >= 1.0F && pitchChange % 0.1F == 0.0F) {
+			if (pitchChange % 1.0F == 0.0F || pitchChange % 10.0F == 0.0F || pitchChange % 30.0F == 0.0F) {
+				np.setViolation(new Violation("Aimbot", "Pattern"));
+			}
+		}
+	}
+
 }
