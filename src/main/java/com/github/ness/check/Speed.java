@@ -229,7 +229,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	public void Check5(PlayerMoveEvent event) {
 		double delta = event.getTo().getY() - event.getFrom().getY();
 		NessPlayer p = manager.getPlayer(event.getPlayer());
-		if (Utilities.isClimbableBlock(event.getFrom().getBlock()) || Utilities.isStairs(event.getTo().getBlock())
+		if (Utilities.isClimbableBlock(event.getFrom().getBlock())
+				|| Utility.blockAdjacentIsStair(event.getTo()) || Utility.blockAdjacentIsStair(event.getFrom())
 				|| Utilities.isClimbableBlock(event.getTo().getBlock()) || Utilities.isOnStairs(event.getPlayer())
 				|| Utility.blockAdjacentIsLiquid(event.getFrom()) || Utility.blockAdjacentIsLiquid(event.getTo())) {
 			return;

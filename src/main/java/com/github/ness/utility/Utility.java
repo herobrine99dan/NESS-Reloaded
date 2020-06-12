@@ -592,6 +592,25 @@ public class Utility {
 		return false;
 
 	}
+	
+	public static boolean blockAdjacentIsStair(Location loc) {
+		Location check = loc.clone();
+		Set<Block> sample = new HashSet<>();
+		sample.add(getBlock(check.add(0, 0, 0.3)));
+		sample.add(getBlock(check.add(0.3, 0, 0)));
+		sample.add(getBlock(check.add(0, 0, -0.3)));
+		sample.add(getBlock(check.add(0, 0, -0.3)));
+		sample.add(getBlock(check.add(-0.3, 0, 0)));
+		sample.add(getBlock(check.add(-0.3, 0, 0)));
+		sample.add(getBlock(check.add(0, 0, 0.3)));
+		sample.add(getBlock(check.add(0, 0, 0.3)));
+		for (Block b : sample) {
+			if (b != null && b.getType().name().contains("stair"))
+				return true;
+		}
+		return false;
+
+	}
 
 	public static boolean matIsAdjacent(Location loc, Material material) {
 		Location check = loc.clone();
