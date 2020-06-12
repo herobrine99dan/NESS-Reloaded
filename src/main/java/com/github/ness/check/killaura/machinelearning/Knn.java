@@ -5,9 +5,9 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Knn {
-/**
- * @author herobrine99dan
- */
+	/**
+	 * @author herobrine99dan
+	 */
 	List<DataSet> classesvalues;
 	int kvalue;
 	boolean debug;
@@ -17,18 +17,22 @@ public class Knn {
 		kvalue = k;
 		debug = debugging;
 	}
+
 	/**
 	 * Get the k Value
+	 * 
 	 * @return an int variable.
 	 */
 	public int getKValue() {
 		return kvalue;
 	}
+
 	/**
 	 * Get all the Classes in a list
+	 * 
 	 * @return a List<DataSet> Object
 	 */
-	public List<DataSet> getClassesValues(){
+	public List<DataSet> getClassesValues() {
 		return classesvalues;
 	}
 
@@ -38,18 +42,20 @@ public class Knn {
 	// Step 3: Make Predictions.
 	/**
 	 * Do a prediction
+	 * 
 	 * @param a double[] array
-	 * @return a String Object witch contains the name of the class and the distance. They are separated by a ":" char; 
+	 * @return a String Object witch contains the name of the class and the
+	 *         distance. They are separated by a ":" char;
 	 */
 	public String predict(double[] values) {
 		List<Double> distance = new ArrayList<Double>();
-		//Step 1 We calculate the euclidean distance for every value
+		// Step 1 We calculate the euclidean distance for every value
 		for (DataSet d : classesvalues) {
 			double dist = Utility.calculateDistance(d.classvalue, values);
 			distance.add(dist);
 			d.distance = dist;
 		}
-		//Step 2: We get all the Nearest Neighbors sorting the distance list
+		// Step 2: We get all the Nearest Neighbors sorting the distance list
 		distance.sort(new Comparator<Double>() { // We are sorting the distance from the lowest to the highest.
 			@Override
 			public int compare(Double o1, Double o2) {
@@ -64,7 +70,8 @@ public class Knn {
 		if (debug) {
 			Utility.printValues(distance); // This is used for debug, we print the distance
 		}
-		//Step 3 We Make Predictions. Actually this find the nearest neighbor. It can't find two or more neighbors.
+		// Step 3 We Make Predictions. Actually this find the nearest neighbor,it can't
+		// find two or more neighbors.
 		if (kvalue == 1) {
 			String name = "";
 			double dist = distance.get(0);
@@ -82,7 +89,7 @@ public class Knn {
 			return "";
 		}
 	}
-	
+
 	public void destroy() {
 		kvalue = 1;
 		debug = false;
