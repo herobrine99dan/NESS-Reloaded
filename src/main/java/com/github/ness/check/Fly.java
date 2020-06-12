@@ -224,7 +224,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		if (e.getTo().getY() > e.getFrom().getY() || !p.getNearbyEntities(3, 3, 3).isEmpty())
 			return;
-		if (p.isOnGround() && !Utility.newisOnGroundBypassNoFall(p.getLocation()) && !bypass(p)) {
+		if (p.isOnGround() && !Utility.isOnGroudBypassNoFall(p) && !bypass(p)) {
 			for (int i = 0; i < 256; i++) {
 				Location l = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() - 1.0D,
 						p.getLocation().getZ())).getBlock().getLocation();
