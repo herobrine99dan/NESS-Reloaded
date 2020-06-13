@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.check.PingSpoof;
-import com.github.ness.check.killaura.heuristics.KillauraFalseFlyingPacket;
+import com.github.ness.check.killaura.KillauraFalseFlyingPacket;
 import com.github.ness.packets.wrappers.PacketPlayInPositionLook;
 import com.github.ness.packets.wrappers.PacketPlayInUseEntity;
 import com.github.ness.packets.wrappers.SimplePacket;

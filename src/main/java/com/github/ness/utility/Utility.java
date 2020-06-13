@@ -105,19 +105,6 @@ public class Utility {
 		}
 		return true;
 	}
-	
-	public static boolean newisOnGroundBypassNoFall(Location loc) {
-		int counter = 0;
-		for(Block b : Utility.getNearbyBlocks(loc, 2)) {
-			if(!b.getType().isSolid()) {
-				counter++;
-			}
-		}
-		if(counter==9) {
-			return false;
-		}
-		return true;
-	}
 
 	public static boolean groundAround(final Location loc) {
 		for (int radius = 2, x = -radius; x < radius; ++x) {

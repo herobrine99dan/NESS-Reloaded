@@ -99,7 +99,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (!bypass(event.getPlayer())) {
 			if (Utilities.isClimbableBlock(p.getLocation().getBlock()) && !Utilities.isInWater(p)) {
 				double distance = Utility.around(event.getTo().getY() - event.getFrom().getY(), 6);
-				if (distance > 0.12D && distance==Utility.around(np.lastYDelta, 6)) {
+				if (distance > 0.12D && distance == Utility.around(np.lastYDelta, 6)) {
 					punish(event, p, "FastLadder: " + distance);
 				}
 			}
@@ -111,7 +111,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	 * 
 	 * @param e
 	 */
-	//BadCheck
+	// BadCheck
 	public void Check4(PlayerMoveEvent e) {
 		final Location from = e.getFrom();
 		final Location to = e.getTo();
@@ -220,25 +220,20 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	 */
 	public void Check19(PlayerMoveEvent e) {
 		Player p = e.getPlayer();
-		if (p.isFlying())
-			return;
-		if (e.getTo().getY() > e.getFrom().getY() || !p.getNearbyEntities(3, 3, 3).isEmpty())
+		if (e.getTo().getY() > e.getFrom().getY() || p.getNearbyEntities(3, 3, 3).isEmpty())
 			return;
 		if (p.isOnGround() && !Utility.isOnGroudBypassNoFall(p) && !bypass(p)) {
-			for (int i = 0; i < 256; i++) {
-				Location l = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() - 1.0D,
-						p.getLocation().getZ())).getBlock().getLocation();
-				if (l.getBlock().getType() == Material.AIR) {
-					punish(e, p, "NoFall");
-				}
+			Location l = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() - 1.0D,
+					p.getLocation().getZ())).getBlock().getLocation();
+			if (!l.getBlock().getType().isSolid() && !l.getBlock().isLiquid()) {
+				punish(e, p, "NoFall");
 			}
-
 		}
 	}
-	
+
 	public void Check20(PlayerMoveEvent e) {
-		double yDist = e.getTo().getY()-e.getFrom().getY();
-		if(yDist>0.6 && !bypass(e.getPlayer())) {
+		double yDist = e.getTo().getY() - e.getFrom().getY();
+		if (yDist > 0.6 && !bypass(e.getPlayer())) {
 			punish(e, e.getPlayer(), "HighDistance");
 		}
 	}
