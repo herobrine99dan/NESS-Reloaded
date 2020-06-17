@@ -233,7 +233,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	public void Check20(PlayerMoveEvent e) {
 		double yDist = e.getTo().getY() - e.getFrom().getY();
-		if (yDist > 0.6 && !bypass(e.getPlayer())) {
+		if (yDist > 0.6 && !bypass(e.getPlayer()) ) {
 			punish(e, e.getPlayer(), "HighDistance");
 		}
 	}
@@ -248,7 +248,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (Utilities.isInWeb(p)) {
 			return false;
 		}
-		if (Utility.hasflybypass(p)) {
+		if (Utility.hasflybypass(p) || this.manager.getPlayer(p).isTeleported()) {
 			return false;
 		}
 		if (Utilities.getPlayerUnderBlock(p).getType().equals(Material.LADDER)

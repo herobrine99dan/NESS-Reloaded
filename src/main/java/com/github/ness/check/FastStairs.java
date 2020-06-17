@@ -33,7 +33,7 @@ public class FastStairs extends AbstractCheck<PlayerMoveEvent> {
 	    Location to = e.getTo();
 	    String blockName = Utilities.getPlayerUnderBlock(p).getType().name();
 	    if (!blockName.contains("STAIR") || p.getFallDistance() != 0.0F || (
-	      !p.getGameMode().equals(GameMode.SURVIVAL) && !p.getGameMode().equals(GameMode.ADVENTURE)))
+	      !p.getGameMode().equals(GameMode.SURVIVAL) && !p.getGameMode().equals(GameMode.ADVENTURE)) || this.manager.getPlayer(p).isTeleported())
 	      return; 
 	    double distance = Utility.around(Math.abs(Utility.getMaxSpeed(e.getFrom(), e.getTo())),6);
 	    double ydist = Utility.around(to.getY() - from.getY(),6);

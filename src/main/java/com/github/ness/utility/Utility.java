@@ -34,13 +34,13 @@ public class Utility {
 		String v = Bukkit.getServer().getClass().getPackage().getName();
 		return v.substring(v.lastIndexOf('.') + 1);
 	}
-	
-	public static boolean hasVehicleNear(Player p,int range) {
-		if(p.isInsideVehicle()) {
+
+	public static boolean hasVehicleNear(Player p, int range) {
+		if (p.isInsideVehicle()) {
 			return true;
 		}
-		for(Entity e : p.getNearbyEntities(range, range, range)) {
-			if(e instanceof Vehicle) {
+		for (Entity e : p.getNearbyEntities(range, range, range)) {
+			if (e instanceof Vehicle) {
 				return true;
 			}
 		}
@@ -122,18 +122,18 @@ public class Utility {
 		}
 		return false;
 	}
-	
-    public static List<Block> getNearbyBlocks(Location location, int radius) {
-        List<Block> blocks = new ArrayList<Block>();
-        for(int x = location.getBlockX() - radius; x <= location.getBlockX() + radius; x++) {
-            for(int y = location.getBlockY() - radius; y <= location.getBlockY() + radius; y++) {
-                for(int z = location.getBlockZ() - radius; z <= location.getBlockZ() + radius; z++) {
-                   blocks.add(location.getWorld().getBlockAt(x, y, z));
-                }
-            }
-        }
-        return blocks;
-    }
+
+	public static List<Block> getNearbyBlocks(Location location, int radius) {
+		List<Block> blocks = new ArrayList<Block>();
+		for (int x = location.getBlockX() - radius; x <= location.getBlockX() + radius; x++) {
+			for (int y = location.getBlockY() - radius; y <= location.getBlockY() + radius; y++) {
+				for (int z = location.getBlockZ() - radius; z <= location.getBlockZ() + radius; z++) {
+					blocks.add(location.getWorld().getBlockAt(x, y, z));
+				}
+			}
+		}
+		return blocks;
+	}
 
 	public static int getPing(final Player player) {
 		int ping = 900;
@@ -604,24 +604,15 @@ public class Utility {
 		return false;
 
 	}
-	
+
 	public static boolean blockAdjacentIsStair(Location loc) {
 		Location check = loc.clone();
-		Set<Block> sample = new HashSet<>();
-		sample.add(getBlock(check.add(0, 0, 0.3)));
-		sample.add(getBlock(check.add(0.3, 0, 0)));
-		sample.add(getBlock(check.add(0, 0, -0.3)));
-		sample.add(getBlock(check.add(0, 0, -0.3)));
-		sample.add(getBlock(check.add(-0.3, 0, 0)));
-		sample.add(getBlock(check.add(-0.3, 0, 0)));
-		sample.add(getBlock(check.add(0, 0, 0.3)));
-		sample.add(getBlock(check.add(0, 0, 0.3)));
-		for (Block b : sample) {
-			if (b != null && b.getType().name().contains("stair"))
+		for (Block b : Utility.getNearbyBlocks(check, 2)) {
+			if (b.getType().name().contains("stair")) {
 				return true;
+			}
 		}
 		return false;
-
 	}
 
 	public static boolean matIsAdjacent(Location loc, Material material) {

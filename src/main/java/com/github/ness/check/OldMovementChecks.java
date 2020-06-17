@@ -54,7 +54,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		Double dist = from.distance(to);
 		Double hozDist = dist - (to.getY() - from.getY());
 		Double fallDist = (double) player.getFallDistance();
-		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4) || this.manager.getPlayer(player).isTeleported()) {
+		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
+				|| this.manager.getPlayer(player).isTeleported()) {
 			event.setCancelled(false);
 			return;
 		}
@@ -364,7 +365,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				manager.getPlayer(player).setViolation(new Violation("Fly", "NoDist(OnMove)"));
 			}
 		} // Changing isOnGround method, check in server side
-		if (!(player.isSneaking() && below == Material.LADDER) && !player.isFlying() && !Utility.isOnGround(to) && !player.isOnGround()
+		if (!(player.isSneaking() && below == Material.LADDER) && !player.isFlying() && !player.isOnGround()
 				&& to.getY() % 1.0 == 0 && PlayerManager.timeSince("lastJoin", player) >= 1000
 				&& PlayerManager.timeSince("teleported", player) >= 5000
 				&& !below.toString().toLowerCase().contains("stairs") && below != Material.SLIME_BLOCK) {
