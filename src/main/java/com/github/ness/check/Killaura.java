@@ -56,7 +56,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 				Location loc1 = p.getLocation();
 				float grade = loc.getYaw() - loc1.getYaw();
-				if (Math.round(grade) > 250.0) {
+				if (Math.round(grade) > 270.0) {
 					punish(e, p, 19, "Heuristic " + grade, 6);
 				}
 			}, 3L);
