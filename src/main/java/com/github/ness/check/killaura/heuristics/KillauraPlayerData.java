@@ -41,6 +41,10 @@ public class KillauraPlayerData {
 		}
 	}
 	
+	public void setAnglesList(List<Double> data) {
+		angles = data;
+	}
+	
 	public List<Double> getAnglesList(){
 		return angles;
 	}
