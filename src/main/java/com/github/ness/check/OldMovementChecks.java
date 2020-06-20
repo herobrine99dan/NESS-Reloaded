@@ -32,14 +32,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	private void punish(PlayerMoveEvent e, String cheat) {
-		Player p = e.getPlayer();
-		try {
-			ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
-					.getConfigurationSection("cancel");
-			if (manager.getPlayer(p).checkViolationCounts.getOrDefault(cheat, 0) > cancelsec.getInt("vl", 10)) {
-				e.setCancelled(true);
-			}
-		} catch (Exception ex) {
+		if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+			e.setCancelled(true);
 		}
 	}
 

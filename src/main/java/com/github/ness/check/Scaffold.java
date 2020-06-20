@@ -34,13 +34,9 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 		}
 		   if(!(target.getY()==b.getY() && target.getX()==b.getX() && target.getZ()==b.getZ())) {
 			   manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold","InvalidBlock"));
-				try {
-					ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
-							.getConfigurationSection("cancel");
-					if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
-						event.setCancelled(true);
-					}
-				}catch(Exception ex) {}
+				if(manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
+					event.setCancelled(true);
+				}
 		  }		
 	}
 
@@ -52,13 +48,9 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 		float placedAngle = player.getLocation().getDirection().angle(placedVector);
 
 		if (placedAngle > MAX_ANGLE) {
-			try {
-				ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
-						.getConfigurationSection("cancel");
-				if (manager.getPlayer(player).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
-					event.setCancelled(true);
-				}
-			}catch(Exception ex) {}
+			if(manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
+				event.setCancelled(true);
+			}
 			manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold","HighAngle"));
 		}
 	}
@@ -70,13 +62,9 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 			float pitchNow = player.getLocation().getPitch();
 			float diff = Math.abs(now - pitchNow);
 			if (diff > 20F) {
-				try {
-					ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
-							.getConfigurationSection("cancel");
-					if (manager.getPlayer(player).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
-						event.setCancelled(true);
-					}
-				}catch(Exception ex) {}
+				if(manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
+					event.setCancelled(true);
+				}
 				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold","HighPitch"));
 			}
 		}, 2L);

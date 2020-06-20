@@ -34,13 +34,9 @@ public class NoSlowDownBow extends AbstractCheck<EntityShootBowEvent>{
 			 * checkfailed(o.getName()); }
 			 */
 			if (distance > 0.2||o.isSprinting()) {
-				try {
-					ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
-							.getConfigurationSection("cancel");
-					if (manager.getPlayer(o).checkViolationCounts.getOrDefault("NoSlowDown", 0) > cancelsec.getInt("vl",10)) {
-						e.setCancelled(true);
-					}
-				}catch(Exception ex) {}
+				if(manager.getPlayer(o).shouldCancel(e, this.getClass().getSimpleName())) {
+					e.setCancelled(true);
+				}
 				p.setViolation(new Violation("NoSlowDown",""));
 			}
 		}

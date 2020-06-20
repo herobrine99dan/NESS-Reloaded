@@ -30,13 +30,9 @@ public class Sprint extends AbstractCheck<PlayerMoveEvent> {
 		int failed = sprintcheck.getOrDefault(p.getName(), 0);
 		sprintcheck.put(p.getName(), failed + 1);
 		if (failed > 6) {
-			try {
-				ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
-						.getConfigurationSection("cancel");
-				if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
-					e.setCancelled(true);
-				}
-			}catch(Exception ex) {}
+			if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+				e.setCancelled(true);
+			}
 			manager.getPlayer(p).setViolation(new Violation("Sprint",check));
 			// MSG.tell(p, "Sprint(Omni)[nord], VL: orec".replace("nord",
 			// yaw).replace("orec", failed+""));
