@@ -28,7 +28,6 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 		Check1(e);
 	}
 
-	public List<Player> placedBlockOnWater = new ArrayList<>();
     /**
      * Check for Physics Check
      * @param event
@@ -75,13 +74,9 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 	} 
 
 	private void punish(PlayerMoveEvent e,Player p, int i, String module) {
-		try {
-			ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
-					.getConfigurationSection("cancel");
-			if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
-				e.setCancelled(true);
-			}
-		}catch(Exception ex) {}
+		if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+			e.setCancelled(true);
+		}
 		manager.getPlayer(p).setViolation(new Violation("Jesus",module));
 	}
     /**

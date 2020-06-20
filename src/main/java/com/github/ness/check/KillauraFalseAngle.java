@@ -52,14 +52,8 @@ public class KillauraFalseAngle extends AbstractCheck<EntityDamageByEntityEvent>
 	}
 	
 	private void punish(EntityDamageByEntityEvent e, Player p, String module) {
-		try {
-			ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
-					.getConfigurationSection("cancel");
-			if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec
-					.getInt("vl", 10)) {
-				e.setCancelled(true);
-			}
-		} catch (Exception ex) {
+		if(manager.getPlayer(p).shouldCancel(e, "Killaura")) {
+			e.setCancelled(true);
 		}
 		manager.getPlayer(p).setViolation(new Violation("Killaura", module));
 	}

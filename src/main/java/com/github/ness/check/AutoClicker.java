@@ -28,6 +28,9 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 			player.setCPS(player.getCPS() + 1);
 			if (player.getCPS() > 14 && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
 				player.setViolation(new Violation("AutoClicker", "MaxCPS: " + player.getCPS()));
+				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+					e.setCancelled(true);
+				}
 			}
 		}
 	}
@@ -40,7 +43,9 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 			player.setCPSDelay(System.currentTimeMillis());
 			return;
 		}
-
+		if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+			e.setCancelled(true);
+		}
 		player.setViolation(new Violation("AutoClicker", "RepeatedDelay: " + delay + " Result: " + lastDelay));
 		player.setCPSlastDelay(delay);
 		player.setCPSDelay(System.currentTimeMillis());

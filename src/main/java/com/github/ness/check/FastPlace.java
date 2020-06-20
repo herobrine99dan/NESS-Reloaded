@@ -22,19 +22,16 @@ public class FastPlace extends AbstractCheck<BlockPlaceEvent>{
      * A Simple FastPlace check
      * @param event
      */
-	public void Check(BlockPlaceEvent event) {
-		NessPlayer player = manager.getPlayer(event.getPlayer());
+	public void Check(BlockPlaceEvent e) {
+		NessPlayer player = manager.getPlayer(e.getPlayer());
 		player.setBlockplace(player.getBlockplace()+1);
 		if(player.getBlockplace()>6) {
 			try {
-				ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
-						.getConfigurationSection("cancel");
-				if (manager.getPlayer(event.getPlayer()).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
-					event.setCancelled(true);
+				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+					e.setCancelled(true);
 				}
 			}catch(Exception ex) {}
 			player.setViolation(new Violation("FastPlace",""));
-			event.setCancelled(true);
 		}
 		
 	}

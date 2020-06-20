@@ -164,6 +164,7 @@ public class NessPlayer implements AutoCloseable {
 					"Dev mode violation: Check " + violation.getCheck() + ". Details: " + violation.getDetails());
 			checkViolationCounts.merge(violation.getCheck(), 1, (c1, c2) -> c1 + c2);
 		}
+		
 		/*
 		 * if (player.hasPermission("ness.bypass.*") ||
 		 * player.hasPermission("ness.bypass." + violation.getCheck())) { return; } //
@@ -184,17 +185,12 @@ public class NessPlayer implements AutoCloseable {
 
 	}
 
-	public boolean shouldCancel(Event e, Violation v) {
-		boolean cancel = false;
+	public boolean shouldCancel(Event e, String check) {
 		ConfigurationSection cancelsec = NESSAnticheat.main.getNessConfig().getViolationHandling()
 				.getConfigurationSection("cancel");
-		if (checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl", 10)) {
-			cancel = true;
-		}
-		if (e instanceof PlayerMoveEvent) {
-			if (cancel) {
-				((PlayerMoveEvent) e).getPlayer().teleport(safeLoc);
-			}
+		boolean cancel = checkViolationCounts.getOrDefault(check, 0) > cancelsec.getInt("vl", 10);
+		if (e instanceof PlayerMoveEvent && cancel) {
+			player.teleport(safeLoc);
 		}
 		return cancel;
 	}

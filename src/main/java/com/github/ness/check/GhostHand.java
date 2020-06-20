@@ -61,9 +61,7 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent>{
 			}
 			if (block.getBlock().getType().isSolid() || !targetBlock.equals(event.getClickedBlock())) {
 				try {
-					ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
-							.getConfigurationSection("cancel");
-					if (manager.getPlayer(player).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+					if(manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
 						event.setCancelled(true);
 					}
 				}catch(Exception ex) {}

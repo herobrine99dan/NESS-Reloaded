@@ -26,9 +26,7 @@ public class BlockBreakChecks extends AbstractCheck<BlockBreakEvent> {
 		Block target = p.getTargetBlock(null, 5);
 		   if(!(target.getY()==b.getY() && target.getX()==b.getX() && target.getZ()==b.getZ())) {
 				try {
-					ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
-							.getConfigurationSection("cancel");
-					if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+					if(manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
 						event.setCancelled(true);
 					}
 				}catch(Exception ex) {}

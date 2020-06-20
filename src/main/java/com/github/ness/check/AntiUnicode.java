@@ -25,9 +25,7 @@ public class AntiUnicode extends AbstractCheck<AsyncPlayerChatEvent>  {
 		if (!asciiEncoder.get().canEncode(e.getMessage())) {
 			manager.getPlayer(e.getPlayer()).setViolation(new Violation("AntiUnicode", e.getMessage()));
 			try {
-				ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
-						.getConfigurationSection("cancel");
-				if (manager.getPlayer(e.getPlayer()).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
+				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);
 				}
 			}catch(Exception ex) {}

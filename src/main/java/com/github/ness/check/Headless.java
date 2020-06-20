@@ -22,16 +22,14 @@ public class Headless extends AbstractCheck<PlayerMoveEvent> {
      * A Simple HeadLess Check
      * @param event
      */
-	public void Check(PlayerMoveEvent event) {
-        Player p = event.getPlayer();
+	public void Check(PlayerMoveEvent e) {
+        Player p = e.getPlayer();
         float pitch = p.getLocation().getPitch();
         if(pitch < -90 || pitch > 90)
         {
     		try {
-    			ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
-    					.getConfigurationSection("cancel");
-    			if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
-    				event.setCancelled(true);
+    			if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+    				e.setCancelled(true);
     			}
     		}catch(Exception ex) {}
             manager.getPlayer(p).setViolation(new Violation("HeadLess",""));

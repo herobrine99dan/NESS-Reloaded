@@ -18,18 +18,14 @@ public class LiquidInteraction extends AbstractCheck<BlockPlaceEvent>{
 	}
 	
 	@Override
-	void checkEvent(BlockPlaceEvent event) {
-		if (event.getBlockAgainst().isLiquid()) {
-			String type = event.getBlock().getType().name();
+	void checkEvent(BlockPlaceEvent e) {
+		if (e.getBlockAgainst().isLiquid()) {
+			String type = e.getBlock().getType().name();
 			if (!whitelistedMaterials.contains(type)) {
-				try {
-					ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
-							.getConfigurationSection("cancel");
-					if (manager.getPlayer(event.getPlayer()).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec.getInt("vl",10)) {
-						event.setCancelled(true);
-					}
-				}catch(Exception ex) {}
-				manager.getPlayer(event.getPlayer()).setViolation(new Violation("LiquidInteraction", type));
+				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+					e.setCancelled(true);
+				}
+				manager.getPlayer(e.getPlayer()).setViolation(new Violation("LiquidInteraction", type));
 			}
 		}
 	}

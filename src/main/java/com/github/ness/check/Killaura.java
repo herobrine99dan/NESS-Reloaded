@@ -57,7 +57,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 				Location loc1 = p.getLocation();
 				float grade = loc.getYaw() - loc1.getYaw();
 				if (Math.round(grade) > 270.0) {
-					punish(e, p, 19, "Heuristic " + grade, 6);
+					punish(e, p, 19, "HighYaw " + grade, 6);
 				}
 			}, 3L);
 		}
@@ -190,14 +190,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	}
 
 	private void punish(EntityDamageByEntityEvent e, Player p, int i, String module, int vl) {
-		try {
-			ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
-					.getConfigurationSection("cancel");
-			if (manager.getPlayer(p).checkViolationCounts.getOrDefault((this.getClass().getSimpleName()), 0) > cancelsec
-					.getInt("vl", 10)) {
-				e.setCancelled(true);
-			}
-		} catch (Exception ex) {
+		if(manager.getPlayer(p).shouldCancel(e, this.getClass().getSimpleName())) {
+			e.setCancelled(true);
 		}
 		manager.getPlayer(p).setViolation(new Violation("Killaura", module));
 	}

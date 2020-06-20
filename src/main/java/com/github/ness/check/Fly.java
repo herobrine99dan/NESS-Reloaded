@@ -50,14 +50,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				return;
 			}
 			try {
-				ConfigurationSection cancelsec = manager.getNess().getNessConfig().getViolationHandling()
-						.getConfigurationSection("cancel");
-				if (manager.getPlayer(p).checkViolationCounts.getOrDefault("Fly", 0) > cancelsec.getInt("vl", 10)) {
-					if (Bukkit.getVersion().contains("1.15")) {
-						e.setCancelled(true);
-					} else {
-						DragDown.PlayerDragDown(p, e);
-					}
+				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+					e.setCancelled(true);
 				}
 			} catch (Exception ex) {
 			}
@@ -232,7 +226,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	public void Check20(PlayerMoveEvent e) {
 		double yDist = e.getTo().getY() - e.getFrom().getY();
-		if (yDist > 0.6 && !bypass(e.getPlayer()) ) {
+		if (yDist > 0.6 && !bypass(e.getPlayer())) {
 			punish(e, e.getPlayer(), "HighDistance");
 		}
 	}
