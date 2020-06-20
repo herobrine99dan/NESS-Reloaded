@@ -32,7 +32,7 @@ public abstract class AbstractCheck<T extends Event> {
 	 * @param manager the check manager
 	 * @param info information about the check, designated by the check itself
 	 */
-	AbstractCheck(CheckManager manager, CheckInfo<T> info) {
+	protected AbstractCheck(CheckManager manager, CheckInfo<T> info) {
 		this.manager = manager;
 		this.info = info;
 	}
@@ -78,7 +78,7 @@ public abstract class AbstractCheck<T extends Event> {
 	 * 
 	 * @param evt the event
 	 */
-	void checkEvent(T evt) {
+	protected void checkEvent(T evt) {
 		
 	}
 	

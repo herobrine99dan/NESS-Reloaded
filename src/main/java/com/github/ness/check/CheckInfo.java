@@ -12,7 +12,7 @@ import org.bukkit.event.Event;
  *
  * @param <T> the type of the event
  */
-class CheckInfo<T extends Event> {
+public class CheckInfo<T extends Event> {
 
 	final long asyncInterval;
 	final TimeUnit units;
@@ -29,7 +29,7 @@ class CheckInfo<T extends Event> {
 		return new CheckInfo<>(event, interval, units);
 	}
 	
-	static <T extends Event> CheckInfo<T> eventOnly(Class<T> event) {
+	public static <T extends Event> CheckInfo<T> eventOnly(Class<T> event) {
 		return new CheckInfo<>(event, -1L, null);
 	}
 	
