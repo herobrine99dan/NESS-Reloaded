@@ -1,4 +1,4 @@
-package com.github.ness.check.killaura.machinelearning;
+package com.github.ness.knn;
 
 import java.util.ArrayList;
 import java.util.Comparator;

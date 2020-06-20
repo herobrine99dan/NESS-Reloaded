@@ -1,6 +1,6 @@
 package com.github.ness.utility;
 
-import java.util.Arrays;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,9 +15,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 public class IconMenu implements Listener {
-/**
- * By nisovin (https://bukkit.org/members/nisovin.2980/)
- */
+	/**
+	 * By nisovin (https://bukkit.org/members/nisovin.2980/)
+	 */
 	private String name;
 	private int size;
 	private OptionClickEventHandler handler;
@@ -36,7 +36,7 @@ public class IconMenu implements Listener {
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
-	public IconMenu setOption(int position, ItemStack icon, String name, String... info) {
+	public IconMenu setOption(int position, ItemStack icon, String name, List<String> info) {
 		optionNames[position] = name;
 		optionIcons[position] = setItemNameAndLore(icon, name, info);
 		return this;
@@ -132,10 +132,10 @@ public class IconMenu implements Listener {
 		}
 	}
 
-	private ItemStack setItemNameAndLore(ItemStack item, String name, String[] lore) {
+	private ItemStack setItemNameAndLore(ItemStack item, String name, List<String> info) {
 		ItemMeta im = item.getItemMeta();
 		im.setDisplayName(name);
-		im.setLore(Arrays.asList(lore));
+		im.setLore(info);
 		item.setItemMeta(im);
 		return item;
 	}

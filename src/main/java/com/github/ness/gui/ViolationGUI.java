@@ -1,5 +1,9 @@
 package com.github.ness.gui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -33,13 +37,13 @@ public class ViolationGUI {
 		int i = 0;
 		for (Player cheater : Bukkit.getOnlinePlayers()) {
 			i++;
-			String flaggedchecks = "Cheats:";
+			List<String> lore = new ArrayList<String>();
+			lore.add("Cheats:");
 			NessPlayer np = NESSAnticheat.main.getCheckManager().getPlayer(cheater);
 			for (String s : np.checkViolationCounts.keySet()) {
-				flaggedchecks = flaggedchecks + System.lineSeparator();
-				flaggedchecks = flaggedchecks + s + " VL: " + np.checkViolationCounts.getOrDefault(s, 0);
+				lore.add(" VL: " + np.checkViolationCounts.getOrDefault(s, 0));
 			}
-			menu.setOption(i - 1, getPlayerHead(cheater), cheater.getName(), flaggedchecks);
+			menu.setOption(i - 1, getPlayerHead(cheater), cheater.getName(), lore);
 		}
 		menu.open(p);
 	}
@@ -61,7 +65,7 @@ public class ViolationGUI {
 		for (String s : np.checkViolationCounts.keySet()) {
 			i++;
 			menu.setOption(i - 1, new ItemStack(Material.REDSTONE_BLOCK, 1), s,
-					"VL: " + np.checkViolationCounts.getOrDefault(s, 0));
+					Arrays.asList("VL: " + np.checkViolationCounts.getOrDefault(s, 0)));
 		}
 	}
 

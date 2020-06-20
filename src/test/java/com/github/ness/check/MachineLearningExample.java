@@ -3,8 +3,8 @@ package com.github.ness.check;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.ness.check.killaura.machinelearning.DataSet;
-import com.github.ness.check.killaura.machinelearning.Knn;
+import com.github.ness.knn.DataSet;
+import com.github.ness.knn.Knn;
 
 public class MachineLearningExample {
 
