@@ -39,7 +39,12 @@ public class KillauraFalseAngle extends AbstractCheck<EntityDamageByEntityEvent>
 					result += d;
 				}
 				result = result / data.size();
-				punish(e,p,"FalseAngle: " + result);
+				if(this.manager.getPlayer(p).isDevMode()) {
+					p.sendMessage("FalseAngleCheck: Result " + result +" Size: " + data.size());
+				}
+				if(result<0.7) {
+					punish(e,p,"FalseAngle: " + result);
+				}
 				data.clear();
 			}
 			kplayer.setAnglesList(data);
