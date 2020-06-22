@@ -1,5 +1,6 @@
 package com.github.ness;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -117,6 +118,23 @@ public class NessPlayer implements AutoCloseable {
 	public int lastPitchCount = 0;
 	public double lastYDelta = 0.0;
 	public Location safeLoc;
+	
+	// Used in OldMovementChecks
+	
+	private long lastWasOnGround = System.nanoTime() - Duration.ofHours(1L).toNanos();
+	public long getTimeSinceLastWasOnGround() {
+		return (lastWasOnGround - System.nanoTime()) / 1000_000L; // want milliseconds
+	}
+	public void updateLastWasOnGround() {
+		lastWasOnGround = System.nanoTime();
+	}
+	private long lastWasOnIce = lastWasOnGround;
+	public long getTimeSinceLastWasOnIce() {
+		return (lastWasOnIce - System.nanoTime()) / 1000_000L;  // want milliseconds
+	}
+	public void updateLastWasOnIce() {
+		lastWasOnIce = System.nanoTime();
+	}
 
 	// Used for Aimbot check
 	@Getter

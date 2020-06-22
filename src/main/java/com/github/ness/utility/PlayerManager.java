@@ -1,16 +1,10 @@
 package com.github.ness.utility;
 
-import java.util.HashMap;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class PlayerManager {
-	
-	static HashMap<String,Long> wasonground = new HashMap<>();
-	static HashMap<String,Long> wasice = new HashMap<>();
-
 	
 	public static boolean groundAround(Location loc) {
 		int radius = 2;
@@ -57,7 +51,7 @@ public class PlayerManager {
 		return ping;
 	}
 
-	public static Integer distToBlock(Location loc) {
+	public static int distToBlock(Location loc) {
 		Location res = loc;
 		int yDif = -1;
 		while (!res.subtract(0, yDif, 0).getBlock().getType().isSolid() && res.subtract(0, yDif, 0).getY() > 0) {
@@ -67,26 +61,9 @@ public class PlayerManager {
 		return yDif;
 	}
 
-	public static void setAction(String category, Player player, Long amo) {
-		if(category.equals("wasGround")) {
-			wasonground.put(player.getName(), amo);
-		}else if(category.equals("wasIce")) {
-			wasice.put(player.getName(), amo);
-		}
-	}
-
-	public static Long getAction(String category, Player player) {
-		if(category.equals("wasGround")) {
-			return wasonground.getOrDefault(player.getName(), (long) 0);
-		}else if(category.equals("wasIce")) {
-			return wasice.getOrDefault(player.getName(), (long) 0);
-		}else {
-			return (long) 0;
-		}
-	}
-
-	public static Long timeSince(String category, Player player) {
-		return (System.currentTimeMillis() - getAction(category, player));
+	@Deprecated
+	public static long timeSince(String category, Player player) {
+		return System.currentTimeMillis();
 	}
 	
 }

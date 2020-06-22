@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.CheckManager;
+import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.utility.MSG;
 import com.github.ness.utility.PlayerManager;
@@ -40,6 +41,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 	@Override
 	void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
+		NessPlayer nessPlayer = manager.getPlayer(player);
 		Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0, 1, 0)).getType();
 		Material bottom = null;
 		boolean devMode = false;
@@ -49,7 +51,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		Double hozDist = dist - (to.getY() - from.getY());
 		Double fallDist = (double) player.getFallDistance();
 		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
-				|| this.manager.getPlayer(player).isTeleported()) {
+				|| nessPlayer.isTeleported()) {
 			event.setCancelled(false);
 			return;
 		}
@@ -93,7 +95,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						|| belowSel.toString().toLowerCase().contains("comparator") || belowSel == Material.SNOW)
 					carpet = true;
 				if (belowSel.isSolid()) {
-					PlayerManager.setAction("wasGround", player, System.currentTimeMillis());
+					nessPlayer.updateLastWasOnGround();
 				}
 			}
 		}
@@ -112,7 +114,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 		if (ice) {
-			PlayerManager.setAction("wasIce", player, System.currentTimeMillis());
+			nessPlayer.updateLastWasOnIce();
 		}
 		for (int x = -radius; x < radius; x++) {
 			for (int y = -1; y < radius; y++) {
@@ -192,7 +194,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				&& PlayerManager.timeSince("isHit", player) >= 2000
 				&& PlayerManager.timeSince("teleported", player) >= 100) {
 			if (groundAround) {
-				if (PlayerManager.timeSince("wasIce", player) >= 1000) {
+				if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000) {
 					if (!player.isInsideVehicle()
 							|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE) {
 						Material small = player.getWorld().getBlockAt(player.getLocation().subtract(0, .1, 0))
@@ -215,7 +217,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						}
 					}
 				}
-			} else if (PlayerManager.timeSince("wasIce", player) >= 1000
+			} else if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000
 					&& PlayerManager.timeSince("teleported", player) >= 500) {
 				punish(event, "Fly");
 				manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistance(OnMove)"));
@@ -224,7 +226,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		if (player.isSneaking() && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED)) {
 			if (hozDist > .2 && oldLoc.containsKey(player) && oldLoc.get(player).getY() == player.getLocation().getY()
 					&& PlayerManager.timeSince("wasFlight", player) >= 2000
-					&& PlayerManager.timeSince("wasIce", player) >= 1000
+					&& nessPlayer.getTimeSinceLastWasOnIce() >= 1000
 					&& PlayerManager.timeSince("isHit", player) >= 1000
 					&& PlayerManager.timeSince("teleported", player) >= 500) {
 				if (!player.getWorld().getBlockAt(from).getType().isSolid()
@@ -236,7 +238,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		}
 		if (to.getY() == from.getY()) {
 			if (!groundAround) {
-				if (hozDist > .35 && PlayerManager.timeSince("wasIce", player) >= 1000) {
+				if (hozDist > .35 && nessPlayer.getTimeSinceLastWasOnIce() >= 1000) {
 					if (!player.isFlying()) {
 						punish(event, "Fly");
 						manager.getPlayer(player)
@@ -270,7 +272,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 					&& player.getWorld().getBlockAt(player.getLocation()).getType() == Material.LADDER) {
 				if (from.getY() < to.getY() && PlayerManager.timeSince("isHit", player) >= 1000
 						&& PlayerManager.distToBlock(player.getLocation()) >= 3
-						&& PlayerManager.timeSince("wasGround", player) >= 2000) {
+						&& nessPlayer.getTimeSinceLastWasOnGround() >= 2000) {
 					if (vertDist > .118 && !player.isSneaking()) {
 						punish(event, "FastLadder");
 						manager.getPlayer(player).setViolation(new Violation("FastLadder", "(OnMove)"));
@@ -299,10 +301,10 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						}
 					}
 					if (fly && !web && PlayerManager.timeSince("sincePlace", player) >= 1000
-							&& PlayerManager.timeSince("wasIce", player) >= 1000
+							&& nessPlayer.getTimeSinceLastWasOnIce() >= 1000
 							&& PlayerManager.timeSince("isHit", player) >= 1000 && bottom != Material.SLIME_BLOCK
 							&& PlayerManager.timeSince("wasFlight", player) >= 500
-							&& PlayerManager.timeSince("wasGround", player) >= 1500) {
+							&& nessPlayer.getTimeSinceLastWasOnGround() >= 1500) {
 						if (!player.isInsideVehicle()
 								|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE)
 							punish(event, "Fly");
@@ -314,7 +316,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				if (hozDist > .2 && oldLoc.containsKey(player)
 						&& oldLoc.get(player).getY() == player.getLocation().getY()
 						&& PlayerManager.timeSince("wasFlight", player) >= 2000
-						&& PlayerManager.timeSince("wasIce", player) >= 1000
+						&& nessPlayer.getTimeSinceLastWasOnIce() >= 1000
 						&& PlayerManager.timeSince("isHit", player) >= 1000) {
 					if (!player.getWorld().getBlockAt(from).getType().isSolid()
 							&& !player.getWorld().getBlockAt(to).getType().isSolid()) {
@@ -330,7 +332,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 					&& PlayerManager.timeSince("wasFlight", player) >= 3000) {
 				if (oldLoc.containsKey(player)) {
 					if (oldLoc.get(player).getY() < to.getY() + 2 && PlayerManager.timeSince("isHit", player) >= 2000) {
-						if (PlayerManager.timeSince("wasIce", player) >= 1000) {
+						if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000) {
 							if (devMode)
 								MSG.tell(player, "&9Dev> &7Speed amo: " + hozDist);
 							punish(event, "Speed");
@@ -486,7 +488,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			} else {
 				if (!groundAround && hozDist > .32 && vertDist == 0 && !player.isFlying()
 						&& PlayerManager.timeSince("sincePlace", player) >= 1000
-						&& PlayerManager.timeSince("wasIce", player) >= 1000)
+						&& nessPlayer.getTimeSinceLastWasOnIce() >= 1000)
 					manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistance6(OnMove)"));
 				// Block rightBelow = player.getLocation().subtract(0, .1, 0).getBlock();
 			}
