@@ -1,11 +1,9 @@
 package com.github.ness;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
@@ -24,25 +22,7 @@ public class ViolationManager {
 
 	private final NESSAnticheat ness;
 
-	private final Set<ViolationAction> actions = ConcurrentHashMap.newKeySet(8);
-
-	public CompletableFuture<Map<String, Integer>> getCopyOfViolationMap(NessPlayer player) {
-		return (player.isDevMode()) ? CompletableFuture.completedFuture(new HashMap<>(player.checkViolationCounts)) : CompletableFuture.supplyAsync(() -> {
-			return (player.checkViolationCounts == null) ? new HashMap<>() : new HashMap<>(player.checkViolationCounts);
-		}, ness.getExecutor());
-	}
-	
-	CompletableFuture<?> clearViolations(NessPlayer player) {
-		if (player.isDevMode()) {
-			player.checkViolationCounts.clear();
-			return CompletableFuture.completedFuture(null);
-		}
-		return CompletableFuture.runAsync(() -> {
-			if (player.checkViolationCounts != null) {
-				player.checkViolationCounts.clear();
-			}
-		}, ness.getExecutor());
-	}
+	private final Set<ViolationAction> actions = new CopyOnWriteArraySet<>();
 	
 	private String addViolationVariables(String message, Player player, Violation violation, int violationCount) {
 		return ChatColor.translateAlternateColorCodes('&',
@@ -57,7 +37,6 @@ public class ViolationManager {
 			ConfigurationSection notifyStaff = section.getConfigurationSection("notify-staff");
 			if (notifyStaff != null && notifyStaff.getBoolean("enable", false)) {
 				final String notification = notifyStaff.getString("notification");
-				final String webhook = notifyStaff.getString("discord-webhook");
 				if (notification != null) {
 					addAction(new ViolationAction(false) {
 
@@ -114,15 +93,11 @@ public class ViolationManager {
 				final Violation previous = player.violation.getAndSet(null);
 				if (previous != null) {
 
+					Map<String, Integer> checkViolationCounts = player.checkViolationCounts;
 					int violationCount;
 					if (player.isDevMode()) {
-						violationCount = player.checkViolationCounts.get(previous.getCheck());
+						violationCount = checkViolationCounts.get(previous.getCheck());
 					} else {
-						Map<String, Integer> checkViolationCounts = player.checkViolationCounts;
-						if (checkViolationCounts == null) {
-							checkViolationCounts = new HashMap<>();
-							player.checkViolationCounts = checkViolationCounts;
-						}
 						violationCount = checkViolationCounts.merge(previous.getCheck(), 1, (c1, c2) -> c1 + c2);
 					}
 

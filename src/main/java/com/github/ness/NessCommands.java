@@ -5,17 +5,12 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import com.github.ness.gui.ViolationGUI;
-import com.github.ness.utility.IconMenu;
-
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -135,14 +130,12 @@ public class NessCommands implements CommandExecutor {
 		String body = ness.getNessConfig().getMessages().getString("commands.show-violations.body",
 				"&7Hack: &e%HACK%&7. Count: %VL%");
 
-		ness.getViolationManager().getCopyOfViolationMap(ness.getCheckManager().getPlayer(target))
-				.thenAccept((violations) -> {
-					sendMessage(sender, header.replace("%TARGET%", name));
-					for (Map.Entry<String, Integer> entry : violations.entrySet()) {
-						sendMessage(sender, body.replace("%HACK%", entry.getKey()).replace("%VL%",
-								Integer.toString(entry.getValue())));
-					}
-				});
+		Map<String, Integer> violationMap = ness.getCheckManager().getPlayer(target).checkViolationCounts;
+		sendMessage(sender, header.replace("%TARGET%", name));
+		for (Map.Entry<String, Integer> entry : violationMap.entrySet()) {
+			sendMessage(sender, body.replace("%HACK%", entry.getKey()).replace("%VL%",
+					Integer.toString(entry.getValue())));
+		}
 	}
 
 	private void clearViolations(CommandSender sender, Player target) {
@@ -151,14 +144,9 @@ public class NessCommands implements CommandExecutor {
 					"&cTarget player not specified, not found, or offline."));
 			return;
 		}
-		String name = target.getName();
-		sendMessage(sender, ness.getNessConfig().getMessages()
-				.getString("commands.clear-violations.starting", "7Clearing violations...").replace("%TARGET%", name));
-		String completeMsg = ness.getNessConfig().getMessages().getString("", "&7Cleared violations for &e%TARGET%");
-
-		ness.getViolationManager().clearViolations(ness.getCheckManager().getPlayer(target)).thenRun(() -> {
-			sendMessage(sender, completeMsg.replace("%TAGET%", name));
-		});
+		ness.getCheckManager().getPlayer(target).checkViolationCounts.clear();
+		sendMessage(sender, ness.getNessConfig().getMessages().getString("", "&7Cleared violations for &e%TARGET%")
+				.replace("%TAGET%", target.getName()));
 	}
 
 	private void sendVersion(CommandSender sender) {

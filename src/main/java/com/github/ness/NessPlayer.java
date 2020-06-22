@@ -1,6 +1,8 @@
 package com.github.ness;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -43,7 +45,7 @@ public class NessPlayer implements AutoCloseable {
 	 * this is a ConcurrentHashMap and is accessed concurrently in #setViolation.
 	 * 
 	 */
-	public Map<String, Integer> checkViolationCounts;
+	public final Map<String, Integer> checkViolationCounts = Collections.synchronizedMap(new HashMap<>());
 
 	@Getter
 	@Setter
@@ -126,16 +128,16 @@ public class NessPlayer implements AutoCloseable {
 	// Used for AutoClick check
 	@Getter
 	private final Set<Long> clickHistory = ConcurrentHashMap.newKeySet();
+	
+	private final boolean devMode;
 
 	NessPlayer(Player player, boolean devMode) {
 		this.player = player;
-		if (devMode) {
-			checkViolationCounts = new ConcurrentHashMap<>();
-		}
+		this.devMode = devMode;
 	}
 
 	public boolean isDevMode() {
-		return checkViolationCounts instanceof ConcurrentHashMap<?, ?>;
+		return devMode;
 	}
 
 	/**
