@@ -118,14 +118,14 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		NessPlayer np = this.manager.getPlayer(e.getPlayer());
 		if (yawChange >= 1.0F && yawChange % 0.1F == 0.0F) {
 			if (yawChange % 1.0F == 0.0F || yawChange % 10.0F == 0.0F || yawChange % 30.0F == 0.0F) {
-				np.setViolation(new Violation("Aimbot", "Pattern"));
+				np.setViolation(new Violation("Aimbot", "Pattern1"));
 				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);
 				}
 			}
 		} else if (pitchChange >= 1.0F && pitchChange % 0.1F == 0.0F) {
 			if (pitchChange % 1.0F == 0.0F || pitchChange % 10.0F == 0.0F || pitchChange % 30.0F == 0.0F) {
-				np.setViolation(new Violation("Aimbot", "Pattern"));
+				np.setViolation(new Violation("Aimbot", "Pattern2"));
 				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);
 				}
@@ -145,7 +145,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		if ((Math.round(yaw) == yaw && yaw != 0.0)) {
 			np.AimbotPatternCounter = np.AimbotPatternCounter+1;
 			if(np.AimbotPatternCounter>2) {
-				np.setViolation(new Violation("Aimbot", "Pattern1"));
+				np.setViolation(new Violation("Aimbot", "Pattern3"));
 				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);
 				}

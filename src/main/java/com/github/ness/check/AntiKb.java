@@ -37,7 +37,7 @@ public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 				if (Math.abs(to.distanceSquared(from)) < 0.10 && !Utility.hasKbBypass(p)) {
 					manager.getPlayer(p).setViolation(new Violation("AntiKb", ""));
 				}
-			}, 3L);
+			}, 4L);
 		}
 	}
 }
