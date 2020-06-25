@@ -118,20 +118,26 @@ public class NessPlayer implements AutoCloseable {
 	public double lastYDelta = 0.0;
 	public Location safeLoc;
 	public double lastYawDelta = 0.0;
-	
+	public int AimbotPatternCounter = 0;
+
 	// Used in OldMovementChecks
-	
+
 	private long lastWasOnGround = System.nanoTime() - Duration.ofHours(1L).toNanos();
+
 	public long getTimeSinceLastWasOnGround() {
 		return (lastWasOnGround - System.nanoTime()) / 1000_000L; // want milliseconds
 	}
+
 	public void updateLastWasOnGround() {
 		lastWasOnGround = System.nanoTime();
 	}
+
 	private long lastWasOnIce = lastWasOnGround;
+
 	public long getTimeSinceLastWasOnIce() {
-		return (lastWasOnIce - System.nanoTime()) / 1000_000L;  // want milliseconds
+		return (lastWasOnIce - System.nanoTime()) / 1000_000L; // want milliseconds
 	}
+
 	public void updateLastWasOnIce() {
 		lastWasOnIce = System.nanoTime();
 	}
@@ -146,7 +152,7 @@ public class NessPlayer implements AutoCloseable {
 	// Used for AutoClick check
 	@Getter
 	private final Set<Long> clickHistory = ConcurrentHashMap.newKeySet();
-	
+
 	private final boolean devMode;
 
 	NessPlayer(Player player, boolean devMode) {
@@ -184,7 +190,7 @@ public class NessPlayer implements AutoCloseable {
 					"Dev mode violation: Check " + violation.getCheck() + ". Details: " + violation.getDetails());
 			checkViolationCounts.merge(violation.getCheck(), 1, (c1, c2) -> c1 + c2);
 		}
-		
+
 		/*
 		 * if (player.hasPermission("ness.bypass.*") ||
 		 * player.hasPermission("ness.bypass." + violation.getCheck())) { return; } //
@@ -210,11 +216,7 @@ public class NessPlayer implements AutoCloseable {
 				.getConfigurationSection("cancel");
 		boolean cancel = checkViolationCounts.getOrDefault(check, 0) > cancelsec.getInt("vl", 10);
 		if (e instanceof PlayerMoveEvent && cancel) {
-			try {
-				player.teleport(safeLoc);
-			}catch(Exception ex) {
-					((PlayerMoveEvent) e).setCancelled(true);
-			}
+			((PlayerMoveEvent) e).setCancelled(true);
 		}
 		return cancel;
 	}

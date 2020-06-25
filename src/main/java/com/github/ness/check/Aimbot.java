@@ -145,16 +145,14 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		if (Math.abs(yaw) > 9356) {
 			yaw = 0.0;
 		}
-		if (Math.round(yaw) == yaw && yaw != 0.0) {
-			np.setViolation(new Violation("Aimbot", "Pattern"));
-			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-				e.setCancelled(true);
-			}
-		}
-		if (np.lastYawDelta == yaw && yaw != 0.0) {
-			np.setViolation(new Violation("Aimbot", "Experimental Pattern"));
-			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-				e.setCancelled(true);
+		if ((Math.round(yaw) == yaw && yaw != 0.0) || (np.lastYawDelta == yaw && yaw != 0.0)) {
+			np.AimbotPatternCounter = np.AimbotPatternCounter+1;
+			if(np.AimbotPatternCounter>2) {
+				np.setViolation(new Violation("Aimbot", "Pattern1"));
+				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+					e.setCancelled(true);
+				}
+				np.AimbotPatternCounter = 0;
 			}
 		}
 		np.lastYawDelta = yaw;
