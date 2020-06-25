@@ -210,7 +210,11 @@ public class NessPlayer implements AutoCloseable {
 				.getConfigurationSection("cancel");
 		boolean cancel = checkViolationCounts.getOrDefault(check, 0) > cancelsec.getInt("vl", 10);
 		if (e instanceof PlayerMoveEvent && cancel) {
-			player.teleport(safeLoc);
+			try {
+				player.teleport(safeLoc);
+			}catch(Exception ex) {
+					((PlayerMoveEvent) e).setCancelled(true);
+			}
 		}
 		return cancel;
 	}
