@@ -234,7 +234,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				// event.getPlayer().sendMessage("Delta: " + delta + " LastDelta: " +
 				// p.lastYDelta);
 			}
-			if (delta == -p.lastYDelta || delta == p.lastYDelta) {
+			if (delta == -p.lastYDelta) {
 				punish(event, "RepeatedMovement: " + delta);
 
 			}
