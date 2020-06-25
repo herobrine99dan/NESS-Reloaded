@@ -56,7 +56,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 				Location loc1 = p.getLocation();
 				float grade = loc.getYaw() - loc1.getYaw();
-				if (Math.round(grade) > 270.0) {
+				if (Math.round(grade) > 300.0) {
 					punish(e, p, 19, "HighYaw " + grade, 6);
 				}
 			}, 3L);
@@ -86,7 +86,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
 			offset += Math.abs(offsetX);
 			offset += Math.abs(offsetY);
-			if (offset > 280.0D) {
+			if (offset > 300.0D) {
 				punish(event, player, 20, "Angles/Hitbox " + offset, 6);
 			}
 		}
@@ -104,7 +104,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check4(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player damager = (Player) e.getDamager();
-			if (isLookingAt(damager, e.getEntity().getLocation()) < 0.37D) {
+			if (isLookingAt(damager, e.getEntity().getLocation()) < 0.2D) {
 				punish(e, damager, 23, "Angles/Hitbox " + isLookingAt(damager, e.getEntity().getLocation()), 4);
 			}
 		}
