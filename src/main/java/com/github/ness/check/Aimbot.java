@@ -2,6 +2,7 @@ package com.github.ness.check;
 
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -24,8 +25,9 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		Check1(e);
 		Check2(e);
 		Check3(e);
+		Check4(e);
 	}
-	
+
 	/**
 	 * All changes in pitch should be divisible by a constant. That constant is
 	 * determined by your mouse sensitivity in game. By calculating the gcd and
@@ -59,7 +61,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 			// if GCD is significantly different or if GCD is practically unsolvable
 			if (gcdDiff > 0.001 || deltaPitchGCD < 0.00001) {
 				manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PitchPattern"));
-				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);
 				}
 				return true;
@@ -79,13 +81,13 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		float yawChange = Math.abs(e.getTo().getYaw() - e.getFrom().getYaw());
 		float pitchChange = Math.abs(e.getTo().getPitch() - e.getFrom().getPitch());
 		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {
-			if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 				e.setCancelled(true);
 			}
 			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura"));
 			return true;
 		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {
-			if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 				e.setCancelled(true);
 			}
 			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura1"));
@@ -103,7 +105,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		if (diff > 1.0F && Math.round(diff) == diff) {
 			if (diff == p.getYawDelta()) {
 				p.setViolation(new Violation("Aimbot", "Pattern"));
-				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);
 				}
 			}
@@ -120,18 +122,42 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		if (yawChange >= 1.0F && yawChange % 0.1F == 0.0F) {
 			if (yawChange % 1.0F == 0.0F || yawChange % 10.0F == 0.0F || yawChange % 30.0F == 0.0F) {
 				np.setViolation(new Violation("Aimbot", "Pattern"));
-				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);
 				}
 			}
 		} else if (pitchChange >= 1.0F && pitchChange % 0.1F == 0.0F) {
 			if (pitchChange % 1.0F == 0.0F || pitchChange % 10.0F == 0.0F || pitchChange % 30.0F == 0.0F) {
 				np.setViolation(new Violation("Aimbot", "Pattern"));
-				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);
 				}
 			}
 		}
+	}
+
+	public void Check4(PlayerMoveEvent e) {
+		Location to = e.getTo();
+		Location from = e.getFrom();
+		Player p = e.getPlayer();
+		double yaw = Math.abs(to.getYaw() - from.getYaw());
+		NessPlayer np = this.manager.getPlayer(p);
+		if (Math.abs(yaw) > 9356) {
+			yaw = 0.0;
+		}
+		if (Math.round(yaw) == yaw && yaw != 0.0) {
+			np.setViolation(new Violation("Aimbot", "Pattern"));
+			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+				e.setCancelled(true);
+			}
+		}
+		if (np.lastYawDelta == yaw && yaw != 0.0) {
+			np.setViolation(new Violation("Aimbot", "Experimental Pattern"));
+			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+				e.setCancelled(true);
+			}
+		}
+		np.lastYawDelta = yaw;
 	}
 
 }

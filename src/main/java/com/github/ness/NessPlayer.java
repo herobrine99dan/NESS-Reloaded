@@ -115,9 +115,9 @@ public class NessPlayer implements AutoCloseable {
 	@Setter
 	long CPSlastDelay = 0;
 	public float lastPitch = 0;
-	public int lastPitchCount = 0;
 	public double lastYDelta = 0.0;
 	public Location safeLoc;
+	public double lastYawDelta = 0.0;
 	
 	// Used in OldMovementChecks
 	
