@@ -61,9 +61,6 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 			// if GCD is significantly different or if GCD is practically unsolvable
 			if (gcdDiff > 0.001 || deltaPitchGCD < 0.00001) {
 				manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PitchPattern"));
-				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-					e.setCancelled(true);
-				}
 				return true;
 			}
 			lastDeltaPitches.clear();
@@ -145,7 +142,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		if (Math.abs(yaw) > 9356) {
 			yaw = 0.0;
 		}
-		if ((Math.round(yaw) == yaw && yaw != 0.0) || (np.lastYawDelta == yaw && yaw != 0.0)) {
+		if ((Math.round(yaw) == yaw && yaw != 0.0)) {
 			np.AimbotPatternCounter = np.AimbotPatternCounter+1;
 			if(np.AimbotPatternCounter>2) {
 				np.setViolation(new Violation("Aimbot", "Pattern1"));
@@ -155,7 +152,6 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 				np.AimbotPatternCounter = 0;
 			}
 		}
-		np.lastYawDelta = yaw;
 	}
 
 }
