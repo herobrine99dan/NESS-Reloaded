@@ -147,7 +147,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Location to = e.getTo();
 		Location from = e.getFrom();
 		Player p = e.getPlayer();
-		NessPlayer np = this.manager.getPlayer(p);
 		double x = to.getX() - from.getX();
 		double y = to.getY() - from.getY();
 		if (Double.toString(y).length() > 4) {
@@ -161,7 +160,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (Utility.checkGround(to.getY())) {
 			return;
 		}
-		if (Utility.hasflybypass(p)) {
+		if (Utility.hasflybypass(p) || Utility.hasBlock(p, Material.SLIME_BLOCK) || Utility.hasWater(p)) {
 			return;
 		}
 		try {
@@ -169,22 +168,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		} catch (Exception ex) {
 			yresult = result.getY();
 		}
-		if (!Utilities.isAround(to, to.getBlock().getType())) {
-			return;
-		}
-		if (!(yresult == 0.07)) {
-			if (!(yresult == 0.0)) {
-				if (!(yresult == -0.01)) {
-					if (!(yresult == -0.03)) {
-						if (Math.abs(yresult) > 0.36) {
-							punish(e, "InvalidVelocity " + yresult);
-						}
-						if (np.isDevMode()) {
-							p.sendMessage("YResult: " + yresult);
-						}
-					}
-				}
-			}
+		if(!(Math.abs(yresult)<0.08)) {
+			p.sendMessage("YResult: " + yresult);
 		}
 	}
 

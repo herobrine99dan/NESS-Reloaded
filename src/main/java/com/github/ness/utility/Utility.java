@@ -34,6 +34,18 @@ public class Utility {
 		String v = Bukkit.getServer().getClass().getPackage().getName();
 		return v.substring(v.lastIndexOf('.') + 1);
 	}
+	
+	public static boolean hasWater(Player p) {
+		boolean done = false;
+		for (int i = 0; i < 256; i++) {
+			Location loc = p.getLocation();
+			loc.setY(i);
+			if (loc.getBlock().getType().name().contains("water")) {
+				done = true;
+			}
+		}
+		return done;
+	}
 
 	public static boolean hasVehicleNear(Player p, int range) {
 		if (p.isInsideVehicle()) {
