@@ -206,24 +206,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
-	/**
-	 * Check to detect NoFall
-	 * 
-	 * @param e
-	 */
-	public void Check19(PlayerMoveEvent e) {
-		Player p = e.getPlayer();
-		if (e.getTo().getY() > e.getFrom().getY() || p.getNearbyEntities(3, 3, 3).isEmpty())
-			return;
-		if (p.isOnGround() && !Utility.isOnGroudBypassNoFall(p) && !bypass(p)) {
-			Location l = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() - 1.0D,
-					p.getLocation().getZ())).getBlock().getLocation();
-			if (!l.getBlock().getType().isSolid() && !l.getBlock().isLiquid()) {
-				punish(e, p, "NoFall");
-			}
-		}
-	}
-
 	public void Check20(PlayerMoveEvent e) {
 		double yDist = e.getTo().getY() - e.getFrom().getY();
 		if (yDist > 0.7 && !bypass(e.getPlayer())) {
