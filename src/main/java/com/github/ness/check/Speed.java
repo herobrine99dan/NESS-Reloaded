@@ -169,7 +169,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			yresult = result.getY();
 		}
 		if(!(Math.abs(yresult)<0.08)) {
-			p.sendMessage("YResult: " + yresult);
+			if(Math.abs(yresult)>0.25) {
+				punish(e,"InvalidVelocity");
+			}
 		}
 	}
 
