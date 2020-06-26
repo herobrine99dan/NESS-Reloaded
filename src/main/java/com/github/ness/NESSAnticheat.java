@@ -60,7 +60,7 @@ public class NESSAnticheat extends JavaPlugin {
 		logger.debug("Configuration loaded and NMS version detected. Initiating checks...");
 
 		executor = Executors.newSingleThreadScheduledExecutor();
-		getServer().getPluginCommand("ness").setExecutor(new NessCommands(this));
+		getCommand("ness").setExecutor(new NessCommands(this));
 
 		checkManager = new CheckManager(this);
 		CompletableFuture<?> future = checkManager.loadAsync();
