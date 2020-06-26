@@ -10,9 +10,9 @@ import com.github.ness.utility.Utility;
 
 public class PingSpoof {
 
-	public static void Check(Player sender, Object packet) {
+	public static boolean Check(Player sender, Object packet) {
 		if(sender==null) {
-			return;
+			return false;
 		}
 			MovementPlayerData mp = MovementPlayerData.getInstance(sender);
 			mp.pingspooftimer = System.currentTimeMillis();
@@ -21,7 +21,9 @@ public class PingSpoof {
 				//sender.teleport(OldMovementChecks.safeLoc.getOrDefault(sender, sender.getLocation()));
 				InventoryHack.manageraccess.getPlayer(sender).setViolation(new Violation("PingSpoof",""));
 				Utility.setPing(sender, 100);
+				return true;
 			}
-			mp.oldpingspooftimer = mp.pingspooftimer;
+		mp.oldpingspooftimer = mp.pingspooftimer;
+		return false;
 	}
 }

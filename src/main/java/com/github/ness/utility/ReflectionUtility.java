@@ -1,4 +1,4 @@
-package com.github.ness.packets;
+package com.github.ness.utility;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

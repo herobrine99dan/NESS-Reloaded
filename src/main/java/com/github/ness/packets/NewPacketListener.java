@@ -1,6 +1,5 @@
 package com.github.ness.packets;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,10 +8,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.check.PingSpoof;
-import com.github.ness.check.killaura.KillauraFalseFlyingPacket;
-import com.github.ness.packets.wrappers.PacketPlayInPositionLook;
-import com.github.ness.packets.wrappers.PacketPlayInUseEntity;
-import com.github.ness.packets.wrappers.SimplePacket;
+import com.github.ness.packets.checks.BadPackets;
+import com.github.ness.packets.checks.KillauraFalseFlyingPacket;
+import com.github.ness.packets.checks.MorePackets;
+import com.github.ness.utility.ReflectionUtility;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
@@ -66,8 +65,10 @@ public class NewPacketListener implements Listener {
 		ChannelDuplexHandler channelDuplexHandler = new ChannelDuplexHandler() {
 			@Override
 			public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
-				executeActions(player, packet);
-				super.channelRead(channelHandlerContext, packet);
+				// We can drop the packet disabling this super method!
+				if (!executeActions(player, packet)) {
+					super.channelRead(channelHandlerContext, packet);
+				}
 			}
 		};
 
@@ -82,58 +83,33 @@ public class NewPacketListener implements Listener {
 	 * 
 	 * @param p
 	 * @param packet
+	 * @return
 	 */
 
-	public void executeActions(Player p, Object packet) {
+	public boolean executeActions(Player p, Object packet) {
 		if (p == null || packet == null || NESSAnticheat.main == null) {
-			return;
+			return true;
 		}
 		String packetname = packet.toString().substring(0, packet.toString().indexOf("@"))
 				.replace("net.minecraft.server.", "");
 		if (packetname.toLowerCase().contains("position")) {
-			PacketListener.BadPacketsCheck(p, packet);
+			return BadPackets.Check(p, ReflectionUtility.getPacketName(packet));
 		} else if (packetname.toLowerCase().contains("flying")) {
-			PingSpoof.Check(p, packet);
+			return PingSpoof.Check(p, packet);
 		}
-		KillauraFalseFlyingPacket.Check(packet, p);
-		PacketListener.MorePacketsCheck(p, packet);
-	}
-
-	/**
-	 * Get A SimplePacket Object, which can be a PacketPlayInUseEntity, a
-	 * PacketPlayInPositionLook or a simple packet object.
-	 * 
-	 * @param p
-	 * @param packet
-	 * @return SimplePacket Object
-	 */
-
-	public SimplePacket convertPacket(Player p, Object packet) {
-		SimplePacket packetconverted = new SimplePacket(packet);
-		String packetname = packet.toString().substring(0, packet.toString().indexOf("@"))
-				.replace("net.minecraft.server.", "");
-		if (packetname.toLowerCase().contains("useentity")) {
-			PacketPlayInUseEntity entitypacket = new PacketPlayInUseEntity(packet);
-			p.sendMessage("EntityPacket: " + entitypacket.getAction() + " " + entitypacket.getEntityId());
-			packetconverted = entitypacket;
-			return packetconverted;
-		} else if (packetname.toLowerCase().contains("position")) {
-			PacketPlayInPositionLook positionpacket = new PacketPlayInPositionLook(packet);
-			p.sendMessage("PositionPacket: " + new Location(p.getWorld(), positionpacket.getX(), positionpacket.getY(),
-					positionpacket.getZ(), positionpacket.getYaw(), positionpacket.getPitch()));
-			packetconverted = positionpacket;
-			return packetconverted;
-		} else {
-			return packetconverted;
+		if (KillauraFalseFlyingPacket.Check(packet, p)) {
+			return true;
 		}
+		return MorePackets.Check(p, packet);
 	}
 
 	/**
 	 * Get the Channel of a Player
+	 * 
 	 * @param player
 	 * @return
 	 */
-	
+
 	public Channel getChannel(Player player) {
 		try {
 			Class<?> craftplayerclass = (Class<?>) Class
