@@ -42,8 +42,10 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
 			Entity et = e.getEntity();
+			double xDist = Math.abs(p.getLocation().getX() - et.getLocation().getX());
+			double zDist = Math.abs(p.getLocation().getZ() - et.getLocation().getZ());
 			double dist = Utility.getMaxSpeed(p.getLocation(), et.getLocation());
-			if (dist > 5) {
+			if (dist > 5 || xDist > 3.1 || zDist > 3.1) {
 				punish(e, p, 19, "Reach" + "(" + dist + ")", 6);
 			}
 		}
@@ -109,11 +111,12 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			}
 		}
 	}
- /**
-  * @author theWoosh (https://github.com/projectwoosh)
-  * from https://github.com/projectwoosh/AntiCheat/blob/master/src/tk/thewoosh/plugins/wac/checks/combat/WallHit.java
-  * @param e
-  */
+
+	/**
+	 * @author theWoosh (https://github.com/projectwoosh) from
+	 *         https://github.com/projectwoosh/AntiCheat/blob/master/src/tk/thewoosh/plugins/wac/checks/combat/WallHit.java
+	 * @param e
+	 */
 	public void Check5(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
@@ -148,7 +151,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
 			if (l != null)
 				failed = l.getBlock().getType().isSolid() && l.clone().add(0, 1, 0).getBlock().getType().isSolid();
-			if(failed) {
+			if (failed) {
 				punish(e, p, 23, "WallHit", 4);
 			}
 		}
@@ -170,8 +173,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			NessPlayer np = manager.getPlayer(p);
 			float pitch = p.getEyeLocation().getPitch();
 			if (np.lastPitch > pitch - 10.5D) {
-				//p.sendMessage(String.valueOf(pitch - 10.5D) + " | " + np.lastPitch);
-				//p.sendMessage("Cheats!");
+				// p.sendMessage(String.valueOf(pitch - 10.5D) + " | " + np.lastPitch);
+				// p.sendMessage("Cheats!");
 			}
 			np.lastPitch = pitch;
 		}
@@ -186,7 +189,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	}
 
 	private void punish(EntityDamageByEntityEvent e, Player p, int i, String module, int vl) {
-		if(manager.getPlayer(p).shouldCancel(e, this.getClass().getSimpleName())) {
+		if (manager.getPlayer(p).shouldCancel(e, this.getClass().getSimpleName())) {
 			e.setCancelled(true);
 		}
 		manager.getPlayer(p).setViolation(new Violation("Killaura", module));
