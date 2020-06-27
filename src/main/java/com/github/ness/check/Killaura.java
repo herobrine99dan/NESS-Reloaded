@@ -45,7 +45,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			double xDist = Math.abs(p.getLocation().getX() - et.getLocation().getX());
 			double zDist = Math.abs(p.getLocation().getZ() - et.getLocation().getZ());
 			double dist = Utility.getMaxSpeed(p.getLocation(), et.getLocation());
-			if (dist > 5 || xDist > 3.1 || zDist > 3.1) {
+			if (dist > 5 || xDist > 3.3 || zDist > 3.3) {
 				punish(e, p, 19, "Reach" + "(" + dist + ")", 6);
 			}
 		}
