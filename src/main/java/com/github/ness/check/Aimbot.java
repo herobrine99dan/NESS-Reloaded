@@ -123,8 +123,8 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 			yaw = 0.0;
 		}
 		if ((Math.round(yaw) == yaw && yaw != 0.0)) {
-			np.AimbotPatternCounter = np.AimbotPatternCounter+1;
-			if(np.AimbotPatternCounter>2) {
+			np.AimbotPatternCounter = np.AimbotPatternCounter + 1;
+			if (np.AimbotPatternCounter > 3) {
 				np.setViolation(new Violation("Aimbot", "Pattern3"));
 				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);

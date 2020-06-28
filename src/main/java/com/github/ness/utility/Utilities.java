@@ -36,6 +36,29 @@ public final class Utilities {
 		bd = bd.setScale(places, RoundingMode.HALF_UP);
 		return bd.doubleValue();
 	}
+	
+	public static boolean IsSameBlockAround(Player p, float add_y, float width) {
+		Material new_loc1 = p.getLocation().add(0, add_y, 0).getBlock().getType();
+
+		Material new_loc2 = p.getLocation().add(width, add_y, 0).getBlock().getType();
+		Material new_loc3 = p.getLocation().add(-width, add_y, 0).getBlock().getType();
+
+		Material new_loc4 = p.getLocation().add(0, add_y, width).getBlock().getType();
+		Material new_loc5 = p.getLocation().add(0, add_y, -width).getBlock().getType();
+
+		Material new_loc6 = p.getLocation().add(-width, add_y, -width).getBlock().getType();
+		Material new_loc7 = p.getLocation().add(width, add_y, width).getBlock().getType();
+
+		Material new_loc8 = p.getLocation().add(width, add_y, -width).getBlock().getType();
+		Material new_loc9 = p.getLocation().add(-width, add_y, width).getBlock().getType();
+		Material mat = p.getLocation().getBlock().getType();
+		if (new_loc1 == mat && new_loc2 == mat && new_loc3 == mat && new_loc4 == mat && new_loc5 == mat
+				&& new_loc6 == mat && new_loc7 == mat && new_loc8 == mat && new_loc9 == mat) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	public static boolean IsSameBlockAround(Player p, Material mat, float add_y, float width) {
 		Material new_loc1 = p.getLocation().add(0, add_y, 0).getBlock().getType();

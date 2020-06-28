@@ -38,9 +38,9 @@ public class Utility {
 	public static boolean hasWater(Player p) {
 		boolean done = false;
 		for (int i = 0; i < 256; i++) {
-			Location loc = p.getLocation();
+			Location loc = p.getLocation().clone();
 			loc.setY(i);
-			if (loc.getBlock().getType().name().contains("water")) {
+			if (loc.getBlock().getType().name().toLowerCase().contains("water")) {
 				done = true;
 			}
 		}

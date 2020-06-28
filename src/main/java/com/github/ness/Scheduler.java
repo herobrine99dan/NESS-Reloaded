@@ -23,6 +23,7 @@ public class Scheduler {
 						np.setClicks(-4);
 						np.setNormalPacketsCounter(0);
 						np.setMovementpacketscounter(0);
+						np.AimbotPatternCounter = 0;
 						OldMovementChecks.blockPackets.put(p.getName(), false);
 						OldMovementChecks.noground.put(p.getName(), 0);
 					}

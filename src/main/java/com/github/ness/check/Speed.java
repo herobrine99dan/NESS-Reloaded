@@ -139,10 +139,10 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		// Vector result = v.subtract(p.getVelocity());
 		Vector result = v.subtract(p.getVelocity().setY(Utility.around(p.getVelocity().getY(), 5)));
 		double yresult = 0.0;
-		if (Utility.checkGround(to.getY())) {
+		if (Utility.checkGround(to.getY()) && !Utilities.IsSameBlockAround(p, -1f, 0.5f)) {
 			return;
 		}
-		if (Utility.hasflybypass(p) || Utility.hasBlock(p, Material.SLIME_BLOCK) || Utility.hasWater(p)) {
+		if (Utility.hasflybypass(p) || Utility.hasBlock(p, Material.SLIME_BLOCK) || Utility.hasWater(p) || Utility.isInWater(p)) {
 			return;
 		}
 		try {
@@ -151,7 +151,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			yresult = result.getY();
 		}
 		if(!(Math.abs(yresult)<0.08)) {
-			if(Math.abs(yresult)>0.25) {
+			if(Math.abs(yresult)>0.24) {
 				punish(e,"InvalidVelocity");
 			}
 		}

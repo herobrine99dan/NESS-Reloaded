@@ -43,10 +43,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
 			Entity et = e.getEntity();
-			double xDist = Math.abs(p.getLocation().getX() - et.getLocation().getX());
-			double zDist = Math.abs(p.getLocation().getZ() - et.getLocation().getZ());
 			double dist = Utility.getMaxSpeed(p.getLocation(), et.getLocation());
-			if (dist > 5 || xDist > 3.3 || zDist > 3.3) {
+			if (dist > 5) {
 				punish(e, p, 19, "Reach" + "(" + dist + ")", 6);
 			}
 		}
@@ -114,46 +112,44 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	}
 
 	/**
-	 * @author theWoosh (https://github.com/projectwoosh) from
-	 *         https://github.com/projectwoosh/AntiCheat/blob/master/src/tk/thewoosh/plugins/wac/checks/combat/WallHit.java
+	 * @author Wall (Wall_#1920 on Discord) 
+	 * This check came from https://discord.com/channels/361214329158238218/369098995861291009
 	 * @param e
 	 */
 	public void Check5(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
-			Player p = (Player) e.getDamager();
-			Entity entity = e.getEntity();
-			double x = Math.abs(p.getLocation().getX() - e.getEntity().getLocation().getX());
-			double z = Math.abs(p.getLocation().getZ() - e.getEntity().getLocation().getZ());
-
-			if (x == 0 || z == 0) {
+			if (!(e.getDamager() instanceof Player))
 				return;
-			}
-
-			if (p.getLocation().getY() - e.getEntity().getLocation().getY() >= .6) // TODO Change .6 to height of entity
-																					// / height of player
+			Location from = e.getEntity().getLocation();
+			Location to = e.getDamager().getLocation();
+			double x = Math.abs(from.getX() - to.getX());
+			double z = Math.abs(from.getZ() - to.getZ());
+			if (!e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK))
 				return;
-
+			if (x == 0.0D || z == 0.0D)
+				return;
+			if (Math.abs(from.getY() - to.getY()) >= 0.6D)
+				return;
 			Location l = null;
-
-			if (x <= .5 && z >= 1) {
-				if (p.getLocation().getZ() > entity.getLocation().getZ()) {
-					l = p.getLocation().clone().add(0, 0, -1);
+			if (x <= 0.5D && z >= 1.0D) {
+				if (e.getDamager().getLocation().getZ() > e.getEntity().getLocation().getZ()) {
+					l = e.getDamager().getLocation().clone().add(0.0D, 0.0D, -1.0D);
 				} else {
-					l = p.getLocation().clone().add(0, 0, 1);
+					l = e.getDamager().getLocation().clone().add(0.0D, 0.0D, 1.0D);
 				}
-			} else if (z <= .5 && x >= 1) {
-				if (p.getLocation().getX() > entity.getLocation().getX()) {
-					l = p.getLocation().clone().add(-1, 0, 0);
+			} else if (z <= 0.5D && x >= 1.0D) {
+				if (e.getDamager().getLocation().getX() > e.getEntity().getLocation().getX()) {
+					l = e.getDamager().getLocation().clone().add(-1.0D, 0.0D, 0.0D);
 				} else {
-					l = p.getLocation().clone().add(-1, 0, 0);
+					l = e.getDamager().getLocation().clone().add(-1.0D, 0.0D, 0.0D);
 				}
 			}
 			boolean failed = false;
-
 			if (l != null)
-				failed = l.getBlock().getType().isSolid() && l.clone().add(0, 1, 0).getBlock().getType().isSolid();
+				failed = (l.getBlock().getType().isSolid()
+						&& l.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType().isSolid());
 			if (failed) {
-				punish(e, p, 23, "WallHit", 4);
+				punish(e, (Player) e.getDamager(), 0, "WallHit", 0);
 			}
 		}
 	}
@@ -180,7 +176,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			np.lastPitch = pitch;
 		}
 	}
-	
+
 	public void Check8(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
@@ -189,10 +185,10 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 				final Location real = np.lastLocation;
 				final double difference = real.getYaw() - p.getLocation().getYaw();
 				if (difference > 1 && p.getFallDistance() < 1f) {
-					if(np.isDevMode()) {
+					if (np.isDevMode()) {
 						p.sendMessage("KillauraPacket diff: " + difference);
 					}
-					punish(e,p,5,"InvalidPacket",0);
+					punish(e, p, 5, "InvalidPacket", 0);
 				}
 			}
 		}
