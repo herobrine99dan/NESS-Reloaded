@@ -100,6 +100,7 @@ public class NewPacketListener implements Listener {
 		if (KillauraFalseFlyingPacket.Check(packet, p)) {
 			return true;
 		}
+		NESSAnticheat.main.getCheckManager().getPlayer(p).updatePacketValues(packet);
 		return MorePackets.Check(p, packet);
 	}
 

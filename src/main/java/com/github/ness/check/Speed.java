@@ -31,7 +31,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	void checkEvent(PlayerMoveEvent e) {
 		Check(e);
 		Check1(e);
-		Check2(e);
 		Check3(e);
 		Check4(e);
 		Check5(e);
@@ -122,23 +121,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 					&& e.getTo().getY() - e.getFrom().getY() == 0.0) {
 				punish(e, "NoSlowDown " + dist);
 			}
-		}
-	}
-
-	public void Check2(PlayerMoveEvent event) {
-		Player p = event.getPlayer();
-		if (Utility.hasflybypass(p)) {
-			return;
-		}
-		int ping = Utility.getPing(p);
-		int maxPackets = maxpackets * (ping / 100);
-		if (ping < 150) {
-			maxPackets = maxpackets;
-		}
-		NessPlayer player = manager.getPlayer(p);
-		if (player.getOnMoveRepeat() > maxPackets) {
-			punish(event, "Timer");
-			// p.sendMessage("Repeat: " + player.getOnMoveRepeat());
 		}
 	}
 

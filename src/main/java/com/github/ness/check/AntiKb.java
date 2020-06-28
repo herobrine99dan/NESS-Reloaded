@@ -34,10 +34,10 @@ public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 			final Location from = p.getLocation();
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 				Location to = p.getLocation();
-				if (Math.abs(to.distanceSquared(from)) < 0.10 && !Utility.hasKbBypass(p)) {
+				if (Math.abs(to.distanceSquared(from)) < 0.20 && !Utility.hasKbBypass(p)) {
 					manager.getPlayer(p).setViolation(new Violation("AntiKb", ""));
 				}
-			}, 4L);
+			},5L);
 		}
 	}
 }
