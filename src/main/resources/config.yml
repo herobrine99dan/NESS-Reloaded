@@ -70,6 +70,7 @@ enabled-checks:
   - 'Scaffold'
   - 'SpamBot'
   - 'Speed'
+  - 'Strafe'
   - 'Sprint'
 
 #
