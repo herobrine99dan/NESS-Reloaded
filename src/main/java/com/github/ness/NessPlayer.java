@@ -42,8 +42,7 @@ public class NessPlayer implements AutoCloseable {
 	final AtomicReference<Violation> violation = new AtomicReference<>();
 	/**
 	 * Used by ViolationManager to count violations of specific checks. <br>
-	 * This is usually a lazily initialised HashMap, but if dev mode is enabled,
-	 * this is a ConcurrentHashMap and is accessed concurrently in #setViolation.
+	 * This map is synchronized and thread safe
 	 * 
 	 */
 	public final Map<String, Integer> checkViolationCounts = Collections.synchronizedMap(new HashMap<>());
@@ -183,11 +182,11 @@ public class NessPlayer implements AutoCloseable {
 			return;
 		}
 		this.violation.compareAndSet(null, violation);
+		checkViolationCounts.merge(violation.getCheck(), 1, (c1, c2) -> c1 + c2);
 		if (isDevMode()) {
 			// sendMessage is thread safe
 			player.sendMessage(
 					"Dev mode violation: Check " + violation.getCheck() + ". Details: " + violation.getDetails());
-			checkViolationCounts.merge(violation.getCheck(), 1, (c1, c2) -> c1 + c2);
 		}
 
 		/*
