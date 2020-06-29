@@ -7,6 +7,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.github.ness.CheckManager;
 import com.github.ness.api.Violation;
+import com.github.ness.utility.Utility;
 
 public class Criticals extends AbstractCheck<EntityDamageByEntityEvent> {
 
@@ -35,7 +36,7 @@ public class Criticals extends AbstractCheck<EntityDamageByEntityEvent> {
 			return;
 		}
 
-		if (!player.isOnGround() && !player.isFlying()) {
+		if (!Utility.isOnGround(player.getLocation()) && !player.isFlying()) {
 			if (player.getLocation().getY() % 1.0D == 0.0D || player.getLocation().getY() % 0.5D == 0.0D) {
 				if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
 					if(manager.getPlayer(player).shouldCancel(event, this.getClass().getSimpleName())) {

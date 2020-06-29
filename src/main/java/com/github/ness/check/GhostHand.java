@@ -43,7 +43,7 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent>{
 			return;
 		}
 		NessPlayer p = manager.getPlayer(event.getPlayer());
-		if(p.getDistance()>0.0 || p.getYawDelta()>0.0) {
+		if(p.getDistance()>0.0 || Math.abs(p.lastPitch)>0.0) {
 			return;
 		}
 		if(targetBlock.getLocation().add(0, 1, 0).getBlock().getType().name().contains("Slab")) {

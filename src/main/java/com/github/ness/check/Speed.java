@@ -31,7 +31,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	void checkEvent(PlayerMoveEvent e) {
 		Check(e);
 		Check1(e);
-		Check2(e);
 		Check3(e);
 		Check4(e);
 		Check5(e);
@@ -125,29 +124,11 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
-	public void Check2(PlayerMoveEvent event) {
-		Player p = event.getPlayer();
-		if (Utility.hasflybypass(p)) {
-			return;
-		}
-		int ping = Utility.getPing(p);
-		int maxPackets = maxpackets * (ping / 100);
-		if (ping < 150) {
-			maxPackets = maxpackets;
-		}
-		NessPlayer player = manager.getPlayer(p);
-		if (player.getOnMoveRepeat() > maxPackets) {
-			punish(event, "Timer");
-			// p.sendMessage("Repeat: " + player.getOnMoveRepeat());
-		}
-	}
-
 	// Can Be Better
 	public void Check3(PlayerMoveEvent e) {
 		Location to = e.getTo();
 		Location from = e.getFrom();
 		Player p = e.getPlayer();
-		NessPlayer np = this.manager.getPlayer(p);
 		double x = to.getX() - from.getX();
 		double y = to.getY() - from.getY();
 		if (Double.toString(y).length() > 4) {
@@ -158,10 +139,10 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		// Vector result = v.subtract(p.getVelocity());
 		Vector result = v.subtract(p.getVelocity().setY(Utility.around(p.getVelocity().getY(), 5)));
 		double yresult = 0.0;
-		if (Utility.checkGround(to.getY())) {
+		if (Utility.checkGround(to.getY()) && !Utilities.IsSameBlockAround(p, -1f, 0.5f)) {
 			return;
 		}
-		if (Utility.hasflybypass(p)) {
+		if (Utility.hasflybypass(p) || Utility.hasBlock(p, Material.SLIME_BLOCK) || Utility.hasWater(p) || Utility.isInWater(p)) {
 			return;
 		}
 		try {
@@ -169,21 +150,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		} catch (Exception ex) {
 			yresult = result.getY();
 		}
-		if (!Utilities.isAround(to, to.getBlock().getType())) {
-			return;
-		}
-		if (!(yresult == 0.07)) {
-			if (!(yresult == 0.0)) {
-				if (!(yresult == -0.01)) {
-					if (!(yresult == -0.03)) {
-						if (Math.abs(yresult) > 0.36) {
-							punish(e, "InvalidVelocity " + yresult);
-						}
-						if (np.isDevMode()) {
-							p.sendMessage("YResult: " + yresult);
-						}
-					}
-				}
+		if(!(Math.abs(yresult)<0.08)) {
+			if(Math.abs(yresult)>0.24) {
+				punish(e,"InvalidVelocity");
 			}
 		}
 	}

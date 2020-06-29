@@ -18,6 +18,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.api.Violation;
+import com.github.ness.utility.Utility;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -49,74 +50,37 @@ public class NessPlayer implements AutoCloseable {
 
 	@Getter
 	@Setter
-	private boolean moved = false;
-	@Getter
-	@Setter
-	private double anglekillauramachinelearning = 0.0;
-	@Getter
-	@Setter
 	public List<Float> patterns = new ArrayList<Float>();
 	@Getter
 	@Setter
-	double distance = 0.0;
+	double distance = 0.0; //For GhostHand and NoSlowDown
 	@Getter
 	@Setter
-	int onMoveRepeat = 0;
+	int clicks = 0; //For FastClick 
 	@Getter
 	@Setter
-	float YawDelta = 0.0f;
+	int blockplace = 0; //For FastPlace
 	@Getter
 	@Setter
-	int clicks = 0;
+	int movementpacketscounter = 0; //For BadPackets
 	@Getter
 	@Setter
-	double oldY = 0;
+	int normalPacketsCounter = 0; //For MorePackets
 	@Getter
 	@Setter
-	int packets = 0;
+	int CPS = 0; //For AutoClicker
 	@Getter
 	@Setter
-	int drop = 0;
+	long CPSDelay = 0; //For AutoClicker
 	@Getter
 	@Setter
-	int blockplace = 0;
-	@Getter
-	@Setter
-	int onmoverepeat = 0;
-	@Getter
-	@Setter
-	private long lastHittime = 0;
-	@Getter
-	@Setter
-	int movementpacketscounter = 0;
-	@Getter
-	@Setter
-	int normalPacketsCounter = 0;
-	@Getter
-	@Setter
-	long autosneak = 0;
-	@Getter
-	@Setter
-	int packetsrepeat = 0;
-	@Getter
-	@Setter
-	double lastDistance = 0.0;
-	@Getter
-	@Setter
-	long mobinfrontime = 0;
-	@Getter
-	@Setter
-	int CPS = 0;
-	@Getter
-	@Setter
-	long CPSDelay = 0;
-	@Getter
-	@Setter
-	long CPSlastDelay = 0;
-	public float lastPitch = 0;
-	public double lastYDelta = 0.0;
-	public Location safeLoc;
-	public int AimbotPatternCounter = 0;
+	long CPSlastDelay = 0; //For AutoClicker
+	public float lastPitch = 0; //Used in GhostHand
+	public double lastYDelta; //Used in Speed And Fly
+	public Location safeLoc; //This should be used to make the better LagBack system
+	public int AimbotPatternCounter = 0; //For Aimbot
+	public Location lastLocation; //For Killaura
+	public double lastDist; //For Strafe Check
 
 	// Used in OldMovementChecks
 
@@ -156,6 +120,16 @@ public class NessPlayer implements AutoCloseable {
 	NessPlayer(Player player, boolean devMode) {
 		this.player = player;
 		this.devMode = devMode;
+	}
+	
+	public void updateMovementValues(PlayerMoveEvent event) {
+		this.setDistance(Math.abs(Utility.getMaxSpeed(event.getFrom(), event.getTo())));
+	}
+	
+	public void updatePacketValues(Object packet) {
+		if(packet.toString().toLowerCase().contains("useentity")) {
+			lastLocation = this.getPlayer().getLocation().clone();
+		}
 	}
 
 	public boolean isDevMode() {
