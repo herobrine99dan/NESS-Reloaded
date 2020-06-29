@@ -34,6 +34,10 @@ public class Utility {
 		String v = Bukkit.getServer().getClass().getPackage().getName();
 		return v.substring(v.lastIndexOf('.') + 1);
 	}
+
+	public static String getMaterialName(Location loc) {
+		return loc.getBlock().getType().name().toLowerCase();
+	}
 	
 	public static boolean hasWater(Player p) {
 		boolean done = false;

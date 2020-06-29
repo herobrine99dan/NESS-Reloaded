@@ -54,33 +54,34 @@ public class NessPlayer implements AutoCloseable {
 	public List<Float> patterns = new ArrayList<Float>();
 	@Getter
 	@Setter
-	double distance = 0.0;
+	double distance = 0.0; //For GhostHand and NoSlowDown
 	@Getter
 	@Setter
-	int clicks = 0;
+	int clicks = 0; //For FastClick 
 	@Getter
 	@Setter
-	int blockplace = 0;
+	int blockplace = 0; //For FastPlace
 	@Getter
 	@Setter
-	int movementpacketscounter = 0;
+	int movementpacketscounter = 0; //For BadPackets
 	@Getter
 	@Setter
-	int normalPacketsCounter = 0;
+	int normalPacketsCounter = 0; //For MorePackets
 	@Getter
 	@Setter
-	int CPS = 0;
+	int CPS = 0; //For AutoClicker
 	@Getter
 	@Setter
-	long CPSDelay = 0;
+	long CPSDelay = 0; //For AutoClicker
 	@Getter
 	@Setter
-	long CPSlastDelay = 0;
-	public float lastPitch = 0;
-	public double lastYDelta = 0.0;
-	public Location safeLoc;
-	public int AimbotPatternCounter = 0;
-	public Location lastLocation;
+	long CPSlastDelay = 0; //For AutoClicker
+	public float lastPitch = 0; //Used in GhostHand
+	public double lastYDelta; //Used in Speed And Fly
+	public Location safeLoc; //This should be used to make the better LagBack system
+	public int AimbotPatternCounter = 0; //For Aimbot
+	public Location lastLocation; //For Killaura
+	public double lastDist; //For Strafe Check
 
 	// Used in OldMovementChecks
 
