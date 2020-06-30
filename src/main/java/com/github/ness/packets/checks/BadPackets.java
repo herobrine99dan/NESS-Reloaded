@@ -41,7 +41,7 @@ public class BadPackets {
 			 */
 			OldMovementChecks.blockPackets.put(sender.getName(), true);
 			InventoryHack.manageraccess.getPlayer(sender)
-					.setViolation(new Violation("OldBadPackets", np.getMovementpacketscounter() + ""));
+					.setViolation(new Violation("BadPackets", np.getMovementpacketscounter() + ""));
 			return true;
 		}
 		return false;

@@ -113,7 +113,6 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
 	/**
 	 * @author Wall (Wall_#1920 on Discord) 
-	 * This check came from https://discord.com/channels/361214329158238218/369098995861291009
 	 * @param e
 	 */
 	public void Check5(EntityDamageByEntityEvent e) {
