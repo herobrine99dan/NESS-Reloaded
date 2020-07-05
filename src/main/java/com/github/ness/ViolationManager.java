@@ -94,12 +94,7 @@ public class ViolationManager {
 				if (previous != null) {
 
 					Map<String, Integer> checkViolationCounts = player.checkViolationCounts;
-					int violationCount;
-					if (player.isDevMode()) {
-						violationCount = checkViolationCounts.get(previous.getCheck());
-					} else {
-						violationCount = checkViolationCounts.merge(previous.getCheck(), 1, (c1, c2) -> c1 + c2);
-					}
+					int violationCount = checkViolationCounts.get(previous.getCheck());
 
 					// actions we have to run on the main thread
 					Set<ViolationAction> syncActions = null;
