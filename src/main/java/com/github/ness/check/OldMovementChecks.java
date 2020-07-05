@@ -33,7 +33,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	private void punish(PlayerMoveEvent e, String cheat) {
-		if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+		if(manager.getPlayer(e.getPlayer()).shouldCancel(e, cheat)) {
 			e.setCancelled(true);
 		}
 	}
@@ -53,7 +53,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		Double fallDist = (double) player.getFallDistance();
 		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
 				|| nessPlayer.isTeleported()) {
-			event.setCancelled(false);
 			return;
 		}
 		if (blockPackets.getOrDefault(player.getName(), false)) {
