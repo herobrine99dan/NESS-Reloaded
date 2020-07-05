@@ -108,10 +108,10 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		double dist = Utility.getMaxSpeed(e.getFrom(), e.getTo());
 		if (Utility.checkGround(e.getTo().getY()) && !player.isInsideVehicle() && !player.isFlying()
 				&& !player.hasPotionEffect(PotionEffectType.SPEED) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
-			if (dist > 0.62D) {
+			if (dist > 0.65D) {
 				if (Utilities.getPlayerUpperBlock(player).getType().isSolid()
-						&& Utilities.getLocationUnderBlock(e.getTo()).getType().name().toLowerCase().contains("ice")
-						&& Utilities.getLocationUnderBlock(e.getFrom()).getType().name().toLowerCase()
+						&& e.getTo().add(0,-1,0).getBlock().getType().name().toLowerCase().contains("ice")
+						&& e.getFrom().add(0, -1, 0).getBlock().getType().name().toLowerCase()
 								.contains("ice")) {
 					return;
 				}
@@ -134,6 +134,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (Double.toString(y).length() > 4) {
 			y = Utility.around(y, 5);
 		}
+		if(Utility.flagyStuffNear(to) || Utility.flagyStuffNear(from)) {
+			return;
+		}
 		double z = to.getZ() - from.getZ();
 		Vector v = new Vector(x, y, z);
 		// Vector result = v.subtract(p.getVelocity());
@@ -143,6 +146,22 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		if (Utility.hasflybypass(p) || Utility.hasBlock(p, Material.SLIME_BLOCK) || Utility.hasWater(p) || Utility.isInWater(p)) {
+			return;
+		}
+		if (Utility.getMaterialName(to).contains("water") || Utility.getMaterialName(to).contains("lava")
+				|| Utility.getMaterialName(from).contains("water") || Utility.getMaterialName(from).contains("water")) {
+			return;
+		}
+		if (Utility.getMaterialName(to).contains("ladder") || Utility.getMaterialName(from).contains("ladder")) {
+			return;
+		}
+		if (Utility.getMaterialName(to).contains("web") || Utility.getMaterialName(from).contains("web")) {
+			return;
+		}
+		if (Utility.getMaterialName(to).contains("vine") || Utility.getMaterialName(from).contains("vine")) {
+			return;
+		}
+		if (Utility.getMaterialName(to).contains("fence") || Utility.getMaterialName(from).contains("fence")) {
 			return;
 		}
 		try {

@@ -25,13 +25,13 @@ public class ViolationGUI {
 
 	public void createGUI() {
 		Player p = (Player) sender;
-		IconMenu menu = new IconMenu("§c§lViolation Manager", 9, new IconMenu.OptionClickEventHandler() {
+		IconMenu menu = new IconMenu("§c§lNESS Violation Manager", 9, new IconMenu.OptionClickEventHandler() {
 			@Override
 			public void onOptionClick(IconMenu.OptionClickEvent event) {
-				if (Bukkit.getPlayer(event.getName()) == null) {
-					p.sendMessage("This player isn't online!");
-					return;
-				}
+				/*
+				 * if (Bukkit.getPlayer(event.getName()) == null) {
+				 * p.sendMessage("This player isn't online!"); return; }
+				 */
 			}
 		}, NESSAnticheat.main);
 		int i = 0;
@@ -41,32 +41,11 @@ public class ViolationGUI {
 			lore.add("Cheats:");
 			NessPlayer np = NESSAnticheat.main.getCheckManager().getPlayer(cheater);
 			for (String s : np.checkViolationCounts.keySet()) {
-				lore.add(" VL: " + np.checkViolationCounts.getOrDefault(s, 0));
+				lore.add(s + " VL: " + np.checkViolationCounts.getOrDefault(s, 0));
 			}
 			menu.setOption(i - 1, getPlayerHead(cheater), cheater.getName(), lore);
 		}
 		menu.open(p);
-	}
-
-	public void showViolations(Player p, IconMenu menu) {
-		/*
-		 * Inventory myInventory = Bukkit.createInventory(null, 9, "§c§lViolations for "
-		 * + p.getName()); int i = 0; NessPlayer np =
-		 * NESSAnticheat.main.getCheckManager().getPlayer(p); for (String s :
-		 * np.checkViolationCounts.keySet()) { i++; ItemStack item = new
-		 * ItemStack(Material.REDSTONE_BLOCK, 1); ItemMeta metadata =
-		 * item.getItemMeta(); metadata.setDisplayName(s);
-		 * metadata.setLore(Arrays.asList("VL: " +
-		 * np.checkViolationCounts.getOrDefault(s, 0))); item.setItemMeta(metadata);
-		 * myInventory.setItem(i - 1, item); } sender.openInventory(myInventory);
-		 */
-		NessPlayer np = NESSAnticheat.main.getCheckManager().getPlayer(p);
-		int i = 0;
-		for (String s : np.checkViolationCounts.keySet()) {
-			i++;
-			menu.setOption(i - 1, new ItemStack(Material.REDSTONE_BLOCK, 1), s,
-					Arrays.asList("VL: " + np.checkViolationCounts.getOrDefault(s, 0)));
-		}
 	}
 
 	public ItemStack getPlayerHead(Player player) {

@@ -71,9 +71,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			if (!event.getPlayer().isOnGround()) {
 				double fallDist = event.getPlayer().getFallDistance();
 				if (event.getPlayer().getVelocity().getY() < -1.0D && fallDist == 0.0D) {
-					if (player.getHealth() > 2) {
-						player.setHealth(player.getHealth() - 1.0D);
-					}
 					punish(event, player, "NoVelocity");
 				}
 			}

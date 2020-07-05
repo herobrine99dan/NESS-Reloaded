@@ -6,6 +6,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
+import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
 
 public class Strafe extends AbstractCheck<PlayerMoveEvent> {
@@ -47,9 +48,11 @@ public class Strafe extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		if (!Utility.checkGround(to.getY()) && !Utility.checkGround(to.getY())) {
-			if (lastDist == dist) {
-				p.sendMessage("Cheats: " + dist);
-				e.setCancelled(true);
+			if (lastDist == dist && dist < 1) {
+				this.manager.getPlayer(p).setViolation(new Violation("Strafe","Dist: " + dist));
+				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+					e.setCancelled(true);
+				}
 			}
 		}
 	}
