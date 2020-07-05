@@ -1,5 +1,6 @@
 package com.github.ness.check;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -25,6 +26,9 @@ public class NoClip extends AbstractCheck<PlayerMoveEvent> {
 		final Location from = event.getFrom();
 		final Location to = event.getTo();
 		final Double dist = from.distance(to);
+		if(player.isFlying() || player.getGameMode().equals(GameMode.SPECTATOR)) {
+			return;
+		}
 		Double hozDist = dist - (to.getY() - from.getY());
 		boolean surrounded = true;
 		for (int x2 = -2; x2 <= 2; ++x2) {

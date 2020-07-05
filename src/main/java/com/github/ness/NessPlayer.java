@@ -53,34 +53,34 @@ public class NessPlayer implements AutoCloseable {
 	public List<Float> patterns = new ArrayList<Float>();
 	@Getter
 	@Setter
-	double distance = 0.0; //For GhostHand and NoSlowDown
+	double distance = 0.0; // For GhostHand and NoSlowDown
 	@Getter
 	@Setter
-	int clicks = 0; //For FastClick 
+	int clicks = 0; // For FastClick
 	@Getter
 	@Setter
-	int blockplace = 0; //For FastPlace
+	int blockplace = 0; // For FastPlace
 	@Getter
 	@Setter
-	int movementpacketscounter = 0; //For BadPackets
+	int movementpacketscounter = 0; // For BadPackets
 	@Getter
 	@Setter
-	int normalPacketsCounter = 0; //For MorePackets
+	int normalPacketsCounter = 0; // For MorePackets
 	@Getter
 	@Setter
-	int CPS = 0; //For AutoClicker
+	int CPS = 0; // For AutoClicker
 	@Getter
 	@Setter
-	long CPSDelay = 0; //For AutoClicker
+	long CPSDelay = 0; // For AutoClicker
 	@Getter
 	@Setter
-	long CPSlastDelay = 0; //For AutoClicker
-	public float lastPitch = 0; //Used in GhostHand
-	public double lastYDelta; //Used in Speed And Fly
-	public Location safeLoc; //This should be used to make the better LagBack system
-	public int AimbotPatternCounter = 0; //For Aimbot
-	public Location lastLocation; //For Killaura
-	public double lastDist; //For Strafe Check
+	long CPSlastDelay = 0; // For AutoClicker
+	public float lastPitch = 0; // Used in GhostHand
+	public double lastYDelta; // Used in Speed And Fly
+	public Location safeLoc; // This should be used to make the better LagBack system
+	public int AimbotPatternCounter = 0; // For Aimbot
+	public Location lastLocation; // For Killaura
+	public double lastDist; // For Strafe Check
 
 	// Used in OldMovementChecks
 
@@ -121,13 +121,13 @@ public class NessPlayer implements AutoCloseable {
 		this.player = player;
 		this.devMode = devMode;
 	}
-	
+
 	public void updateMovementValues(PlayerMoveEvent event) {
 		this.setDistance(Math.abs(Utility.getMaxSpeed(event.getFrom(), event.getTo())));
 	}
-	
+
 	public void updatePacketValues(Object packet) {
-		if(packet.toString().toLowerCase().contains("useentity")) {
+		if (packet.toString().toLowerCase().contains("useentity")) {
 			lastLocation = this.getPlayer().getLocation().clone();
 		}
 	}
@@ -155,12 +155,20 @@ public class NessPlayer implements AutoCloseable {
 		if (!r.nextBoolean()) {
 			return;
 		}
+		if (this.getPlayer().hasPermission("ness.bypass." + violation.getCheck().toLowerCase())) {
+			return;
+		}
+		if (this.getPlayer().hasPermission("ness.bypass.*")) {
+			return;
+		}
 		this.violation.compareAndSet(null, violation);
 		checkViolationCounts.merge(violation.getCheck(), 1, (c1, c2) -> c1 + c2);
 		if (isDevMode()) {
 			// sendMessage is thread safe
-			player.sendMessage(
+			if(this.getPlayer().hasPermission("ness.notify.developer")) {
+							player.sendMessage(
 					"Dev mode violation: Check " + violation.getCheck() + ". Details: " + violation.getDetails());
+			}
 		}
 
 		/*
