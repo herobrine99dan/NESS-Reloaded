@@ -87,7 +87,7 @@ public class NessPlayer implements AutoCloseable {
 	private long lastWasOnGround = System.nanoTime() - Duration.ofHours(1L).toNanos();
 
 	public long getTimeSinceLastWasOnGround() {
-		return (lastWasOnGround - System.nanoTime()) / 1000_000L; // want milliseconds
+		return (System.nanoTime() - lastWasOnGround) / 1000_000L; // want milliseconds
 	}
 
 	public void updateLastWasOnGround() {
@@ -97,7 +97,7 @@ public class NessPlayer implements AutoCloseable {
 	private long lastWasOnIce = lastWasOnGround;
 
 	public long getTimeSinceLastWasOnIce() {
-		return (lastWasOnIce - System.nanoTime()) / 1000_000L; // want milliseconds
+		return (System.nanoTime() - lastWasOnIce) / 1000_000L; // want milliseconds
 	}
 
 	public void updateLastWasOnIce() {
