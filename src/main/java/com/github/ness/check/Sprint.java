@@ -46,6 +46,9 @@ public class Sprint extends AbstractCheck<PlayerMoveEvent> {
 		}
 		Location from = e.getFrom();
 		Location to = e.getTo();
+		if(!this.manager.getPlayer(p).isTeleported()) {
+			return;
+		}
 		if (!p.isSprinting() && p.getNearbyEntities(3.5, 3.5, 3.5).isEmpty() || this.manager.getPlayer(p).isTeleported()) {
 			double distance = Utility.getMaxSpeed(from, to);
 			if (distance > 0.280 && !p.isFlying()) {

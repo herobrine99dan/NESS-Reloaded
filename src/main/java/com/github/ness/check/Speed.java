@@ -43,7 +43,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		manager.getPlayer(p).setViolation(new Violation("Speed", module));
-		if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+		if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 			e.setCancelled(true);
 		}
 	}
@@ -73,10 +73,12 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (!player.getNearbyEntities(5, 5, 5).isEmpty()) {
 			return;
 		}
-		if(to.add(0, -1, 0).getBlock().getType().name().contains("chest") || from.add(0, -1, 0).getBlock().getType().name().contains("chest")) {
+		if (to.add(0, -1, 0).getBlock().getType().name().contains("chest")
+				|| from.add(0, -1, 0).getBlock().getType().name().contains("chest")) {
 			return;
 		}
-		if(to.add(0, -1, 0).getBlock().getType().name().contains("detector") || from.add(0, -1, 0).getBlock().getType().name().contains("detector")) {
+		if (to.add(0, -1, 0).getBlock().getType().name().contains("detector")
+				|| from.add(0, -1, 0).getBlock().getType().name().contains("detector")) {
 			return;
 		}
 		if (!player.isInsideVehicle() && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.JUMP)) {
@@ -109,7 +111,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (Utility.hasflybypass(player)) {
 			return;
 		}
-		if(this.manager.getPlayer(player).isTeleported()) {
+		if (this.manager.getPlayer(player).isTeleported()) {
 			return;
 		}
 		double dist = Utility.getMaxSpeed(e.getFrom(), e.getTo());
@@ -117,9 +119,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				&& !player.hasPotionEffect(PotionEffectType.SPEED) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 			if (dist > 0.63D) {
 				if (Utilities.getPlayerUpperBlock(player).getType().isSolid()
-						&& e.getTo().add(0,-1,0).getBlock().getType().name().toLowerCase().contains("ice")
-						&& e.getFrom().add(0, -1, 0).getBlock().getType().name().toLowerCase()
-								.contains("ice")) {
+						&& e.getTo().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")
+						&& e.getFrom().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")) {
 					return;
 				}
 				punish(e, "MaxDistance " + dist);
@@ -141,7 +142,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (Double.toString(y).length() > 4) {
 			y = Utility.around(y, 5);
 		}
-		if(Utility.flagyStuffNear(to) || Utility.flagyStuffNear(from)) {
+		if (Utility.flagyStuffNear(to) || Utility.flagyStuffNear(from)) {
 			return;
 		}
 		double z = to.getZ() - from.getZ();
@@ -152,7 +153,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (Utility.checkGround(to.getY()) && !Utilities.IsSameBlockAround(p, -1f, 0.5f)) {
 			return;
 		}
-		if (Utility.hasflybypass(p) || Utility.hasBlock(p, Material.SLIME_BLOCK) || Utility.hasWater(p) || Utility.isInWater(p)) {
+		if (Utility.hasflybypass(p) || Utility.hasBlock(p, Material.SLIME_BLOCK) || Utility.hasWater(p)
+				|| Utility.isInWater(p)) {
 			return;
 		}
 		if (Utility.getMaterialName(to).contains("water") || Utility.getMaterialName(to).contains("lava")
@@ -185,16 +187,14 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		} catch (Exception ex) {
 			yresult = result.getY();
 		}
-		if(!(Math.abs(yresult)<0.08)) {
-			if(Math.abs(yresult)>0.54) {
+		if (!(Math.abs(yresult) < 0.08)) {
+			if (Math.abs(yresult) > 0.54) {
 				if (Utility.hasflybypass(p) || manager.getPlayer(e.getPlayer()).isTeleported()) {
 					return;
 				}
 				manager.getPlayer(p).setViolation(new Violation("Speed", "InvalidVelocity"));
-				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-					if(!DragDown.PlayerDragDown(p)) {
-						e.setCancelled(true);
-					}
+				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+					e.setCancelled(true);
 				}
 			}
 		}

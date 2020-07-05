@@ -44,9 +44,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	public void punish(PlayerMoveEvent e, Player p, String module) {
 		if (!Utility.hasflybypass(p) && !this.manager.getPlayer(p).isTeleported()) {
-			if (p.getAllowFlight()) {
-				return;
-			}
+			manager.getPlayer(p).setViolation(new Violation("Fly", module));
 			try {
 				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					if(!DragDown.PlayerDragDown(p)) {
@@ -55,7 +53,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				}
 			} catch (Exception ex) {
 			}
-			manager.getPlayer(p).setViolation(new Violation("Fly", module));
 		}
 	}
 
