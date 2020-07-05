@@ -33,7 +33,11 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	private void punish(PlayerMoveEvent e, String cheat) {
-		if(manager.getPlayer(e.getPlayer()).shouldCancel(e, cheat)) {
+		NessPlayer nessPlayer = manager.getPlayer(e.getPlayer());
+		if(nessPlayer.isTeleported()) {
+			return;
+		}
+		if(nessPlayer.shouldCancel(e, cheat)) {
 			e.setCancelled(true);
 		}
 	}
