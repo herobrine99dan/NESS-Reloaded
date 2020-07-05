@@ -81,6 +81,7 @@ public class NessPlayer implements AutoCloseable {
 	public int AimbotPatternCounter = 0; // For Aimbot
 	public Location lastLocation; // For Killaura
 	public double lastDist; // For Strafe Check
+	public long lastFlyingPacket;
 
 	// Used in OldMovementChecks
 
@@ -119,6 +120,7 @@ public class NessPlayer implements AutoCloseable {
 
 	NessPlayer(Player player, boolean devMode) {
 		this.player = player;
+		this.lastFlyingPacket = System.currentTimeMillis();
 		this.devMode = devMode;
 	}
 
