@@ -13,6 +13,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
+import com.github.ness.DragDown;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.utility.Utilities;
@@ -72,6 +73,12 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (!player.getNearbyEntities(5, 5, 5).isEmpty()) {
 			return;
 		}
+		if(to.add(0, -1, 0).getBlock().getType().name().contains("chest") || from.add(0, -1, 0).getBlock().getType().name().contains("chest")) {
+			return;
+		}
+		if(to.add(0, -1, 0).getBlock().getType().name().contains("detector") || from.add(0, -1, 0).getBlock().getType().name().contains("detector")) {
+			return;
+		}
 		if (!player.isInsideVehicle() && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.JUMP)) {
 			if (to.getY() > from.getY()) {
 				double y = Utility.around(to.getY() - from.getY(), 6);
@@ -85,9 +92,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				}
 				if (y > 0.36 && y < 0.419 && !(y == 0.404) && !(y == 0.365) && !(y == 0.395) && !bypass && !(y == 0.386)
 						&& !(y == 0.414) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
-					if (Utility.hasflybypass(player)) {
-						return;
-					}
 					punish(e, "MiniJump1 " + y);
 				} else if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 					punish(e, "MiniJump2 " + y);
@@ -105,10 +109,13 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (Utility.hasflybypass(player)) {
 			return;
 		}
+		if(this.manager.getPlayer(player).isTeleported()) {
+			return;
+		}
 		double dist = Utility.getMaxSpeed(e.getFrom(), e.getTo());
 		if (Utility.checkGround(e.getTo().getY()) && !player.isInsideVehicle() && !player.isFlying()
 				&& !player.hasPotionEffect(PotionEffectType.SPEED) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
-			if (dist > 0.65D) {
+			if (dist > 0.63D) {
 				if (Utilities.getPlayerUpperBlock(player).getType().isSolid()
 						&& e.getTo().add(0,-1,0).getBlock().getType().name().toLowerCase().contains("ice")
 						&& e.getFrom().add(0, -1, 0).getBlock().getType().name().toLowerCase()
@@ -180,7 +187,15 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 		if(!(Math.abs(yresult)<0.08)) {
 			if(Math.abs(yresult)>0.54) {
-				punish(e,"InvalidVelocity");
+				if (Utility.hasflybypass(p) || manager.getPlayer(e.getPlayer()).isTeleported()) {
+					return;
+				}
+				manager.getPlayer(p).setViolation(new Violation("Speed", "InvalidVelocity"));
+				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+					if(!DragDown.PlayerDragDown(p)) {
+						e.setCancelled(true);
+					}
+				}
 			}
 		}
 	}

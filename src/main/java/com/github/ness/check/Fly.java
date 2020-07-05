@@ -43,7 +43,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	protected List<String> bypasses = Arrays.asList("slab", "stair", "snow", "bed", "skull", "step", "slime");
 
 	public void punish(PlayerMoveEvent e, Player p, String module) {
-		if (!Utility.hasflybypass(p)) {
+		if (!Utility.hasflybypass(p) && !this.manager.getPlayer(p).isTeleported()) {
 			if (p.getAllowFlight()) {
 				return;
 			}
