@@ -5,6 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 public class DragDown {
 
@@ -14,17 +15,17 @@ public class DragDown {
 	 * @param player the corresponding player
 	 */
 
-	public static void PlayerDragDown(Player p,PlayerMoveEvent e) {
+	public static boolean PlayerDragDown(Player p) {
 		try {
-			Location Locfrom = p.getLocation().clone();
-			Block b = Locfrom.clone().subtract(0.0D, 0.3D, 0.0D).getBlock();
-			if (!b.getType().isSolid()) {
-				Locfrom = Locfrom.subtract(0.0D, 0.3D, 0.0D);
+			Location loc = p.getLocation().clone().add(0, -0.5, 0);
+			if(!loc.getBlock().getType().isSolid()) {
+				p.teleport(loc,TeleportCause.PLUGIN);
+				return true;
 			}
+			return false;
 			//p.teleport(Locfrom, PlayerTeleportEvent.TeleportCause.PLUGIN);
 		}catch(Exception ex) {
-			e.setCancelled(true);
+			return false;
 		}
-		return;
 	}
 }

@@ -10,11 +10,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
 import com.github.ness.DragDown;
@@ -51,7 +49,9 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			}
 			try {
 				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-					e.setCancelled(true);
+					if(!DragDown.PlayerDragDown(p)) {
+						e.setCancelled(true);
+					}
 				}
 			} catch (Exception ex) {
 			}

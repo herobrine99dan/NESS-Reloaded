@@ -173,7 +173,7 @@ public class NessPlayer implements AutoCloseable {
 
 		/*
 		 * if (player.hasPermission("ness.bypass.*") ||
-		 * player.hasPermission("ness.bypass." + violation.getCheck())) { return; } //
+		 * player.hasPermission("ness.bypass." + violation.getCheck())) { return; } //	
 		 * player.sendMessage("HACK: " + violation.getCheck() + " Module: " + //
 		 * Arrays.toString(violation.getDetails())); NessConfig config =
 		 * NESSAnticheat.main.getNessConfig(); ConfigurationSection cs =

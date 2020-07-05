@@ -158,10 +158,19 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (Utility.getMaterialName(to).contains("web") || Utility.getMaterialName(from).contains("web")) {
 			return;
 		}
+		if (Utility.getMaterialName(to).contains("stairs") || Utility.getMaterialName(from).contains("stairs")) {
+			return;
+		}
 		if (Utility.getMaterialName(to).contains("vine") || Utility.getMaterialName(from).contains("vine")) {
 			return;
 		}
 		if (Utility.getMaterialName(to).contains("fence") || Utility.getMaterialName(from).contains("fence")) {
+			return;
+		}
+		if (Utility.getMaterialName(to).contains("wall") || Utility.getMaterialName(from).contains("wall")) {
+			return;
+		}
+		if (Utility.getMaterialName(to).contains("carpet") || Utility.getMaterialName(from).contains("carpet")) {
 			return;
 		}
 		try {
@@ -170,7 +179,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			yresult = result.getY();
 		}
 		if(!(Math.abs(yresult)<0.08)) {
-			if(Math.abs(yresult)>0.24) {
+			if(Math.abs(yresult)>0.54) {
 				punish(e,"InvalidVelocity");
 			}
 		}
