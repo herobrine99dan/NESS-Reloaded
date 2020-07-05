@@ -49,8 +49,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	public void Check(PlayerMoveEvent e) {
-		Location from = e.getFrom();
-		Location to = e.getTo();
+		Location from = e.getFrom().clone();
+		Location to = e.getTo().clone();
 		// Bukkit.getPlayer("herobrine99dan").sendMessage(
 		// "Player: " + e.getPlayer().getName() + " YDist: " + Utility.around(to.getY()
 		// - from.getY(), 6)
@@ -119,8 +119,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				&& !player.hasPotionEffect(PotionEffectType.SPEED) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 			if (dist > 0.63D) {
 				if (Utilities.getPlayerUpperBlock(player).getType().isSolid()
-						&& e.getTo().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")
-						&& e.getFrom().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")) {
+						&& e.getTo().clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")
+						&& e.getFrom().clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")) {
 					return;
 				}
 				punish(e, "MaxDistance " + dist);
@@ -134,15 +134,15 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 
 	// Can Be Better
 	public void Check3(PlayerMoveEvent e) {
-		Location to = e.getTo();
-		Location from = e.getFrom();
+		Location to = e.getTo().clone();
+		Location from = e.getFrom().clone();
 		Player p = e.getPlayer();
 		double x = to.getX() - from.getX();
 		double y = to.getY() - from.getY();
 		if (Double.toString(y).length() > 4) {
 			y = Utility.around(y, 5);
 		}
-		if (Utility.flagyStuffNear(to) || Utility.flagyStuffNear(from)) {
+		if (Utility.flagyStuffNear(to.clone()) || Utility.flagyStuffNear(from.clone())) {
 			return;
 		}
 		double z = to.getZ() - from.getZ();
