@@ -15,6 +15,7 @@ public class Utility {
 
 	/**
 	 * Calculate the distance beetween the class data and the test data
+	 * 
 	 * @param double[] array1
 	 * @param double[] array2
 	 * @return
@@ -37,9 +38,10 @@ public class Utility {
 			System.out.println("Dist: " + d);
 		}
 	}
-	
+
 	/**
 	 * Load the test file
+	 * 
 	 * @param File f object
 	 * @return a double[] array
 	 * @throws FileNotFoundException
@@ -47,7 +49,7 @@ public class Utility {
 	public static double[] getTestFile(File f) throws FileNotFoundException {
 		Scanner fileReader = new Scanner(f);
 		String[] args = fileReader.nextLine().split(";");
-		double[] values = new double[args.length+1];// Create an Array
+		double[] values = new double[args.length + 1];// Create an Array
 		for (int i = 0; i < args.length; i++) {
 			values[i] = Double.valueOf(args[i]);
 		}
@@ -58,6 +60,7 @@ public class Utility {
 
 	/**
 	 * Create a DataSet List From CSV File
+	 * 
 	 * @param File f
 	 * @return a List<DataSet> Object
 	 * @throws IOException

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Example {
-	
+
 	public static void main(String[] args) throws IOException {
 		System.out.println("Please Write the Train File Name!");
 		Scanner scanner = new Scanner(System.in);
