@@ -107,7 +107,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (Utility.hasflybypass(player)) {
 			return;
 		}
-		double soulsand = 0.211;
+		double soulsand = 0.22;
 		if (Utility.hasflybypass(player)) {
 			return;
 		}
@@ -117,7 +117,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		double dist = Utility.getMaxSpeed(e.getFrom(), e.getTo());
 		if (Utility.checkGround(e.getTo().getY()) && !player.isInsideVehicle() && !player.isFlying()
 				&& !player.hasPotionEffect(PotionEffectType.SPEED) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
-			if (dist > 0.63D) {
+			if (dist > 0.62D) {
 				if (Utilities.getPlayerUpperBlock(player).getType().isSolid()
 						&& e.getTo().clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")
 						&& e.getFrom().clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")) {
