@@ -3,7 +3,6 @@ package com.github.ness.check;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.util.Vector;
@@ -11,33 +10,37 @@ import org.bukkit.util.Vector;
 import com.github.ness.CheckManager;
 import com.github.ness.api.Violation;
 
-public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
-	
+import net.minecraft.server.v1_12_R1.Material;
+
+public class Scaffold extends AbstractCheck<BlockPlaceEvent> {
+
 	public Scaffold(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(BlockPlaceEvent.class));
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Override
 	void checkEvent(BlockPlaceEvent e) {
-       Check(e);
-       Check1(e);
-       Check2(e);
+		Check(e);
+		Check1(e);
+		Check2(e);
+		Check3(e);
 	}
 
 	public void Check(BlockPlaceEvent event) {
 		Player p = event.getPlayer();
 		Block b = event.getBlockPlaced();
 		Block target = p.getTargetBlock(null, 6);
-		if(event.getBlockAgainst().getType().name().toLowerCase().contains("fence") || event.getBlockPlaced().getType().name().toLowerCase().contains("ladder")) {
+		if (event.getBlockAgainst().getType().name().toLowerCase().contains("fence")
+				|| event.getBlockPlaced().getType().name().toLowerCase().contains("ladder")) {
 			return;
 		}
-		   if(!(target.getY()==b.getY() && target.getX()==b.getX() && target.getZ()==b.getZ())) {
-			   manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold","InvalidBlock"));
-				if(manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
-					event.setCancelled(true);
-				}
-		  }		
+		if (!(target.getY() == b.getY() && target.getX() == b.getX() && target.getZ() == b.getZ())) {
+			manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold", "InvalidBlock"));
+			if (manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
+				event.setCancelled(true);
+			}
+		}
 	}
 
 	public void Check1(BlockPlaceEvent event) {
@@ -48,10 +51,10 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 		float placedAngle = player.getLocation().getDirection().angle(placedVector);
 
 		if (placedAngle > MAX_ANGLE) {
-			if(manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
+			if (manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
 				event.setCancelled(true);
 			}
-			manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold","HighAngle"));
+			manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold", "HighAngle"));
 		}
 	}
 
@@ -62,14 +65,22 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent>{
 			float pitchNow = player.getLocation().getPitch();
 			float diff = Math.abs(now - pitchNow);
 			if (diff > 20F) {
-				if(manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
+				if (manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
 					event.setCancelled(true);
 				}
-				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold","HighPitch"));
+				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold", "HighPitch"));
 			}
 		}, 2L);
 	}
-	
-	
-	
+
+	public void Check3(BlockPlaceEvent e) {
+		Player p = e.getPlayer();
+		if (p.isSprinting()) {
+			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+				e.setCancelled(true);
+			}
+			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Scaffold", "Impossible"));
+		}
+	}
+
 }
