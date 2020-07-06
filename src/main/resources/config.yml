@@ -55,7 +55,7 @@ enabled-checks:
   - 'GhostHand'
   - 'Headless'
   - 'TeleportEvent'
-#  - 'FastSneak'
+  - 'FastSneak'
   - 'LiquidInteraction'
   - 'InventoryHack'
   - 'Jesus'
