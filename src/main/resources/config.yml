@@ -57,6 +57,7 @@ enabled-checks:
   - 'TeleportEvent'
   - 'FastSneak'
   - 'LiquidInteraction'
+  - 'NameExploit'
   - 'InventoryHack'
   - 'Jesus'
   - 'Killaura'
