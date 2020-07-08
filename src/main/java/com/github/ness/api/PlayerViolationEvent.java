@@ -15,12 +15,9 @@ public class PlayerViolationEvent extends Event implements Cancellable {
 	@Getter
 	private final Player player;
 	@Getter
-	private final String hack;
-	@Getter
 	private final int violations;
 	@Getter
-	private final String module;
-
+	private final Violation violation;
 	@Setter
 	private boolean cancelled;
 	

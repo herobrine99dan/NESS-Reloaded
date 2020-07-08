@@ -11,12 +11,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import com.github.ness.api.PlayerViolationEvent;
 import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
 
@@ -157,6 +159,12 @@ public class NessPlayer implements AutoCloseable {
 		if (!r.nextBoolean()) {
 			return;
 		}
+		PlayerViolationEvent event = new PlayerViolationEvent(this.getPlayer(),
+				checkViolationCounts.getOrDefault(violation.getCheck(), 0), violation);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		if (event.isCancelled()) {
+			return;
+		}
 		if (this.getPlayer().hasPermission("ness.bypass." + violation.getCheck().toLowerCase())) {
 			return;
 		}
@@ -167,15 +175,15 @@ public class NessPlayer implements AutoCloseable {
 		checkViolationCounts.merge(violation.getCheck(), 1, (c1, c2) -> c1 + c2);
 		if (isDevMode()) {
 			// sendMessage is thread safe
-			if(this.getPlayer().hasPermission("ness.notify.developer")) {
-							player.sendMessage(
-					"Dev mode violation: Check " + violation.getCheck() + ". Details: " + violation.getDetails());
+			if (this.getPlayer().hasPermission("ness.notify.developer")) {
+				player.sendMessage(
+						"Dev mode violation: Check " + violation.getCheck() + ". Details: " + violation.getDetails());
 			}
 		}
 
 		/*
 		 * if (player.hasPermission("ness.bypass.*") ||
-		 * player.hasPermission("ness.bypass." + violation.getCheck())) { return; } //	
+		 * player.hasPermission("ness.bypass." + violation.getCheck())) { return; } //
 		 * player.sendMessage("HACK: " + violation.getCheck() + " Module: " + //
 		 * Arrays.toString(violation.getDetails())); NessConfig config =
 		 * NESSAnticheat.main.getNessConfig(); ConfigurationSection cs =

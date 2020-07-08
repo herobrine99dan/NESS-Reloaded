@@ -93,6 +93,10 @@ public class NESSAnticheat extends JavaPlugin {
 		}
 		return null;
 	}
+	
+	public static NESSAnticheat getInstance() {
+		return NESSAnticheat.main;
+	}
 
 	@Override
 	public void onDisable() {
