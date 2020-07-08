@@ -159,8 +159,8 @@ public class NessPlayer implements AutoCloseable {
 		if (!r.nextBoolean()) {
 			return;
 		}
-		PlayerViolationEvent event = new PlayerViolationEvent(this.getPlayer(),
-				checkViolationCounts.getOrDefault(violation.getCheck(), 0), violation);
+		PlayerViolationEvent event = new PlayerViolationEvent(this.getPlayer(), this, violation,
+				checkViolationCounts.getOrDefault(violation.getCheck(), 0));
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		if (event.isCancelled()) {
 			return;

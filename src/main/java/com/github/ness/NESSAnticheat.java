@@ -23,7 +23,7 @@ public class NESSAnticheat extends JavaPlugin {
 
 	@Getter
 	private ScheduledExecutorService executor;
-	public static NESSAnticheat main;
+	static NESSAnticheat main;
 	@Getter
 	private NessConfig nessConfig;
 	@Getter

@@ -33,13 +33,13 @@ public class ViolationGUI {
 				 * p.sendMessage("This player isn't online!"); return; }
 				 */
 			}
-		}, NESSAnticheat.main);
+		}, NESSAnticheat.getInstance());
 		int i = 0;
 		for (Player cheater : Bukkit.getOnlinePlayers()) {
 			i++;
 			List<String> lore = new ArrayList<String>();
 			lore.add("Cheats:");
-			NessPlayer np = NESSAnticheat.main.getCheckManager().getPlayer(cheater);
+			NessPlayer np = NESSAnticheat.getInstance().getCheckManager().getPlayer(cheater);
 			for (String s : np.checkViolationCounts.keySet()) {
 				lore.add(s + " VL: " + np.checkViolationCounts.getOrDefault(s, 0));
 			}

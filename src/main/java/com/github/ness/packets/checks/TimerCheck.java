@@ -11,7 +11,7 @@ public class TimerCheck {
 		if(!packet.toString().toLowerCase().contains("flying")) {
 			return;
 		}
-		NessPlayer np = NESSAnticheat.main.getCheckManager().getPlayer(p);
+		NessPlayer np = NESSAnticheat.getInstance().getCheckManager().getPlayer(p);
 		final long result = System.currentTimeMillis() - np.lastFlyingPacket;
 		np.lastFlyingPacket = System.currentTimeMillis();
 		if (result < 23) {

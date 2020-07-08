@@ -10,7 +10,7 @@ import com.github.ness.NESSAnticheat;
 public class DiscordHackWarn {
 
 	public static void WebHookSender(Player hacker, String hack, int level, String module) {
-		String webhookurl = NESSAnticheat.main.getConfig().getString("Configuration.WebHookURL");
+		String webhookurl = NESSAnticheat.getInstance().getConfig().getString("Configuration.WebHookURL");
 		if (webhookurl == null || webhookurl == "") {
 			return;
 		}

@@ -17,7 +17,7 @@ public class Freecam {
           Location loc = p.getLocation();
           loc.setY(loc.getY()+0.08);
           p.teleport(loc);
-    	  Bukkit.getScheduler().runTaskLater(NESSAnticheat.main, new Runnable()
+    	  Bukkit.getScheduler().runTaskLater(NESSAnticheat.getInstance(), new Runnable()
     	  {
     	    public void run()
     	    {

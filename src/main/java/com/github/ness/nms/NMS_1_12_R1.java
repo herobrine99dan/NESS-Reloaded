@@ -72,7 +72,7 @@ public class NMS_1_12_R1 implements NMSHandler {
 					}
 				}
 				KillauraBotCheck.npclist.putIfAbsent(target.getName(), Integer.toString(npc.getId()));
-				Bukkit.getScheduler().scheduleSyncDelayedTask(NESSAnticheat.main, () -> {
+				Bukkit.getScheduler().scheduleSyncDelayedTask(NESSAnticheat.getInstance(), () -> {
 					connection.sendPacket(new PacketPlayOutPlayerInfo(
 							PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, new EntityPlayer[] { npc }));
 					connection.sendPacket(new PacketPlayOutEntityDestroy(new int[] { npc.getId() }));

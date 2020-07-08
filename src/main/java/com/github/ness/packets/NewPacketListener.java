@@ -87,7 +87,7 @@ public class NewPacketListener implements Listener {
 	 */
 
 	public boolean executeActions(Player p, Object packet) {
-		if (p == null || packet == null || NESSAnticheat.main == null) {
+		if (p == null || packet == null || NESSAnticheat.getInstance() == null) {
 			return true;
 		}
 		String packetname = packet.toString().substring(0, packet.toString().indexOf("@"))
@@ -100,7 +100,7 @@ public class NewPacketListener implements Listener {
 		if (KillauraFalseFlyingPacket.Check(packet, p)) {
 			return true;
 		}
-		NESSAnticheat.main.getCheckManager().getPlayer(p).updatePacketValues(packet);
+		NESSAnticheat.getInstance().getCheckManager().getPlayer(p).updatePacketValues(packet);
 		return MorePackets.Check(p, packet);
 	}
 

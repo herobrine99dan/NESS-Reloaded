@@ -1,5 +1,7 @@
 package com.github.ness.api;
 
+import org.bukkit.entity.Player;
+
 /**
  * Officially supported NESS API.
  * 
@@ -15,5 +17,6 @@ public interface NESSApi {
 	 * @param action the violation action
 	 */
 	void addViolationAction(ViolationAction action);
+	void flagHack(Violation violation, Player player);
 	
 }

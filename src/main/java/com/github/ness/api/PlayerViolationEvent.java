@@ -5,22 +5,31 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import com.github.ness.NessPlayer;
+
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-@RequiredArgsConstructor
 public class PlayerViolationEvent extends Event implements Cancellable {
 
 	@Getter
 	private final Player player;
+	@Getter
+	private final NessPlayer nessplayer;
 	@Getter
 	private final int violations;
 	@Getter
 	private final Violation violation;
 	@Setter
 	private boolean cancelled;
-	
+
+	public PlayerViolationEvent(Player player, NessPlayer nessplayer, Violation violation, int violations) {
+		this.player = player;
+		this.nessplayer = nessplayer;
+		this.violation = violation;
+		this.violations = violations;
+	}
+
 	private static final HandlerList HANDLERS = new HandlerList();
 
 	@Override
