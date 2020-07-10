@@ -101,7 +101,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 	}
-
+	
+	//To recode
 	public void Check1(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
 		if (Utility.hasflybypass(player)) {
@@ -115,7 +116,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		double dist = Utility.getMaxSpeed(e.getFrom(), e.getTo());
-		if (Utility.checkGround(e.getTo().getY()) && !player.isInsideVehicle() && !player.isFlying()
+		if (Utility.isMathematicallyOnGround(e.getTo().getY()) && !player.isInsideVehicle() && !player.isFlying()
 				&& !player.hasPotionEffect(PotionEffectType.SPEED) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 			if (dist > 0.62D) {
 				if (Utilities.getPlayerUpperBlock(player).getType().isSolid()
@@ -125,7 +126,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				}
 				punish(e, "MaxDistance " + dist);
 			} else if (dist > soulsand && player.getLocation().getBlock().getType().equals(Material.SOUL_SAND)
-					&& Utility.checkGround(e.getFrom().getY()) && player.getFallDistance() == 0.0
+					&& Utility.isMathematicallyOnGround(e.getFrom().getY()) && player.getFallDistance() == 0.0
 					&& e.getTo().getY() - e.getFrom().getY() == 0.0) {
 				punish(e, "NoSlowDown " + dist);
 			}
@@ -150,7 +151,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		// Vector result = v.subtract(p.getVelocity());
 		Vector result = v.subtract(p.getVelocity().setY(Utility.around(p.getVelocity().getY(), 5)));
 		double yresult = 0.0;
-		if (Utility.checkGround(to.getY()) && !Utilities.IsSameBlockAround(p, -1f, 0.5f)) {
+		if (Utility.isOnGround(to) && !Utilities.IsSameBlockAround(p, -1f, 0.5f)) {
 			return;
 		}
 		if (Utility.hasflybypass(p) || Utility.hasBlock(p, Material.SLIME_BLOCK) || Utility.hasWater(p)

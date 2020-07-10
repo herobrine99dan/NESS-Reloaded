@@ -73,7 +73,6 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	 * Check for some Aimbot Pattern
 	 */
 	public boolean Check1(PlayerMoveEvent e) {
-		Player p = e.getPlayer();
 		float yawChange = Math.abs(e.getTo().getYaw() - e.getFrom().getYaw());
 		float pitchChange = Math.abs(e.getTo().getPitch() - e.getFrom().getPitch());
 		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {

@@ -38,7 +38,7 @@ public class Utility {
 	public static String getMaterialName(Location loc) {
 		return loc.getBlock().getType().name().toLowerCase();
 	}
-	
+
 	public static boolean hasWater(Player p) {
 		boolean done = false;
 		for (int i = 0; i < 256; i++) {
@@ -51,6 +51,19 @@ public class Utility {
 		return done;
 	}
 
+	public static boolean isOnGround(Location loc) {
+		int radius = 2;
+		for (int x = -radius; x < radius; x++) {
+			for (int z = -radius; z < radius; z++) {
+				Material mat = loc.clone().add(x, -0.2, z).getBlock().getType();
+				if (mat.isSolid()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public static boolean hasVehicleNear(Player p, int range) {
 		if (p.isInsideVehicle()) {
 			return true;
@@ -61,20 +74,6 @@ public class Utility {
 			}
 		}
 		return false;
-	}
-
-	public static boolean isOnGround(Location loc) {
-		if (loc.getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR) {
-			return true;
-		}
-		Location a = loc;
-		a.setY(a.getY() - 0.5);
-		if (a.getBlock().getType() != Material.AIR) {
-			return true;
-		}
-		a = loc;
-		a.setY(a.getY() + 0.5);
-		return a.getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR;
 	}
 
 	public static boolean isOnGroudBypassNoFall(Player p) {
@@ -120,23 +119,6 @@ public class Utility {
 			}
 		}
 		return true;
-	}
-
-	public static boolean groundAround(final Location loc) {
-		for (int radius = 2, x = -radius; x < radius; ++x) {
-			for (int y = -radius; y < radius; ++y) {
-				for (int z = -radius; z < radius; ++z) {
-					final Material mat = loc.getWorld().getBlockAt(loc.add(x, y, z)).getType();
-					if (mat.isSolid() || mat.name().toLowerCase().contains("lava")
-							|| mat.name().toLowerCase().contains("water")) {
-						loc.subtract(x, y, z);
-						return true;
-					}
-					loc.subtract(x, y, z);
-				}
-			}
-		}
-		return false;
 	}
 
 	public static List<Block> getNearbyBlocks(Location location, int radius) {
@@ -327,7 +309,7 @@ public class Utility {
 		return false;
 	}
 
-	public static boolean checkGround(double y) {
+	public static boolean isMathematicallyOnGround(double y) {
 
 		if (y % (1D / 64D) == 0) {
 			return true;

@@ -9,6 +9,7 @@ import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
 import com.github.ness.api.Violation;
+import com.github.ness.utility.Utilities;
 import com.github.ness.utility.Utility;
 
 public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
@@ -32,10 +33,13 @@ public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 		if (event.getEntity() instanceof Player) {
 			Player p = (Player) event.getEntity();
 			final Location from = p.getLocation();
+			if(Utilities.isClimbableBlock(p.getLocation().getBlock()) || Utilities.isInWeb(p) || Utilities.isOnWeb(p) || Utility.hasKbBypass(p)) {
+				return;
+			}
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 				Location to = p.getLocation();
 				double result = Math.abs(p.getVelocity().getX()) + Math.abs(p.getVelocity().getZ()) + Math.abs(p.getVelocity().getY());
-				if (Math.abs(to.distanceSquared(from)) < result && !Utility.hasKbBypass(p)) {
+				if (Math.abs(to.distanceSquared(from)) < result) {
 					manager.getPlayer(p).setViolation(new Violation("AntiKb", ""));
 				}
 			}, 5L);

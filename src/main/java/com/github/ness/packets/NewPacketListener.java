@@ -7,10 +7,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.ness.NESSAnticheat;
-import com.github.ness.check.PingSpoof;
 import com.github.ness.packets.checks.BadPackets;
 import com.github.ness.packets.checks.KillauraFalseFlyingPacket;
 import com.github.ness.packets.checks.MorePackets;
+import com.github.ness.packets.checks.PingSpoof;
 import com.github.ness.utility.ReflectionUtility;
 
 import io.netty.channel.Channel;

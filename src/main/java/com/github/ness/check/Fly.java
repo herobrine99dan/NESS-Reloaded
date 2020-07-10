@@ -46,8 +46,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (!Utility.hasflybypass(p) && !this.manager.getPlayer(p).isTeleported()) {
 			manager.getPlayer(p).setViolation(new Violation("Fly", module));
 			try {
-				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-					if(!DragDown.PlayerDragDown(p)) {
+				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+					if (!DragDown.PlayerDragDown(p)) {
 						e.setCancelled(true);
 					}
 				}
@@ -160,9 +160,12 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		if (!bypass(e.getPlayer()) && player.getNearbyEntities(2, 2, 2).isEmpty()) {
-			if (player.isOnline() && !Utility.hasBlock(player, Material.SLIME_BLOCK) && player.isOnGround()
-					&& !Utility.checkGround(e.getTo().getY())) {
-				punish(e, player, "FalseGround");
+			if (player.isOnline() && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
+				if (player.isOnGround() && !Utility.isOnGround(e.getTo())) {
+					punish(e, player, "FalseGround");
+				} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY())) {
+					punish(e, player, "FalseGround");
+				}
 			}
 
 		}
@@ -194,7 +197,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		Double hozDist = Utility.getMaxSpeed(from, to);
-		if (from.getBlock().getType() == Material.WEB && hozDist > 0.2 && Utility.checkGround(to.getY())) {
+		if (from.getBlock().getType() == Material.WEB && hozDist > 0.2 && Utility.isMathematicallyOnGround(to.getY())) {
 			punish(e, player, "NoWeb");
 			// player.sendMessage("NoWebDist: " + hozDist);
 		}

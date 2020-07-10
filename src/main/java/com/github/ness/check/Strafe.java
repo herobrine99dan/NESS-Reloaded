@@ -26,7 +26,6 @@ public class Strafe extends AbstractCheck<PlayerMoveEvent> {
 		double distZ = to.getZ() - from.getZ();
 		double dist = (distX * distX) + (distZ * distZ);
 		double lastDist = np.lastDist;
-		double result = Math.abs(dist - lastDist);
 		np.lastDist = dist;
 		if (dist == 0.0) {
 			return;
@@ -47,7 +46,7 @@ public class Strafe extends AbstractCheck<PlayerMoveEvent> {
 		if (Utility.getMaterialName(to).contains("fence") || Utility.getMaterialName(from).contains("fence")) {
 			return;
 		}
-		if (!Utility.checkGround(to.getY()) && !Utility.checkGround(to.getY())) {
+		if (!Utility.isMathematicallyOnGround(to.getY()) && !Utility.isMathematicallyOnGround(to.getY())) {
 			if (lastDist == dist && dist < 1) {
 				this.manager.getPlayer(p).setViolation(new Violation("Strafe","Dist: " + dist));
 				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
