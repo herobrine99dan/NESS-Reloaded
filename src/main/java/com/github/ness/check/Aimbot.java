@@ -133,14 +133,4 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 	}
-
-	public float getAngle(Entity entity, Player player) {
-		Vector playerLookDir = player.getEyeLocation().getDirection();
-		Vector playerEyeLoc = player.getEyeLocation().toVector();
-		Vector entityLoc = entity.getLocation().toVector();
-		Vector playerEntityVec = entityLoc.subtract(playerEyeLoc);
-		float angle = playerLookDir.angle(playerEntityVec);
-		return angle;
-	}
-
 }
