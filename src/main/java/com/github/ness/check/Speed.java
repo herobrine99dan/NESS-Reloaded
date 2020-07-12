@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
@@ -101,8 +102,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 	}
-	
-	//To recode
+
+	// To recode
 	public void Check1(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
 		if (Utility.hasflybypass(player)) {
@@ -121,7 +122,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			if (dist > 0.62D) {
 				if (Utilities.getPlayerUpperBlock(player).getType().isSolid()
 						&& e.getTo().clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")
-						&& e.getFrom().clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")) {
+						&& e.getFrom().clone().add(0, -1, 0).getBlock().getType().name().toLowerCase()
+								.contains("ice")) {
 					return;
 				}
 				punish(e, "MaxDistance " + dist);
@@ -133,7 +135,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
-	// Can Be Better
 	public void Check3(PlayerMoveEvent e) {
 		Location to = e.getTo().clone();
 		Location from = e.getFrom().clone();
@@ -143,17 +144,11 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (Double.toString(y).length() > 4) {
 			y = Utility.around(y, 5);
 		}
-		if (Utility.flagyStuffNear(to.clone()) || Utility.flagyStuffNear(from.clone())) {
-			return;
-		}
 		double z = to.getZ() - from.getZ();
 		Vector v = new Vector(x, y, z);
 		// Vector result = v.subtract(p.getVelocity());
 		Vector result = v.subtract(p.getVelocity().setY(Utility.around(p.getVelocity().getY(), 5)));
 		double yresult = 0.0;
-		if (Utility.isOnGround(to) && !Utilities.IsSameBlockAround(p, -1f, 0.5f)) {
-			return;
-		}
 		if (Utility.hasflybypass(p) || Utility.hasBlock(p, Material.SLIME_BLOCK) || Utility.hasWater(p)
 				|| Utility.isInWater(p)) {
 			return;
@@ -188,16 +183,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		} catch (Exception ex) {
 			yresult = result.getY();
 		}
-		if (!(Math.abs(yresult) < 0.08)) {
-			if (Math.abs(yresult) > 0.54) {
-				if (Utility.hasflybypass(p) || manager.getPlayer(e.getPlayer()).isTeleported()) {
-					return;
-				}
-				manager.getPlayer(p).setViolation(new Violation("Speed", "InvalidVelocity"));
-				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-					e.setCancelled(true);
-				}
-			}
+		if (Math.abs(yresult) > 0.74) {
+			p.teleport(p.getLocation().clone().add(0, -0.5, 0), TeleportCause.PLUGIN);
+			p.sendMessage("Cheats! " + yresult);
 		}
 	}
 

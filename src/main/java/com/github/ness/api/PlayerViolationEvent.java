@@ -1,5 +1,6 @@
 package com.github.ness.api;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -23,7 +24,14 @@ public class PlayerViolationEvent extends Event implements Cancellable {
 	@Setter
 	private boolean cancelled;
 
+	/**
+	 * This event is fired when someone get a violation This event can be
+	 * Asynchronously (For Example In Some Packets Checks) and Synchronous (In All
+	 * Other Checks)
+	 */
+
 	public PlayerViolationEvent(Player player, NessPlayer nessplayer, Violation violation, int violations) {
+		super(!Bukkit.isPrimaryThread());
 		this.player = player;
 		this.nessplayer = nessplayer;
 		this.violation = violation;

@@ -3,9 +3,10 @@ package com.github.ness.check;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
@@ -131,6 +132,15 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 				np.AimbotPatternCounter = 0;
 			}
 		}
+	}
+
+	public float getAngle(Entity entity, Player player) {
+		Vector playerLookDir = player.getEyeLocation().getDirection();
+		Vector playerEyeLoc = player.getEyeLocation().toVector();
+		Vector entityLoc = entity.getLocation().toVector();
+		Vector playerEntityVec = entityLoc.subtract(playerEyeLoc);
+		float angle = playerLookDir.angle(playerEntityVec);
+		return angle;
 	}
 
 }
