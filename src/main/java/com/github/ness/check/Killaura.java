@@ -57,6 +57,9 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 				Location loc1 = p.getLocation();
 				float grade = loc.getYaw() - loc1.getYaw();
+				if (Math.abs(grade) > 9350) {
+					return;
+				}
 				if (Math.round(grade) > 280.0) {
 					punish(e, p, 19, "HighYaw " + grade, 6);
 				}
@@ -87,7 +90,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
 			offset += Math.abs(offsetX);
 			offset += Math.abs(offsetY);
-			if (offset > 300.0D) {
+			if (offset > 350.0D) {
 				punish(event, player, 20, "Angles/Hitbox " + offset, 6);
 			}
 		}
@@ -105,14 +108,14 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check4(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player damager = (Player) e.getDamager();
-			if (isLookingAt(damager, e.getEntity().getLocation()) < 0.2D) {
+			if (isLookingAt(damager, e.getEntity().getLocation()) < 0.1D) {
 				punish(e, damager, 23, "Angles/Hitbox " + isLookingAt(damager, e.getEntity().getLocation()), 4);
 			}
 		}
 	}
 
 	/**
-	 * @author Wall (Wall_#1920 on Discord) 
+	 * @author Wall (Wall_#1920 on Discord)
 	 * @param e
 	 */
 	public void Check5(EntityDamageByEntityEvent e) {
@@ -146,7 +149,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			boolean failed = false;
 			if (l != null)
 				failed = (l.getBlock().getType().isSolid()
-						&& l.clone().add(0.0D, 1.0D, 0.0D).getBlock().getType().isSolid());
+						&& l.clone().add(0.0D, 0.7D, 0.0D).getBlock().getType().isSolid());
 			if (failed) {
 				punish(e, (Player) e.getDamager(), 0, "WallHit", 0);
 			}
