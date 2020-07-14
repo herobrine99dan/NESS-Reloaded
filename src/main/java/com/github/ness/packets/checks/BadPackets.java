@@ -1,5 +1,6 @@
 package com.github.ness.packets.checks;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.github.ness.NESSAnticheat;
@@ -20,6 +21,8 @@ public class BadPackets {
 	 */
 	public static boolean Check(Player p, Object packet) {
 		NessPlayer np = NESSAnticheat.getInstance().getCheckManager().getPlayer(p);
+		ConfigurationSection config = NESSAnticheat.getInstance().getNessConfig().getConfig()
+				.getConfigurationSection("badpackets");
 		if (!packet.toString().toLowerCase().contains("position")) {
 			return false;
 		}
@@ -29,7 +32,7 @@ public class BadPackets {
 
 			if (difference >= 1000) {
 				final int ping = Utility.getPing(p);
-				double maxPackets = MAX_PACKETS_PER_TICK;
+				double maxPackets = config.getDouble("maxpacketspertick", MAX_PACKETS_PER_TICK);
 				if (ping > 100 && ping < 400) {
 					float pingresult = ping / 100;
 					float toAdd = pingresult / 10;
@@ -53,12 +56,12 @@ public class BadPackets {
 					 * If the percentage difference is over 7% of what is allowed, the player is
 					 * likely to be cheating.
 					 */
-					if (perecentageDifference > 7.0) {
+					if (perecentageDifference > config.getDouble("percentage", 7.0)) {
 						OldMovementChecks.blockPackets.put(p.getName(), true);
 						np.setViolation(new Violation("BadPackets", np.getMovementpacketscounter() + ""));
 						return true;
 					}
-					//You can flag also here
+					// You can flag also here
 				}
 
 				// Reset everything.

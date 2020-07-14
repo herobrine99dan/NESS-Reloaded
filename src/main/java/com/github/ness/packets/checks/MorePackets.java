@@ -1,8 +1,10 @@
 package com.github.ness.packets.checks;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.InventoryHack;
@@ -10,10 +12,12 @@ import com.github.ness.check.OldMovementChecks;
 import com.github.ness.utility.Utility;
 
 public class MorePackets {
-	
+
 	public static boolean Check(Player sender, Object packet) {
+		ConfigurationSection config = NESSAnticheat.getInstance().getNessConfig().getConfig()
+				.getConfigurationSection("morepackets");
 		int ping = Utility.getPing(sender);
-		int maxpackets = 60;
+		int maxpackets = config.getInt("maxpackets", 60);
 		int maxPackets = maxpackets * (ping / 100);
 		if (ping < 150) {
 			maxPackets = maxpackets;
@@ -39,7 +43,7 @@ public class MorePackets {
 			 * sender.getLocation())); } }.runTask(NESSAnticheat.main);
 			 */
 			OldMovementChecks.blockPackets.put(sender.getName(), true);
-			InventoryHack.manageraccess.getPlayer(sender)
+			NESSAnticheat.getInstance().getCheckManager().getPlayer(sender)
 					.setViolation(new Violation("MorePackets", np.getNormalPacketsCounter() + ""));
 			return true;
 		}

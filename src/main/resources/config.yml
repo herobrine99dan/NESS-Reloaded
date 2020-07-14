@@ -197,27 +197,80 @@ checks:
   fastplace: 
     maxblocks: 6
 #
-# FastPlace
+# FastSneak
 #
-# Just a FastPlace Check.
+# Check the distance when a player sneaks.
+#
+# Performance impact: Minimal
+# Effectiveness: High
+#
+  fastsneak:
+    maxdistance: 0.15
+#
+# FastStairs
+#
+# Check the distance when a player walks on stairs.
 #
 # Performance impact: Minimal
 # Effectiveness: medium
 #
-  fastsneak:
-    maxdistance: 0.15
   faststairs:
     maxdistance: 0.4
+#
+# Fly
+#
+# Check when player use fly cheats.
+#
+# Performance impact: Minimal
+# Effectiveness: High
+#
   fly:
     maxladderdistance: 0.12
     maxwebdistance: 0.2
     maxydist: 0.7
+#
+# KillauraFalseAngle/Hitbox/BadAura
+#
+# Check when player Hitbox.
+#
+# Performance impact: Minimal
+# Effectiveness: low (needs more testing)
+#
   killaurafalseangle:
     maxvalue: 0.85
+#
+# Killaura
+#
+# Checks for Combat Patterns.
+#
+# Performance impact: Minimal
+# Effectiveness: medium
+#
   killaura:
     highyaw: 280.0
     maxhitboxoffset: 340.0
     maxhitboxvalue: 0.1D
+#
+# BadPackets
+#
+# Checks to detect Timer.
+#
+# Performance impact: Minimal
+# Effectiveness: Very High
+#
+  badpackets:
+    maxpacketspertick: 1.03
+    percentage: 7.0
+#
+# MorePackets
+#
+# Checks to detect morepackets.
+#
+# Performance impact: Minimal
+# Effectiveness: Very High
+#
+  morepackets:
+    maxpackets: 60
 
 # If you change this, you will receive warnings in console
 config-version: 2
