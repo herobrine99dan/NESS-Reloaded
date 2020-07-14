@@ -1,7 +1,6 @@
 package com.github.ness.packets.checks;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.github.ness.NESSAnticheat;
@@ -14,10 +13,8 @@ import com.github.ness.utility.Utility;
 public class MorePackets {
 
 	public static boolean Check(Player sender, Object packet) {
-		ConfigurationSection config = NESSAnticheat.getInstance().getNessConfig().getConfig()
-				.getConfigurationSection("morepackets");
 		int ping = Utility.getPing(sender);
-		int maxpackets = config.getInt("maxpackets", 60);
+		int maxpackets = 65;
 		int maxPackets = maxpackets * (ping / 100);
 		if (ping < 150) {
 			maxPackets = maxpackets;

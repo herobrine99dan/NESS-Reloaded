@@ -21,8 +21,6 @@ public class BadPackets {
 	 */
 	public static boolean Check(Player p, Object packet) {
 		NessPlayer np = NESSAnticheat.getInstance().getCheckManager().getPlayer(p);
-		ConfigurationSection config = NESSAnticheat.getInstance().getNessConfig().getConfig()
-				.getConfigurationSection("badpackets");
 		if (!packet.toString().toLowerCase().contains("position")) {
 			return false;
 		}
@@ -56,7 +54,7 @@ public class BadPackets {
 					 * If the percentage difference is over 7% of what is allowed, the player is
 					 * likely to be cheating.
 					 */
-					if (perecentageDifference > config.getDouble("percentage", 7.0)) {
+					if (perecentageDifference > 7.0) {
 						OldMovementChecks.blockPackets.put(p.getName(), true);
 						np.setViolation(new Violation("BadPackets", np.getMovementpacketscounter() + ""));
 						return true;

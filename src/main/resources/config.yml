@@ -254,23 +254,12 @@ checks:
 # BadPackets
 #
 # Checks to detect Timer.
-#
+# FOR NOW THIS CONFIGURATION SECTION DOESN'T WORK
 # Performance impact: Minimal
 # Effectiveness: Very High
 #
   badpackets:
-    maxpacketspertick: 1.03
     percentage: 7.0
-#
-# MorePackets
-#
-# Checks to detect morepackets.
-#
-# Performance impact: Minimal
-# Effectiveness: Very High
-#
-  morepackets:
-    maxpackets: 60
 
 # If you change this, you will receive warnings in console
 config-version: 2
