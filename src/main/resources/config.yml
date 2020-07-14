@@ -144,5 +144,25 @@ checks:
     whitelisted-materials:
       - 'WATER_LILY'
 
+#
+# Aimbot
+#
+# Checks to see if a player follow some patterns.
+#
+# Performance impact: Minimal
+# Effectiveness: High
+#
+  aimbot:
+    samples: 20
+  antibot:
+    maxplayers: 10
+    message: 'AntiBot Attack Detected! By NESS Reloaded'
+  antikb:
+    mindistance: 0.1
+  autoclicker:
+    maxcps: 15
+    maxdelay: 7
+    
+
 # If you change this, you will receive warnings in console
-config-version: 1
+config-version: 2

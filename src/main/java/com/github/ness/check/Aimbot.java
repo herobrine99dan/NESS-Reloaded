@@ -3,10 +3,9 @@ package com.github.ness.check;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
@@ -40,6 +39,8 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	public boolean Check(PlayerMoveEvent e) {
 		int samples = 23;
 		int pitchlimit = 10;
+		ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
+		samples = config.getInt("samples", 23);
 		Player p = e.getPlayer();
 		NessPlayer player = manager.getPlayer(p);
 		if (player == null || Utility.hasVehicleNear(p, 3)) {
