@@ -30,7 +30,7 @@ public class BadPackets {
 
 			if (difference >= 1000) {
 				final int ping = Utility.getPing(p);
-				double maxPackets = config.getDouble("maxpacketspertick", MAX_PACKETS_PER_TICK);
+				double maxPackets = MAX_PACKETS_PER_TICK;
 				if (ping > 100 && ping < 400) {
 					float pingresult = ping / 100;
 					float toAdd = pingresult / 10;
@@ -54,7 +54,7 @@ public class BadPackets {
 					 * If the percentage difference is over 7% of what is allowed, the player is
 					 * likely to be cheating.
 					 */
-					if (perecentageDifference > 7.0) {
+					if (perecentageDifference > 7) {
 						OldMovementChecks.blockPackets.put(p.getName(), true);
 						np.setViolation(new Violation("BadPackets", np.getMovementpacketscounter() + ""));
 						return true;
