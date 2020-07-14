@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -86,7 +87,11 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (!bypass(event.getPlayer())) {
 			if (Utilities.isClimbableBlock(p.getLocation().getBlock()) && !Utilities.isInWater(p)) {
 				double distance = Utility.around(event.getTo().getY() - event.getFrom().getY(), 6);
-				if (distance > 0.12D && distance == Utility.around(np.lastYDelta, 6)) {
+				ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
+				double maxDistance = config.getDouble("maxladderdistance", 0.12);
+				if (distance > maxDistance && distance == Utility.around(np.lastYDelta, 6)) {
+					punish(event, p, "FastLadder: " + distance);
+				} else if (distance > maxDistance + 0.02 && (Math.abs(np.lastYDelta - distance) < 0.05)) {
 					punish(event, p, "FastLadder: " + distance);
 				}
 			}
@@ -196,10 +201,11 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (player.isFlying() || player.hasPotionEffect(PotionEffectType.SPEED)) {
 			return;
 		}
+		ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
 		Double hozDist = Utility.getMaxSpeed(from, to);
-		double maxDist = 0.2;
+		double maxDist = config.getDouble("maxwebdistance", 0.2);
 		if (!Utility.isMathematicallyOnGround(to.getY())) {
-			maxDist += Math.abs(player.getVelocity().getY())*0.4;
+			maxDist += Math.abs(player.getVelocity().getY()) * 0.4;
 		}
 		if (from.getBlock().getType() == Material.WEB && hozDist > maxDist) {
 			punish(e, player, "NoWeb");
@@ -209,7 +215,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	public void Check20(PlayerMoveEvent e) {
 		double yDist = e.getTo().getY() - e.getFrom().getY();
-		if (yDist > 0.7 && !bypass(e.getPlayer())) {
+		ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
+		if (yDist > config.getDouble("maxydist", 0.7) && !bypass(e.getPlayer())) {
 			punish(e, e.getPlayer(), "HighDistance");
 		}
 	}

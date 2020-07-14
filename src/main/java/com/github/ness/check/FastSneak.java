@@ -1,5 +1,6 @@
 package com.github.ness.check;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -34,7 +35,8 @@ public class FastSneak extends AbstractCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		NessPlayer np = this.manager.getPlayer(p);
 		if (p.isSneaking() && !Utility.hasflybypass(p) && !p.isSprinting()) {
-			if (Utility.getMaxSpeed(e.getFrom(), e.getTo()) > 0.15) {
+			ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
+			if (Utility.getMaxSpeed(e.getFrom(), e.getTo()) > config.getDouble("maxdistance",0.15)) {
 				np.setViolation(new Violation("FastSneak", "HighDistance"));
 				np.shouldCancel(e, "FastSneak");
 			}

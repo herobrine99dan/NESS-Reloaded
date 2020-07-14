@@ -162,7 +162,22 @@ checks:
   autoclicker:
     maxcps: 15
     maxdelay: 7
-    
+  fastplace: 
+    maxblocks: 6
+  fastsneak:
+    maxdistance: 0.15
+  faststairs:
+    maxdistance: 0.4
+  fly:
+    maxladderdistance: 0.12
+    maxwebdistance: 0.2
+    maxydist: 0.7
+  killaurafalseangle:
+    maxvalue: 0.85
+  killaura:
+    highyaw: 280.0
+    maxhitboxoffset: 340.0
+    maxhitboxvalue: 0.1D
 
 # If you change this, you will receive warnings in console
 config-version: 2

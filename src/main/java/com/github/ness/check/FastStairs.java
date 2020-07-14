@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -38,7 +39,8 @@ public class FastStairs extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		double distance = Utility.around(Math.abs(Utility.getMaxSpeed(e.getFrom(), e.getTo())), 6);
 		double ydist = Utility.around(to.getY() - from.getY(), 6);
-		if (distance > 0.4D && !listbypass.contains(Double.toString(ydist))) {
+		ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
+		if (distance > config.getDouble("maxdistance",0.4) && !listbypass.contains(Double.toString(ydist))) {
 			manager.getPlayer(p).setViolation(new Violation("FastStairs", "Distance: " + distance));
 			if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 				e.setCancelled(true);

@@ -2,6 +2,7 @@ package com.github.ness.check;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -54,7 +55,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 				if (Math.abs(grade) > 9350) {
 					return;
 				}
-				if (Math.round(grade) > 280.0) {
+				ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
+				if (Math.round(grade) > config.getDouble("highyaw", 280)) {
 					punish(e, p, 19, "HighYaw " + grade, 6);
 				}
 			}, 3L);
@@ -84,7 +86,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
 			offset += Math.abs(offsetX);
 			offset += Math.abs(offsetY);
-			if (offset > 340.0D) {
+			ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
+			if (offset > config.getDouble("maxhitboxoffset", 340.0)) {
 				punish(event, player, 20, "Angles/Hitbox " + offset, 6);
 			}
 		}
@@ -95,7 +98,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Player player = (Player) event.getDamager();
 			if (player.getLocation().getPitch() == Math.round(player.getLocation().getPitch())) {
 				punish(event, player, 21, "PerfectAngle", 5);
-			} else if(player.getLocation().getYaw() == Math.round(player.getLocation().getYaw())) {
+			} else if (player.getLocation().getYaw() == Math.round(player.getLocation().getYaw())) {
 				punish(event, player, 21, "PerfectAngle", 5);
 			}
 		}
@@ -104,7 +107,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check4(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player damager = (Player) e.getDamager();
-			if (isLookingAt(damager, e.getEntity().getLocation()) < 0.1D) {
+			ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
+			if (isLookingAt(damager, e.getEntity().getLocation()) < config.getDouble("maxhitboxvalue", 0.1D)) {
 				punish(e, damager, 23, "Angles/Hitbox " + isLookingAt(damager, e.getEntity().getLocation()), 4);
 			}
 		}
