@@ -6,7 +6,6 @@ import java.util.HashMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -14,7 +13,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
-import com.github.ness.DragDown;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.utility.Utilities;
@@ -189,38 +187,38 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
+	/**
+	 * The Speed Prediction Check of Jonhan From
+	 * https://www.youtube.com/watch?v=QXukRdPlXn4&t=416s
+	 * 
+	 * @param e
+	 */
 	public void Check4(PlayerMoveEvent e) {
 		Location to = e.getTo();
 		Location from = e.getFrom();
-		Player p = e.getPlayer();
-		double x = to.getX() - from.getX();
-		double z = to.getZ() - from.getZ();
-		if (Double.toString(z).length() > 4) {
-			z = Utility.around(z, 5);
-		}
-		if (Double.toString(x).length() > 4) {
-			x = Utility.around(x, 5);
-		}
-		if (Utility.hasflybypass(p)) {
-			return;
-		}
-		if (!Utilities.isAround(to, to.getBlock().getType())) {
-			return;
-		}
-		Vector v = new Vector(x, to.getX(), z);
-		// Vector result = v.subtract(p.getVelocity());
-		Vector result = v.subtract(p.getVelocity().setY(0));
-		double xresult = Math.abs(result.getX());
-		double zresult = Math.abs(result.getZ());
-		if (xresult > 0.38 || zresult > 0.38) {
-			if (!(xresult > 1) && !(zresult > 1) && !(xresult == 0.54) && !(zresult == 0.54)) {
-				punish(e, "InvalidXZVelocity");
+		NessPlayer np = this.manager.getPlayer(e.getPlayer());
+		double distX = to.getX() - from.getX();
+		double distZ = to.getZ() - from.getZ();
+		double dist = (distX * distX) + (distZ * distZ);
+		double lastDist = np.lastSpeedPredictionDist;
+		np.lastSpeedPredictionDist = dist;
+		boolean lastOnGround = np.lastSpeedPredictionOnGround;
+		np.lastSpeedPredictionOnGround = Utility.isMathematicallyOnGround(to.getY());
+		float friction = 0.91F;
+		double shiftedLastDist = lastDist * friction;
+		double equalness = dist - shiftedLastDist;
+		float scaledEqualness = (float) (equalness * 136);
+		if (!Utility.isMathematicallyOnGround(to.getY()) && !lastOnGround) {
+			/*
+			 * if (scaledEqualness >= 1.0) { e.getPlayer().sendMessage("Speed Cheats: " +
+			 * scaledEqualness); }
+			 */
+			if (scaledEqualness > 1.1) {
+				this.punish(e, "InvalidFriction: " + scaledEqualness);
 			}
-			// p.sendMessage("X: " + Math.abs(around(result.getX(), 5)) + " Z: " +
-			// Math.abs(around(result.getZ(), 5)));
 		}
 	}
-
+	
 	public void Check5(PlayerMoveEvent event) {
 		double delta = event.getTo().getY() - event.getFrom().getY();
 		NessPlayer p = manager.getPlayer(event.getPlayer());

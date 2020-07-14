@@ -82,7 +82,9 @@ public class NessPlayer implements AutoCloseable {
 	public Location safeLoc; // This should be used to make the better LagBack system
 	public int AimbotPatternCounter = 0; // For Aimbot
 	public Location lastLocation; // For Killaura
-	public double lastDist; // For Strafe Check
+	public double lastStrafeDist; // For Strafe Check
+	public double lastSpeedPredictionDist; // For Speed Prediction Check
+	public boolean lastSpeedPredictionOnGround; // For Speed Prediction Check
 	public long lastFlyingPacket;
 
 	// Used in OldMovementChecks

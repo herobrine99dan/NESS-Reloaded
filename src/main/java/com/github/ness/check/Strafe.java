@@ -25,8 +25,8 @@ public class Strafe extends AbstractCheck<PlayerMoveEvent> {
 		double distX = to.getX() - from.getX();
 		double distZ = to.getZ() - from.getZ();
 		double dist = (distX * distX) + (distZ * distZ);
-		double lastDist = np.lastDist;
-		np.lastDist = dist;
+		double lastDist = np.lastStrafeDist;
+		np.lastStrafeDist = dist;
 		if (dist == 0.0) {
 			return;
 		}
