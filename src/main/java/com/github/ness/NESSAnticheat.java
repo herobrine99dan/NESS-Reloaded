@@ -18,9 +18,6 @@ import com.github.ness.packets.NewPacketListener;
 import lombok.Getter;
 
 public class NESSAnticheat extends JavaPlugin {
-
-	public static boolean use1_15Helper = false;
-
 	@Getter
 	private ScheduledExecutorService executor;
 	static NESSAnticheat main;

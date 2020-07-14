@@ -10,10 +10,14 @@ import com.github.ness.CheckManager;
 public class AntiBot extends AbstractCheck<AsyncPlayerPreLoginEvent> {
 	int maxPlayers = 10;
 	public static int playerCounter = 0;
+	String message;
 	public static ArrayList<String> whitelistbypass = new ArrayList<String>();
 
 	public AntiBot(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(AsyncPlayerPreLoginEvent.class));
+		ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
+		message = config.getString("message", "Bot Attack Detected! By NESS Reloaded");
+		maxPlayers = config.getInt("maxplayers", 10);
 	}
 
 	@Override
@@ -23,9 +27,6 @@ public class AntiBot extends AbstractCheck<AsyncPlayerPreLoginEvent> {
 
 	public void Check(AsyncPlayerPreLoginEvent e) {
 		playerCounter++;
-		ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
-		maxPlayers = config.getInt("maxplayers", 10);
-		String message = config.getString("message", "Bot Attack Detected! By NESS Reloaded");
 		if (playerCounter > maxPlayers && !whitelistbypass.contains(e.getName())) {
 			e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, message);
 		} else {

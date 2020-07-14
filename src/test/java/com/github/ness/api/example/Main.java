@@ -1,5 +1,6 @@
 package com.github.ness.api.example;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,6 +19,7 @@ public class Main extends JavaPlugin implements Listener {
 
 	public void onEnable() {
 		api = new NESSApiImpl(NESSAnticheat.getInstance());
+		Bukkit.getPluginManager().registerEvents(this, this);
 		api.addViolationAction(new CheaterBurner());
 	}
 

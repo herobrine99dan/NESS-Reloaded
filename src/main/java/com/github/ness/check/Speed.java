@@ -13,6 +13,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
+import com.github.ness.DragDown;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.utility.Utilities;
@@ -182,8 +183,15 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			yresult = result.getY();
 		}
 		if (Math.abs(yresult) > 0.74) {
-			p.teleport(p.getLocation().clone().add(0, -0.5, 0), TeleportCause.PLUGIN);
-			p.sendMessage("Cheats! " + yresult);
+			if (Utility.hasflybypass(p) || manager.getPlayer(e.getPlayer()).isTeleported()) {
+				return;
+			}
+			manager.getPlayer(p).setViolation(new Violation("Speed", "InvalidVelocity: " + yresult));
+			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+				if(!DragDown.PlayerDragDown(p)) {
+					e.setCancelled(true);
+				}
+			}
 		}
 	}
 

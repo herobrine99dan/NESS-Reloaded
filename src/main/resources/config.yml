@@ -138,7 +138,7 @@ checks:
 # Checks to see if a player placed a block against water.
 #
 # Performance impact: Minimal
-# Effectiveness: High
+# Effectiveness: Very High
 #
   liquidinteraction:
     whitelisted-materials:
@@ -147,23 +147,63 @@ checks:
 #
 # Aimbot
 #
-# Checks to see if a player follow some patterns.
+# Checks to see if a player rotates head following some patterns.
 #
 # Performance impact: Minimal
 # Effectiveness: High
 #
   aimbot:
     samples: 20
+#
+# AntiBot
+#
+# A small Connection Limiter using Async Events.
+#
+# Performance impact: Minimal
+# Effectiveness: untested
+#
   antibot:
     maxplayers: 10
     message: 'AntiBot Attack Detected! By NESS Reloaded'
+#
+# AntiKnockback
+#
+# An AntiKnockback check to detect when distance is lower than minimum.
+#
+# Performance impact: Minimal
+# Effectiveness: medium
+#
   antikb:
     mindistance: 0.1
+#
+# AutoClicker
+#
+# A Max CPS Check and a Max Delay Check.
+#
+# Performance impact: Minimal
+# Effectiveness: medium
+#
   autoclicker:
     maxcps: 15
     maxdelay: 7
+#
+# FastPlace
+#
+# Just a FastPlace Check.
+#
+# Performance impact: Minimal
+# Effectiveness: medium
+#
   fastplace: 
     maxblocks: 6
+#
+# FastPlace
+#
+# Just a FastPlace Check.
+#
+# Performance impact: Minimal
+# Effectiveness: medium
+#
   fastsneak:
     maxdistance: 0.15
   faststairs:

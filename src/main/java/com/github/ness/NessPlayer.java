@@ -85,7 +85,10 @@ public class NessPlayer implements AutoCloseable {
 	public double lastStrafeDist; // For Strafe Check
 	public double lastSpeedPredictionDist; // For Speed Prediction Check
 	public boolean lastSpeedPredictionOnGround; // For Speed Prediction Check
+	public int InvalidVelocitySpeedCounter; // A Counter For Speed Invalid Velocity
 	public long lastFlyingPacket;
+	public long lastPacketTime; //Used in BadPackets
+	public long movementPackets; //Used in BadPackets
 
 	// Used in OldMovementChecks
 
@@ -124,6 +127,7 @@ public class NessPlayer implements AutoCloseable {
 
 	NessPlayer(Player player, boolean devMode) {
 		this.player = player;
+		lastPacketTime = 0;
 		this.lastFlyingPacket = System.currentTimeMillis();
 		this.devMode = devMode;
 	}

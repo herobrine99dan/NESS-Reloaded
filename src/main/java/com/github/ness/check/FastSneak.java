@@ -25,7 +25,7 @@ public class FastSneak extends AbstractCheck<PlayerMoveEvent> {
 	void Check(PlayerMoveEvent e) {
 		Player p = e.getPlayer();
 		NessPlayer np = this.manager.getPlayer(p);
-		if (p.isSneaking() && !Utility.hasflybypass(p) && !p.isFlying()) {
+		if (p.isSneaking() && !Utility.hasflybypass(p) && !p.isFlying() && p.isSprinting()) {
 			np.setViolation(new Violation("FastSneak", "Sneaking while Sprinting"));
 			np.shouldCancel(e, "FastSneak");
 		}
