@@ -1,6 +1,5 @@
 package com.github.ness.check;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 

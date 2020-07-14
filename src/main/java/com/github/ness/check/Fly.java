@@ -57,7 +57,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	/**
-	 * Check to detect no velocity(normal velocity should be upper than -0.07) This
+	 * Check to detect no velocity(normal velocity should be upper than -0.06) This
 	 * detect stupid fly
 	 * 
 	 * @param event
@@ -197,7 +197,11 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		Double hozDist = Utility.getMaxSpeed(from, to);
-		if (from.getBlock().getType() == Material.WEB && hozDist > 0.2 && Utility.isMathematicallyOnGround(to.getY())) {
+		double maxDist = 0.2;
+		if (!Utility.isMathematicallyOnGround(to.getY())) {
+			maxDist += Math.abs(player.getVelocity().getY())*0.4;
+		}
+		if (from.getBlock().getType() == Material.WEB && hozDist > maxDist) {
 			punish(e, player, "NoWeb");
 			// player.sendMessage("NoWebDist: " + hozDist);
 		}

@@ -188,8 +188,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	/**
-	 * The Speed Prediction Check of Jonhan From
-	 * https://www.youtube.com/watch?v=QXukRdPlXn4&t=416s
+	 * The Speed Prediction Check of Jonhan, with some changes
+	 * From https://www.youtube.com/watch?v=QXukRdPlXn4&t=416s
 	 * 
 	 * @param e
 	 */
@@ -209,10 +209,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		double equalness = dist - shiftedLastDist;
 		float scaledEqualness = (float) (equalness * 136);
 		if (!Utility.isMathematicallyOnGround(to.getY()) && !lastOnGround) {
-			/*
-			 * if (scaledEqualness >= 1.0) { e.getPlayer().sendMessage("Speed Cheats: " +
-			 * scaledEqualness); }
-			 */
 			if (scaledEqualness > 1.1) {
 				this.punish(e, "InvalidFriction: " + scaledEqualness);
 			}

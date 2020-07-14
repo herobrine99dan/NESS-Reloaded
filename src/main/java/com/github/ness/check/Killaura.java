@@ -1,16 +1,12 @@
 package com.github.ness.check;
 
-import java.util.HashMap;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
@@ -19,8 +15,6 @@ import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
 
 public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
-	public HashMap<Player, Entity> lastEntityHit = new HashMap<Player, Entity>();
-	public HashMap<String, String> mobinfront = new HashMap<String, String>();
 
 	public Killaura(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
@@ -90,7 +84,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
 			offset += Math.abs(offsetX);
 			offset += Math.abs(offsetY);
-			if (offset > 350.0D) {
+			if (offset > 340.0D) {
 				punish(event, player, 20, "Angles/Hitbox " + offset, 6);
 			}
 		}
@@ -100,6 +94,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		if (event.getDamager() instanceof Player) {
 			Player player = (Player) event.getDamager();
 			if (player.getLocation().getPitch() == Math.round(player.getLocation().getPitch())) {
+				punish(event, player, 21, "PerfectAngle", 5);
+			} else if(player.getLocation().getYaw() == Math.round(player.getLocation().getYaw())) {
 				punish(event, player, 21, "PerfectAngle", 5);
 			}
 		}
@@ -116,7 +112,6 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
 	/**
 	 * @author Wall (Wall_#1920 on Discord)
-	 * @param e
 	 */
 	public void Check5(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {

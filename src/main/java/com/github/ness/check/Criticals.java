@@ -26,9 +26,6 @@ public class Criticals extends AbstractCheck<EntityDamageByEntityEvent> {
 			return;
 		}
 		Player player = (Player) event.getDamager();
-		if (player.isOp()) {
-			return;
-		}
 		if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).isLiquid()) {
 			return;
 		}
@@ -38,12 +35,10 @@ public class Criticals extends AbstractCheck<EntityDamageByEntityEvent> {
 
 		if (!Utility.isMathematicallyOnGround(player.getLocation().getY()) && !player.isFlying()) {
 			if (player.getLocation().getY() % 1.0D == 0.0D || player.getLocation().getY() % 0.5D == 0.0D) {
-				if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
-					if(manager.getPlayer(player).shouldCancel(event, this.getClass().getSimpleName())) {
-						event.setCancelled(true);
-					}
-					manager.getPlayer(player).setViolation(new Violation("Criticals", ""));
+				if (manager.getPlayer(player).shouldCancel(event, this.getClass().getSimpleName())) {
+					event.setCancelled(true);
 				}
+				manager.getPlayer(player).setViolation(new Violation("Criticals", ""));
 			}
 		}
 	}
