@@ -137,6 +137,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	public void Check3(PlayerMoveEvent e) {
 		Location to = e.getTo().clone();
 		Location from = e.getFrom().clone();
+		NessPlayer np = this.manager.getPlayer(e.getPlayer());
 		Player p = e.getPlayer();
 		double x = to.getX() - from.getX();
 		double y = to.getY() - from.getY();
@@ -184,6 +185,10 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 		if (Math.abs(yresult) > 0.74) {
 			if (Utility.hasflybypass(p) || manager.getPlayer(e.getPlayer()).isTeleported()) {
+				return;
+			}
+			np.InvalidVelocitySpeedCounter++;
+			if(np.InvalidVelocitySpeedCounter < 3) {
 				return;
 			}
 			manager.getPlayer(p).setViolation(new Violation("Speed", "InvalidVelocity: " + yresult));
