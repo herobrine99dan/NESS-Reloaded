@@ -37,7 +37,7 @@ public final class Utilities {
 		return bd.doubleValue();
 	}
 	
-	public static boolean IsSameBlockAround(Player p, float add_y, float width) {
+	public static boolean isSameBlockAround(Player p, float add_y, float width) {
 		Material new_loc1 = p.getLocation().add(0, add_y, 0).getBlock().getType();
 
 		Material new_loc2 = p.getLocation().add(width, add_y, 0).getBlock().getType();
@@ -60,7 +60,7 @@ public final class Utilities {
 		}
 	}
 
-	public static boolean IsSameBlockAround(Player p, Material mat, float add_y, float width) {
+	public static boolean isSameBlockAround(Player p, Material mat, float add_y, float width) {
 		Material new_loc1 = p.getLocation().add(0, add_y, 0).getBlock().getType();
 
 		Material new_loc2 = p.getLocation().add(width, add_y, 0).getBlock().getType();
@@ -109,7 +109,7 @@ public final class Utilities {
         return new double[]{yawOffset, pitchOffset};
     }
 
-	public static boolean BlockOverPlayer(Location loc) {
+	public static boolean blockOverPlayer(Location loc) {
 		int onOtherBlockX = 0;
 		int onOtherBlockZ = 0;
 
@@ -183,7 +183,7 @@ public final class Utilities {
 		return false;
 	}
 
-	public static String DeterminateDirection(float yaw) {
+	public static String determinateDirection(float yaw) {
 		if (yaw < 0.0F) {
 			yaw += 360.0F;
 		}
@@ -218,11 +218,11 @@ public final class Utilities {
 		return f;
 	}
 
-	public static void CommandExecute(String command) {
+	public static void commandExecute(String command) {
 		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
 	}
 
-	public static Vector VectorReturn(double pitchh, double yav) {
+	public static Vector vectorReturn(double pitchh, double yav) {
 		double pitch = (pitchh + 90.0D) * 3.141592653589793D / 180.0D;
 		double yaw = (yav + 90.0D) * 3.141592653589793D / 180.0D;
 		double x = Math.sin(pitch) * Math.cos(yaw);

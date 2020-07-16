@@ -29,6 +29,14 @@ public class MSG {
 		return res;
 	}
 	
+	public static String torF(Boolean bool) {
+		if (bool) {
+			return "&aTrue&r";
+		} else {
+			return "&cFalse&r";
+		}
+	}
+	
 	public static String parseDecimal(String name, int length) {
 		if (name.contains(".")) {
 			if (name.split("\\.")[1].length() > 2) {
@@ -54,14 +62,6 @@ public class MSG {
 
 	public static void log(String msg) {
 		MSG.tell(Bukkit.getConsoleSender(), "[NESS] " + msg);
-	}
-
-	public static String TorF(Boolean bool) {
-		if (bool) {
-			return "&aTrue&r";
-		} else {
-			return "&cFalse&r";
-		}
 	}
 
 	public static String genUUID(int length) {

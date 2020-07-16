@@ -1,6 +1,5 @@
 package com.github.ness.packets.checks;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.github.ness.NESSAnticheat;

@@ -63,11 +63,11 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		// player.sendMessage("Time: "+Utility.around(System.currentTimeMillis(), 12));
-		if (Utility.SpecificBlockNear(player.getLocation(), Material.STATIONARY_LAVA)
-				|| Utility.SpecificBlockNear(player.getLocation(), Material.WATER)
-				|| Utility.SpecificBlockNear(player.getLocation(), Material.LAVA)
-				|| Utility.SpecificBlockNear(player.getLocation(), Material.STATIONARY_WATER)
-				|| Utility.hasflybypass(player) || Utility.SpecificBlockNear(player.getLocation(), Material.SNOW)) {
+		if (Utility.specificBlockNear(player.getLocation(), Material.STATIONARY_LAVA)
+				|| Utility.specificBlockNear(player.getLocation(), Material.WATER)
+				|| Utility.specificBlockNear(player.getLocation(), Material.LAVA)
+				|| Utility.specificBlockNear(player.getLocation(), Material.STATIONARY_WATER)
+				|| Utility.hasflybypass(player) || Utility.specificBlockNear(player.getLocation(), Material.SNOW)) {
 			return;
 		}
 		if (!player.getNearbyEntities(5, 5, 5).isEmpty()) {

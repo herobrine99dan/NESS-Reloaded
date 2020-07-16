@@ -48,7 +48,7 @@ public class ViolationManager {
 							}
 							if (violationCount > (notifyStaff.getInt("vl") - 1)) {
 								String notif = addViolationVariables(notification, player, violation, violationCount);
-								DiscordHackWarn.WebHookSender(player, violation.getCheck(), violationCount, violation.getDetails());
+								DiscordHackWarn.webHookSender(player, violation.getCheck(), violationCount, violation.getDetails());
 								for (Player staff : Bukkit.getOnlinePlayers()) {
 									if (staff.hasPermission("ness.notify")
 											|| staff.hasPermission("ness.notify.hacks")) {

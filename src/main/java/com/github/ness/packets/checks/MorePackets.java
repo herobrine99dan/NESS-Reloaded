@@ -20,7 +20,7 @@ public class MorePackets {
 			maxPackets = maxpackets;
 		}
 		// System.out.println("Packet: " +packet.toString());
-		if (Utility.SpecificBlockNear(sender.getLocation(), Material.PORTAL)) {
+		if (Utility.specificBlockNear(sender.getLocation(), Material.PORTAL)) {
 			return false;
 		}
 		// System.out.println("Sono qua");

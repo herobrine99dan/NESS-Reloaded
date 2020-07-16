@@ -42,7 +42,7 @@ public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent> {
 
 	private static Location determinateLocation(Player p) {
 		Location loc = p.getLocation();
-		String direction = Utilities.DeterminateDirection(loc.getYaw());
+		String direction = Utilities.determinateDirection(loc.getYaw());
 		if (direction.equals("nord")) {
 			loc.add(1.7, 0, 0);
 		} else if (direction.equals("sud")) {

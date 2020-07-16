@@ -1,7 +1,6 @@
 package com.github.ness.gui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -48,6 +47,7 @@ public class ViolationGUI {
 		menu.open(p);
 	}
 
+	@SuppressWarnings("deprecation")
 	public ItemStack getPlayerHead(Player player) {
 		ItemStack playerhead = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 		SkullMeta playerheadmeta = (SkullMeta) playerhead.getItemMeta();

@@ -16,8 +16,8 @@ public class Utility {
 	/**
 	 * Calculate the distance beetween the class data and the test data
 	 * 
-	 * @param double[] array1
-	 * @param double[] array2
+	 * @param double array1
+	 * @param double array2
 	 * @return
 	 */
 	static double calculateDistance(double[] array1, double[] array2) {
@@ -62,7 +62,7 @@ public class Utility {
 	 * Create a DataSet List From CSV File
 	 * 
 	 * @param File f
-	 * @return a List<DataSet> Object
+	 * @return a DataSet List Object
 	 * @throws IOException
 	 */
 	public static List<DataSet> createDataSetListByCSVFile(File f) throws IOException {

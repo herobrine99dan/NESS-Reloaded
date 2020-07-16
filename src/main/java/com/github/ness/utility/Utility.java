@@ -300,7 +300,7 @@ public class Utility {
 		return done;
 	}
 
-	public static boolean SpecificBlockNear(Location loc, Material m) {
+	public static boolean specificBlockNear(Location loc, Material m) {
 		for (Block b : Utility.getSurrounding(loc.getBlock(), true)) {
 			if (b.getType().equals(m)) {
 				return true;
@@ -642,32 +642,6 @@ public class Utility {
 			e.printStackTrace();
 		}
 		return strData;
-	}
-
-	public static String ArrayToString(String[] list) {
-		String string = "";
-		for (final String key : list) {
-			string = String.valueOf(string) + key + ",";
-		}
-		if (string.length() != 0) {
-			return string.substring(0, string.length() - 1);
-		}
-		return null;
-	}
-
-	public static String ArrayToString(List<String> list) {
-		String string = "";
-		for (final String key : list) {
-			string = String.valueOf(string) + key + ",";
-		}
-		if (string.length() != 0) {
-			return string.substring(0, string.length() - 1);
-		}
-		return null;
-	}
-
-	public static String[] StringToArray(String string, String split) {
-		return string.split(split);
 	}
 
 	public static double getFraction(final double value) {

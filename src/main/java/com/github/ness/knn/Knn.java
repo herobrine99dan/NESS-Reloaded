@@ -30,7 +30,7 @@ public class Knn {
 	/**
 	 * Get all the Classes in a list
 	 * 
-	 * @return a List<DataSet> Object
+	 * @return a DataSet List Object
 	 */
 	public List<DataSet> getClassesValues() {
 		return classesvalues;

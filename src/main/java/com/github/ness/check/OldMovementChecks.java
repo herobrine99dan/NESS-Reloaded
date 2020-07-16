@@ -150,10 +150,10 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 					"&7below: &e" + MSG.camelCase(below.toString()) + " bottom: " + MSG.camelCase(bottom.toString()));
 			MSG.tell(player, "&7dTG: " + dTG);
 			MSG.tell(player,
-					"&7groundAround: &e" + MSG.TorF(groundAround) + " &7onGround: " + MSG.TorF(player.isOnGround()));
-			MSG.tell(player, "&7ice: " + MSG.TorF(ice) + " &7surrounded: " + MSG.TorF(surrounded) + " &7lilypad: "
-					+ MSG.TorF(lilypad) + " &7web: " + MSG.TorF(web));
-			MSG.tell(player, " &7waterAround: " + MSG.TorF(waterAround));
+					"&7groundAround: &e" + MSG.torF(groundAround) + " &7onGround: " + MSG.torF(player.isOnGround()));
+			MSG.tell(player, "&7ice: " + MSG.torF(ice) + " &7surrounded: " + MSG.torF(surrounded) + " &7lilypad: "
+					+ MSG.torF(lilypad) + " &7web: " + MSG.torF(web));
+			MSG.tell(player, " &7waterAround: " + MSG.torF(waterAround));
 		}
 
 		if (surrounded && (hozDist > .2 || to.getBlockY() < from.getBlockY())) {

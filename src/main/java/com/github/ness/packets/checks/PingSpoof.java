@@ -1,10 +1,8 @@
 package com.github.ness.packets.checks;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.github.ness.MovementPlayerData;
-import com.github.ness.NESSAnticheat;
 import com.github.ness.api.Violation;
 import com.github.ness.check.InventoryHack;
 import com.github.ness.utility.Utility;
