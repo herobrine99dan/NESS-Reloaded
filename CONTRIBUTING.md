@@ -1,4 +1,4 @@
-#You can help in different ways!
+# You can help in different ways!
 I'm a Java Developer:
 If you can develope Java then you can help us fixing errors, bypass, false positives, adding new config options, organizing the code...
 Just do a Pull Request, we will check it quickly and we will accept it.
