@@ -17,6 +17,12 @@ public interface NESSApi {
 	 * @param action the violation action
 	 */
 	void addViolationAction(ViolationAction action);
+	/**
+	 * Flag a player for a cheat
+	 * 
+	 * @param violation the cause
+	 * @param player the player to flag
+	 */
 	void flagHack(Violation violation, Player player);
 	
 }

@@ -14,7 +14,7 @@ import com.github.ness.api.NESSApi;
 import com.github.ness.api.PlayerViolationEvent;
 import com.github.ness.api.Violation;
 
-public class Main extends JavaPlugin implements Listener {
+public class NESSExample extends JavaPlugin implements Listener {
 	NESSApi api;
 
 	public void onEnable() {
