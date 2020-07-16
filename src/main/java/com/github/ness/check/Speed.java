@@ -193,7 +193,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			}
 			manager.getPlayer(p).setViolation(new Violation("Speed", "InvalidVelocity: " + yresult));
 			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-				if(!DragDown.PlayerDragDown(p)) {
+				if(!DragDown.playerDragDown(p)) {
 					e.setCancelled(true);
 				}
 			}

@@ -36,7 +36,7 @@ public class NessPlayer implements AutoCloseable {
 
 	@Getter
 	@Setter
-	private boolean teleported = false;
+	private boolean teleported;
 
 	/**
 	 * Player's current violation, package visibility for ViolationManager to use
@@ -55,32 +55,32 @@ public class NessPlayer implements AutoCloseable {
 	public List<Float> patterns = new ArrayList<Float>();
 	@Getter
 	@Setter
-	double distance = 0.0; // For GhostHand and NoSlowDown
+	double distance; // For GhostHand and NoSlowDown
 	@Getter
 	@Setter
-	int clicks = 0; // For FastClick
+	int clicks; // For FastClick
 	@Getter
 	@Setter
-	int blockplace = 0; // For FastPlace
+	int blockplace; // For FastPlace
 	@Getter
 	@Setter
-	int movementpacketscounter = 0; // For BadPackets
+	int movementpacketscounter; // For BadPackets
 	@Getter
 	@Setter
-	int normalPacketsCounter = 0; // For MorePackets
+	int normalPacketsCounter; // For MorePackets
 	@Getter
 	@Setter
-	int CPS = 0; // For AutoClicker
+	int CPS; // For AutoClicker
 	@Getter
 	@Setter
-	long CPSDelay = 0; // For AutoClicker
+	long CPSDelay; // For AutoClicker
 	@Getter
 	@Setter
-	long CPSlastDelay = 0; // For AutoClicker
-	public float lastPitch = 0; // Used in GhostHand
+	long CPSlastDelay; // For AutoClicker
+	public float lastPitch; // Used in GhostHand
 	public double lastYDelta; // Used in Speed And Fly
 	public Location safeLoc; // This should be used to make the better LagBack system
-	public int AimbotPatternCounter = 0; // For Aimbot
+	public int AimbotPatternCounter; // For Aimbot
 	public Location lastLocation; // For Killaura
 	public double lastStrafeDist; // For Strafe Check
 	public double lastSpeedPredictionDist; // For Speed Prediction Check
@@ -127,7 +127,18 @@ public class NessPlayer implements AutoCloseable {
 
 	NessPlayer(Player player, boolean devMode) {
 		this.player = player;
-		lastPacketTime = 0;
+		this.distance = 0.0;
+		this.teleported = false;
+		this.lastPacketTime = 0;
+		this.clicks = 0;
+		this.blockplace = 0;
+		this.CPS = 0;
+		this.CPSlastDelay = 0;
+		this.AimbotPatternCounter = 0;
+		this.normalPacketsCounter = 0;
+		this.CPSDelay = 0;
+		this.lastPitch = 0;
+		this.movementpacketscounter = 0;
 		this.lastFlyingPacket = System.currentTimeMillis();
 		this.devMode = devMode;
 	}

@@ -30,6 +30,10 @@ public class NESSAnticheat extends JavaPlugin {
 	@Getter
 	private NMSHandler nmsHandler;
 	
+	private NESSAnticheat() {
+		
+	}
+	
 	private static final Logger logger = LogManager.getLogger(NESSAnticheat.class);
 
 	@Override
@@ -74,6 +78,7 @@ public class NESSAnticheat extends JavaPlugin {
 		getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(this), this, ServicePriority.Low);
 	}
 
+	@SuppressWarnings("deprecation")
 	private NMSHandler findNMSHandler() {
 		String packageName = Bukkit.getServer().getClass().getPackage().getName(); // org.bukkit.craftbukkit.v1_8_R3
 		String nmsVersion = packageName.substring("org.bukkit.craftbukkit.v".length()); // 1_8_R3

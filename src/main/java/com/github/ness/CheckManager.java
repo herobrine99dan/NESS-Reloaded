@@ -105,7 +105,6 @@ public class CheckManager implements AutoCloseable {
 					Player player = evt.getPlayer();
 					logger.debug("Removing player {}", player);
 
-					@SuppressWarnings("resource")
 					NessPlayer nessPlayer = players.remove(player.getUniqueId());
 					if (nessPlayer != null) {
 						nessPlayer.close();

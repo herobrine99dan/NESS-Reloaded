@@ -5,6 +5,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 public class DragDown {
+	
+	private DragDown() {
+		
+	}
 
 	/**
 	 * DragDown method to teleport the player down
@@ -12,7 +16,7 @@ public class DragDown {
 	 * @param player the corresponding player
 	 */
 
-	public static boolean PlayerDragDown(Player p) {
+	public static boolean playerDragDown(Player p) {
 		try {
 			NESSAnticheat.main.getServer().getScheduler().scheduleSyncDelayedTask(NESSAnticheat.main, new Runnable() {
 				@Override

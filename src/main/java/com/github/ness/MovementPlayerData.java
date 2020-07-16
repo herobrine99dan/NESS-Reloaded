@@ -3,23 +3,21 @@ package com.github.ness;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerMoveEvent;
-
-import com.github.ness.utility.Utility;
 
 import lombok.Getter;
-import lombok.Setter;
 
 public class MovementPlayerData {
+	@Getter
 	private Player player;
-	public long pingspooftimer = 0;
-	public long oldpingspooftimer = 0;
+	public long pingspooftimer;
+	public long oldpingspooftimer;
 	private static Map<String, MovementPlayerData> nessplayers = new HashMap<String, MovementPlayerData>();
 
 	private MovementPlayerData(Player player) {
 		this.player = player;
+		oldpingspooftimer = 0;
+		pingspooftimer = 0;
 		nessplayers.put(player.getName(), this);
 	}
 	
