@@ -14,24 +14,8 @@ import lombok.Setter;
 
 public class MovementPlayerData {
 	private Player player;
-	double StrafeValuex = 0.0;
-	int FlyMoves = 0;
-	public float suspiciousYaw = 0.0f;
-	double StrafeValuez = 0.0;
-	long SprintLastToggle = 0;
-	public double DistanceFastStairs = 0.0;
 	public long pingspooftimer = 0;
 	public long oldpingspooftimer = 0;
-	@Getter
-	private long PatternMS= (long) 0;
-	@Getter
-	@Setter
-	private Integer PatternVerbose = 0;
-	private double LastYDIff = 0.0;
-	@Getter
-	private Map<Float, Integer> samples = new HashMap<>();
-	private HashMap<String, Double> distance = new HashMap<String, Double>();
-	private Map<String, Location> onground = new HashMap<String, Location>();
 	private static Map<String, MovementPlayerData> nessplayers = new HashMap<String, MovementPlayerData>();
 
 	private MovementPlayerData(Player player) {
@@ -39,8 +23,6 @@ public class MovementPlayerData {
 		nessplayers.put(player.getName(), this);
 	}
 	
-	public void resetPatternMS() { this.PatternMS = Long.valueOf(System.currentTimeMillis()); }
-
 	// Return a running instance (or create a new one)
 	/**
 	 * Return a running instance (or create a new one)
@@ -68,67 +50,6 @@ public class MovementPlayerData {
 		} else {
 			return false;
 		}
-	}
-
-	// Your special (non-static) methods defined here:
-	public void setDistance(double dist) {
-		distance.put(this.player.getName(), dist);
-	}
-
-	public Location getOnGroundLocation() {
-		return this.onground.getOrDefault(this.player.getName(), this.player.getLocation());
-	}
-
-	public void setValuesMovement(PlayerMoveEvent e) {
-		this.setDistance(Utility.getMaxSpeed(e.getFrom(), e.getTo()));
-		Player p = e.getPlayer();// Double.valueOf(Float.valueOf(e.getFrom().getYaw() -
-									// e.getTo().getYaw()).toString()).doubleValue() if (Utility.isOnGround(p) &&
-									// Utilities.isLocationOnGround(p.getLocation())) {
-		this.onground.put(p.getName(), p.getLocation());
-	}
-
-	public Player getPlayer() {
-		return this.player;
-	}
-
-	public void setStrafeValueX(double diffX) {
-		StrafeValuex = diffX;
-	}
-
-	public void setStrafeValueZ(double diffZ) {
-		StrafeValuez = diffZ;
-	}
-
-	public double getStrafeValueX() {
-		return StrafeValuex;
-	}
-
-	public double getStrafeValueZ() {
-		return StrafeValuez;
-	}
-
-	public int getFlyMoves() {
-		return FlyMoves;
-	}
-
-	public void setFlyMoves(int flyMoves) {
-		FlyMoves = flyMoves;
-	}
-
-	public double getLastYDiff() {
-		return FlyMoves;
-	}
-
-	public void setLastYDiff(double x) {
-		LastYDIff = x;
-	}
-
-	public long getSprintLastToggle() {
-		return SprintLastToggle;
-	}
-
-	public void setSprintLastToggle(long n) {
-		SprintLastToggle = n;
 	}
 
 }

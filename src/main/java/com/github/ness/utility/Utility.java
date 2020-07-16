@@ -433,7 +433,7 @@ public class Utility {
 	}
 
 	public static int getPotionEffectLevel(Player p, PotionEffectType pet) {
-		for(PotionEffect pe: p.getActivePotionEffects()) {
+		for (PotionEffect pe : p.getActivePotionEffects()) {
 			if (pe.getType().getName().equals(pet.getName())) {
 				return pe.getAmplifier();
 			}
