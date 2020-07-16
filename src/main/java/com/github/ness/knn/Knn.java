@@ -67,9 +67,6 @@ public class Knn {
 					return -1;
 			}
 		});
-		if (debug) {
-			Utility.printValues(distance); // This is used for debug, we print the distance
-		}
 		// Step 3 We Make Predictions. Actually this find the nearest neighbor,it can't
 		// find two or more neighbors.
 		if (kvalue == 1) {
