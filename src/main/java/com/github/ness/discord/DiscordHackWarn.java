@@ -3,6 +3,7 @@ package com.github.ness.discord;
 import java.awt.Color;
 import java.io.IOException;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -11,9 +12,10 @@ import com.github.ness.NESSAnticheat;
 public class DiscordHackWarn {
 
 	public static void webHookSender(Player hacker, String hack, int level, String module) {
-		String webhookurl = NESSAnticheat.getInstance().getNessConfig().getViolationHandling()
-				.getString("notify-staff.discord-webhook");
-		if (webhookurl == null || webhookurl == "") {
+		ConfigurationSection section = NESSAnticheat.getInstance().getNessConfig().getViolationHandling();
+		ConfigurationSection notifyStaff = section.getConfigurationSection("notify-staff");
+		String webhookurl = notifyStaff.getString("discord-webhook","");
+		if (webhookurl == null || webhookurl.isEmpty()) {
 			return;
 		}
 		new BukkitRunnable() {
@@ -34,6 +36,6 @@ public class DiscordHackWarn {
 
 				}
 			}
-		}.runTaskLater(NESSAnticheat.getInstance(), 20);
+		}.runTaskAsynchronously(NESSAnticheat.getInstance());
 	}
 }

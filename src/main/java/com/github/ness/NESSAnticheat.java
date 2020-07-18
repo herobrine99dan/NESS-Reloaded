@@ -30,10 +30,6 @@ public class NESSAnticheat extends JavaPlugin {
 	@Getter
 	private NMSHandler nmsHandler;
 	
-	private NESSAnticheat() {
-		
-	}
-	
 	private static final Logger logger = LogManager.getLogger(NESSAnticheat.class);
 
 	@Override
