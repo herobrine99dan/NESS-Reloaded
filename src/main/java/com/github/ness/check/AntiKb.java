@@ -36,10 +36,9 @@ public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 			if(Utilities.isClimbableBlock(p.getLocation().getBlock()) || Utilities.isInWeb(p) || Utilities.isOnWeb(p) || Utility.hasKbBypass(p)) {
 				return;
 			}
-			ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 				Location to = p.getLocation();
-				if (Math.abs(to.distanceSquared(from)) < config.getDouble("mindistance",0.1)) {
+				if (Math.abs(to.distanceSquared(from)) < 0.1) {
 					manager.getPlayer(p).setViolation(new Violation("AntiKb", ""));
 				}
 			}, 5L);

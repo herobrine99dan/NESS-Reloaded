@@ -2,7 +2,6 @@ package com.github.ness.check;
 
 import java.util.ArrayList;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
 import com.github.ness.CheckManager;
@@ -15,9 +14,8 @@ public class AntiBot extends AbstractCheck<AsyncPlayerPreLoginEvent> {
 
 	public AntiBot(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(AsyncPlayerPreLoginEvent.class));
-		ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
-		message = config.getString("message", "Bot Attack Detected! By NESS Reloaded");
-		maxPlayers = config.getInt("maxplayers", 10);
+		message = "Bot Attack Detected! By NESS Reloaded";
+		maxPlayers = 10;
 	}
 
 	@Override

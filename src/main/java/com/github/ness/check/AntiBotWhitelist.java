@@ -7,6 +7,7 @@ import com.github.ness.CheckManager;
 
 public class AntiBotWhitelist extends AbstractCheck<PlayerJoinEvent> {
 	int maxSeconds = 5;
+
 	public AntiBotWhitelist(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerJoinEvent.class));
 	}
@@ -20,12 +21,12 @@ public class AntiBotWhitelist extends AbstractCheck<PlayerJoinEvent> {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				if(e.getPlayer().isOnline()) {
-					if(!AntiBot.whitelistbypass.contains(e.getPlayer().getName())) {
+				if (e.getPlayer().isOnline()) {
+					if (!AntiBot.whitelistbypass.contains(e.getPlayer().getName())) {
 						AntiBot.whitelistbypass.add(e.getPlayer().getName());
 					}
 				}
 			}
-		}.runTaskLater(manager.getNess(), maxSeconds*10L);
+		}.runTaskLater(manager.getNess(), maxSeconds * 20L);
 	}
 }

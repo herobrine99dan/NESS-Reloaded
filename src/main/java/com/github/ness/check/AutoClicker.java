@@ -2,7 +2,6 @@ package com.github.ness.check;
 
 import java.util.concurrent.TimeUnit;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -27,8 +26,7 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
 			NessPlayer player = manager.getPlayer(e.getPlayer());
 			player.setCPS(player.getCPS() + 1);
-			ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
-			if (player.getCPS() > config.getInt("maxcps",15) && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
+			if (player.getCPS() > 15 && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
 				player.setViolation(new Violation("AutoClicker", "MaxCPS: " + player.getCPS()));
 				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);
@@ -41,8 +39,7 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 		NessPlayer player = manager.getPlayer(e.getPlayer());
 		long delay = System.currentTimeMillis() - player.getCPSDelay();
 		long lastDelay = delay - player.getCPSlastDelay();
-		ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
-		if (delay > config.getInt("maxdelay") || e.getPlayer().isBlocking()) {
+		if (delay > 7 || e.getPlayer().isBlocking()) {
 			return;
 		}
 		if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {

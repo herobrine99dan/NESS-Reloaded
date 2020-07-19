@@ -44,9 +44,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	public void punish(PlayerMoveEvent e, Player p, String module) {
 		if (!Utility.hasflybypass(p)) {
-			p.sendMessage("Fly1!");
 			manager.getPlayer(p).setViolation(new Violation("Fly", module));
-			p.sendMessage("Fly2!");
 			try {
 				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					if (!DragDown.playerDragDown(p)) {
