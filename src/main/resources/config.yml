@@ -186,6 +186,7 @@ checks:
   autoclicker:
     maxcps: 15
     maxdelay: 7
+<<<<<<< HEAD
 #
 # FastPlace
 #
@@ -237,6 +238,9 @@ checks:
 >>>>>>> parent of dc6f74e2... Implementing new options for BadPackets and MorePackets
 =======
 >>>>>>> parent of dc6f74e2... Implementing new options for BadPackets and MorePackets
+=======
+    
+>>>>>>> parent of 2cf5ca9d... Adding new options for some checks
 
 # If you change this, you will receive warnings in console
 config-version: 2

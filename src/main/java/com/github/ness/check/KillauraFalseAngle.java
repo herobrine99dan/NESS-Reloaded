@@ -15,6 +15,8 @@ import com.github.ness.api.Violation;
 import com.github.ness.check.killaura.heuristics.KillauraPlayerData;
 
 public class KillauraFalseAngle extends AbstractCheck<EntityDamageByEntityEvent> {
+	public HashMap<Player, Entity> lastEntityHit = new HashMap<Player, Entity>();
+	public HashMap<String, String> mobinfront = new HashMap<String, String>();
 
 	public KillauraFalseAngle(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
@@ -40,8 +42,7 @@ public class KillauraFalseAngle extends AbstractCheck<EntityDamageByEntityEvent>
 				if (this.manager.getPlayer(p).isDevMode()) {
 					p.sendMessage("FalseAngleCheck: Result " + result + " Size: " + data.size());
 				}
-				ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
-				if (result < config.getDouble("maxvalue", 0.85)) {
+				if (result < 0.8) {
 					punish(e, p, "FalseAngle: " + result);
 				}
 				data.clear();
