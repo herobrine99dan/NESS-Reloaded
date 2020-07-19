@@ -138,7 +138,7 @@ checks:
 # Checks to see if a player placed a block against water.
 #
 # Performance impact: Minimal
-# Effectiveness: Very High
+# Effectiveness: High
 #
   liquidinteraction:
     whitelisted-materials:
@@ -147,100 +147,22 @@ checks:
 #
 # Aimbot
 #
-# Checks to see if a player rotates head following some patterns.
+# Checks to see if a player follow some patterns.
 #
 # Performance impact: Minimal
 # Effectiveness: High
 #
   aimbot:
     samples: 20
-#
-# AntiBot
-#
-# A small Connection Limiter using Async Events.
-#
-# Performance impact: Minimal
-# Effectiveness: untested
-#
   antibot:
     maxplayers: 10
     message: 'AntiBot Attack Detected! By NESS Reloaded'
-#
-# AntiKnockback
-#
-# An AntiKnockback check to detect when distance is lower than minimum.
-#
-# Performance impact: Minimal
-# Effectiveness: medium
-#
   antikb:
     mindistance: 0.1
-#
-# AutoClicker
-#
-# A Max CPS Check and a Max Delay Check.
-#
-# Performance impact: Minimal
-# Effectiveness: medium
-#
   autoclicker:
     maxcps: 15
     maxdelay: 7
-<<<<<<< HEAD
-#
-# FastPlace
-#
-# Just a FastPlace Check.
-#
-# Performance impact: Minimal
-# Effectiveness: medium
-#
-  fastplace: 
-    maxblocks: 6
-#
-# FastPlace
-#
-# Just a FastPlace Check.
-#
-# Performance impact: Minimal
-# Effectiveness: medium
-#
-  fastsneak:
-    maxdistance: 0.15
-  faststairs:
-    maxdistance: 0.4
-  fly:
-    maxladderdistance: 0.12
-    maxwebdistance: 0.2
-    maxydist: 0.7
-  killaurafalseangle:
-    maxvalue: 0.85
-  killaura:
-    highyaw: 280.0
-    maxhitboxoffset: 340.0
-    maxhitboxvalue: 0.1D
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-#
-# BadPackets
-#
-# Checks to detect Timer.
-# FOR NOW THIS CONFIGURATION SECTION DOESN'T WORK
-# Performance impact: Minimal
-# Effectiveness: Very High
-#
-  badpackets:
-    percentage: 7.0
-=======
->>>>>>> parent of dc6f74e2... Implementing new options for BadPackets and MorePackets
-=======
->>>>>>> parent of dc6f74e2... Implementing new options for BadPackets and MorePackets
-=======
->>>>>>> parent of dc6f74e2... Implementing new options for BadPackets and MorePackets
-=======
     
->>>>>>> parent of 2cf5ca9d... Adding new options for some checks
 
 # If you change this, you will receive warnings in console
 config-version: 2
