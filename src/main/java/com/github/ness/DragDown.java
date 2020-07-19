@@ -3,6 +3,7 @@ package com.github.ness;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class DragDown {
 	
@@ -18,15 +19,15 @@ public class DragDown {
 
 	public static boolean playerDragDown(Player p) {
 		try {
-			NESSAnticheat.main.getServer().getScheduler().scheduleSyncDelayedTask(NESSAnticheat.main, new Runnable() {
-				@Override
-				public void run() {
+	        new BukkitRunnable() {            
+	            @Override
+	            public void run() {
 					Location loc = p.getLocation().clone().add(0, -0.5, 0);
 					if (!loc.getBlock().getType().isSolid()) {
 						p.teleport(loc, TeleportCause.PLUGIN);
 					}
-				}
-			});
+	            }	       
+	        }.runTask(NESSAnticheat.getInstance());
 			// p.teleport(Locfrom, PlayerTeleportEvent.TeleportCause.PLUGIN);
 			return true;
 		} catch (Exception ex) {

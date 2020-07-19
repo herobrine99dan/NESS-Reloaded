@@ -3,7 +3,6 @@ package com.github.ness.packets.checks;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.InventoryHack;
@@ -11,10 +10,14 @@ import com.github.ness.check.OldMovementChecks;
 import com.github.ness.utility.Utility;
 
 public class MorePackets {
-
+	
 	public static boolean Check(Player sender, Object packet) {
 		int ping = Utility.getPing(sender);
+<<<<<<< HEAD
 		int maxpackets = 65;
+=======
+		int maxpackets = 60;
+>>>>>>> parent of dc6f74e2... Implementing new options for BadPackets and MorePackets
 		int maxPackets = maxpackets * (ping / 100);
 		if (ping < 150) {
 			maxPackets = maxpackets;
@@ -40,7 +43,7 @@ public class MorePackets {
 			 * sender.getLocation())); } }.runTask(NESSAnticheat.main);
 			 */
 			OldMovementChecks.blockPackets.put(sender.getName(), true);
-			NESSAnticheat.getInstance().getCheckManager().getPlayer(sender)
+			InventoryHack.manageraccess.getPlayer(sender)
 					.setViolation(new Violation("MorePackets", np.getNormalPacketsCounter() + ""));
 			return true;
 		}

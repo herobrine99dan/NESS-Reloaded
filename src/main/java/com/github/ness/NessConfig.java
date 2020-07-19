@@ -20,7 +20,6 @@ public class NessConfig {
 
 	private final String cfgFileName;
 	private final String msgsFileName;
-	@Getter
 	private YamlConfiguration config;
 	@Getter(AccessLevel.PACKAGE)
 	private YamlConfiguration messages;

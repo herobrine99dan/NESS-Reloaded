@@ -53,12 +53,16 @@ public class BadPackets {
 					 * If the percentage difference is over 7% of what is allowed, the player is
 					 * likely to be cheating.
 					 */
+<<<<<<< HEAD
 					if (perecentageDifference > 7) {
+=======
+					if (perecentageDifference > 7.0) {
+>>>>>>> parent of dc6f74e2... Implementing new options for BadPackets and MorePackets
 						OldMovementChecks.blockPackets.put(p.getName(), true);
 						np.setViolation(new Violation("BadPackets", np.getMovementpacketscounter() + ""));
 						return true;
 					}
-					// You can flag also here
+					//You can flag also here
 				}
 
 				// Reset everything.
