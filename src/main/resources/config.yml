@@ -220,6 +220,7 @@ checks:
     maxhitboxvalue: 0.1D
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #
 # BadPackets
 #
@@ -230,6 +231,8 @@ checks:
 #
   badpackets:
     percentage: 7.0
+=======
+>>>>>>> parent of dc6f74e2... Implementing new options for BadPackets and MorePackets
 =======
 >>>>>>> parent of dc6f74e2... Implementing new options for BadPackets and MorePackets
 =======
