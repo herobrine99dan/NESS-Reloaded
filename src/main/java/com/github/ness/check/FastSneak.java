@@ -33,14 +33,8 @@ public class FastSneak extends AbstractCheck<PlayerMoveEvent> {
 	void Check1(PlayerMoveEvent e) {
 		Player p = e.getPlayer();
 		NessPlayer np = this.manager.getPlayer(p);
-<<<<<<< HEAD
 		if (p.isSneaking() && !Utility.hasflybypass(p) && !p.isSprinting() && Utility.isOnGround(e.getTo())) {
-			ConfigurationSection config = this.manager.getNess().getNessConfig().getCheck(this.getClass());
-			if (Utility.getMaxSpeed(e.getFrom(), e.getTo()) > config.getDouble("maxdistance",0.15)) {
-=======
-		if (p.isSneaking() && !Utility.hasflybypass(p) && !p.isSprinting()) {
 			if (Utility.getMaxSpeed(e.getFrom(), e.getTo()) > 0.15) {
->>>>>>> parent of 2cf5ca9d... Adding new options for some checks
 				np.setViolation(new Violation("FastSneak", "HighDistance"));
 				np.shouldCancel(e, "FastSneak");
 			}
