@@ -11,7 +11,7 @@ import com.github.ness.NessPlayer;
 public class TeleportEvent extends AbstractCheck<PlayerTeleportEvent> {
 
 	public TeleportEvent(CheckManager manager) {
-		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerTeleportEvent.class, 2, TimeUnit.SECONDS));
+		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerTeleportEvent.class, 1, TimeUnit.SECONDS));
 	}
 
 	@Override

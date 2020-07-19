@@ -15,27 +15,29 @@ import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 
-public class GhostHand extends AbstractCheck<PlayerInteractEvent>{
-	
+public class GhostHand extends AbstractCheck<PlayerInteractEvent> {
+
 	public GhostHand(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerInteractEvent.class));
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Override
 	void checkEvent(PlayerInteractEvent e) {
-       Check(e);
+		Check(e);
 
 	}
-    /**
-     * Check for Ghost Hand
-     * @param event
-     */
-	public  void Check(PlayerInteractEvent event) {
+
+	/**
+	 * Check for Ghost Hand
+	 * 
+	 * @param event
+	 */
+	public void Check(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		final Location loc = player.getLocation();
 		Block targetBlock = player.getTargetBlock((Set<Material>) null, 7);
-		if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.LEFT_CLICK_BLOCK)
+		if (event.getAction() != Action.LEFT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_BLOCK)
 			return;
 		if (!targetBlock.getType().isSolid())
 			return;
@@ -43,10 +45,13 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent>{
 			return;
 		}
 		NessPlayer p = manager.getPlayer(event.getPlayer());
-		if(p.getDistance()>0.0 || Math.abs(p.lastPitch)>0.0) {
+		if (p.getDistance() > 0.0 || Math.abs(p.lastPitch) > 0.0) {
 			return;
 		}
-		if(targetBlock.getLocation().add(0, 1, 0).getBlock().getType().name().contains("Slab")) {
+		if (targetBlock.getLocation().getBlock().getType().name().toLowerCase().contains("slab")) {
+			return;
+		}
+		if (targetBlock.getLocation().add(0, 1, 0).getBlock().getType().name().toLowerCase().contains("slab")) {
 			return;
 		}
 		Location block = event.getClickedBlock().getLocation().add(event.getBlockFace().getModX(),
@@ -61,11 +66,12 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent>{
 			}
 			if (block.getBlock().getType().isSolid() || !targetBlock.equals(event.getClickedBlock())) {
 				try {
-					if(manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
+					if (manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
 						event.setCancelled(true);
 					}
-				}catch(Exception ex) {}
-				p.setViolation(new Violation("GhostHand",""));
+				} catch (Exception ex) {
+				}
+				p.setViolation(new Violation("GhostHand", ""));
 			}
 		}, 2L);
 	}
