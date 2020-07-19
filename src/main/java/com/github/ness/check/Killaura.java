@@ -24,7 +24,6 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	void checkEvent(EntityDamageByEntityEvent e) {
 		Check(e);
 		Check1(e);
-		Check2(e);
 		Check3(e);
 		Check4(e);
 		Check5(e);
@@ -58,35 +57,6 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 					punish(e, p, 19, "HighYaw " + grade, 6);
 				}
 			}, 3L);
-		}
-	}
-
-	public void Check2(EntityDamageByEntityEvent event) {
-		if (event.getDamager() instanceof Player && event.getEntity() instanceof LivingEntity) {
-			Player player = (Player) event.getDamager();
-			LivingEntity damaged = (LivingEntity) event.getEntity();
-			double offset = 0.0D;
-
-			Location entityLoc = damaged.getLocation().add(0.0D, damaged.getEyeHeight(), 0.0D);
-			Location playerLoc = player.getLocation().add(0.0D, player.getEyeHeight(), 0.0D);
-
-			Vector playerRotation = new Vector(playerLoc.getYaw(), playerLoc.getPitch(), 0.0F);
-			Vector expectedRotation = Utility.getRotation(playerLoc, entityLoc);
-
-			double deltaYaw = Utility.clamp180(playerRotation.getX() - expectedRotation.getX());
-			double deltaPitch = Utility.clamp180(playerRotation.getY() - expectedRotation.getY());
-
-			double horizontalDistance = Utility.getHorizontalDistance(playerLoc, entityLoc);
-			double distance = Utility.getDistance3D(playerLoc, entityLoc);
-
-			double offsetX = deltaYaw * horizontalDistance * distance;
-			double offsetY = deltaPitch * Math.abs(entityLoc.getY() - playerLoc.getY()) * distance;
-
-			offset += Math.abs(offsetX);
-			offset += Math.abs(offsetY);
-			if (offset > 340.0D) {
-				punish(event, player, 20, "Angles/Hitbox " + offset, 6);
-			}
 		}
 	}
 

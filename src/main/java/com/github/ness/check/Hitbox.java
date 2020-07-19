@@ -14,11 +14,11 @@ import com.github.ness.CheckManager;
 import com.github.ness.api.Violation;
 import com.github.ness.check.killaura.heuristics.KillauraPlayerData;
 
-public class KillauraFalseAngle extends AbstractCheck<EntityDamageByEntityEvent> {
+public class Hitbox extends AbstractCheck<EntityDamageByEntityEvent> {
 	public HashMap<Player, Entity> lastEntityHit = new HashMap<Player, Entity>();
 	public HashMap<String, String> mobinfront = new HashMap<String, String>();
 
-	public KillauraFalseAngle(CheckManager manager) {
+	public Hitbox(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
 	}
 
@@ -33,7 +33,11 @@ public class KillauraFalseAngle extends AbstractCheck<EntityDamageByEntityEvent>
 			KillauraPlayerData kplayer = KillauraPlayerData.getInstance(p);
 			List<Double> data = kplayer.getAnglesList();
 			data.add(isLookingAt(p, e.getEntity().getLocation()));
-			if (data.size() >= 5) {
+			double dist = p.getLocation().distanceSquared(e.getEntity().getLocation());
+			if(dist < 0.6) {
+				return;
+			}
+			if (data.size() >= 6) {
 				double result = 0;
 				for (Double d : data) {
 					result += d;
@@ -42,7 +46,7 @@ public class KillauraFalseAngle extends AbstractCheck<EntityDamageByEntityEvent>
 				if (this.manager.getPlayer(p).isDevMode()) {
 					p.sendMessage("FalseAngleCheck: Result " + result + " Size: " + data.size());
 				}
-				if (result < 0.8) {
+				if (result < 0.75) {
 					punish(e, p, "FalseAngle: " + result);
 				}
 				data.clear();
@@ -62,7 +66,6 @@ public class KillauraFalseAngle extends AbstractCheck<EntityDamageByEntityEvent>
 		Location eye = player.getEyeLocation();
 		Vector toEntity = target.toVector().subtract(eye.toVector());
 		double dot = toEntity.normalize().dot(eye.getDirection());
-
-		return dot;// dot > 0.99D
+		return dot;
 	}
 }

@@ -60,7 +60,7 @@ enabled-checks:
   - 'InventoryHack'
   - 'Jesus'
   - 'Killaura'
-  - 'KillauraFalseAngle'
+  - 'Hitbox'
   - 'NoClip'
   - 'NoSlowDownBow'
   - 'NoSlowDownFood'

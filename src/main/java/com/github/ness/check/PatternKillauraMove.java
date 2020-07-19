@@ -38,13 +38,11 @@ public class PatternKillauraMove extends AbstractCheck<PlayerMoveEvent> {
 				.yawTo180F((float) Utilities.getOffsetFromEntity(event.getPlayer(), PatternKillauraAttack.lastHit.get(uuid))[0]);
 
 		if (patterns.size() >= 23) {
-			// TODO Check
-
 			Collections.sort(patterns);
 
 			float range = Math.abs(patterns.get(patterns.size() - 1) - patterns.get(0));
 
-			if (Math.abs(range - PatternKillauraAttack.lastRange.getOrDefault(uuid, 0.0f)) < 4) {
+			if (Math.abs(range - PatternKillauraAttack.lastRange.getOrDefault(uuid, 0.0f)) < 2) {
 				if(manager.getPlayer(event.getPlayer()).shouldCancel(event, "Killaura")) {
 					event.setCancelled(true);
 				}
