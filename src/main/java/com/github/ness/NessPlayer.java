@@ -89,6 +89,7 @@ public class NessPlayer implements AutoCloseable {
 	public long lastFlyingPacket;
 	public long lastPacketTime; //Used in BadPackets
 	public long movementPackets; //Used in BadPackets
+	public float lastStairDist; //Used in BadPackets
 
 	// Used in OldMovementChecks
 
