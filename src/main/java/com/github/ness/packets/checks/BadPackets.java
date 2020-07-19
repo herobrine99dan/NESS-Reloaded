@@ -54,7 +54,11 @@ public class BadPackets {
 					 * likely to be cheating.
 					 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 					if (perecentageDifference > 7) {
+=======
+					if (perecentageDifference > 7.0) {
+>>>>>>> parent of dc6f74e2... Implementing new options for BadPackets and MorePackets
 =======
 					if (perecentageDifference > 7.0) {
 >>>>>>> parent of dc6f74e2... Implementing new options for BadPackets and MorePackets

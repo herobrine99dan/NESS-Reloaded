@@ -14,7 +14,11 @@ public class MorePackets {
 	public static boolean Check(Player sender, Object packet) {
 		int ping = Utility.getPing(sender);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int maxpackets = 65;
+=======
+		int maxpackets = 60;
+>>>>>>> parent of dc6f74e2... Implementing new options for BadPackets and MorePackets
 =======
 		int maxpackets = 60;
 >>>>>>> parent of dc6f74e2... Implementing new options for BadPackets and MorePackets
