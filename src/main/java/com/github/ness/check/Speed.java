@@ -188,12 +188,12 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				return;
 			}
 			np.InvalidVelocitySpeedCounter++;
-			if(np.InvalidVelocitySpeedCounter < 3) {
+			if (np.InvalidVelocitySpeedCounter < 3) {
 				return;
 			}
 			manager.getPlayer(p).setViolation(new Violation("Speed", "InvalidVelocity: " + yresult));
 			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-				if(!DragDown.playerDragDown(p)) {
+				if (!DragDown.playerDragDown(p)) {
 					e.setCancelled(true);
 				}
 			}
@@ -201,8 +201,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	/**
-	 * The Speed Prediction Check of Jonhan, with some changes
-	 * From https://www.youtube.com/watch?v=QXukRdPlXn4&t=416s
+	 * The Speed Prediction Check of Jonhan, with some changes From
+	 * https://www.youtube.com/watch?v=QXukRdPlXn4&t=416s
 	 * 
 	 * @param e
 	 */
@@ -227,7 +227,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 	}
-	
+
 	public void Check5(PlayerMoveEvent event) {
 		double delta = event.getTo().getY() - event.getFrom().getY();
 		NessPlayer p = manager.getPlayer(event.getPlayer());
@@ -237,10 +237,12 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.blockAdjacentIsLiquid(event.getTo())) {
 			return;
 		}
+		if (Utilities.isOnIce(event.getPlayer(), false)) {
+			return;
+		}
 		if (delta != 0) {
 			if (p.isDevMode()) {
-				// event.getPlayer().sendMessage("Delta: " + delta + " LastDelta: " +
-				// p.lastYDelta);
+				event.getPlayer().sendMessage("Delta: " + delta + " LastDelta: " + p.lastYDelta);
 			}
 			if (delta == -p.lastYDelta) {
 				punish(event, "RepeatedMovement: " + delta);

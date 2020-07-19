@@ -55,7 +55,6 @@ enabled-checks:
   - 'GhostHand'
   - 'Headless'
   - 'TeleportEvent'
-  - 'FastSneak'
   - 'LiquidInteraction'
   - 'NameExploit'
   - 'InventoryHack'
@@ -73,7 +72,6 @@ enabled-checks:
   - 'SpamBot'
   - 'Speed'
   - 'Strafe'
-  - 'Sprint'
   - 'TeleportEvent'
 
 #
