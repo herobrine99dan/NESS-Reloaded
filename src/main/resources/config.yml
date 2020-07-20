@@ -61,7 +61,6 @@ enabled-checks:
   - 'Jesus'
   - 'Killaura'
   - 'Hitbox'
-  - 'NoClip'
   - 'NoSlowDownBow'
   - 'NoSlowDownFood'
   - 'NameExploit'
