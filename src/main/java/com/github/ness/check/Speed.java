@@ -183,7 +183,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		} catch (Exception ex) {
 			yresult = result.getY();
 		}
-		if (Math.abs(yresult) > 0.74) {
+		if (Math.abs(yresult) > 1) {
 			if (Utility.hasflybypass(p) || manager.getPlayer(e.getPlayer()).isTeleported()) {
 				return;
 			}

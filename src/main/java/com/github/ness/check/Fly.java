@@ -160,6 +160,9 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (Bukkit.getVersion().contains("1.8")) {
 			return;
 		}
+		if(Utility.getMaterialName(e.getTo().clone().add(0, -0.5, 0)).contains("lily") || Utility.getMaterialName(e.getTo().clone().add(0, -0.5, 0)).contains("carpet")) {
+			return;
+		}
 		if (!bypass(e.getPlayer()) && player.getNearbyEntities(2, 2, 2).isEmpty()) {
 			if (player.isOnline() && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 				if (player.isOnGround() && !Utility.isOnGround(e.getTo())) {

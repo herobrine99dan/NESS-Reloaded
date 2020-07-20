@@ -17,7 +17,7 @@ public class KillauraFalseFlyingPacket {
 				return false;
 			}
 			long time = elapsed(lastFlying.get(p));
-			if (time < 4L) {
+			if (time < 2L) {
 				InventoryHack.manageraccess.getPlayer(p).setViolation(new Violation("Killaura", "BadPackets: " + time));
 				return true;
 			}

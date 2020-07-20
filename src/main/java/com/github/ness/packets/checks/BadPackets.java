@@ -9,7 +9,7 @@ import com.github.ness.check.OldMovementChecks;
 import com.github.ness.utility.Utility;
 
 public class BadPackets {
-	private static final double MAX_PACKETS_PER_TICK = 1.03;
+	private static final double MAX_PACKETS_PER_TICK = 1.1;
 
 	/**
 	 * From Crescent AntiCheat
