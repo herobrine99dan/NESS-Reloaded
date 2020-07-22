@@ -86,8 +86,9 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		NessPlayer np = this.manager.getPlayer(p);
 		if (!bypass(event.getPlayer())) {
 			if (Utilities.isClimbableBlock(p.getLocation().getBlock()) && !Utilities.isInWater(p)) {
-				double distance = Utility.around(event.getTo().getY() - event.getFrom().getY(), 6);
-				if (distance > 0.12D && distance == Utility.around(np.lastYDelta, 6)) {
+				double distance = event.getTo().getY() - event.getFrom().getY();
+				double diff = distance - np.lastYDelta;
+				if (distance > 0.12D && diff == 0.0) {
 					punish(event, p, "FastLadder: " + distance);
 				}
 			}
@@ -106,6 +107,9 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		double fromy = e.getFrom().getY();
 		double toy = e.getTo().getY();
 		final Player p = e.getPlayer();
+		if(p.hasPotionEffect(PotionEffectType.JUMP)) {
+			return;
+		}
 		final double defaultvalue = 0.08307781780646906D;
 		final double defaultjump = 0.41999998688697815D;
 		final double distance = toy - fromy;
@@ -160,7 +164,12 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (Bukkit.getVersion().contains("1.8")) {
 			return;
 		}
-		if(Utility.getMaterialName(e.getTo().clone().add(0, -0.5, 0)).contains("lily") || Utility.getMaterialName(e.getTo().clone().add(0, -0.5, 0)).contains("carpet")) {
+		if (Utility.getMaterialName(e.getTo().clone().add(0, -0.5, 0)).contains("lily")
+				|| Utility.getMaterialName(e.getTo().clone().add(0, -0.5, 0)).contains("carpet")) {
+			return;
+		}
+		if (Utility.getMaterialName(e.getTo().clone()).contains("lily")
+				|| Utility.getMaterialName(e.getTo().clone()).contains("carpet")) {
 			return;
 		}
 		if (!bypass(e.getPlayer()) && player.getNearbyEntities(2, 2, 2).isEmpty()) {
@@ -203,7 +212,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Double hozDist = Utility.getMaxSpeed(from, to);
 		double maxDist = 0.2;
 		if (!Utility.isMathematicallyOnGround(to.getY())) {
-			maxDist += Math.abs(player.getVelocity().getY())*0.4;
+			maxDist += Math.abs(player.getVelocity().getY()) * 0.4;
 		}
 		if (from.getBlock().getType() == Material.WEB && hozDist > maxDist) {
 			punish(e, player, "NoWeb");

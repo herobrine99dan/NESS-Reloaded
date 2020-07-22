@@ -77,6 +77,14 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				|| from.add(0, -1, 0).getBlock().getType().name().contains("chest")) {
 			return;
 		}
+		if (Utility.getMaterialName(to).toLowerCase().contains("ladder")
+				|| Utility.getMaterialName(from).toLowerCase().contains("ladder")) {
+			return;
+		}
+		if (Utility.getMaterialName(to.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")
+				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")) {
+			return;
+		}
 		if (to.add(0, -1, 0).getBlock().getType().name().contains("detector")
 				|| from.add(0, -1, 0).getBlock().getType().name().contains("detector")) {
 			return;
@@ -178,12 +186,16 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (Utility.getMaterialName(to).contains("carpet") || Utility.getMaterialName(from).contains("carpet")) {
 			return;
 		}
+		if (Utility.getMaterialName(to.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")
+				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")) {
+			return;
+		}
 		try {
 			yresult = Utility.around(result.getY(), 5);
 		} catch (Exception ex) {
 			yresult = result.getY();
 		}
-		if (Math.abs(yresult) > 1) {
+		if (Math.abs(yresult) > 0.9) {
 			if (Utility.hasflybypass(p) || manager.getPlayer(e.getPlayer()).isTeleported()) {
 				return;
 			}
@@ -207,8 +219,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	 * @param e
 	 */
 	public void Check4(PlayerMoveEvent e) {
-		Location to = e.getTo();
-		Location from = e.getFrom();
+		Location to = e.getTo().clone();
+		Location from = e.getFrom().clone();
 		NessPlayer np = this.manager.getPlayer(e.getPlayer());
 		double distX = to.getX() - from.getX();
 		double distZ = to.getZ() - from.getZ();
@@ -218,6 +230,14 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		boolean lastOnGround = np.lastSpeedPredictionOnGround;
 		np.lastSpeedPredictionOnGround = Utility.isMathematicallyOnGround(to.getY());
 		float friction = 0.91F;
+		if (Utility.getMaterialName(to).toLowerCase().contains("ladder")
+				|| Utility.getMaterialName(from).toLowerCase().contains("ladder")) {
+			return;
+		}
+		if (Utility.getMaterialName(to.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")
+				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")) {
+			return;
+		}
 		double shiftedLastDist = lastDist * friction;
 		double equalness = dist - shiftedLastDist;
 		float scaledEqualness = (float) (equalness * 136);
@@ -235,6 +255,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.blockAdjacentIsStair(event.getFrom()) || Utilities.isClimbableBlock(event.getTo().getBlock())
 				|| Utilities.isOnStairs(event.getPlayer()) || Utility.blockAdjacentIsLiquid(event.getFrom())
 				|| Utility.blockAdjacentIsLiquid(event.getTo())) {
+			return;
+		}
+		if(Utilities.isOnIce(event.getPlayer(), false)) {
 			return;
 		}
 		if (Utilities.isOnIce(event.getPlayer(), false)) {

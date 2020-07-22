@@ -51,9 +51,13 @@ public class Strafe extends AbstractCheck<PlayerMoveEvent> {
 		}
 		if (!Utility.isMathematicallyOnGround(to.getY()) && !Utility.isMathematicallyOnGround(to.getY())) {
 			if (lastDist == dist && dist < 1) {
-				this.manager.getPlayer(p).setViolation(new Violation("Strafe","Dist: " + dist));
-				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-					e.setCancelled(true);
+				np.strafeViolations++;
+				if(np.strafeViolations > 1) {
+					this.manager.getPlayer(p).setViolation(new Violation("Strafe","Dist: " + dist));
+					if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+						e.setCancelled(true);
+					}
+					np.strafeViolations = 0;
 				}
 			}
 		}

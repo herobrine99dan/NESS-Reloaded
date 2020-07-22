@@ -83,6 +83,7 @@ public class NessPlayer implements AutoCloseable {
 	public int AimbotPatternCounter; // For Aimbot
 	public Location lastLocation; // For Killaura
 	public double lastStrafeDist; // For Strafe Check
+	public int strafeViolations; //For Strafe Check
 	public double lastSpeedPredictionDist; // For Speed Prediction Check
 	public boolean lastSpeedPredictionOnGround; // For Speed Prediction Check
 	public int InvalidVelocitySpeedCounter; // A Counter For Speed Invalid Velocity
