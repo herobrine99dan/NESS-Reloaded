@@ -257,10 +257,16 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.blockAdjacentIsLiquid(event.getTo())) {
 			return;
 		}
-		if(Utilities.isOnIce(event.getPlayer(), false)) {
+		if(Utilities.isOnIce(event.getPlayer(), true)) {
 			return;
 		}
 		if (Utilities.isOnIce(event.getPlayer(), false)) {
+			return;
+		}
+		if (Utility.specificBlockNear(event.getTo(),"ice")) {
+			return;
+		}
+		if (Utility.specificBlockNear(event.getFrom(),"ice")) {
 			return;
 		}
 		if (delta != 0) {
