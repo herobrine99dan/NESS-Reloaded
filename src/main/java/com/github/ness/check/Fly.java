@@ -168,6 +168,12 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.getMaterialName(e.getTo().clone().add(0, -0.5, 0)).contains("carpet")) {
 			return;
 		}
+		if(Utility.specificBlockNear(e.getTo(), "lily") || Utility.specificBlockNear(e.getTo(), "snow")) {
+			return;
+		}
+		if(Utility.specificBlockNear(e.getTo(), "carpet")) {
+			return;
+		}
 		if (Utility.getMaterialName(e.getTo().clone()).contains("lily")
 				|| Utility.getMaterialName(e.getTo().clone()).contains("carpet")) {
 			return;

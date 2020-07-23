@@ -53,7 +53,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 				if (Math.abs(grade) > 9350) {
 					return;
 				}
-				if (Math.round(grade) > 280.0) {
+				if (Math.round(grade) > 360.0) {
 					punish(e, p, 19, "HighYaw " + grade, 6);
 				}
 			}, 3L);

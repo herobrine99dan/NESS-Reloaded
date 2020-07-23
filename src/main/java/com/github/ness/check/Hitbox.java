@@ -15,8 +15,6 @@ import com.github.ness.api.Violation;
 import com.github.ness.check.killaura.heuristics.KillauraPlayerData;
 
 public class Hitbox extends AbstractCheck<EntityDamageByEntityEvent> {
-	public HashMap<Player, Entity> lastEntityHit = new HashMap<Player, Entity>();
-	public HashMap<String, String> mobinfront = new HashMap<String, String>();
 
 	public Hitbox(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
@@ -37,7 +35,7 @@ public class Hitbox extends AbstractCheck<EntityDamageByEntityEvent> {
 			if(dist < 0.6) {
 				return;
 			}
-			if (data.size() >= 6) {
+			if (data.size() >= 5) {
 				double result = 0;
 				for (Double d : data) {
 					result += d;
@@ -46,7 +44,7 @@ public class Hitbox extends AbstractCheck<EntityDamageByEntityEvent> {
 				if (this.manager.getPlayer(p).isDevMode()) {
 					p.sendMessage("FalseAngleCheck: Result " + result + " Size: " + data.size());
 				}
-				if (result < 0.75) {
+				if (result < 0.67) {
 					punish(e, p, "FalseAngle: " + result);
 				}
 				data.clear();
@@ -56,10 +54,10 @@ public class Hitbox extends AbstractCheck<EntityDamageByEntityEvent> {
 	}
 
 	private void punish(EntityDamageByEntityEvent e, Player p, String module) {
-		if (manager.getPlayer(p).shouldCancel(e, "Killaura")) {
+		if (manager.getPlayer(p).shouldCancel(e, "Hitbox")) {
 			e.setCancelled(true);
 		}
-		manager.getPlayer(p).setViolation(new Violation("Killaura", module));
+		manager.getPlayer(p).setViolation(new Violation("Hitbox", module));
 	}
 
 	private double isLookingAt(Player player, Location target) {

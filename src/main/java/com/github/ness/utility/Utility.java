@@ -308,6 +308,15 @@ public class Utility {
 		}
 		return false;
 	}
+	
+	public static boolean specificBlockNear(Location loc, String m) {
+		for (Block b : Utility.getSurrounding(loc.getBlock(), true)) {
+			if (b.getType().name().toLowerCase().contains("m")) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public static boolean isMathematicallyOnGround(double y) {
 
