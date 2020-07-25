@@ -93,6 +93,20 @@
 									<include>io.github.classgraph:classgraph</include>
 								</includes>
 							</artifactSet>
+							<relocations>
+								<relocation>
+									<pattern>io.github.classgraph</pattern>
+									<shadedPattern>com.github.ness.shaded.io.github.classgraph</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>nonapi.io.github.classgraph</pattern>
+									<shadedPattern>com.github.ness.shaded.nonapi.io.github.classgraph</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>com.comphenix.packetwrapper</pattern>
+									<shadedPattern>com.github.ness.shaded.com.comphenix.packetwrapper</shadedPattern>
+								</relocation>
+							</relocations>
 						</configuration>
 					</execution>
 				</executions>
