@@ -25,6 +25,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
@@ -38,20 +39,20 @@ import io.github.classgraph.ScanResult;
 import lombok.Getter;
 
 public class CheckManager implements AutoCloseable {
-	
+
 	private final ConcurrentHashMap<UUID, NessPlayer> players = new ConcurrentHashMap<>();
-	
+
 	private Set<AbstractCheck<?>> checks;
-	
+
 	private static final Logger logger = LogManager.getLogger(CheckManager.class);
-	 
+
 	@Getter
 	private final NESSAnticheat ness;
-	
+
 	CheckManager(NESSAnticheat ness) {
 		this.ness = ness;
 	}
-	
+
 	CompletableFuture<?> loadAsync() {
 		int parallelism = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
 		logger.debug("Using parallelism {} for class scanning", parallelism);
@@ -74,7 +75,7 @@ public class CheckManager implements AutoCloseable {
 			// Log messages are more readable using method references
 		}).thenApply(this::getEventsToListen).thenAccept(this::processEventClasses);
 	}
-	
+
 	private void processEventClasses(Set<Class<? extends Event>> evtClasses) {
 		if (evtClasses == null) {
 			return;
@@ -85,21 +86,32 @@ public class CheckManager implements AutoCloseable {
 			public void execute(Listener listener, Event evt) throws EventException {
 				try {
 					if (!(evt instanceof PlayerJoinEvent) && !(evt instanceof PlayerQuitEvent)) {
+						if (evt instanceof PlayerMoveEvent) {
+							PlayerMoveEvent evento = (PlayerMoveEvent) evt;
+							if (evento.getTo() == null || evento.getFrom() == null || evento.getPlayer() == null) {
+								return;
+							}
+							if (evento.getTo().getWorld().getName() != evento.getFrom().getWorld().getName()) {
+								return;
+							}
+						}
 						checks.forEach((check) -> check.checkAnyEvent(evt));
 					}
 				} catch (Throwable ex) {
-					throw new EventException(ex, "NESS made a mistake in listening to an event. Please report this error on Github.");
+					throw new EventException(ex,
+							"NESS made a mistake in listening to an event. Please report this error on Github.");
 				}
 			}
 		};
-		Listener blankListener = new Listener() {};
-		
+		Listener blankListener = new Listener() {
+		};
+
 		Bukkit.getScheduler().runTask(ness, () -> {
 			PluginManager pm = Bukkit.getPluginManager();
-			
+
 			// Cleaner
 			pm.registerEvents(new Listener() {
-				
+
 				@EventHandler(priority = EventPriority.MONITOR)
 				public void onQuit(PlayerQuitEvent evt) {
 					Player player = evt.getPlayer();
@@ -110,9 +122,9 @@ public class CheckManager implements AutoCloseable {
 						nessPlayer.close();
 					}
 				}
-				
+
 			}, ness);
-			
+
 			// All events
 			evtClasses.forEach((eventClass) -> {
 				pm.registerEvent(eventClass, blankListener, EventPriority.NORMAL, eventExecutor, ness);
@@ -121,20 +133,15 @@ public class CheckManager implements AutoCloseable {
 		logger.debug("Registered events, starting periodic tasks");
 		checks.forEach((check) -> check.initiatePeriodicTasks());
 	}
+
 	/*
-	 * Other code that we can use:
-	 * 	public void onEnable() {
-		RegisteredListener registeredListener = new RegisteredListener(this, (listener, event) -> onEvent(event),
-				EventPriority.NORMAL, this, false);
-		for (HandlerList handler : HandlerList.getHandlerLists()) {
-			handler.register(registeredListener);
-		}
-	}
-	
-	public Object onEvent(Event event) {
-		System.out.println(event.getEventName());
-		return event;
-	}
+	 * Other code that we can use: public void onEnable() { RegisteredListener
+	 * registeredListener = new RegisteredListener(this, (listener, event) ->
+	 * onEvent(event), EventPriority.NORMAL, this, false); for (HandlerList handler
+	 * : HandlerList.getHandlerLists()) { handler.register(registeredListener); } }
+	 * 
+	 * public Object onEvent(Event event) {
+	 * System.out.println(event.getEventName()); return event; }
 	 */
 	private Set<Class<? extends Event>> getEventsToListen(ScanResult scanResult) {
 		if (scanResult == null) {
@@ -143,8 +150,8 @@ public class CheckManager implements AutoCloseable {
 		Set<Class<? extends Event>> result = new HashSet<>();
 
 		try (ScanResult scan = scanResult) {
-			ClassInfoList eventInfos = scan.getClassInfo(Event.class.getName())
-			        .getSubclasses().filter(info -> !info.isAbstract());
+			ClassInfoList eventInfos = scan.getClassInfo(Event.class.getName()).getSubclasses()
+					.filter(info -> !info.isAbstract());
 
 			for (ClassInfo eventInfo : eventInfos) {
 
@@ -185,7 +192,7 @@ public class CheckManager implements AutoCloseable {
 		}
 		return result;
 	}
-	
+
 	private Set<AbstractCheck<?>> getAllChecks() {
 		Set<AbstractCheck<?>> checks = new HashSet<>();
 		for (String checkName : ness.getNessConfig().getEnabledChecks()) {
@@ -215,7 +222,7 @@ public class CheckManager implements AutoCloseable {
 		}
 		return checks;
 	}
-	
+
 	void reloadChecks() {
 		logger.debug("Reloading all checks");
 		checks.forEach(AbstractCheck::close);
@@ -223,7 +230,7 @@ public class CheckManager implements AutoCloseable {
 		checks = getAllChecks();
 		checks.forEach((check) -> check.initiatePeriodicTasks());
 	}
-	
+
 	@Override
 	public void close() {
 		logger.debug("Closing all checks");
@@ -231,7 +238,7 @@ public class CheckManager implements AutoCloseable {
 		checks.clear();
 		HandlerList.unregisterAll(ness);
 	}
-	
+
 	/**
 	 * Gets a NessPlayer or creates one if it does not exist
 	 * 
@@ -244,7 +251,7 @@ public class CheckManager implements AutoCloseable {
 			return new NessPlayer(player, ness.getNessConfig().isDevMode());
 		});
 	}
-	
+
 	/**
 	 * Do something for each NessPlayer
 	 * 
@@ -253,5 +260,5 @@ public class CheckManager implements AutoCloseable {
 	public void forEachPlayer(Consumer<NessPlayer> action) {
 		players.values().forEach(action);
 	}
-	
+
 }

@@ -18,10 +18,6 @@ public class MorePackets {
 		if (ping < 150) {
 			maxPackets = maxpackets;
 		}
-		// System.out.println("Packet: " +packet.toString());
-		if (Utility.specificBlockNear(sender.getLocation(), Material.PORTAL)) {
-			return false;
-		}
 		// System.out.println("Sono qua");
 		// sender.sendMessage("MaxPackets: " + maxPackets);
 		NessPlayer np = InventoryHack.manageraccess.getPlayer(sender);

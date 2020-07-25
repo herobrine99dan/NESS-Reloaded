@@ -49,6 +49,9 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		nessPlayer.updateMovementValues(event);
 		Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0, 1, 0)).getType();
 		Material bottom = null;
+		if(!event.getTo().getWorld().getName().equals(event.getFrom().getWorld().getName())) {
+			return;
+		}
 		boolean devMode = false;
 		boolean debugMode = false;
 		Location from = event.getFrom(), to = event.getTo();

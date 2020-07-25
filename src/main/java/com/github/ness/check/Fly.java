@@ -104,6 +104,9 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	public void Check4(PlayerMoveEvent e) {
 		final Location from = e.getFrom();
 		final Location to = e.getTo();
+		if(!to.getWorld().getName().equals(from.getWorld().getName())) {
+			return;
+		}
 		double fromy = e.getFrom().getY();
 		double toy = e.getTo().getY();
 		final Player p = e.getPlayer();

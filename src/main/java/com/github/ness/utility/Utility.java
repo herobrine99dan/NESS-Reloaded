@@ -311,7 +311,7 @@ public class Utility {
 	
 	public static boolean specificBlockNear(Location loc, String m) {
 		for (Block b : Utility.getSurrounding(loc.getBlock(), true)) {
-			if (b.getType().name().toLowerCase().contains("m")) {
+			if (b.getType().name().toLowerCase().contains(m.toLowerCase())) {
 				return true;
 			}
 		}
