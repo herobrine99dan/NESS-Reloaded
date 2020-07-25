@@ -24,7 +24,6 @@ public class InventoryHack extends AbstractCheck<InventoryClickEvent> {
 	@Override
 	void checkEvent(InventoryClickEvent e) {
 		Check(e);
-		Check2(e);
 	}
 
 	/**
@@ -63,28 +62,4 @@ public class InventoryHack extends AbstractCheck<InventoryClickEvent> {
 			}
 		}
 	}
-
-	/**
-	 * Check for FastClick
-	 * 
-	 * @param e
-	 */
-	public void Check2(InventoryClickEvent e) {
-		if (e.getWhoClicked() instanceof Player) {
-			Player player = (Player) e.getWhoClicked();
-			if(e.getInventory().getItem(e.getSlot()) == null) {
-				return;
-			}
-			NessPlayer p = manager.getPlayer(player);
-			p.setClicks(p.getClicks() + 1);
-			if (p.getClicks() > 4) {
-				if (manager.getPlayer(player).shouldCancel(e, this.getClass().getSimpleName())) {
-					e.setCancelled(true);
-				}
-				p.setViolation(new Violation("FastClick", "")); // MSG.tell(player, "Distance " + distance);
-				e.setCancelled(true);
-			}
-		}
-	}
-
 }

@@ -54,6 +54,9 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent> {
 		if (targetBlock.getLocation().add(0, 1, 0).getBlock().getType().name().toLowerCase().contains("slab")) {
 			return;
 		}
+		if(event.getClickedBlock() == null || event.getBlockFace() == null) {
+			return;
+		}
 		Location block = event.getClickedBlock().getLocation().add(event.getBlockFace().getModX(),
 				event.getBlockFace().getModY(), event.getBlockFace().getModZ());
 		Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
