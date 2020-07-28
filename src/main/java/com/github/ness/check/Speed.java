@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
@@ -25,7 +24,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 
 	public Speed(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -34,7 +32,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Check1(e);
 		Check3(e);
 		Check4(e);
-		Check5(e);
 	}
 
 	private void punish(PlayerMoveEvent e, String module) {
@@ -246,38 +243,5 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				this.punish(e, "InvalidFriction: " + scaledEqualness);
 			}
 		}
-	}
-
-	public void Check5(PlayerMoveEvent event) {
-		double delta = event.getTo().getY() - event.getFrom().getY();
-		NessPlayer p = manager.getPlayer(event.getPlayer());
-		if (Utilities.isClimbableBlock(event.getFrom().getBlock()) || Utility.blockAdjacentIsStair(event.getTo())
-				|| Utility.blockAdjacentIsStair(event.getFrom()) || Utilities.isClimbableBlock(event.getTo().getBlock())
-				|| Utilities.isOnStairs(event.getPlayer()) || Utility.blockAdjacentIsLiquid(event.getFrom())
-				|| Utility.blockAdjacentIsLiquid(event.getTo())) {
-			return;
-		}
-		if(Utilities.isOnIce(event.getPlayer(), true)) {
-			return;
-		}
-		if (Utilities.isOnIce(event.getPlayer(), false)) {
-			return;
-		}
-		if (Utility.specificBlockNear(event.getTo(),"ice")) {
-			return;
-		}
-		if (Utility.specificBlockNear(event.getFrom(),"ice")) {
-			return;
-		}
-		if (delta != 0) {
-			if (p.isDevMode()) {
-				event.getPlayer().sendMessage("Delta: " + delta + " LastDelta: " + p.lastYDelta);
-			}
-			if (delta == -p.lastYDelta) {
-				punish(event, "RepeatedMovement: " + delta);
-
-			}
-		}
-		p.lastYDelta = delta;
 	}
 }
