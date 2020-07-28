@@ -148,7 +148,7 @@ public class NessPlayer implements AutoCloseable {
 
 	public void updateMovementValue(MovementValues values) {
 		this.movementValues = values;
-		this.setDistance(Math.abs(movementValues.getXZDiff()));
+		this.setDistance(Math.abs(movementValues.XZDiff));
 	}
 
 	public void updatePacketValues(Object packet) {

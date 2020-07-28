@@ -94,8 +94,8 @@ public class CheckManager implements AutoCloseable {
 							if (evento.getTo().getWorld().getName() != evento.getFrom().getWorld().getName()) {
 								return;
 							}
-							MovementValues values = new MovementValues(evento.getPlayer(), evento.getTo(),
-									evento.getFrom());
+							MovementValues values = new MovementValues(evento.getPlayer(), evento.getTo().clone(),
+									evento.getFrom().clone());
 							CheckManager.this.getPlayer(evento.getPlayer()).updateMovementValue(values);
 						}
 						checks.forEach((check) -> check.checkAnyEvent(evt));

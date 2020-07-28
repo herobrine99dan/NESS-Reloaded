@@ -5,55 +5,67 @@ import org.bukkit.entity.Player;
 
 import com.github.ness.utility.Utility;
 
-import lombok.Getter;
-
 public class MovementValues {
 
 	/**
-	 * Test
+	 * Yaw Difference (to.getYaw() - from.getYaw());
 	 */
-	@Getter
-	double yawDiff;
-	@Getter
-	double pitchDiff;
-	@Getter
-	double xDiff;
-	@Getter
-	double yDiff;
-	@Getter
-	double zDiff;
-	@Getter
+	public double yawDiff;
 	/**
-	 * This method calculate the xzDistance doing Math.abs(xDiff) + Math.abs(zDiff)
+	 * Pitch Difference (to.getPitch() - from.getPitch());
 	 */
-	double xZDiff;
-	@Getter
-	double totalDistance;
-	@Getter
-	double xzDiffMultiplier;
-	@Getter
-	boolean iceAround;
-	@Getter
-	boolean liquidsAround;
-	@Getter
-	boolean stairsAround;
-	@Getter
-	boolean slimeAround;
-	
+	public double pitchDiff;
+	/**
+	 * X Difference (to.getX() - from.getX());
+	 */
+	public double xDiff;
+	/**
+	 * Y Difference (to.getY() - from.getY());
+	 */
+	public double yDiff;
+	/**
+	 * Z Difference (to.getZ() - from.getZ());
+	 */
+	public double zDiff;
+	/**
+	 * XZ Difference Math.abs(xDiff) + Math.abs(zDiff);
+	 */
+	public double XZDiff;
+	/**
+	 * Total Distance to.distance(from);
+	 */
+	public double totalDistance;
+	/**
+	 * XZ Multiplicated ((xDiff * xDiff) + (zDiff * zDiff));
+	 */
+	public double xzDiffMultiplier;
+	public boolean AroundIce;
+	/**
+	 * Liquids= Lava and Water
+	 */
+	public boolean AroundLiquids;
+
+	public boolean AroundStairs;
+	/**
+	 * Utility.specificBlockNear(to, "slime"); or Utility.hasBlock(p, "slime");
+	 */
+	public boolean AroundSlime;
+
 	public MovementValues(Player p, Location to, Location from) {
 		yawDiff = to.getYaw() - from.getYaw();
 		pitchDiff = to.getPitch() - from.getPitch();
 		xDiff = to.getX() - from.getX();
 		yDiff = to.getY() - from.getY();
 		zDiff = to.getZ() - from.getZ();
-		xZDiff = Math.abs(xDiff) + Math.abs(zDiff);
+		XZDiff = Math.abs(xDiff) + Math.abs(zDiff);
 		xzDiffMultiplier = (xDiff * xDiff) + (zDiff * zDiff);
-		iceAround = Utility.specificBlockNear(to, "ice");
-		liquidsAround = Utility.specificBlockNear(to, "liquid");
-		slimeAround = Utility.specificBlockNear(to, "slime");
-		if(!slimeAround) {
-			slimeAround = Utility.hasBlock(p, "slime");
+		AroundIce = Utility.specificBlockNear(to, "ice");
+		AroundLiquids = Utility.specificBlockNear(to, "liquid");
+		AroundSlime = Utility.specificBlockNear(to, "slime");
+		if (!AroundSlime) {
+			AroundSlime = Utility.hasBlock(p, "slime");
 		}
 		totalDistance = to.distance(from);
 	}
+
 }

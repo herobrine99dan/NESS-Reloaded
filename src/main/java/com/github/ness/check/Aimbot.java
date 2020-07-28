@@ -43,7 +43,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		if (player == null || Utility.hasVehicleNear(p, 3)) {
 			return false;
 		}
-		float deltaPitch = e.getTo().getPitch() - e.getFrom().getPitch();
+		float deltaPitch = (float) player.getMovementValues().pitchDiff;
 		final List<Float> lastDeltaPitches = player.getPitchdelta();
 
 		// ignore if deltaPitch is 0 or >= 10 or if pitch is +/-90.
@@ -72,28 +72,29 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	 * Check for some Aimbot Pattern
 	 */
 	public boolean Check1(PlayerMoveEvent e) {
-		float yawChange = Math.abs(e.getTo().getYaw() - e.getFrom().getYaw());
-		float pitchChange = Math.abs(e.getTo().getPitch() - e.getFrom().getPitch());
+		NessPlayer player = manager.getPlayer(e.getPlayer());
+		float yawChange = (float) Math.abs(player.getMovementValues().yawDiff);
+		float pitchChange = (float) Math.abs(player.getMovementValues().pitchDiff);
 		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {
-			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+			if (player.shouldCancel(e, this.getClass().getSimpleName())) {
 				e.setCancelled(true);
 			}
-			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura"));
+			player.setViolation(new Violation("Aimbot", "PerfectAura"));
 			return true;
 		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {
-			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+			if (player.shouldCancel(e, this.getClass().getSimpleName())) {
 				e.setCancelled(true);
 			}
-			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PerfectAura1"));
+			player.setViolation(new Violation("Aimbot", "PerfectAura1"));
 			return true;
 		}
 		return false;
 	}
 
 	public void Check3(PlayerMoveEvent e) {
-		float yawChange = Math.abs(e.getFrom().getYaw() - e.getTo().getYaw());
-		float pitchChange = Math.abs(e.getFrom().getPitch() - e.getTo().getPitch());
-		NessPlayer np = this.manager.getPlayer(e.getPlayer());
+		NessPlayer np = manager.getPlayer(e.getPlayer());
+		float yawChange = (float) Math.abs(np.getMovementValues().yawDiff);
+		float pitchChange = (float) Math.abs(np.getMovementValues().pitchDiff);
 		if (yawChange >= 1.0F && yawChange % 0.1F == 0.0F) {
 			if (yawChange % 1.0F == 0.0F || yawChange % 10.0F == 0.0F || yawChange % 30.0F == 0.0F) {
 				np.setViolation(new Violation("Aimbot", "Pattern1"));
@@ -112,10 +113,8 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	public void Check4(PlayerMoveEvent e) {
-		Location to = e.getTo();
-		Location from = e.getFrom();
 		Player p = e.getPlayer();
-		double yaw = Math.abs(to.getYaw() - from.getYaw());
+		double yaw = Math.abs(this.manager.getPlayer(p).getMovementValues().yawDiff);
 		NessPlayer np = this.manager.getPlayer(p);
 		if (Math.abs(yaw) > 9356) {
 			yaw = 0.0;
