@@ -1,6 +1,7 @@
 package com.github.ness.check;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -32,18 +33,28 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		Check8(e);
 	}
 
+	// This Reach Check contains two modules:
 	public void Check(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
+			Vector from = e.getDamager().getLocation().clone().toVector();
+			Vector to = e.getEntity().getLocation().clone().toVector();
+			Vector result = from.subtract(to);
 			Player p = (Player) e.getDamager();
-			Entity et = e.getEntity();
-			double dist = Utility.getMaxSpeed(p.getLocation(), et.getLocation());
-			if (dist > 5) {
-				punish(e, p, 19, "Reach" + "(" + dist + ")", 6);
+			double maxValue = 3.4D;
+			if (p.isSprinting()) {
+				maxValue += 0.4D;
+			}
+			if (Utility.specificBlockNear(e.getDamager().getLocation(), "water")) {
+				maxValue += 0.2D;
+			}
+			if (result.length() > maxValue) {
+				punish(e, p, 19, "Reach" + "(" + result.length() + ")", 6);
 			}
 		}
 	}
 
 	public void Check1(EntityDamageByEntityEvent e) {
+
 		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
 			final Location loc = p.getLocation();
@@ -65,7 +76,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Player player = (Player) event.getDamager();
 			if (player.getLocation().getPitch() == Math.round(player.getLocation().getPitch())) {
 				punish(event, player, 21, "PerfectAngle", 5);
-			} else if(player.getLocation().getYaw() == Math.round(player.getLocation().getYaw())) {
+			} else if (player.getLocation().getYaw() == Math.round(player.getLocation().getYaw())) {
 				punish(event, player, 21, "PerfectAngle", 5);
 			}
 		}
@@ -80,43 +91,11 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		}
 	}
 
-	/**
-	 * @author Wall (Wall_#1920 on Discord)
-	 */
 	public void Check5(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
-			if (!(e.getDamager() instanceof Player))
-				return;
-			Location from = e.getEntity().getLocation();
-			Location to = e.getDamager().getLocation();
-			double x = Math.abs(from.getX() - to.getX());
-			double z = Math.abs(from.getZ() - to.getZ());
-			if (!e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK))
-				return;
-			if (x == 0.0D || z == 0.0D)
-				return;
-			if (Math.abs(from.getY() - to.getY()) >= 0.6D)
-				return;
-			Location l = null;
-			if (x <= 0.5D && z >= 1.0D) {
-				if (e.getDamager().getLocation().getZ() > e.getEntity().getLocation().getZ()) {
-					l = e.getDamager().getLocation().clone().add(0.0D, 0.0D, -1.0D);
-				} else {
-					l = e.getDamager().getLocation().clone().add(0.0D, 0.0D, 1.0D);
-				}
-			} else if (z <= 0.5D && x >= 1.0D) {
-				if (e.getDamager().getLocation().getX() > e.getEntity().getLocation().getX()) {
-					l = e.getDamager().getLocation().clone().add(-1.0D, 0.0D, 0.0D);
-				} else {
-					l = e.getDamager().getLocation().clone().add(-1.0D, 0.0D, 0.0D);
-				}
-			}
-			boolean failed = false;
-			if (l != null)
-				failed = (l.getBlock().getType().isSolid()
-						&& l.clone().add(0.0D, 0.7D, 0.0D).getBlock().getType().isSolid());
-			if (failed) {
-				punish(e, (Player) e.getDamager(), 0, "WallHit", 0);
+			Player p = (Player) e.getDamager();
+			if (!p.hasLineOfSight(e.getEntity())) {
+				punish(e, p, 23, "WallHit", 4);
 			}
 		}
 	}
