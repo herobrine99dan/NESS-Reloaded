@@ -74,10 +74,6 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 		}
 		manager.getPlayer(p).setViolation(new Violation("Jesus",module));
 	}
-    /**
-     * Big Distance
-     * @param e
-     */
 	public void Check1(PlayerMoveEvent e) {
 		double fromy = e.getFrom().getY();
 		double toy = e.getTo().getY();

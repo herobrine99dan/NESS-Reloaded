@@ -88,7 +88,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			if (Utilities.isClimbableBlock(p.getLocation().getBlock()) && !Utilities.isInWater(p)) {
 				double distance = event.getTo().getY() - event.getFrom().getY();
 				double diff = distance - np.lastYDelta;
-				if (distance > 0.12D && diff == 0.0) {
+				float scaledEqualness = (float) (diff - distance);
+				if (distance > 0.12D && scaledEqualness < 0.06) {
 					punish(event, p, "FastLadder: " + distance);
 				}
 			}
@@ -104,13 +105,13 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	public void Check4(PlayerMoveEvent e) {
 		final Location from = e.getFrom();
 		final Location to = e.getTo();
-		if(!to.getWorld().getName().equals(from.getWorld().getName())) {
+		if (!to.getWorld().getName().equals(from.getWorld().getName())) {
 			return;
 		}
 		double fromy = e.getFrom().getY();
 		double toy = e.getTo().getY();
 		final Player p = e.getPlayer();
-		if(p.hasPotionEffect(PotionEffectType.JUMP)) {
+		if (p.hasPotionEffect(PotionEffectType.JUMP)) {
 			return;
 		}
 		final double defaultvalue = 0.08307781780646906D;
@@ -171,10 +172,10 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.getMaterialName(e.getTo().clone().add(0, -0.5, 0)).contains("carpet")) {
 			return;
 		}
-		if(Utility.specificBlockNear(e.getTo(), "lily") || Utility.specificBlockNear(e.getTo(), "snow")) {
+		if (Utility.specificBlockNear(e.getTo(), "lily") || Utility.specificBlockNear(e.getTo(), "snow")) {
 			return;
 		}
-		if(Utility.specificBlockNear(e.getTo(), "carpet")) {
+		if (Utility.specificBlockNear(e.getTo(), "carpet")) {
 			return;
 		}
 		if (Utility.getMaterialName(e.getTo().clone()).contains("lily")

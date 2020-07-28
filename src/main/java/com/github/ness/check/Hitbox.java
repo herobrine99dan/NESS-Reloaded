@@ -1,11 +1,8 @@
 package com.github.ness.check;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;

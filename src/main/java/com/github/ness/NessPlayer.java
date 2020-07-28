@@ -20,7 +20,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.api.PlayerViolationEvent;
 import com.github.ness.api.Violation;
-import com.github.ness.utility.Utility;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -91,6 +90,8 @@ public class NessPlayer implements AutoCloseable {
 	public long lastPacketTime; //Used in BadPackets
 	public long movementPackets; //Used in BadPackets
 	public float lastStairDist; //Used in BadPackets
+	@Getter
+	private MovementValues movementValues;
 
 	// Used in OldMovementChecks
 
@@ -145,8 +146,9 @@ public class NessPlayer implements AutoCloseable {
 		this.devMode = devMode;
 	}
 
-	public void updateMovementValues(PlayerMoveEvent event) {
-		this.setDistance(Math.abs(Utility.getMaxSpeed(event.getFrom(), event.getTo())));
+	public void updateMovementValue(MovementValues values) {
+		this.movementValues = values;
+		this.setDistance(Math.abs(movementValues.getXZDiff()));
 	}
 
 	public void updatePacketValues(Object packet) {

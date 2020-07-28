@@ -45,8 +45,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 	@Override
 	void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-		NessPlayer nessPlayer = manager.getPlayer(player);
-		nessPlayer.updateMovementValues(event);
 		Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0, 1, 0)).getType();
 		Material bottom = null;
 		if(!event.getTo().getWorld().getName().equals(event.getFrom().getWorld().getName())) {

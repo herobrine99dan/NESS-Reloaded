@@ -246,22 +246,6 @@ public class Utility {
 		return result;
 	}
 
-	public static double getMaxSpeed(Location From, Location To) {
-		double maxSpeed, xSpeed = Math.abs(From.getX() - To.getX());
-		double zSpeed = Math.abs(From.getZ() - To.getZ());
-		double xzSpeed = Math.sqrt(xSpeed * xSpeed + zSpeed * zSpeed);
-
-		if (xSpeed >= zSpeed) {
-			maxSpeed = xSpeed;
-		} else {
-			maxSpeed = xSpeed;
-		}
-		if (maxSpeed < xzSpeed) {
-			maxSpeed = xzSpeed;
-		}
-		return maxSpeed;
-	}
-
 	public static boolean hasflybypass(Player player) {
 		ItemStack[] armor = player.getInventory().getArmorContents();
 		if (!Bukkit.getVersion().contains("1.8")) {
@@ -294,7 +278,19 @@ public class Utility {
 			Location loc = p.getLocation();
 			loc.setY(i);
 			if (loc.getBlock().getType().equals(m)) {
-				done = true;
+				return true;
+			}
+		}
+		return done;
+	}
+	
+	public static boolean hasBlock(Player p, String m) {
+		boolean done = false;
+		for (int i = 0; i < 256; i++) {
+			Location loc = p.getLocation().clone();
+			loc.setY(i);
+			if (loc.getBlock().getType().name().toLowerCase().contains(m)) {
+				return true;
 			}
 		}
 		return done;
@@ -308,9 +304,12 @@ public class Utility {
 		}
 		return false;
 	}
-	
+
 	public static boolean specificBlockNear(Location loc, String m) {
 		for (Block b : Utility.getSurrounding(loc.getBlock(), true)) {
+			if(m.equals("liquid")) {
+				return b.isLiquid();
+			}
 			if (b.getType().name().toLowerCase().contains(m.toLowerCase())) {
 				return true;
 			}
@@ -487,11 +486,9 @@ public class Utility {
 		Location From = e.getFrom();
 		Player p = e.getPlayer();
 		Location To = e.getTo();
-		double maxSpeed = Utility.getMaxSpeed(From, To);
 		double ydist = From.getY() - To.getY();
 		p.sendMessage("-------------------------------------");
-		p.sendMessage("xz distance= " + Utility.around(maxSpeed, 6) + " y distance="
-				+ Double.toString(Utility.around(ydist, 6)));
+		p.sendMessage("y distance=" + Double.toString(Utility.around(ydist, 6)));
 		p.sendMessage(
 				"FallDistance= " + Utility.around(p.getFallDistance(), 6) + " NoDamageTicks= " + p.getNoDamageTicks());
 		// p.sendMessage("YSin= " + Utility.around(Math.sin(ydist), 6) + " YCos= " +
