@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -176,22 +175,24 @@ public class NessPlayer implements AutoCloseable {
 	 * @param violation the violation
 	 */
 	public void setViolation(Violation violation) {
-		Random r = new Random();
-		if (!r.nextBoolean()) {
-			return;
-		}
+
+		// Violation event
 		PlayerViolationEvent event = new PlayerViolationEvent(this.getPlayer(), this, violation,
 				checkViolationCounts.getOrDefault(violation.getCheck(), 0));
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		if (event.isCancelled()) {
 			return;
 		}
+
+		// Bypass permissions
 		if (this.getPlayer().hasPermission("ness.bypass." + violation.getCheck().toLowerCase())) {
 			return;
 		}
 		if (this.getPlayer().hasPermission("ness.bypass.*")) {
 			return;
 		}
+
+		// Main method body
 		this.violation.compareAndSet(null, violation);
 		checkViolationCounts.merge(violation.getCheck(), 1, (c1, c2) -> c1 + c2);
 		if (isDevMode()) {
@@ -219,7 +220,7 @@ public class NessPlayer implements AutoCloseable {
 
 	@Override
 	public void close() {
-
+		checkViolationCounts.clear();
 	}
 
 	public boolean shouldCancel(Event e, String check) {
