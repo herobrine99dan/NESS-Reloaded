@@ -56,6 +56,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		Double dist = from.distance(to);
 		Double hozDist = dist - (to.getY() - from.getY());
 		Double fallDist = (double) player.getFallDistance();
+		NessPlayer nessPlayer = this.manager.getPlayer(player);
 		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
 				|| nessPlayer.isTeleported()) {
 			return;

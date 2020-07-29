@@ -86,7 +86,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		NessPlayer np = this.manager.getPlayer(p);
 		if (!bypass(event.getPlayer())) {
 			if (Utilities.isClimbableBlock(p.getLocation().getBlock()) && !Utilities.isInWater(p)) {
-				double distance = event.getTo().getY() - event.getFrom().getY();
+				double distance = np.getMovementValues().yDiff;
 				double diff = distance - np.lastYDelta;
 				float scaledEqualness = (float) (diff - distance);
 				if (distance > 0.12D && scaledEqualness < 0.06) {
@@ -108,15 +108,13 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (!to.getWorld().getName().equals(from.getWorld().getName())) {
 			return;
 		}
-		double fromy = e.getFrom().getY();
-		double toy = e.getTo().getY();
 		final Player p = e.getPlayer();
 		if (p.hasPotionEffect(PotionEffectType.JUMP)) {
 			return;
 		}
 		final double defaultvalue = 0.08307781780646906D;
 		final double defaultjump = 0.41999998688697815D;
-		final double distance = toy - fromy;
+		final double distance = this.manager.getPlayer(p).getMovementValues().yDiff;
 		if (!bypass(e.getPlayer()) && !from.getBlock().getType().isSolid() && !to.getBlock().getType().isSolid()) {
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 				if (to.getY() > from.getY()) {
@@ -219,7 +217,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (player.isFlying() || player.hasPotionEffect(PotionEffectType.SPEED)) {
 			return;
 		}
-		Double hozDist = Utility.getMaxSpeed(from, to);
+		Double hozDist = this.manager.getPlayer(player).getMovementValues().XZDiff;
 		double maxDist = 0.2;
 		if (!Utility.isMathematicallyOnGround(to.getY())) {
 			maxDist += Math.abs(player.getVelocity().getY()) * 0.4;
@@ -231,7 +229,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	public void Check20(PlayerMoveEvent e) {
-		double yDist = e.getTo().getY() - e.getFrom().getY();
+		double yDist = this.manager.getPlayer(e.getPlayer()).getMovementValues().yDiff;
 		if (yDist > 0.7 && !bypass(e.getPlayer())) {
 			punish(e, e.getPlayer(), "HighDistance");
 		}

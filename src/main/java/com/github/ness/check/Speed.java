@@ -120,7 +120,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (this.manager.getPlayer(player).isTeleported()) {
 			return;
 		}
-		double dist = Utility.getMaxSpeed(e.getFrom(), e.getTo());
+		double dist =  this.manager.getPlayer(player).getMovementValues().XZDiff;
 		if (Utility.isMathematicallyOnGround(e.getTo().getY()) && !player.isInsideVehicle() && !player.isFlying()
 				&& !player.hasPotionEffect(PotionEffectType.SPEED) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 			if (dist > 0.62D) {
@@ -144,16 +144,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Location from = e.getFrom().clone();
 		NessPlayer np = this.manager.getPlayer(e.getPlayer());
 		Player p = e.getPlayer();
-		double x = to.getX() - from.getX();
 		double y = to.getY() - from.getY();
-		if (Double.toString(y).length() > 4) {
-			y = Utility.around(y, 5);
-		}
-		double z = to.getZ() - from.getZ();
-		Vector v = new Vector(x, y, z);
+		double yresult = y - p.getVelocity().getY();
 		// Vector result = v.subtract(p.getVelocity());
-		Vector result = v.subtract(p.getVelocity().setY(Utility.around(p.getVelocity().getY(), 5)));
-		double yresult = 0.0;
 		if (Utility.hasflybypass(p) || Utility.hasBlock(p, Material.SLIME_BLOCK) || Utility.hasWater(p)
 				|| Utility.isInWater(p)) {
 			return;
@@ -187,11 +180,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")) {
 			return;
 		}
-		try {
-			yresult = Utility.around(result.getY(), 5);
-		} catch (Exception ex) {
-			yresult = result.getY();
-		}
 		if (Math.abs(yresult) > 0.9) {
 			if (Utility.hasflybypass(p) || manager.getPlayer(e.getPlayer()).isTeleported()) {
 				return;
@@ -219,9 +207,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Location to = e.getTo().clone();
 		Location from = e.getFrom().clone();
 		NessPlayer np = this.manager.getPlayer(e.getPlayer());
-		double distX = to.getX() - from.getX();
-		double distZ = to.getZ() - from.getZ();
-		double dist = (distX * distX) + (distZ * distZ);
+		double dist = this.manager.getPlayer(e.getPlayer()).getMovementValues().xzDiffMultiplier;
 		double lastDist = np.lastSpeedPredictionDist;
 		np.lastSpeedPredictionDist = dist;
 		boolean lastOnGround = np.lastSpeedPredictionOnGround;

@@ -23,10 +23,11 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 		Check1(e);
 	}
 
-    /**
-     * Check for Physics Check
-     * @param event
-     */
+	/**
+	 * Check for Physics Check
+	 * 
+	 * @param event
+	 */
 	public void Check(PlayerMoveEvent event) {
 		final Player player = event.getPlayer();
 		final Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0.0, 1.0, 0.0)).getType();
@@ -64,24 +65,23 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 				&& !player.getWorld().getBlockAt(player.getLocation().add(0.0, 1.0, 0.0)).isLiquid()
 				&& (new StringBuilder(String.valueOf(Math.abs(from.getY() - to.getY()))).toString().contains("00000000")
 						|| to.getY() == from.getY())) {
-			punish(event,player, 3, "Physics");
+			punish(event, player, 3, "Physics");
 		}
-	} 
+	}
 
-	private void punish(PlayerMoveEvent e,Player p, int i, String module) {
-		if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+	private void punish(PlayerMoveEvent e, Player p, int i, String module) {
+		if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 			e.setCancelled(true);
 		}
-		manager.getPlayer(p).setViolation(new Violation("Jesus",module));
+		manager.getPlayer(p).setViolation(new Violation("Jesus", module));
 	}
+
 	public void Check1(PlayerMoveEvent e) {
-		double fromy = e.getFrom().getY();
-		double toy = e.getTo().getY();
 		Player player = e.getPlayer();
 		if (Utility.hasflybypass(player) && !player.getNearbyEntities(2, 2, 2).isEmpty()) {
 			return;
 		}
-		double resulty = Math.abs(fromy - toy);
+		double resulty = Math.abs(this.manager.getPlayer(player).getMovementValues().yDiff);
 		double distance = e.getTo().distance(e.getFrom()) - resulty;
 		Block block = player.getLocation().getBlock();
 		Location loc = player.getLocation();
@@ -93,7 +93,7 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 			if (block.isLiquid() && loc.getBlock().isLiquid() && distanceFell < 1 && !underloc.getBlock().isLiquid()) {
 				if (distance > 0.11863034217827088) {
 					// MSG.tell((CommandSender)player, "&7dist: &e" + distance);
-					punish(e,e.getPlayer(), 2, "WaterSpeed");
+					punish(e, e.getPlayer(), 2, "WaterSpeed");
 				}
 			}
 		}

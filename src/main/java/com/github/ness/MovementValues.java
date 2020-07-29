@@ -10,46 +10,46 @@ public class MovementValues {
 	/**
 	 * Yaw Difference (to.getYaw() - from.getYaw());
 	 */
-	public double yawDiff;
+	public final double yawDiff;
 	/**
 	 * Pitch Difference (to.getPitch() - from.getPitch());
 	 */
-	public double pitchDiff;
+	public final double pitchDiff;
 	/**
 	 * X Difference (to.getX() - from.getX());
 	 */
-	public double xDiff;
+	public final double xDiff;
 	/**
 	 * Y Difference (to.getY() - from.getY());
 	 */
-	public double yDiff;
+	public final double yDiff;
 	/**
 	 * Z Difference (to.getZ() - from.getZ());
 	 */
-	public double zDiff;
+	public final double zDiff;
 	/**
 	 * XZ Difference Math.abs(xDiff) + Math.abs(zDiff);
 	 */
-	public double XZDiff;
+	public final double XZDiff;
 	/**
 	 * Total Distance to.distance(from);
 	 */
-	public double totalDistance;
+	public final double totalDistance;
 	/**
 	 * XZ Multiplicated ((xDiff * xDiff) + (zDiff * zDiff));
 	 */
-	public double xzDiffMultiplier;
-	public boolean AroundIce;
+	public final double xzDiffMultiplier;
+	public final boolean AroundIce;
 	/**
 	 * Liquids= Lava and Water
 	 */
-	public boolean AroundLiquids;
+	public final boolean AroundLiquids;
 
-	public boolean AroundStairs;
+	public final boolean AroundStairs;
 	/**
 	 * Utility.specificBlockNear(to, "slime"); or Utility.hasBlock(p, "slime");
 	 */
-	public boolean AroundSlime;
+	public final boolean AroundSlime;
 
 	public MovementValues(Player p, Location to, Location from) {
 		yawDiff = to.getYaw() - from.getYaw();
@@ -61,10 +61,13 @@ public class MovementValues {
 		xzDiffMultiplier = (xDiff * xDiff) + (zDiff * zDiff);
 		AroundIce = Utility.specificBlockNear(to, "ice");
 		AroundLiquids = Utility.specificBlockNear(to, "liquid");
-		AroundSlime = Utility.specificBlockNear(to, "slime");
-		if (!AroundSlime) {
+		boolean slimenear = Utility.specificBlockNear(to, "slime");
+		if (!slimenear) {
 			AroundSlime = Utility.hasBlock(p, "slime");
+		} else {
+			AroundSlime = Utility.specificBlockNear(to, "slime");
 		}
+		AroundStairs = Utility.specificBlockNear(to, "stair");
 		totalDistance = to.distance(from);
 	}
 
