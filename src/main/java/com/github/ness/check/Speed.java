@@ -144,7 +144,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Location from = e.getFrom().clone();
 		NessPlayer np = this.manager.getPlayer(e.getPlayer());
 		Player p = e.getPlayer();
-		double y = to.getY() - from.getY();
+		double y = np.getMovementValues().yDiff;
 		double yresult = y - p.getVelocity().getY();
 		// Vector result = v.subtract(p.getVelocity());
 		if (Utility.hasflybypass(p) || Utility.hasBlock(p, Material.SLIME_BLOCK) || Utility.hasWater(p)

@@ -9,7 +9,8 @@ import com.github.ness.check.OldMovementChecks;
 import com.github.ness.utility.Utility;
 
 public class BadPackets {
-	private static final double MAX_PACKETS_PER_TICK = 1.1;
+	//I don't care about 1.12 timer bypass
+	private static final double MAX_PACKETS_PER_TICK = 1.12;
 
 	/**
 	 * From Crescent AntiCheat

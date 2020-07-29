@@ -21,28 +21,11 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent> {
 
 	@Override
 	void checkEvent(BlockPlaceEvent e) {
-		Check(e);
 		Check1(e);
 		Check2(e);
 		Check3(e);
 	}
-
-	public void Check(BlockPlaceEvent event) {
-		Player p = event.getPlayer();
-		Block b = event.getBlockPlaced();
-		Block target = p.getTargetBlock(null, 6);
-		if (event.getBlockAgainst().getType().name().toLowerCase().contains("fence")
-				|| event.getBlockPlaced().getType().name().toLowerCase().contains("ladder")) {
-			return;
-		}
-		if (!(target.getY() == b.getY() && target.getX() == b.getX() && target.getZ() == b.getZ())) {
-			manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold", "InvalidBlock"));
-			if (manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
-				event.setCancelled(true);
-			}
-		}
-	}
-
+	
 	public void Check1(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		final double MAX_ANGLE = Math.toRadians(90);
