@@ -47,9 +47,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			manager.getPlayer(p).setViolation(new Violation("Fly", module));
 			try {
 				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-					if (!DragDown.playerDragDown(p)) {
-						e.setCancelled(true);
-					}
+					DragDown.playerDragDown(e);
 				}
 			} catch (Exception ex) {
 				e.setCancelled(true);
