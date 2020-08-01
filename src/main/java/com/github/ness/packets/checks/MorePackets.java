@@ -3,6 +3,7 @@ package com.github.ness.packets.checks;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.InventoryHack;
@@ -20,7 +21,7 @@ public class MorePackets {
 		}
 		// System.out.println("Sono qua");
 		// sender.sendMessage("MaxPackets: " + maxPackets);
-		NessPlayer np = InventoryHack.manageraccess.getPlayer(sender);
+		NessPlayer np = NESSAnticheat.getInstance().getCheckManager().getPlayer(sender);
 		if (np == null || sender.isInsideVehicle()) {
 			return false;
 		}
@@ -35,8 +36,7 @@ public class MorePackets {
 			 * sender.getLocation())); } }.runTask(NESSAnticheat.main);
 			 */
 			OldMovementChecks.blockPackets.put(sender.getName(), true);
-			InventoryHack.manageraccess.getPlayer(sender)
-					.setViolation(new Violation("MorePackets", np.getNormalPacketsCounter() + ""));
+			np.setViolation(new Violation("MorePackets", np.getNormalPacketsCounter() + ""));
 			return true;
 		}
 		return false;

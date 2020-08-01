@@ -19,6 +19,7 @@ public class DragDown {
 
 	public static boolean playerDragDown(Player p) {
 		try {
+			Integer.valueOf("a");
 	        new BukkitRunnable() {       
 	            @Override
 	            public void run() {

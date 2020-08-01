@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.bukkit.entity.Player;
 
+import com.github.ness.NESSAnticheat;
 import com.github.ness.api.Violation;
 import com.github.ness.check.InventoryHack;
 import com.github.ness.utility.ReflectionUtility;
@@ -18,7 +19,7 @@ public class KillauraFalseFlyingPacket {
 			}
 			long time = elapsed(lastFlying.get(p));
 			if (time < 2L) {
-				InventoryHack.manageraccess.getPlayer(p).setViolation(new Violation("Killaura", "BadPackets: " + time));
+				NESSAnticheat.getInstance().getCheckManager().getPlayer(p).setViolation(new Violation("Killaura", "BadPackets: " + time));
 				return true;
 			}
 		} else {

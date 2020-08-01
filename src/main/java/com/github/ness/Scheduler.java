@@ -17,7 +17,7 @@ public class Scheduler {
 			@Override
 			public void run() {
 				for (Player p : Bukkit.getOnlinePlayers()) {
-					NessPlayer np = InventoryHack.manageraccess.getPlayer(p);
+					NessPlayer np = NESSAnticheat.getInstance().getCheckManager().getPlayer(p);
 					if (!(np == null)) {
 						np.setBlockplace(-5);
 						np.setClicks(-4);

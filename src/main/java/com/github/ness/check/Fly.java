@@ -185,7 +185,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				if (player.isOnGround() && !Utility.isOnGround(e.getTo())) {
 					punish(e, player, "FalseGround");
 				} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY())) {
-					punish(e, player, "FalseGround");
+					punish(e, player, "FalseGround1");
 				}
 			}
 

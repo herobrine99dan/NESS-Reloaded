@@ -47,9 +47,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		Player player = event.getPlayer();
 		Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0, 1, 0)).getType();
 		Material bottom = null;
-		if(!event.getTo().getWorld().getName().equals(event.getFrom().getWorld().getName())) {
-			return;
-		}
 		boolean devMode = false;
 		boolean debugMode = false;
 		Location from = event.getFrom(), to = event.getTo();
@@ -57,6 +54,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		Double hozDist = dist - (to.getY() - from.getY());
 		Double fallDist = (double) player.getFallDistance();
 		NessPlayer nessPlayer = this.manager.getPlayer(player);
+		oldLoc.put(player, event.getFrom());
 		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
 				|| nessPlayer.isTeleported()) {
 			return;

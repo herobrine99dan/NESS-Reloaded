@@ -3,6 +3,7 @@ package com.github.ness.packets.checks;
 import org.bukkit.entity.Player;
 
 import com.github.ness.MovementPlayerData;
+import com.github.ness.NESSAnticheat;
 import com.github.ness.api.Violation;
 import com.github.ness.check.InventoryHack;
 import com.github.ness.utility.Utility;
@@ -18,7 +19,7 @@ public class PingSpoof {
 			double diff = mp.pingspooftimer - mp.oldpingspooftimer;
 			if (Utility.getPing(sender) > 150 && (diff > 40) && (diff < 70)) {
 				//sender.teleport(OldMovementChecks.safeLoc.getOrDefault(sender, sender.getLocation()));
-				InventoryHack.manageraccess.getPlayer(sender).setViolation(new Violation("PingSpoof",""));
+				NESSAnticheat.getInstance().getCheckManager().getPlayer(sender).setViolation(new Violation("PingSpoof",""));
 				Utility.setPing(sender, 100);
 				return true;
 			}

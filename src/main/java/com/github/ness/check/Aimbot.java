@@ -116,9 +116,6 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		double yaw = Math.abs(this.manager.getPlayer(p).getMovementValues().yawDiff);
 		NessPlayer np = this.manager.getPlayer(p);
-		if (Math.abs(yaw) > 9356) {
-			yaw = 0.0;
-		}
 		if ((Math.round(yaw) == yaw && yaw != 0.0)) {
 			np.AimbotPatternCounter = np.AimbotPatternCounter + 1;
 			if (np.AimbotPatternCounter > 4) {

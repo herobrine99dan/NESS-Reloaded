@@ -13,11 +13,9 @@ import com.github.ness.utility.Utility;
 
 public class InventoryHack extends AbstractCheck<InventoryClickEvent> {
 
-	public static CheckManager manageraccess;
 
 	public InventoryHack(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(InventoryClickEvent.class));
-		manageraccess = manager;
 		// TODO Auto-generated constructor stub
 	}
 
