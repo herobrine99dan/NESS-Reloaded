@@ -1,6 +1,8 @@
 package com.github.ness.check;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -9,8 +11,7 @@ import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
 import com.github.ness.api.Violation;
-
-import net.minecraft.server.v1_12_R1.Material;
+import com.github.ness.utility.Utility;
 
 public class Scaffold extends AbstractCheck<BlockPlaceEvent> {
 
@@ -25,7 +26,7 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent> {
 		Check2(e);
 		Check3(e);
 	}
-	
+
 	public void Check1(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		final double MAX_ANGLE = Math.toRadians(90);
@@ -43,22 +44,24 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent> {
 
 	public void Check2(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
-		final float now = player.getLocation().getPitch();
-		Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
-			float pitchNow = player.getLocation().getPitch();
-			float diff = Math.abs(now - pitchNow);
-			if (diff > 20F) {
+		Block target = player.getTargetBlock(null, 5);
+		if (event.getBlock().getWorld().getBlockAt(event.getBlock().getLocation().subtract(0.0D, 1.0D, 0.0D))
+				.getType() == Material.AIR) {
+			if (!event.getBlock().getLocation().equals(target.getLocation()) && !event.isCancelled()
+					&& target.getType().isSolid() && !target.getType().name().toLowerCase().contains("sign")
+					&& !target.getType().toString().toLowerCase().contains("fence")
+					&& player.getLocation().getY() > event.getBlock().getLocation().getY())
 				if (manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
 					event.setCancelled(true);
 				}
-				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold", "HighPitch"));
-			}
-		}, 2L);
+				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold", "Impossible"));
+		}
 	}
 
 	public void Check3(BlockPlaceEvent e) {
 		Player p = e.getPlayer();
-		if (p.isSprinting()) {
+		if (p.isSprinting() && !Utility.hasflybypass(e.getPlayer())
+				&& !(e.getPlayer().getGameMode() == GameMode.CREATIVE)) {
 			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 				e.setCancelled(true);
 			}
