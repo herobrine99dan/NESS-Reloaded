@@ -3,13 +3,13 @@ package com.github.ness.check;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
 import com.github.ness.DragDown;
@@ -108,34 +108,54 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	// To recode
-	public void Check1(PlayerMoveEvent e) {
-		Player player = e.getPlayer();
-		if (Utility.hasflybypass(player)) {
+	public void Check1(PlayerMoveEvent event) {
+		Player p = event.getPlayer();
+		if (Utility.hasflybypass(p)) {
 			return;
 		}
-		double soulsand = 0.22;
-		if (Utility.hasflybypass(player)) {
+		if (this.manager.getPlayer(p).isTeleported()) {
 			return;
 		}
-		if (this.manager.getPlayer(player).isTeleported()) {
+		float dist =  (float) this.manager.getPlayer(p).getMovementValues().XZDiff;
+		Location to = event.getTo().clone();
+		Location from = event.getFrom().clone();
+		if (p.getGameMode() == GameMode.SPECTATOR || p.isInsideVehicle()) {
 			return;
 		}
-		double dist =  this.manager.getPlayer(player).getMovementValues().XZDiff;
-		if (Utility.isMathematicallyOnGround(e.getTo().getY()) && !player.isInsideVehicle() && !player.isFlying()
-				&& !player.hasPotionEffect(PotionEffectType.SPEED) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
-			if (dist > 0.62D) {
-				if (Utilities.getPlayerUpperBlock(player).getType().isSolid()
-						&& e.getTo().clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")
-						&& e.getFrom().clone().add(0, -1, 0).getBlock().getType().name().toLowerCase()
-								.contains("ice")) {
-					return;
-				}
-				punish(e, "MaxDistance " + dist);
-			} else if (dist > soulsand && player.getLocation().getBlock().getType().equals(Material.SOUL_SAND)
-					&& Utility.isMathematicallyOnGround(e.getFrom().getY()) && player.getFallDistance() == 0.0
-					&& e.getTo().getY() - e.getFrom().getY() == 0.0) {
-				punish(e, "NoSlowDown " + dist);
-			}
+		int speedLevel = Utility.getPotionEffectLevel(p, PotionEffectType.SPEED);
+		if (speedLevel > 2) {
+			return;
+		}
+		float f = to.getYaw() * 0.017453292F;
+		float resultX = Math.abs((float) (Math.sin(f) * 0.21f));
+		float resultZ = Math.abs((float) (Math.cos(f) * 0.21f));
+		float maxDist = resultX + resultZ + 0.04f;
+		if (p.isSprinting()) {
+			maxDist *= 1.47f;
+		}
+		if (p.isSneaking()) {
+			maxDist = 0.170f;
+		}
+		float xVelocity = (float) p.getVelocity().getX();
+		float zVelocity = (float) p.getVelocity().getZ();
+		maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.11;
+		maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.06;
+		if (!Utility.isMathematicallyOnGround(to.getY())) {
+			maxDist += 0.01f;
+		}
+		if (to.clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")) {
+			maxDist *= 1.24f;
+		}
+		if (from.clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")) {
+			maxDist *= 1.24f;
+		}
+		if (speedLevel > 0) {
+			dist -= (dist / 100.0) * (speedLevel * 20.0);
+		}
+		float result = dist - maxDist;
+		//p.sendMessage("maxDist: " + maxDist + " Dist: " + dist);
+		if (result > 0.1) {
+			this.punish(event, "MaxDistance: " + dist + " Max: " + maxDist);
 		}
 	}
 

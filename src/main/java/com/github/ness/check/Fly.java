@@ -1,9 +1,7 @@
 package com.github.ness.check;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -31,9 +29,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
-		Check(e);
 		Check1(e);
-		Check4(e);
 		Check8(e);
 		Check16(e);
 		Check17(e);
@@ -56,25 +52,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	/**
-	 * Check to detect no velocity(normal velocity should be upper than -0.06) This
-	 * detect stupid fly
-	 * 
-	 * @param event
-	 */
-	public void Check(PlayerMoveEvent event) {
-		if (!bypass(event.getPlayer()) && !Utility.hasBlock(event.getPlayer(), Material.SLIME_BLOCK)) {
-			Player player = event.getPlayer();
-			if (!event.getPlayer().isOnGround()) {
-				double fallDist = event.getPlayer().getFallDistance();
-				if (event.getPlayer().getVelocity().getY() < -1.0D && fallDist == 0.0D) {
-					punish(event, player, "NoVelocity");
-				}
-			}
-
-		}
-	}
-
-	/**
 	 * Check to detect max distance on ladder
 	 * 
 	 * @param event
@@ -91,66 +68,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 					punish(event, p, "FastLadder: " + distance);
 				}
 			}
-		}
-	}
-
-	/**
-	 * Check to detect AirJump
-	 * 
-	 * @param e
-	 */
-	// BadCheck
-	public void Check4(PlayerMoveEvent e) {
-		final Location from = e.getFrom();
-		final Location to = e.getTo();
-		if (!to.getWorld().getName().equals(from.getWorld().getName())) {
-			return;
-		}
-		final Player p = e.getPlayer();
-		if (p.hasPotionEffect(PotionEffectType.JUMP)) {
-			return;
-		}
-		final double defaultvalue = 0.08307781780646906D;
-		final double defaultjump = 0.41999998688697815D;
-		final double distance = this.manager.getPlayer(p).getMovementValues().yDiff;
-		if (!bypass(e.getPlayer()) && !from.getBlock().getType().isSolid() && !to.getBlock().getType().isSolid()) {
-			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
-				if (to.getY() > from.getY()) {
-					if (distance > defaultjump) {
-						ArrayList<Block> blocchivicini = Utility.getSurrounding(Utilities.getPlayerUnderBlock(p), true);
-						boolean bypass = Utility.hasBlock(p, Material.SLIME_BLOCK);
-						Iterator<Block> var4 = blocchivicini.iterator();
-
-						while (var4.hasNext()) {
-							Block s = var4.next();
-							Iterator<String> var6 = bypasses.iterator();
-
-							while (var6.hasNext()) {
-								String b = var6.next();
-								if (s.getType().toString().toLowerCase().contains(b)) {
-									bypass = true;
-								}
-							}
-						}
-
-						if (!bypass) {
-							punish(e, p, "AirJump");
-						}
-					} else if (distance == defaultvalue || distance == defaultjump) {
-						Location loc = p.getLocation();
-						Location loc1 = p.getLocation();
-						loc1.setY(loc.getY() - 2.0D);
-						if (loc1.getBlock().getType() == Material.AIR
-								&& Utilities.getPlayerUnderBlock(p).getType().equals(Material.AIR)
-								&& p.getVelocity().getY() <= -0.078D
-								&& !loc.getBlock().getType().name().contains("STAIR")
-								&& !loc1.getBlock().getType().name().contains("STAIR") && p.getNoDamageTicks() <= 1) {
-							punish(e, p, "AirJump1");
-						}
-					}
-				}
-
-			}, 2L);
 		}
 	}
 
@@ -228,8 +145,11 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	public void Check20(PlayerMoveEvent e) {
 		double yDist = this.manager.getPlayer(e.getPlayer()).getMovementValues().yDiff;
-		if (yDist > 0.7 && !bypass(e.getPlayer())) {
-			punish(e, e.getPlayer(), "HighDistance");
+		if (yDist > 0 && !bypass(e.getPlayer())) {
+			double yResult = yDist - e.getPlayer().getVelocity().getY();
+			if (yResult > 0.58) {
+				punish(e, e.getPlayer(), "HighDistance");
+			}
 		}
 	}
 
