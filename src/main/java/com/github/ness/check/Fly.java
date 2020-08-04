@@ -30,10 +30,11 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
 		Check1(e);
-		Check8(e);
-		Check16(e);
-		Check17(e);
-		Check20(e);
+		Check2(e);
+		Check3(e);
+		Check4(e);
+		Check5(e);
+		Check6(e);
 	}
 
 	protected List<String> bypasses = Arrays.asList("slab", "stair", "snow", "bed", "skull", "step", "slime");
@@ -76,7 +77,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	 * 
 	 * @param e
 	 */
-	public void Check8(PlayerMoveEvent e) {
+	public void Check2(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
 		if (Bukkit.getVersion().contains("1.8")) {
 			return;
@@ -112,10 +113,10 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	 * 
 	 * @param e
 	 */
-	public void Check16(PlayerMoveEvent e) {
+	public void Check3(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
-		if (player.getLocation().getYaw() > 360.0f || player.getLocation().getYaw() < -360.0f
-				|| player.getLocation().getPitch() > 90.0f || player.getLocation().getPitch() < -90.0f) {
+		if (e.getTo().getYaw() > 360.0f || e.getTo().getYaw() < -360.0f || e.getTo().getPitch() > 90.0f
+				|| e.getTo().getPitch() < -90.0f) {
 			punish(e, player, "IllegalMovement");
 		}
 	}
@@ -125,7 +126,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	 * 
 	 * @param e
 	 */
-	public void Check17(PlayerMoveEvent e) {
+	public void Check4(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
 		Location from = e.getFrom();
 		Location to = e.getTo();
@@ -143,12 +144,28 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
-	public void Check20(PlayerMoveEvent e) {
+	public void Check5(PlayerMoveEvent e) {
 		double yDist = this.manager.getPlayer(e.getPlayer()).getMovementValues().yDiff;
 		if (yDist > 0 && !bypass(e.getPlayer())) {
 			double yResult = yDist - e.getPlayer().getVelocity().getY();
 			if (yResult > 0.58) {
 				punish(e, e.getPlayer(), "HighDistance");
+			}
+		}
+	}
+
+	public void Check6(PlayerMoveEvent event) {
+		Location to = event.getTo().clone();
+		Player player = event.getPlayer();
+		double yDiff = this.manager.getPlayer(player).getMovementValues().yDiff;
+		if (yDiff < 0 || Utility.getMaterialName(to.clone().add(0, -0.3, 0)).contains("slab") || Utility.onSteps(to)
+				|| Utilities.isOnSteps(player) || Utilities.isStepable(to.clone().add(0, -0.3, 0).getBlock())) {
+			return;
+		}
+		if (player.getVelocity().getY() == 0.42f && yDiff > 0.38) {
+			double yResult = Math.abs(yDiff - 0.42f);
+			if (yResult > 0.003) {
+				punish(event, player, "InvalidJumpMotion");
 			}
 		}
 	}
