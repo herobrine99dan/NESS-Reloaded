@@ -50,6 +50,10 @@ public class NessPlayer implements AutoCloseable {
 
 	@Getter
 	@Setter
+	public double lastStrafeAngle; //NewOldStrafe
+
+	@Getter
+	@Setter
 	public List<Float> patterns = new ArrayList<Float>();
 	@Getter
 	@Setter
