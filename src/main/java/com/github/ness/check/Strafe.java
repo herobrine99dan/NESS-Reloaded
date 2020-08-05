@@ -22,40 +22,15 @@ public class Strafe extends AbstractCheck<PlayerMoveEvent> {
 		Location to = e.getTo();
 		Location from = e.getFrom();
 		NessPlayer np = this.manager.getPlayer(p);
-		double dist =  np.getMovementValues().xzDiffMultiplier;
-		double lastDist = np.lastStrafeDist;
-		np.lastStrafeDist = dist;
-		if (dist == 0.0) {
-			return;
-		}
-		if (Utility.getMaterialName(to).contains("water") || Utility.getMaterialName(to).contains("lava")
-				|| Utility.getMaterialName(from).contains("water") || Utility.getMaterialName(from).contains("water")) {
-			return;
-		}
-		if (Utility.getMaterialName(to).contains("ladder") || Utility.getMaterialName(from).contains("ladder")) {
-			return;
-		}
-		if (Utility.getMaterialName(to).contains("web") || Utility.getMaterialName(from).contains("web")) {
-			return;
-		}
-		if (Utility.getMaterialName(to).contains("vine") || Utility.getMaterialName(from).contains("vine")) {
-			return;
-		}
-		if (Utility.getMaterialName(to).contains("fence") || Utility.getMaterialName(from).contains("fence")) {
-			return;
-		}
-		if (Utility.getMaterialName(to).contains("slab") || Utility.getMaterialName(from).contains("slab")) {
-			return;
-		}
-		if (!Utility.isMathematicallyOnGround(to.getY()) && !Utility.isMathematicallyOnGround(to.getY())) {
-			if (lastDist == dist && dist < 1) {
-				np.strafeViolations++;
-				if(np.strafeViolations > 1) {
-					this.manager.getPlayer(p).setViolation(new Violation("Strafe","Dist: " + dist));
-					if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-						e.setCancelled(true);
-					}
-					np.strafeViolations = 0;
+		float xDiff = (float) np.getMovementValues().xDiff;
+		float zDiff = (float) np.getMovementValues().zDiff;
+		if (!Utility.isMathematicallyOnGround(to.getY()) && !Utility.isMathematicallyOnGround(from.getY())) {
+			float resultX = (float) Math.abs(xDiff - p.getVelocity().getX());
+			float resultZ = (float) Math.abs(zDiff - p.getVelocity().getZ());
+			if(resultX > 0.28 || resultZ > 0.28) {
+				manager.getPlayer(p).setViolation(new Violation("Strafe", "HighDistance"));
+				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+					e.setCancelled(true);
 				}
 			}
 		}

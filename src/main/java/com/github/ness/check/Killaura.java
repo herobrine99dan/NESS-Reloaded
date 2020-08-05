@@ -33,14 +33,13 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		Check8(e);
 	}
 
-	// This Reach Check contains two modules:
 	public void Check(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
 			Vector from = p.getEyeLocation().clone().toVector();
-			Vector to = e.getEntity().getLocation().clone().toVector();
+			Vector to = e.getEntity().getLocation().clone().toVector().subtract(e.getEntity().getVelocity());
 			Vector result = from.subtract(to);
-			double maxValue = 3.4D;
+			double maxValue = 3.8D;
 			if (p.isSprinting()) {
 				maxValue += 0.4D;
 			}
