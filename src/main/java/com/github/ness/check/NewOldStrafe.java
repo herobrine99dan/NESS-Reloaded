@@ -1,13 +1,14 @@
 package com.github.ness.check;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.utility.Utility;
 
 public class NewOldStrafe extends AbstractCheck<PlayerMoveEvent> {
 
@@ -15,11 +16,11 @@ public class NewOldStrafe extends AbstractCheck<PlayerMoveEvent> {
 		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
+		Player p = e.getPlayer();
 		NessPlayer np = this.manager.getPlayer(p);
-
 		Vector dir = e.getTo().clone().subtract(e.getFrom()).toVector();
 
 		double dist = distanceXZ(e.getFrom(), e.getTo());
@@ -40,15 +41,19 @@ public class NewOldStrafe extends AbstractCheck<PlayerMoveEvent> {
 			angle += 360;
 		}
 
-		if (np.lastStrafeAngle != 0 && abs(np.lastStrafeAngle - angle) > 35 && abs(np.lastStrafeAngle - angle) < 300 && abs(yawDiff) < 8 && !p.isOnGround() && dist > .19 && !isAgainstBlock(e.getFrom()) && !isAgainstBlock(e.getTo())) {
-			manager.getPlayer(p).setViolation(new Violation("NewOldStrafe", "High Angle Diff: " + abs(np.lastStrafeAngle - angle)));
+		if (np.lastStrafeAngle != 0 && Math.abs(np.lastStrafeAngle - angle) > 35
+				&& Math.abs(np.lastStrafeAngle - angle) < 300 && Math.abs(yawDiff) < 8 && !p.isOnGround() && dist > .19
+				&& !isAgainstBlock(e.getFrom()) && !isAgainstBlock(e.getTo())) {
+			manager.getPlayer(p).setViolation(
+					new Violation("NewOldStrafe", "High Angle Diff: " + Math.abs(np.lastStrafeAngle - angle)));
 		}
 
 		np.lastStrafeAngle = angle;
 	}
 
 	double distanceXZ(Location loc1, Location loc2) {
-		return Math.sqrt(pow(Math.abs(loc1.getX() - loc2.getX()), 2) + pow(Math.abs(loc1.getZ() - loc2.getZ()), 2));
+		return Math.sqrt(
+				Math.pow(Math.abs(loc1.getX() - loc2.getX()), 2) + Math.pow(Math.abs(loc1.getZ() - loc2.getZ()), 2));
 	}
 
 	boolean isAgainstBlock(Location loc) {
