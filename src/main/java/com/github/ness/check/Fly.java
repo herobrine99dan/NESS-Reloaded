@@ -61,11 +61,9 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Player p = event.getPlayer();
 		NessPlayer np = this.manager.getPlayer(p);
 		if (!bypass(event.getPlayer())) {
-			if (Utilities.isClimbableBlock(p.getLocation().getBlock()) && !Utilities.isInWater(p)) {
+			if (Utilities.isClimbableBlock(p.getLocation().getBlock())) {
 				double distance = np.getMovementValues().yDiff;
-				double diff = distance - np.lastYDelta;
-				float scaledEqualness = (float) (diff - distance);
-				if (distance > 0.12D && scaledEqualness < 0.06) {
+				if (distance > 0.155D) {
 					punish(event, p, "FastLadder: " + distance);
 				}
 			}
