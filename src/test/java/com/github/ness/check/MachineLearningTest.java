@@ -8,14 +8,10 @@ import org.junit.jupiter.api.Test;
 import com.github.ness.knn.DataSet;
 import com.github.ness.knn.Knn;
 
-public class MachineLearningExample {
+public class MachineLearningTest {
 
 	@Test
 	public void executeTest() {
-		MachineLearningExample.main(null);
-	}
-
-	public static void main(String[] args) {
 		List<DataSet> sets = new ArrayList<DataSet>();
 		sets.add(new DataSet("Legit", new double[] { 1, 2, 3, 4, 5 }));
 		sets.add(new DataSet("Legit", new double[] { 6, 7, 8, 9, 0 }));
@@ -24,5 +20,4 @@ public class MachineLearningExample {
 		Knn alghorithm = new Knn(sets, 1, true);
 		System.out.println("Prediction: " + alghorithm.predict(new double[] { 1 , 20, 1, 1, 20 }));
 	}
-
 }
