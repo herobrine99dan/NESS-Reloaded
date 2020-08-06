@@ -22,7 +22,7 @@ public class KillauraFalseFlyingPacket {
 				NESSAnticheat.getInstance().getCheckManager().getPlayer(p).setViolation(new Violation("Killaura", "BadPackets: " + time));
 				return true;
 			}
-		} else {
+		} else if(ReflectionUtility.getPacketName(packet).toLowerCase().contains("flying")) {
 			if (!lastFlying.containsKey(p)) {
 				lastFlying.put(p, System.currentTimeMillis());
 				return false;

@@ -114,8 +114,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	 */
 	public void Check3(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
-		if (e.getTo().getYaw() > 360.0f || e.getTo().getYaw() < -360.0f || e.getTo().getPitch() > 90.0f
-				|| e.getTo().getPitch() < -90.0f) {
+		if (e.getTo().getPitch() > 90.0f || e.getTo().getPitch() < -90.0f) {
 			punish(e, player, "IllegalMovement");
 		}
 	}
