@@ -46,12 +46,12 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			if (Utility.specificBlockNear(e.getDamager().getLocation(), "water")) {
 				maxValue += 0.2D;
 			}
-			if (angle < 0.6) {
+			if (angle < 0.7) {
 				maxValue += 0.3 * angle;
 			}
 			maxValue += Math.abs(p.getVelocity().getX());
 			maxValue += Math.abs(p.getVelocity().getZ());
-			if (result.length() > maxValue) {
+			if (result.length() > maxValue || result.length() > 5) {
 				punish(e, p, 19, "Reach" + "(" + result.length() + ")", 6);
 			}
 		}
