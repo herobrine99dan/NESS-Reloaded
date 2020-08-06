@@ -38,13 +38,19 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Vector from = p.getEyeLocation().clone().toVector();
 			Vector to = e.getEntity().getLocation().clone().toVector().subtract(e.getEntity().getVelocity());
 			Vector result = from.subtract(to);
-			double maxValue = 3.8D;
+			double angle = this.isLookingAt(p, e.getEntity().getLocation());
+			double maxValue = 3.6D;
 			if (p.isSprinting()) {
 				maxValue += 0.4D;
 			}
 			if (Utility.specificBlockNear(e.getDamager().getLocation(), "water")) {
 				maxValue += 0.2D;
 			}
+			if (angle < 0.6) {
+				maxValue += 0.3 * angle;
+			}
+			maxValue += Math.abs(p.getVelocity().getX());
+			maxValue += Math.abs(p.getVelocity().getZ());
 			if (result.length() > maxValue) {
 				punish(e, p, 19, "Reach" + "(" + result.length() + ")", 6);
 			}
