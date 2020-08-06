@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.text.Utilities;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,7 +18,6 @@ import com.github.ness.CheckManager;
 import com.github.ness.DragDown;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.utility.Utilities;
 import com.github.ness.utility.Utility;
 
 public class Fly extends AbstractCheck<PlayerMoveEvent> {
@@ -61,7 +62,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Player p = event.getPlayer();
 		NessPlayer np = this.manager.getPlayer(p);
 		if (!bypass(event.getPlayer())) {
-			if (Utilities.isClimbableBlock(p.getLocation().getBlock())) {
+			if (Utility.isClimbableBlock(p.getLocation().getBlock())) {
 				double distance = np.getMovementValues().yDiff;
 				if (distance > 0.155D) {
 					punish(event, p, "FastLadder: " + distance);
@@ -156,8 +157,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Location to = event.getTo().clone();
 		Player player = event.getPlayer();
 		double yDiff = this.manager.getPlayer(player).getMovementValues().yDiff;
-		if (yDiff < 0 || Utility.getMaterialName(to.clone().add(0, -0.3, 0)).contains("slab") || Utility.onSteps(to)
-				|| Utilities.isOnSteps(player) || Utilities.isStepable(to.clone().add(0, -0.3, 0).getBlock())) {
+		if (yDiff < 0 || Utility.getMaterialName(to.clone().add(0, -0.3, 0)).contains("slab") || Utility.onSteps(to)) {
 			return;
 		}
 		if (player.getVelocity().getY() == 0.42f && yDiff > 0.38) {
@@ -170,27 +170,25 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	public boolean bypass(Player p) {
 		if (p.isInsideVehicle()) {
-			return false;
+			return true;
 		}
 		if (p.hasPotionEffect(PotionEffectType.SPEED) || p.hasPotionEffect(PotionEffectType.JUMP)) {
-			return false;
+			return true;
 		}
-		if (Utilities.isInWeb(p)) {
-			return false;
+		if (Utility.isWeb(p.getLocation())) {
+			return true;
 		}
 		if (Utility.hasflybypass(p) || this.manager.getPlayer(p).isTeleported()) {
-			return false;
+			return true;
 		}
-		if (Utilities.getPlayerUnderBlock(p).getType().equals(Material.LADDER)
-				&& !Utilities.getPlayerUnderBlock(p).getType().equals(Material.VINE)
-				&& Utilities.getPlayerUnderBlock(p).getType().equals(Material.WATER)) {
-			return false;
+		if (Utility.getMaterialName(Utility.getPlayerUnderBlock(p).getLocation()).contains("water")) {
+			return true;
 		}
 		for (Block b : Utility.getSurrounding(p.getLocation().getBlock(), true)) {
 			if (b.getType().isSolid()) {
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 }

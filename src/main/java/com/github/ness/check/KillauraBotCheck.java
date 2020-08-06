@@ -12,7 +12,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.github.ness.CheckManager;
 import com.github.ness.nms.NPC;
-import com.github.ness.utility.Utilities;
+import com.github.ness.utility.Utility;
 
 public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent> {
 	public static HashMap<String, String> npclist = new HashMap<String, String>();
@@ -42,7 +42,7 @@ public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent> {
 
 	private static Location determinateLocation(Player p) {
 		Location loc = p.getLocation();
-		String direction = Utilities.determinateDirection(loc.getYaw());
+		String direction = Utility.determinateDirection(loc.getYaw());
 		if (direction.equals("nord")) {
 			loc.add(1.7, 0, 0);
 		} else if (direction.equals("sud")) {

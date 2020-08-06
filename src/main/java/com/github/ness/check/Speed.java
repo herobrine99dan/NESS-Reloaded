@@ -15,7 +15,6 @@ import com.github.ness.CheckManager;
 import com.github.ness.DragDown;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.utility.Utilities;
 import com.github.ness.utility.Utility;
 
 public class Speed extends AbstractCheck<PlayerMoveEvent> {
@@ -56,7 +55,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (Utility.hasflybypass(player)) {
 			return;
 		}
-		if (Utilities.isStairs(Utilities.getPlayerUnderBlock(player)) || Utilities.isStairs(to.getBlock())) {
+		if (Utility.isStairs(Utility.getPlayerUnderBlock(player).getLocation()) || Utility.isStairs(to)) {
 			return;
 		}
 		// player.sendMessage("Time: "+Utility.around(System.currentTimeMillis(), 12));
@@ -90,7 +89,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			if (to.getY() > from.getY()) {
 				double y = Utility.around(to.getY() - from.getY(), 6);
 
-				ArrayList<Block> blocchivicini = Utility.getSurrounding(Utilities.getPlayerUnderBlock(player), false);
+				ArrayList<Block> blocchivicini = Utility.getSurrounding(Utility.getPlayerUnderBlock(player), false);
 				boolean bypass = false;
 				for (Block s : blocchivicini) {
 					if (s.getType().equals(Material.SLIME_BLOCK)) {
@@ -116,7 +115,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (this.manager.getPlayer(p).isTeleported()) {
 			return;
 		}
-		float dist =  (float) this.manager.getPlayer(p).getMovementValues().XZDiff;
+		float dist = (float) this.manager.getPlayer(p).getMovementValues().XZDiff;
 		Location to = event.getTo().clone();
 		Location from = event.getFrom().clone();
 		if (p.getGameMode() == GameMode.SPECTATOR || p.isInsideVehicle()) {
@@ -153,7 +152,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			dist -= (dist / 100.0) * (speedLevel * 20.0);
 		}
 		float result = dist - maxDist;
-		//p.sendMessage("maxDist: " + maxDist + " Dist: " + dist);
+		// p.sendMessage("maxDist: " + maxDist + " Dist: " + dist);
 		if (result > 0.1) {
 			this.punish(event, "MaxDistance: " + dist + " Max: " + maxDist);
 		}
@@ -232,7 +231,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		np.lastSpeedPredictionOnGround = Utility.isMathematicallyOnGround(to.getY());
 		float friction = 0.91F;
 		if (Utility.getMaterialName(to).toLowerCase().contains("ladder")
-				|| Utility.getMaterialName(from).toLowerCase().contains("ladder")) {
+				|| Utility.getMaterialName(from).toLowerCase().contains("ladder") || Utility.hasVehicleNear(e.getPlayer(), 4)
+				|| e.getPlayer().getNearbyEntities(2, 2, 2).isEmpty()) {
 			return;
 		}
 		if (Utility.getMaterialName(to.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")

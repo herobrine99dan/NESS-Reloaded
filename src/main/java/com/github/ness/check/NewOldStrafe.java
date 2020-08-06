@@ -24,28 +24,20 @@ public class NewOldStrafe extends AbstractCheck<PlayerMoveEvent> {
 		Vector dir = e.getTo().clone().subtract(e.getFrom()).toVector();
 
 		double dist = distanceXZ(e.getFrom(), e.getTo());
-		double yaw = e.getTo().getYaw();
-
-		boolean isOnGround = p.isOnGround();
-
-		yaw = yaw % 360;
-		if (yaw < 0) {
-			yaw += 360;
-		}
-
 		double angle = Math.toDegrees(Math.atan2(dir.getX(), dir.getZ()));
-		double yawDiff = e.getTo().getYaw() - e.getFrom().getYaw();
+		double yawDiff = np.getMovementValues().yawDiff;
 
 		angle = -angle;
 		if (angle < 0) {
 			angle += 360;
 		}
-
-		if (np.lastStrafeAngle != 0 && Math.abs(np.lastStrafeAngle - angle) > 35
-				&& Math.abs(np.lastStrafeAngle - angle) < 300 && Math.abs(yawDiff) < 8 && !p.isOnGround() && dist > .19
-				&& !isAgainstBlock(e.getFrom()) && !isAgainstBlock(e.getTo())) {
-			manager.getPlayer(p).setViolation(
-					new Violation("NewOldStrafe", "High Angle Diff: " + Math.abs(np.lastStrafeAngle - angle)));
+		double result = Math.abs(np.lastStrafeAngle - angle);
+		if (np.lastStrafeAngle != 0 && result > 35 && result < 300 && Math.abs(yawDiff) < 8 && !p.isOnGround()
+				&& dist > .19 && !isAgainstBlock(e.getFrom()) && !isAgainstBlock(e.getTo())) {
+			manager.getPlayer(p).setViolation(new Violation("Strafe", "High Angle Diff: " + Math.abs(np.lastStrafeAngle - angle)));
+			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, "Strafe")) {
+				e.setCancelled(true);
+			}
 		}
 
 		np.lastStrafeAngle = angle;

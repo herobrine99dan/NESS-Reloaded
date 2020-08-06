@@ -2,10 +2,11 @@ package com.github.ness.check;
 
 import java.util.HashMap;
 
+import javax.swing.text.Utilities;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -18,7 +19,6 @@ import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.utility.MSG;
 import com.github.ness.utility.PlayerManager;
-import com.github.ness.utility.Utilities;
 import com.github.ness.utility.Utility;
 
 public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
@@ -369,8 +369,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				&& to.getY() % 1.0 == 0 && PlayerManager.timeSince("lastJoin", player) >= 1000
 				&& PlayerManager.timeSince("teleported", player) >= 5000
 				&& !below.toString().toLowerCase().contains("stairs") && below != Material.SLIME_BLOCK) {
-			if (!Utilities.getPlayerUnderBlock(player).getType().name().toLowerCase().contains("ice")
-					&& !Utilities.getPlayerUpperBlock(player).getType().isSolid()) {
+			if (!Utility.getPlayerUnderBlock(player).getType().name().toLowerCase().contains("ice")
+					&& !Utility.getPlayerUpperBlock(player).getType().isSolid()) {
 				int failed = ((Integer) noground.getOrDefault(player.getName(), Integer.valueOf(0))).intValue();
 				noground.put(player.getName(), Integer.valueOf(failed + 1));
 				if (failed > 3) {

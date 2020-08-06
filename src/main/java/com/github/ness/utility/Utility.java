@@ -19,6 +19,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -63,7 +64,35 @@ public class Utility {
 		}
 		return false;
 	}
-
+	
+	public static boolean isClimbableBlock(Block b) {
+		String block = Utility.getMaterialName(b.getLocation());
+		return block.contains("ladder") || block.contains("vine");
+	}
+	
+	public static boolean isWeb(Location loc) {
+		return Utility.getMaterialName(loc.clone().add(0, -0.2, 0)).contains("web");
+	}
+	
+	public static String determinateDirection(float yaw) {
+		if (yaw < 0.0F) {
+			yaw += 360.0F;
+		}
+		if ((yaw >= 315.0F) || (yaw < 45.0F)) {
+			return "sud";
+		}
+		if (yaw < 135.0F) {
+			return "ovest";
+		}
+		if (yaw < 225.0F) {
+			return "nord";
+		}
+		if (yaw < 315.0F) {
+			return "est";
+		}
+		return "nord";
+	}
+	
 	public static boolean hasVehicleNear(Player p, int range) {
 		if (p.isInsideVehicle()) {
 			return true;
@@ -76,49 +105,13 @@ public class Utility {
 		return false;
 	}
 
-	public static boolean isOnGroudBypassNoFall(Player p) {
-		Block by = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ()))
-				.getBlock();
-		Block bx = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() - 1.0D,
-				p.getLocation().getZ())).getBlock();
-
-		Block b1 = (new Location(p.getWorld(), p.getLocation().getX() + 1.0D, p.getLocation().getY() - 1.0D,
-				p.getLocation().getZ() - 1.0D)).getBlock();
-		Block b2 = (new Location(p.getWorld(), p.getLocation().getX() + 1.0D, p.getLocation().getY() - 1.0D,
-				p.getLocation().getZ() + 1.0D)).getBlock();
-		Block b3 = (new Location(p.getWorld(), p.getLocation().getX() - 1.0D, p.getLocation().getY() - 1.0D,
-				p.getLocation().getZ() - 1.0D)).getBlock();
-		Block b4 = (new Location(p.getWorld(), p.getLocation().getX() - 1.0D, p.getLocation().getY() - 1.0D,
-				p.getLocation().getZ() + 1.0D)).getBlock();
-
-		Block x1 = (new Location(p.getWorld(), p.getLocation().getX() + 1.0D, p.getLocation().getY() - 1.0D,
-				p.getLocation().getZ())).getBlock();
-		Block x2 = (new Location(p.getWorld(), p.getLocation().getX() - 1.0D, p.getLocation().getY() - 1.0D,
-				p.getLocation().getZ())).getBlock();
-		Block x3 = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() - 1.0D,
-				p.getLocation().getZ() + 1.0D)).getBlock();
-		Block x4 = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() - 1.0D,
-				p.getLocation().getZ() - 1.0D)).getBlock();
-
-		Block z1 = (new Location(p.getWorld(), p.getLocation().getX() + 1.0D, p.getLocation().getY(),
-				p.getLocation().getZ())).getBlock();
-		Block z2 = (new Location(p.getWorld(), p.getLocation().getX() - 1.0D, p.getLocation().getY(),
-				p.getLocation().getZ())).getBlock();
-		Block z3 = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY(),
-				p.getLocation().getZ() + 1.0D)).getBlock();
-		Block z4 = (new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY(),
-				p.getLocation().getZ() - 1.0D)).getBlock();
-		if (bx.getType() == Material.AIR && b1.getType() == Material.AIR && b2.getType() == Material.AIR
-				&& b3.getType() == Material.AIR && b4.getType() == Material.AIR && by.getType() == Material.AIR) {
-			if (z1.getType() == Material.AIR && z2.getType() == Material.AIR && z3.getType() == Material.AIR
-					&& z4.getType() == Material.AIR) {
-				if (x1.getType() == Material.AIR && x2.getType() == Material.AIR && x3.getType() == Material.AIR
-						&& x4.getType() == Material.AIR) {
-					return false;
-				}
+	public static boolean hasEntityNear(Player p, int range) {
+		for (Entity e : p.getNearbyEntities(range, range, range)) {
+			if (e instanceof LivingEntity) {
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	public static List<Block> getNearbyBlocks(Location location, int radius) {
@@ -247,14 +240,8 @@ public class Utility {
 	}
 
 	public static boolean hasflybypass(Player player) {
-		ItemStack[] armor = player.getInventory().getArmorContents();
 		if (!Bukkit.getVersion().contains("1.8")) {
-			boolean haselytra = false;
-			if (!(armor == null) && !(armor[2] == null)) {
-				haselytra = armor[2].getType().equals(Material.ELYTRA);
-			}
-			if (player.hasPotionEffect(PotionEffectType.LEVITATION) || player.isGliding() || haselytra
-					|| player.isFlying()) {
+			if (player.hasPotionEffect(PotionEffectType.LEVITATION) || player.isGliding() || player.isFlying()) {
 				return true;
 			} else {
 				return false;
@@ -283,7 +270,7 @@ public class Utility {
 		}
 		return done;
 	}
-	
+
 	public static boolean hasBlock(Player p, String m) {
 		boolean done = false;
 		for (int i = 0; i < 256; i++) {
@@ -307,7 +294,7 @@ public class Utility {
 
 	public static boolean specificBlockNear(Location loc, String m) {
 		for (Block b : Utility.getSurrounding(loc.getBlock(), true)) {
-			if(m.equals("liquid")) {
+			if (m.equals("liquid")) {
 				return b.isLiquid();
 			}
 			if (b.getType().name().toLowerCase().contains(m.toLowerCase())) {
@@ -556,11 +543,51 @@ public class Utility {
 	}
 
 	public static boolean isOnSlime(Player p) {
-		return Utilities.getPlayerUnderBlock(p).getType().equals(Material.SLIME_BLOCK);
+		return Utility.getMaterialName(getPlayerUnderBlock(p).getLocation()).contains("slime");
 	}
 
-	public static boolean isOnSpecificBlock(Player p, Material type) {
-		return Utilities.getPlayerUnderBlock(p).getType().equals(type);
+	public static float yawTo180F(float flub) {
+		if ((flub %= 360.0f) >= 180.0f) {
+			flub -= 360.0f;
+		}
+		if (flub < -180.0f) {
+			flub += 360.0f;
+		}
+		return flub;
+	}
+
+	public static float[] getRotations(Location one, Location two) {
+		double diffX = two.getX() - one.getX();
+		double diffZ = two.getZ() - one.getZ();
+		double diffY = two.getY() + 2.0 - 0.4 - (one.getY() + 2.0);
+		double dist = Math.sqrt(diffX * diffX + diffZ * diffZ);
+		float yaw = (float) (Math.atan2(diffZ, diffX) * 180.0 / 3.141592653589793) - 90.0f;
+		float pitch = (float) (-Math.atan2(diffY, dist) * 180.0 / 3.141592653589793);
+		return new float[] { yaw, pitch };
+	}
+
+	public static double[] getOffsetFromEntity(Player player, LivingEntity entity) {
+		double yawOffset = Math.abs(Utility.yawTo180F(player.getEyeLocation().getYaw())
+				- Utility.yawTo180F(Utility.getRotations(player.getLocation(), entity.getLocation())[0]));
+		double pitchOffset = Math.abs(Math.abs(player.getEyeLocation().getPitch())
+				- Math.abs(Utility.getRotations(player.getLocation(), entity.getLocation())[1]));
+		return new double[] { yawOffset, pitchOffset };
+	}
+
+	public static boolean isOnSpecificBlock(Player p, String type) {
+		return Utility.getMaterialName(getPlayerUnderBlock(p).getLocation()).contains(type);
+	}
+
+	public static boolean isStairs(Location loc) {
+		return Utility.getMaterialName(loc).contains("stair");
+	}
+
+	public static Block getPlayerUnderBlock(Player p) {
+		return p.getLocation().clone().add(0, -0.5, 0).getBlock();
+	}
+	
+	public static Block getPlayerUpperBlock(Player p) {
+		return p.getLocation().clone().add(0, 0.5, 0).getBlock();
 	}
 
 	public static Vector getHorizontalVector(final Vector v) {

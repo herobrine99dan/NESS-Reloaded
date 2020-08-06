@@ -193,7 +193,9 @@ public class NessPlayer implements AutoCloseable {
 		if (this.getPlayer().hasPermission("ness.bypass.*")) {
 			return;
 		}
-
+		if(this.isTeleported()) {
+			return;
+		}
 		// Main method body
 		this.violation.compareAndSet(null, violation);
 		checkViolationCounts.merge(violation.getCheck(), 1, (c1, c2) -> c1 + c2);
