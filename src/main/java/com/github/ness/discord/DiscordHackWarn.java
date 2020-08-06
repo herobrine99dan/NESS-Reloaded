@@ -12,9 +12,7 @@ import com.github.ness.NESSAnticheat;
 public class DiscordHackWarn {
 
 	public static void webHookSender(Player hacker, String hack, int level, String module) {
-		ConfigurationSection section = NESSAnticheat.getInstance().getNessConfig().getViolationHandling();
-		ConfigurationSection notifyStaff = section.getConfigurationSection("notify-staff");
-		String webhookurl = notifyStaff.getString("discord-webhook","");
+		String webhookurl = NESSAnticheat.getInstance().getNessConfig().getWebHook();
 		if (webhookurl == null || webhookurl.isEmpty()) {
 			return;
 		}

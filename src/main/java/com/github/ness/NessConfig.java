@@ -20,6 +20,8 @@ public class NessConfig {
 
 	private final String cfgFileName;
 	private final String msgsFileName;
+	@Getter
+	private String webHook;
 	private YamlConfiguration config;
 	@Getter(AccessLevel.PACKAGE)
 	private YamlConfiguration messages;
@@ -36,6 +38,7 @@ public class NessConfig {
 		}
 		config = YamlConfiguration.loadConfiguration(cfgFile);
 		messages = YamlConfiguration.loadConfiguration(msgsFile);
+		webHook = this.getViolationHandling().getConfigurationSection("notify-staff").getString("discord-webhook", "");
 	}
 
 	boolean checkConfigVersion() {
@@ -61,5 +64,4 @@ public class NessConfig {
 	public ConfigurationSection getCheck(Class<? extends AbstractCheck<?>> check) {
 		return config.getConfigurationSection("checks." + check.getSimpleName().toLowerCase());
 	}
-
 }
