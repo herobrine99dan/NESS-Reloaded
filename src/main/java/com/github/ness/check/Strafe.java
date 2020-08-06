@@ -24,6 +24,9 @@ public class Strafe extends AbstractCheck<PlayerMoveEvent> {
 		NessPlayer np = this.manager.getPlayer(p);
 		float xDiff = (float) np.getMovementValues().xDiff;
 		float zDiff = (float) np.getMovementValues().zDiff;
+		if (this.manager.getPlayer(p).isTeleported() || Utility.hasVehicleNear(p, 3) || Utility.hasEntityNear(p, 3)) {
+			return;
+		}
 		if (!Utility.isMathematicallyOnGround(to.getY()) && !Utility.isMathematicallyOnGround(from.getY()) && !Utility.hasflybypass(e.getPlayer())) {
 			float resultX = (float) Math.abs(xDiff - p.getVelocity().getX());
 			float resultZ = (float) Math.abs(zDiff - p.getVelocity().getZ());

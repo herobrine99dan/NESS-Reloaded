@@ -30,7 +30,6 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		Check5(e);
 		Check6(e);
 		Check7(e);
-		Check8(e);
 	}
 
 	public void Check(EntityDamageByEntityEvent e) {
@@ -119,23 +118,6 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 				// p.sendMessage("Cheats!");
 			}
 			np.lastPitch = pitch;
-		}
-	}
-
-	public void Check8(EntityDamageByEntityEvent e) {
-		if (e.getDamager() instanceof Player) {
-			Player p = (Player) e.getDamager();
-			NessPlayer np = manager.getPlayer(p);
-			if (np.lastLocation != null) {
-				final Location real = np.lastLocation;
-				final double difference = real.getYaw() - p.getLocation().getYaw();
-				if (difference > 1 && p.getFallDistance() < 1f) {
-					if (np.isDevMode()) {
-						p.sendMessage("KillauraPacket diff: " + difference);
-					}
-					punish(e, p, 5, "InvalidPacket", 0);
-				}
-			}
 		}
 	}
 
