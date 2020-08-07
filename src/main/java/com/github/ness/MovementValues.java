@@ -52,13 +52,6 @@ public class MovementValues {
 	public final boolean AroundSlime;
 
 	public MovementValues(Player p, Location to, Location from) {
-		yawDiff = to.getYaw() - from.getYaw();
-		pitchDiff = to.getPitch() - from.getPitch();
-		xDiff = to.getX() - from.getX();
-		yDiff = to.getY() - from.getY();
-		zDiff = to.getZ() - from.getZ();
-		XZDiff = Math.abs(xDiff) + Math.abs(zDiff);
-		xzDiffMultiplier = (xDiff * xDiff) + (zDiff * zDiff);
 		AroundIce = Utility.specificBlockNear(to, "ice");
 		AroundLiquids = Utility.specificBlockNear(to, "liquid");
 		boolean slimenear = Utility.specificBlockNear(to, "slime");
@@ -68,6 +61,13 @@ public class MovementValues {
 			AroundSlime = Utility.specificBlockNear(to, "slime");
 		}
 		AroundStairs = Utility.specificBlockNear(to, "stair");
+		yawDiff = to.getYaw() - from.getYaw();
+		pitchDiff = to.getPitch() - from.getPitch();
+		xDiff = to.getX() - from.getX();
+		yDiff = to.getY() - from.getY();
+		zDiff = to.getZ() - from.getZ();
+		XZDiff = Math.abs(xDiff) + Math.abs(zDiff);
+		xzDiffMultiplier = (xDiff * xDiff) + (zDiff * zDiff);
 		totalDistance = to.distance(from);
 	}
 

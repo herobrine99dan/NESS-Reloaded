@@ -128,9 +128,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		float resultX = Math.abs((float) (Math.sin(f) * 0.21f));
 		float resultZ = Math.abs((float) (Math.cos(f) * 0.21f));
 		float maxDist = resultX + resultZ + 0.04f;
-		if (p.isSprinting()) {
-			maxDist *= 1.47f;
-		}
 		if (p.isSneaking()) {
 			maxDist = 0.170f;
 		}
@@ -138,8 +135,15 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		float zVelocity = (float) p.getVelocity().getZ();
 		maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.11;
 		maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.06;
-		if (!Utility.isMathematicallyOnGround(to.getY())) {
+		if (!p.isOnGround()) {
 			maxDist += 0.01f;
+		} else if (p.isOnGround()) {
+			maxDist = 0.34f;
+		}
+		if (p.isSprinting() && p.isOnGround()) {
+			maxDist *= 1.2f;
+		} else if (p.isSprinting()) {
+			maxDist *= 1.47f;
 		}
 		if (to.clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")) {
 			maxDist *= 1.24f;
@@ -152,7 +156,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 		float result = dist - maxDist;
 		// p.sendMessage("maxDist: " + maxDist + " Dist: " + dist);
-		if (result > 0.1) {
+		if (result > 0.15) {
 			this.punish(event, "MaxDistance: " + dist + " Max: " + maxDist);
 		}
 	}
