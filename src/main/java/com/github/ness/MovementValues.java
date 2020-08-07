@@ -1,6 +1,5 @@
 package com.github.ness;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.github.ness.utility.Utility;
@@ -32,10 +31,6 @@ public class MovementValues {
 	 */
 	public final double XZDiff;
 	/**
-	 * Total Distance to.distance(from);
-	 */
-	public final double totalDistance;
-	/**
 	 * XZ Multiplicated ((xDiff * xDiff) + (zDiff * zDiff));
 	 */
 	public final double xzDiffMultiplier;
@@ -51,16 +46,17 @@ public class MovementValues {
 	 */
 	public final boolean AroundSlime;
 
-	public MovementValues(Player p, Location to, Location from) {
-		AroundIce = Utility.specificBlockNear(to, "ice");
-		AroundLiquids = Utility.specificBlockNear(to, "liquid");
-		boolean slimenear = Utility.specificBlockNear(to, "slime");
+	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from) {
+		AroundIce = Utility.specificBlockNear(Utility.locationFromImmutableLoc(to), "ice");
+		AroundLiquids = Utility.specificBlockNear(Utility.locationFromImmutableLoc(to), "liquid");
+		boolean slimenear = Utility.specificBlockNear(Utility.locationFromImmutableLoc(to), "slime");
 		if (!slimenear) {
 			AroundSlime = Utility.hasBlock(p, "slime");
 		} else {
-			AroundSlime = Utility.specificBlockNear(to, "slime");
+			AroundSlime = Utility.specificBlockNear(Utility.locationFromImmutableLoc(to), "slime");
 		}
-		AroundStairs = Utility.specificBlockNear(to, "stair");
+		AroundStairs = Utility.specificBlockNear(Utility.locationFromImmutableLoc(to), "stair");
+		
 		yawDiff = to.getYaw() - from.getYaw();
 		pitchDiff = to.getPitch() - from.getPitch();
 		xDiff = to.getX() - from.getX();
@@ -68,7 +64,6 @@ public class MovementValues {
 		zDiff = to.getZ() - from.getZ();
 		XZDiff = Math.abs(xDiff) + Math.abs(zDiff);
 		xzDiffMultiplier = (xDiff * xDiff) + (zDiff * zDiff);
-		totalDistance = to.distance(from);
 	}
 
 }

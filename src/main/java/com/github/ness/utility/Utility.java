@@ -23,10 +23,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+
+import com.github.ness.ImmutableLoc;
 
 public class Utility {
 	public static String debug = "null";
@@ -64,16 +65,16 @@ public class Utility {
 		}
 		return false;
 	}
-	
+
 	public static boolean isClimbableBlock(Block b) {
 		String block = Utility.getMaterialName(b.getLocation());
 		return block.contains("ladder") || block.contains("vine");
 	}
-	
+
 	public static boolean isWeb(Location loc) {
 		return Utility.getMaterialName(loc.clone().add(0, -0.2, 0)).contains("web");
 	}
-	
+
 	public static String determinateDirection(float yaw) {
 		if (yaw < 0.0F) {
 			yaw += 360.0F;
@@ -92,7 +93,7 @@ public class Utility {
 		}
 		return "nord";
 	}
-	
+
 	public static boolean hasVehicleNear(Player p, int range) {
 		if (p.isInsideVehicle()) {
 			return true;
@@ -290,6 +291,15 @@ public class Utility {
 			}
 		}
 		return false;
+	}
+
+	public static Location locationFromImmutableLoc(ImmutableLoc loc) {
+		return new Location(Bukkit.getWorld(loc.getWorld()), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
+				(float) loc.getPitch());
+	}
+
+	public static ImmutableLoc locationToImmutableLoc(Location loc) {
+		return new ImmutableLoc(loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
 	}
 
 	public static boolean specificBlockNear(Location loc, String m) {
@@ -585,7 +595,7 @@ public class Utility {
 	public static Block getPlayerUnderBlock(Player p) {
 		return p.getLocation().clone().add(0, -0.5, 0).getBlock();
 	}
-	
+
 	public static Block getPlayerUpperBlock(Player p) {
 		return p.getLocation().clone().add(0, 0.5, 0).getBlock();
 	}

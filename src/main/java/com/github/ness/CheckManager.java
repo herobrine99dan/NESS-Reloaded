@@ -31,6 +31,7 @@ import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
 
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.utility.Utility;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
@@ -94,8 +95,8 @@ public class CheckManager implements AutoCloseable {
 							if (evento.getTo().getWorld().getName() != evento.getFrom().getWorld().getName()) {
 								return;
 							}
-							MovementValues values = new MovementValues(evento.getPlayer(), evento.getTo().clone(),
-									evento.getFrom().clone());
+							MovementValues values = new MovementValues(evento.getPlayer(), Utility.locationToImmutableLoc(evento.getTo().clone()),
+									Utility.locationToImmutableLoc(evento.getFrom().clone()));
 							CheckManager.this.getPlayer(evento.getPlayer()).updateMovementValue(values);
 						}
 						checks.forEach((check) -> check.checkAnyEvent(evt));
