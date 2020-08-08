@@ -27,10 +27,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	/**
 	 * All changes in pitch should be divisible by a constant. That constant is
 	 * determined by your mouse sensitivity in game. By calculating the gcd and
-	 * finding that constant, you can detect changes in pitch variation. This Check
-	 * was made by Islandscout! (@Islandscout#2588 on Discord) His AntiCheat: Hawk
-	 * AntiCheat
-	 * https://www.spigotmc.org/resources/hawk-anticheat-mc-1-7-10-1-8-8.40343/
+	 * finding that constant, you can detect changes in pitch variation.
 	 * 
 	 */
 	public void Check(PlayerMoveEvent event) {
