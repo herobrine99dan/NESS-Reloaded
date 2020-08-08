@@ -17,25 +17,18 @@ public class Strafe extends AbstractCheck<PlayerMoveEvent> {
 	}
 	
 	@Override
-	void checkEvent(PlayerMoveEvent e) {
-		Player p = e.getPlayer();
-		Location to = e.getTo();
-		Location from = e.getFrom();
+	void checkEvent(PlayerMoveEvent event) {
+		Player p = event.getPlayer();
+		Location to = event.getTo();
 		NessPlayer np = this.manager.getPlayer(p);
-		float xDiff = (float) np.getMovementValues().xDiff;
-		float zDiff = (float) np.getMovementValues().zDiff;
-		if (np.isTeleported() || Utility.hasVehicleNear(p, 3) || Utility.hasEntityNear(p, 3)) {
+		double xzDiff = np.getMovementValues().XZDiff;
+		if(Utility.isMathematicallyOnGround(to.getY()) || xzDiff == 0.0) {
 			return;
 		}
-		if (!Utility.isMathematicallyOnGround(to.getY()) && !Utility.isMathematicallyOnGround(from.getY()) && !Utility.hasflybypass(e.getPlayer())) {
-			float resultX = (float) Math.abs(xDiff - p.getVelocity().getX());
-			float resultZ = (float) Math.abs(zDiff - p.getVelocity().getZ());
-			if(resultX > 0.30 || resultZ > 0.30) {
-				np.setViolation(new Violation("Strafe", "HighDistance"));
-				if (np.shouldCancel(e, this.getClass().getSimpleName())) {
-					e.setCancelled(true);
-				}
-			}
+		double result = Math.abs(xzDiff - np.lastStrafeDist);
+		if(result == 0.0) {
+			p.sendMessage("Strafe Cheats!" + result);
 		}
+		np.lastStrafeDist = xzDiff;
 	}
 }

@@ -14,5 +14,31 @@ public class SimplePacket {
 	public Object getPacket() {
 		return this.packet;
 	}
+	
+	/**
+	 * This method cast this object to the PacketPlayInPositionLook Object
+	 * Can Return Null if this object isn't a PacketPlayInPositionLook Object
+	 * @return
+	 */
+	public PacketPlayInPositionLook getPositionPacket() {
+		if(this instanceof PacketPlayInPositionLook) {
+			return (PacketPlayInPositionLook) this;
+		}else {
+			return null;
+		}
+	}
+	
+	/**
+	 * This method cast this object to the PacketPlayInUseEntity Object
+	 * Can Return Null if this object isn't a PacketPlayInUseEntity Object
+	 * @return
+	 */
+	public PacketPlayInUseEntity getUseEntity() {
+		if(this instanceof PacketPlayInUseEntity) {
+			return (PacketPlayInUseEntity) this;
+		}else {
+			return null;
+		}
+	}
 
 }

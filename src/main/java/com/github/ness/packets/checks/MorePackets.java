@@ -21,7 +21,7 @@ public class MorePackets {
 		// sender.sendMessage("MaxPackets: " + maxPackets);
 		NessPlayer np = NESSAnticheat.getInstance().getCheckManager().getPlayer(sender);
 		if (np == null || sender.isInsideVehicle()) {
-			return false;
+			return true;
 		}
 		np.setNormalPacketsCounter(np.getNormalPacketsCounter() + 1);
 		// sender.sendMessage("Counter: " + np.getPacketscounter());
@@ -35,9 +35,9 @@ public class MorePackets {
 			 */
 			OldMovementChecks.blockPackets.put(sender.getName(), true);
 			np.setViolation(new Violation("MorePackets", np.getNormalPacketsCounter() + ""));
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 }

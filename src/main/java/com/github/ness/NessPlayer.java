@@ -90,6 +90,7 @@ public class NessPlayer implements AutoCloseable {
 	public long lastFlyingPacket;
 	public long lastPacketTime; //Used in BadPackets
 	public long movementPackets; //Used in BadPackets
+	public double lastStrafeDist; //Used in Strafe
 	public float lastStairDist; //Used in BadPackets
 	public int SpeedMaxDistanceViolationsAlert; //Used In MaxDistance Check (I'm applying the same concept which i've used to fix false positives in NoGround Check)
 	@Getter

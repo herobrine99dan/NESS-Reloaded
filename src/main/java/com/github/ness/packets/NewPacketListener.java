@@ -11,6 +11,9 @@ import com.github.ness.packets.checks.BadPackets;
 import com.github.ness.packets.checks.KillauraFalseFlyingPacket;
 import com.github.ness.packets.checks.MorePackets;
 import com.github.ness.packets.checks.PingSpoof;
+import com.github.ness.packets.wrappers.PacketPlayInPositionLook;
+import com.github.ness.packets.wrappers.PacketPlayInUseEntity;
+import com.github.ness.packets.wrappers.SimplePacket;
 import com.github.ness.utility.ReflectionUtility;
 
 import io.netty.channel.Channel;
@@ -66,7 +69,7 @@ public class NewPacketListener implements Listener {
 			@Override
 			public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
 				// We can drop the packet disabling this super method!
-				if (!executeActions(player, packet)) {
+				if (executeActions(player, packet)) {
 					super.channelRead(channelHandlerContext, packet);
 				}
 			}
@@ -77,24 +80,36 @@ public class NewPacketListener implements Listener {
 		ChannelPipeline pipeline = getChannel(player).pipeline();
 		pipeline.addBefore("packet_handler", player.getName(), channelDuplexHandler);
 	}
+	
+	public SimplePacket getPacketObject(Object p) {
+		String packetname = p.getClass().getSimpleName().toLowerCase();
+		SimplePacket packet;
+		if (packetname.contains("position")) {
+			packet = new PacketPlayInPositionLook(p);
+		} else if (packetname.contains("useentity")) {
+			packet = new PacketPlayInUseEntity(p);
+		} else {
+			packet = new SimplePacket(p);
+		}
+		return packet;
+	}
 
 	/**
 	 * Execute all the packet checks
 	 * 
 	 * @param p
 	 * @param packet
-	 * @return
+	 * @return True if the packet is NOT blocked
 	 */
 
 	public boolean executeActions(Player p, Object packet) {
 		if (p == null || packet == null || NESSAnticheat.getInstance() == null) {
 			return true;
 		}
-		String packetname = packet.toString().substring(0, packet.toString().indexOf("@"))
-				.replace("net.minecraft.server.", "");
-		if (packetname.toLowerCase().contains("position")) {
+		String packetname = packet.getClass().getSimpleName().toLowerCase();
+		if (packetname.contains("position")) {
 			return BadPackets.Check(p, ReflectionUtility.getPacketName(packet));
-		} else if (packetname.toLowerCase().contains("flying")) {
+		} else if (packetname.contains("flying")) {
 			return PingSpoof.Check(p, packet);
 		}
 		if (KillauraFalseFlyingPacket.Check(packet, p)) {

@@ -22,7 +22,7 @@ public class BadPackets {
 	public static boolean Check(Player p, Object packet) {
 		NessPlayer np = NESSAnticheat.getInstance().getCheckManager().getPlayer(p);
 		if (!packet.toString().toLowerCase().contains("position")) {
-			return false;
+			return true;
 		}
 
 		if (np.lastPacketTime != -1) {
@@ -57,7 +57,7 @@ public class BadPackets {
 					if (perecentageDifference > 7.0) {
 						OldMovementChecks.blockPackets.put(p.getName(), true);
 						np.setViolation(new Violation("BadPackets", np.getMovementpacketscounter() + ""));
-						return true;
+						return false;
 					}
 					// You can flag also here
 				}
@@ -71,7 +71,7 @@ public class BadPackets {
 		}
 
 		np.movementPackets++;
-		return false;
+		return true;
 	}
 
 }

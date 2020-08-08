@@ -15,22 +15,22 @@ public class KillauraFalseFlyingPacket {
 	public static boolean Check(Object packet, Player p) {
 		if (ReflectionUtility.getPacketName(packet).toLowerCase().contains("useentity")) {
 			if (!lastFlying.containsKey(p)) {
-				return false;
+				return true;
 			}
 			long time = elapsed(lastFlying.get(p));
 			if (time < 2L) {
 				NESSAnticheat.getInstance().getCheckManager().getPlayer(p).setViolation(new Violation("Killaura", "BadPackets: " + time));
-				return true;
+				return false;
 			}
 		} else if(ReflectionUtility.getPacketName(packet).toLowerCase().contains("flying")) {
 			if (!lastFlying.containsKey(p)) {
 				lastFlying.put(p, System.currentTimeMillis());
-				return false;
+				return true;
 			}
 			if (elapsed(lastFlying.get(p)) >= 5L)
 				lastFlying.put(p, System.currentTimeMillis());
 		}
-		return false;
+		return true;
 	}
 
 	private static long elapsed(long time) {
