@@ -1,7 +1,5 @@
 package com.github.ness.check;
 
-import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -9,7 +7,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.utility.Utility;
+import com.github.ness.utility.GCDUtils;
 
 public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 
@@ -35,37 +33,40 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	 * https://www.spigotmc.org/resources/hawk-anticheat-mc-1-7-10-1-8-8.40343/
 	 * 
 	 */
-	public boolean Check(PlayerMoveEvent e) {
-		int samples = 20;
-		int pitchlimit = 10;
-		Player p = e.getPlayer();
-		NessPlayer player = manager.getPlayer(p);
-		if (player == null || Utility.hasVehicleNear(p, 3)) {
-			return false;
+	public void Check(PlayerMoveEvent event) {
+		Location to = event.getTo().clone();
+		Location from = event.getFrom().clone();
+		Player p = event.getPlayer();
+		// float yaw = to.getYaw() - from.getYaw();
+		double pitch = Math.abs(to.getPitch() - from.getPitch());
+		if (Math.abs(pitch) >= 10) {
+			return;
 		}
-		float deltaPitch = (float) player.getMovementValues().pitchDiff;
-		final List<Float> lastDeltaPitches = player.getPitchdelta();
-
-		// ignore if deltaPitch is 0 or >= 10 or if pitch is +/-90.
-		if (deltaPitch != 0 && Math.abs(deltaPitch) <= pitchlimit && Math.abs(e.getTo().getPitch()) != 90) {
-			lastDeltaPitches.add(Math.abs(deltaPitch));
+		if (pitch == 0.0) {
+			return;
 		}
-
-		if (lastDeltaPitches.size() >= samples) {
-			float deltaPitchGCD = Utility.mcdRational(lastDeltaPitches);
-			float lastmcdpitch = player.getLastmcdpitch();
-			float lastDeltaPitchGCD = (lastmcdpitch != Float.MIN_VALUE) ? lastmcdpitch : deltaPitchGCD;
-			float gcdDiff = Math.abs(deltaPitchGCD - lastDeltaPitchGCD);
-			// if GCD is significantly different or if GCD is practically unsolvable
-			if (gcdDiff > 0.001 || deltaPitchGCD < 0.00001) {
-				manager.getPlayer(e.getPlayer()).setViolation(new Violation("Aimbot", "PitchPattern"));
-				return true;
+		if (Math.abs(event.getTo().getPitch()) == 90) {
+			return;
+		}
+		NessPlayer player = this.manager.getPlayer(p);
+		player.pitchDiff.add(pitch);
+		if (player.pitchDiff.size() >= 20) {
+			final double gcd = GCDUtils.gcdRational(player.pitchDiff);
+			if (player.lastGCD == 0.0) {
+				player.lastGCD = gcd;
 			}
-			lastDeltaPitches.clear();
-			player.setLastmcdpitch(deltaPitchGCD);
+			double result = Math.abs(gcd - player.lastGCD);
+			float sensitivity = (float) ((0.5 / 0.15) * gcd);
+			//NumberFormat formatter = new DecimalFormat("0.00000000000");
+			//int sensitivityinteger = adaptSensitivity(sensitivity, gcd);
+			//p.sendMessage("GCD: " + gcd + " Sensitivity: " + sensitivityinteger);
+			if (result > 0.0001 || sensitivity < 0.3) {
+				player.setViolation(new Violation("Aimbot", "GCDCheck"));
+			}
+			// formatter.format(result));
+			player.pitchDiff.clear();
+			player.lastGCD = gcd;
 		}
-		return false;
-
 	}
 
 	/**

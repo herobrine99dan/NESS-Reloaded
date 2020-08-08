@@ -29,6 +29,8 @@ public class NESSAnticheat extends JavaPlugin {
 	private ViolationManager violationManager;
 	@Getter
 	private NMSHandler nmsHandler;
+	@Getter
+	private int minecraftVersion;
 	
 	private static final Logger logger = LogManager.getLogger(NESSAnticheat.class);
 
@@ -72,6 +74,12 @@ public class NESSAnticheat extends JavaPlugin {
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);
 
 		getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(this), this, ServicePriority.Low);
+		minecraftVersion = this.getVersion();
+	}
+	
+	public int getVersion() {
+		String first = Bukkit.getVersion().substring(Bukkit.getVersion().indexOf("(MC: "));
+		return Integer.valueOf(first.replace("(MC: ", "").replace(")", "").replace(" ", "").replace(".", ""));
 	}
 
 	@SuppressWarnings("deprecation")

@@ -160,8 +160,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		if (player.getVelocity().getY() == 0.42f && yDiff > 0.38) {
-			double yResult = Math.abs(yDiff - 0.42f);
-			if (yResult > 0.003) {
+			double yResult = Math.abs(yDiff - player.getVelocity().getY());
+			if (yResult > 0.006) {
 				punish(event, player, "InvalidJumpMotion");
 			}
 		}

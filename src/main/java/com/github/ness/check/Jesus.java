@@ -7,7 +7,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
+import com.github.ness.NESSAnticheat;
 import com.github.ness.api.Violation;
+import com.github.ness.utility.ReflectionUtility;
 import com.github.ness.utility.Utility;
 
 public class Jesus extends AbstractCheck<PlayerMoveEvent> {
@@ -78,20 +80,22 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 
 	public void Check1(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
-		if (Utility.hasflybypass(player) && !player.getNearbyEntities(2, 2, 2).isEmpty()) {
+		if (Utility.hasflybypass(player) && !Utility.hasEntityNear(player, 4)) {
 			return;
 		}
-		double resulty = Math.abs(this.manager.getPlayer(player).getMovementValues().yDiff);
-		double distance = e.getTo().distance(e.getFrom()) - resulty;
-		Block block = player.getLocation().getBlock();
-		Location loc = player.getLocation();
-		loc.setY(loc.getY() - 1);
-		Location underloc = player.getLocation();
-		underloc.setY(underloc.getY() + 1);
-		if ((player.getVehicle() == null) && (!player.isFlying())) {
-			float distanceFell = player.getFallDistance();
-			if (block.isLiquid() && loc.getBlock().isLiquid() && distanceFell < 1 && !underloc.getBlock().isLiquid()) {
-				if (distance > 0.11863034217827088) {
+		double distance = Math.abs(this.manager.getPlayer(player).getMovementValues().XZDiff);
+		Block block = e.getTo().getBlock();
+		Location loc = e.getTo().clone().add(0, -1, 0);
+		Location underloc = e.getTo().clone().add(0, 1, 0);
+		if (!player.isInsideVehicle()) {
+			if (block.isLiquid() && loc.getBlock().isLiquid() && player.getFallDistance() < 1 && !underloc.getBlock().isLiquid()) {
+				distance -= Math.abs(player.getVelocity().getX());
+				distance -= Math.abs(player.getVelocity().getZ());
+				double maxDist = 0.12;
+				if(NESSAnticheat.getInstance().getMinecraftVersion() > 1122) {
+					maxDist = 0.18;
+				}
+				if (distance > maxDist) {
 					// MSG.tell((CommandSender)player, "&7dist: &e" + distance);
 					punish(e, e.getPlayer(), 2, "WaterSpeed");
 				}

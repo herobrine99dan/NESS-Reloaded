@@ -1,7 +1,7 @@
 package com.github.ness.check;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.CheckManager;
@@ -18,11 +19,9 @@ import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
 
 public class Speed extends AbstractCheck<PlayerMoveEvent> {
-	public HashMap<String, Integer> speed = new HashMap<String, Integer>();
-	int maxpackets = 13;
 
 	public Speed(CheckManager manager) {
-		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
+		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerMoveEvent.class, 1, TimeUnit.SECONDS));
 	}
 
 	@Override
@@ -30,6 +29,11 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Check(e);
 		Check1(e);
 		Check3(e);
+	}
+	
+	@Override
+	void checkAsyncPeriodic(NessPlayer player) {
+		player.SpeedMaxDistanceViolationsAlert = 0;
 	}
 
 	private void punish(PlayerMoveEvent e, String module) {
@@ -43,6 +47,11 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
+	/**
+	 * This is a really Bad Check
+	 * I don't suggest to you to skid this
+	 * @param e
+	 */
 	public void Check(PlayerMoveEvent e) {
 		Location from = e.getFrom().clone();
 		Location to = e.getTo().clone();
@@ -105,16 +114,16 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
-	// To recode
 	public void Check1(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
 		if (Utility.hasflybypass(p)) {
 			return;
 		}
-		if (this.manager.getPlayer(p).isTeleported() || Utility.hasVehicleNear(p, 3) || Utility.hasEntityNear(p, 3)) {
+		NessPlayer np = this.manager.getPlayer(p);
+		if (np.isTeleported() || Utility.hasVehicleNear(p, 3) || Utility.hasEntityNear(p, 3)) {
 			return;
 		}
-		float dist = (float) this.manager.getPlayer(p).getMovementValues().XZDiff;
+		float dist = (float) np.getMovementValues().XZDiff;
 		Location to = event.getTo().clone();
 		Location from = event.getFrom().clone();
 		if (p.getGameMode() == GameMode.SPECTATOR || p.isInsideVehicle()) {
@@ -157,7 +166,11 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		float result = dist - maxDist;
 		// p.sendMessage("maxDist: " + maxDist + " Dist: " + dist);
 		if (result > 0.15) {
-			this.punish(event, "MaxDistance: " + dist + " Max: " + maxDist);
+			np.SpeedMaxDistanceViolationsAlert++;
+			if(np.SpeedMaxDistanceViolationsAlert > 1) {
+				this.punish(event, "MaxDistance: " + dist + " Max: " + maxDist);
+				np.SpeedMaxDistanceViolationsAlert = 0;
+			}
 		}
 	}
 

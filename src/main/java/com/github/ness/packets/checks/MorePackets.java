@@ -1,20 +1,18 @@
 package com.github.ness.packets.checks;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.InventoryHack;
 import com.github.ness.check.OldMovementChecks;
 import com.github.ness.utility.Utility;
 
 public class MorePackets {
-	
+
 	public static boolean Check(Player sender, Object packet) {
 		int ping = Utility.getPing(sender);
-		int maxpackets = 60;
+		int maxpackets = 65;
 		int maxPackets = maxpackets * (ping / 100);
 		if (ping < 150) {
 			maxPackets = maxpackets;

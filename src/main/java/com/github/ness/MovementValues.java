@@ -1,5 +1,9 @@
 package com.github.ness;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import org.bukkit.entity.Player;
 
 import com.github.ness.utility.Utility;
@@ -56,7 +60,6 @@ public class MovementValues {
 			AroundSlime = Utility.specificBlockNear(Utility.locationFromImmutableLoc(to), "slime");
 		}
 		AroundStairs = Utility.specificBlockNear(Utility.locationFromImmutableLoc(to), "stair");
-		
 		yawDiff = to.getYaw() - from.getYaw();
 		pitchDiff = to.getPitch() - from.getPitch();
 		xDiff = to.getX() - from.getX();
@@ -64,6 +67,19 @@ public class MovementValues {
 		zDiff = to.getZ() - from.getZ();
 		XZDiff = Math.abs(xDiff) + Math.abs(zDiff);
 		xzDiffMultiplier = (xDiff * xDiff) + (zDiff * zDiff);
+	}
+
+	public CompletableFuture<Double> calculateAsyncWithCancellation(ImmutableLoc to, ImmutableLoc from)
+			throws InterruptedException {
+		CompletableFuture<Double> completableFuture = new CompletableFuture<Double>();
+
+		Executors.newCachedThreadPool().submit(() -> {
+			double value = to.getX() - from.getX();
+			completableFuture.complete(value);
+			return null;
+		});
+
+		return completableFuture;
 	}
 
 }

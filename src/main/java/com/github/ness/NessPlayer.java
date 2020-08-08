@@ -91,6 +91,7 @@ public class NessPlayer implements AutoCloseable {
 	public long lastPacketTime; //Used in BadPackets
 	public long movementPackets; //Used in BadPackets
 	public float lastStairDist; //Used in BadPackets
+	public int SpeedMaxDistanceViolationsAlert; //Used In MaxDistance Check (I'm applying the same concept which i've used to fix false positives in NoGround Check)
 	@Getter
 	private MovementValues movementValues;
 
@@ -117,11 +118,8 @@ public class NessPlayer implements AutoCloseable {
 	}
 
 	// Used for Aimbot check
-	@Getter
-	private List<Float> pitchdelta = new ArrayList<>();
-	@Getter
-	@Setter
-	private float lastmcdpitch = Float.MIN_VALUE;
+	public List<Double> pitchDiff = new ArrayList<Double>();
+	public double lastGCD = Float.MIN_VALUE;
 
 	// Used for AutoClick check
 	@Getter
