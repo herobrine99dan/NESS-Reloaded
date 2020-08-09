@@ -94,7 +94,9 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
 			if (!p.hasLineOfSight(e.getEntity())) {
-				punish(e, p, "WallHit");
+				if(!Utility.getMaterialName(p.getTargetBlock(null, 5).getLocation()).contains("slab")) {
+					punish(e, p, "WallHit");
+				}
 			}
 		}
 	}

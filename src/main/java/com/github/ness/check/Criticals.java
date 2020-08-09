@@ -22,23 +22,17 @@ public class Criticals extends AbstractCheck<EntityDamageByEntityEvent> {
 	}
 
 	public void Check(EntityDamageByEntityEvent event) {
-		if (!(event.getDamager() instanceof Player)) {
-			return;
-		}
-		Player player = (Player) event.getDamager();
-		if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).isLiquid()) {
-			return;
-		}
-		if (player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid()) {
-			return;
-		}
-
-		if (!player.isOnGround() && !player.isFlying()) {
-			if (player.getLocation().getY() % 1.0D == 0.0D) {
-				if (manager.getPlayer(player).shouldCancel(event, this.getClass().getSimpleName())) {
-					event.setCancelled(true);
+		if (event.getDamager() instanceof Player) {
+			Player player = (Player) event.getDamager();
+			if (!player.isOnGround() && !Utility.hasflybypass(player)
+					&& !player.getLocation().getBlock().getRelative(BlockFace.DOWN).isLiquid()
+					&& !player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid()) {
+				if (player.getLocation().getY() % 1.0D == 0.0D && player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
+					if (manager.getPlayer(player).shouldCancel(event, this.getClass().getSimpleName())) {
+						event.setCancelled(true);
+					}
+					manager.getPlayer(player).setViolation(new Violation("Criticals", ""));
 				}
-				manager.getPlayer(player).setViolation(new Violation("Criticals", ""));
 			}
 		}
 	}

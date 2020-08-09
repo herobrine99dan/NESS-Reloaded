@@ -65,8 +65,6 @@ enabled-checks:
   - 'NoSlowDownFood'
   - 'NameExploit'
   - 'OldMovementChecks'
-  - 'PatternKillauraAttack'
-  - 'PatternKillauraMove'
   - 'Scaffold'
   - 'SpamBot'
   - 'Speed'

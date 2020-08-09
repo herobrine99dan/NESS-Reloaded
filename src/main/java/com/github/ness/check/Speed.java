@@ -165,7 +165,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 		float result = dist - maxDist;
 		// p.sendMessage("maxDist: " + maxDist + " Dist: " + dist);
-		if (result > 0.15) {
+		if (result > 0.1) {
 			np.SpeedMaxDistanceViolationsAlert++;
 			if(np.SpeedMaxDistanceViolationsAlert > 1) {
 				this.punish(event, "MaxDistance: " + dist + " Max: " + maxDist);

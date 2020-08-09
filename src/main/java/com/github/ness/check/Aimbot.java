@@ -58,7 +58,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 			//int sensitivityinteger = adaptSensitivity(sensitivity, gcd);
 			//p.sendMessage("GCD: " + gcd + " Sensitivity: " + sensitivityinteger);
 			if (result > 0.0001 || sensitivity < 0.3) {
-				player.setViolation(new Violation("Aimbot", "GCDCheck"));
+				player.setViolation(new Violation("Aimbot", "GCDCheck" + " Sensitivity: " + (float) sensitivity + " GCD: " + (float) gcd));
 			}
 			// formatter.format(result));
 			player.pitchDiff.clear();
