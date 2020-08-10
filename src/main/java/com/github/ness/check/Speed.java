@@ -9,11 +9,9 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.CheckManager;
-import com.github.ness.DragDown;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
@@ -34,6 +32,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	@Override
 	void checkAsyncPeriodic(NessPlayer player) {
 		player.SpeedMaxDistanceViolationsAlert = 0;
+		player.InvalidVelocitySpeedCounter = 0;
 	}
 
 	private void punish(PlayerMoveEvent e, String module) {
@@ -48,7 +47,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	/**
-	 * This is a really Bad Check
+	 * This is a really Bad Check	
 	 * I don't suggest to you to skid this
 	 * @param e
 	 */
@@ -220,12 +219,11 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				return;
 			}
 			np.InvalidVelocitySpeedCounter++;
-			if (np.InvalidVelocitySpeedCounter < 3) {
-				return;
-			}
-			manager.getPlayer(p).setViolation(new Violation("Speed", "InvalidVelocity: " + yresult));
-			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-				DragDown.playerDragDown(e);
+			if (np.InvalidVelocitySpeedCounter < 1) {
+				manager.getPlayer(p).setViolation(new Violation("Speed", "InvalidVelocity: " + yresult));
+				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+					e.setCancelled(true);
+				}
 			}
 		}
 	}

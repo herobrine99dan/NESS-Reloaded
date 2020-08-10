@@ -4,7 +4,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.DragDown;
 import com.github.ness.api.Violation;
 
 public class ElytraCheats extends AbstractCheck<PlayerMoveEvent> {
@@ -26,7 +25,7 @@ public class ElytraCheats extends AbstractCheck<PlayerMoveEvent> {
 			manager.getPlayer(p).setViolation(new Violation("ElytraCheats", "HighDistance"));
 			try {
 				if (manager.getPlayer(p).shouldCancel(event, this.getClass().getSimpleName())) {
-					DragDown.playerDragDown(event);
+					event.setCancelled(true);
 				}
 			} catch (Exception ex) {
 				event.setCancelled(true);

@@ -57,7 +57,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 			//NumberFormat formatter = new DecimalFormat("0.00000000000");
 			//int sensitivityinteger = adaptSensitivity(sensitivity, gcd);
 			//p.sendMessage("GCD: " + gcd + " Sensitivity: " + sensitivityinteger);
-			if (result > 0.0001 || sensitivity < 0.3) {
+			if (result > 0.0001) {
 				player.setViolation(new Violation("Aimbot", "GCDCheck" + " Sensitivity: " + (float) sensitivity + " GCD: " + (float) gcd));
 			}
 			// formatter.format(result));
@@ -114,9 +114,9 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		double yaw = Math.abs(this.manager.getPlayer(p).getMovementValues().yawDiff);
 		NessPlayer np = this.manager.getPlayer(p);
-		if ((Math.round(yaw) == yaw && yaw != 0.0)) {
+		if ((Math.round(Math.abs(yaw)) == Math.abs(yaw) && yaw < 340 && yaw > 0)) {
 			np.AimbotPatternCounter = np.AimbotPatternCounter + 1;
-			if (np.AimbotPatternCounter > 4) {
+			if (np.AimbotPatternCounter > 2) {
 				np.setViolation(new Violation("Aimbot", "Pattern3"));
 				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);

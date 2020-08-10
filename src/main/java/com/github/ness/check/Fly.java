@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.text.Utilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,7 +13,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.CheckManager;
-import com.github.ness.DragDown;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
@@ -45,7 +42,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			manager.getPlayer(p).setViolation(new Violation("Fly", module));
 			try {
 				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-					DragDown.playerDragDown(e);
+					e.setCancelled(true);
 				}
 			} catch (Exception ex) {
 				e.setCancelled(true);

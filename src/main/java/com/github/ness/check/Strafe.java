@@ -27,7 +27,10 @@ public class Strafe extends AbstractCheck<PlayerMoveEvent> {
 		}
 		double result = Math.abs(xzDiff - np.lastStrafeDist);
 		if(result == 0.0) {
-			p.sendMessage("Strafe Cheats!" + result);
+			manager.getPlayer(p).setViolation(new Violation("Strafe", "EqualDist"));
+			if (manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
+				event.setCancelled(true);
+			}
 		}
 		np.lastStrafeDist = xzDiff;
 	}
