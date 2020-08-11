@@ -3,6 +3,8 @@ package com.github.ness;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -46,6 +48,13 @@ public class CheckManager implements AutoCloseable {
 	private Set<AbstractCheck<?>> checks;
 
 	private static final Logger logger = LogManager.getLogger(CheckManager.class);
+	
+	/**
+	 * Event classes whose package names do not start with any of the following will not be listened to
+	 * 
+	 */
+	private static final Set<String> EVENT_PACKAGES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+			"org.bukkit", "org.spigotmc", "com.github.ness")));
 
 	@Getter
 	private final NESSAnticheat ness;
@@ -159,7 +168,7 @@ public class CheckManager implements AutoCloseable {
 			for (ClassInfo eventInfo : eventInfos) {
 
 				String className = eventInfo.getName();
-				if (!className.startsWith("org.bukkit") && !className.startsWith("org.spigotmc")) {
+				if (!shouldListen(className)) {
 					continue;
 				}
 				@SuppressWarnings("unchecked")
@@ -194,6 +203,15 @@ public class CheckManager implements AutoCloseable {
 
 		}
 		return result;
+	}
+	
+	private static boolean shouldListen(String className) {
+		for (String eventPackage : EVENT_PACKAGES) {
+			if (className.startsWith(eventPackage)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private Set<AbstractCheck<?>> getAllChecks() {
