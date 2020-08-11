@@ -43,7 +43,7 @@ public class CheckManager implements AutoCloseable {
 
 	private final ConcurrentHashMap<UUID, NessPlayer> players = new ConcurrentHashMap<>();
 
-	private Set<AbstractCheck<?>> checks;
+	private volatile Set<AbstractCheck<?>> checks;
 
 	private static final Logger logger = LogManager.getLogger(CheckManager.class);
 	
