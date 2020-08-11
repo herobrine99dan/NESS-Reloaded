@@ -50,48 +50,19 @@ public class NessPlayer implements AutoCloseable {
 
 	@Getter
 	@Setter
-	public double lastStrafeAngle; //NewOldStrafe
-
-	@Getter
-	@Setter
-	public List<Float> patterns = new ArrayList<Float>();
-	@Getter
-	@Setter
-	double distance; // For GhostHand and NoSlowDown
-	@Getter
-	@Setter
-	int clicks; // For FastClick
-	@Getter
-	@Setter
-	int blockplace; // For FastPlace
-	@Getter
-	@Setter
-	int movementpacketscounter; // For BadPackets
-	@Getter
-	@Setter
-	int normalPacketsCounter; // For MorePackets
-	@Getter
-	@Setter
-	int CPS; // For AutoClicker
-	@Getter
-	@Setter
-	long CPSDelay; // For AutoClicker
-	@Getter
-	@Setter
-	long CPSlastDelay; // For AutoClicker
+	public double lastStrafeAngle; //For the Beta NewOldStrafe Check
+	public int blockPlace; // For FastPlace Check
+	public int normalPacketsCounter; // For MorePackets
+	public int CPS; // For AutoClicker
 	public float lastPitch; // Used in GhostHand
-	public double lastYDelta; // Used in Speed And Fly
-	public Location safeLoc; // This should be used to make the better LagBack system
+	public float lastYaw;
 	public int AimbotPatternCounter; // For Aimbot
-	public Location lastLocation; // For Killaura
-	public double lastSpeedPredictionDist; // For Speed Prediction Check
-	public boolean lastSpeedPredictionOnGround; // For Speed Prediction Check
 	public int InvalidVelocitySpeedCounter; // A Counter For Speed Invalid Velocity
-	public long lastFlyingPacket;
 	public long lastPacketTime; //Used in BadPackets
 	public long movementPackets; //Used in BadPackets
 	public double lastStrafeDist; //Used in Strafe
 	public float lastStairDist; //Used in BadPackets
+	public int noGround; //Used in NoGround Check 
 	public int SpeedMaxDistanceViolationsAlert; //Used In MaxDistance Check (I'm applying the same concept which i've used to fix false positives in NoGround Check)
 	@Getter
 	private MovementValues movementValues;
@@ -130,31 +101,19 @@ public class NessPlayer implements AutoCloseable {
 
 	NessPlayer(Player player, boolean devMode) {
 		this.player = player;
-		this.distance = 0.0;
 		this.teleported = false;
 		this.lastPacketTime = 0;
-		this.clicks = 0;
-		this.blockplace = 0;
+		this.blockPlace = 0;
 		this.CPS = 0;
-		this.CPSlastDelay = 0;
 		this.AimbotPatternCounter = 0;
 		this.normalPacketsCounter = 0;
-		this.CPSDelay = 0;
 		this.lastPitch = 0;
-		this.movementpacketscounter = 0;
-		this.lastFlyingPacket = System.currentTimeMillis();
 		this.devMode = devMode;
 	}
 
 	public void updateMovementValue(MovementValues values) {
 		this.movementValues = values;
-		this.setDistance(Math.abs(movementValues.XZDiff));
-	}
 
-	public void updatePacketValues(Object packet) {
-		if (packet.toString().toLowerCase().contains("useentity")) {
-			lastLocation = this.getPlayer().getLocation().clone();
-		}
 	}
 
 	public boolean isDevMode() {

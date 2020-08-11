@@ -1,7 +1,10 @@
 package com.github.ness.check;
 
+import java.util.concurrent.TimeUnit;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
@@ -12,14 +15,20 @@ import com.github.ness.utility.GCDUtils;
 public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 
 	public Aimbot(CheckManager manager) {
-		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
+		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerMoveEvent.class, 1, TimeUnit.SECONDS));
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
+	void checkAsyncPeriodic(NessPlayer player) {
+		player.AimbotPatternCounter = 0;
+	}
+	
+	@Override
 	void checkEvent(PlayerMoveEvent e) {
 		Check(e);
 		Check1(e);
+		Check2(e);
 		Check3(e);
 		Check4(e);
 	}
@@ -88,6 +97,23 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		}
 		return false;
 	}
+	
+	/**
+	 * Check if Yaw Rotations are equals
+	 * @param e
+	 */
+	public void Check2(PlayerMoveEvent event) {
+		Location to = event.getTo().clone();
+		Location from = event.getFrom().clone();
+		Player p = event.getPlayer();
+		float yaw = to.getYaw() - from.getYaw();
+		NessPlayer np = this.manager.getPlayer(p);
+		float result = yaw - np.lastYaw;
+		if(result == 0.0 && yaw != 0.0) {
+			np.setViolation(new Violation("Aimbot", "EqualRotations"));
+		}
+		np.lastYaw = yaw;
+	}
 
 	public void Check3(PlayerMoveEvent e) {
 		NessPlayer np = manager.getPlayer(e.getPlayer());
@@ -116,7 +142,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		NessPlayer np = this.manager.getPlayer(p);
 		if ((Math.round(Math.abs(yaw)) == Math.abs(yaw) && yaw < 340 && yaw > 0)) {
 			np.AimbotPatternCounter = np.AimbotPatternCounter + 1;
-			if (np.AimbotPatternCounter > 2) {
+			if (np.AimbotPatternCounter > 4) {
 				np.setViolation(new Violation("Aimbot", "Pattern3"));
 				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);

@@ -28,7 +28,7 @@ public class NoSlowDownBow extends AbstractCheck<EntityShootBowEvent> {
 				return;
 			}
 			NessPlayer p = manager.getPlayer(o);
-			double distance = p.getDistance();
+			double distance = p.getMovementValues().XZDiff;
 			/*
 			 * if (o.isSprinting() || failed==1) { e.setCancelled(true);
 			 * checkfailed(o.getName()); }

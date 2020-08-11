@@ -38,15 +38,12 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Entity entity = e.getEntity();
 			double range = Math.hypot(p.getLocation().getX() - entity.getLocation().getX(),
 					p.getLocation().getZ() - entity.getLocation().getZ());
-			if (range > 6.5D) {
-				return;
-			}
 			double maxReach = 3.25D;
 			if (!p.isSprinting() || isLookingAt(p, entity.getLocation()) < 0.6
 					|| Utility.specificBlockNear(e.getDamager().getLocation(), "water")) {
 				maxReach += 0.20D;
 			}
-			if (range > maxReach) {
+			if (range > maxReach && range < 6.5D) {
 				this.punish(e, p, "Reach: " + range);
 			}
 		}
@@ -63,7 +60,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 				if (Math.abs(grade) > 9350) {
 					return;
 				}
-				if (Math.round(grade) > 360.0) {
+				if (Math.round(grade) > 340.0) {
 					punish(e, p, "HighYaw " + grade);
 				}
 			}, 3L);

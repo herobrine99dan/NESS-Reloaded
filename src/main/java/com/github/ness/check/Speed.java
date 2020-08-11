@@ -28,7 +28,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Check1(e);
 		Check3(e);
 	}
-	
+
 	@Override
 	void checkAsyncPeriodic(NessPlayer player) {
 		player.SpeedMaxDistanceViolationsAlert = 0;
@@ -47,8 +47,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	/**
-	 * This is a really Bad Check	
-	 * I don't suggest to you to skid this
+	 * This is a really Bad Check I don't suggest to you to skid this
+	 * 
 	 * @param e
 	 */
 	public void Check(PlayerMoveEvent e) {
@@ -133,8 +133,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		float f = to.getYaw() * 0.017453292F;
-		float resultX = Math.abs((float) (Math.sin(f) * 0.21f));
-		float resultZ = Math.abs((float) (Math.cos(f) * 0.21f));
+		float resultX = Math.abs((float) (Math.sin(f) * p.getWalkSpeed())) + 0.02f;
+		float resultZ = Math.abs((float) (Math.cos(f) * p.getWalkSpeed())) + 0.02f;
 		float maxDist = resultX + resultZ + 0.04f;
 		if (p.isSneaking()) {
 			maxDist = 0.170f;
@@ -166,7 +166,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		// p.sendMessage("maxDist: " + maxDist + " Dist: " + dist);
 		if (result > 0.1) {
 			np.SpeedMaxDistanceViolationsAlert++;
-			if(np.SpeedMaxDistanceViolationsAlert > 1) {
+			if (np.SpeedMaxDistanceViolationsAlert > 1) {
 				this.punish(event, "MaxDistance: " + dist + " Max: " + maxDist);
 				np.SpeedMaxDistanceViolationsAlert = 0;
 			}

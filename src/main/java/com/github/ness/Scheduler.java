@@ -19,26 +19,10 @@ public class Scheduler {
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					NessPlayer np = NESSAnticheat.getInstance().getCheckManager().getPlayer(p);
 					if (!(np == null)) {
-						np.setBlockplace(-5);
-						np.setClicks(-4);
-						np.setNormalPacketsCounter(0);
-						np.setMovementpacketscounter(0);
-						np.AimbotPatternCounter = 0;
-						OldMovementChecks.blockPackets.put(p.getName(), false);
-						OldMovementChecks.noground.put(p.getName(), 0);
+						np.normalPacketsCounter = 0;
 					}
 				}
 			}
 		}, 0L, 20L);
 	}
-
-	public static void startAsyncScheduler() {
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				AntiBot.playerCounter = 0;
-			}
-		}.runTaskTimerAsynchronously(NESSAnticheat.main, 1L, 20L);
-	}
-
 }

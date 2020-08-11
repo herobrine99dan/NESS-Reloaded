@@ -1,5 +1,6 @@
 package com.github.ness.packets;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,6 +12,7 @@ import com.github.ness.packets.checks.BadPackets;
 import com.github.ness.packets.checks.KillauraFalseFlyingPacket;
 import com.github.ness.packets.checks.MorePackets;
 import com.github.ness.packets.checks.PingSpoof;
+import com.github.ness.packets.events.ReceivedPacketEvent;
 import com.github.ness.packets.wrappers.PacketPlayInPositionLook;
 import com.github.ness.packets.wrappers.PacketPlayInUseEntity;
 import com.github.ness.packets.wrappers.SimplePacket;
@@ -53,7 +55,7 @@ public class NewPacketListener implements Listener {
 		// Channel channel = ((CraftPlayer)
 		// player).getHandle().playerConnection.networkManager.channel;
 		channel.eventLoop().submit(() -> {
-			channel.pipeline().remove(player.getName());
+			channel.pipeline().remove(player.getName()+ "NESSListener");
 		});
 	}
 
@@ -69,7 +71,11 @@ public class NewPacketListener implements Listener {
 			@Override
 			public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
 				// We can drop the packet disabling this super method!
-				if (executeActions(player, packet)) {
+				ReceivedPacketEvent event = new ReceivedPacketEvent(
+						NESSAnticheat.getInstance().getCheckManager().getPlayer(player),
+						NewPacketListener.this.getPacketObject(packet));
+				Bukkit.getPluginManager().callEvent(event);
+				if(!event.isCancelled()) {
 					super.channelRead(channelHandlerContext, packet);
 				}
 			}
@@ -78,9 +84,9 @@ public class NewPacketListener implements Listener {
 		// ChannelPipeline pipeline = ((CraftPlayer)
 		// player).getHandle().playerConnection.networkManager.channel
 		ChannelPipeline pipeline = getChannel(player).pipeline();
-		pipeline.addBefore("packet_handler", player.getName(), channelDuplexHandler);
+		pipeline.addBefore("packet_handler", player.getName()+ "NESSListener", channelDuplexHandler);
 	}
-	
+
 	public SimplePacket getPacketObject(Object p) {
 		String packetname = p.getClass().getSimpleName().toLowerCase();
 		SimplePacket packet;
@@ -115,7 +121,6 @@ public class NewPacketListener implements Listener {
 		if (KillauraFalseFlyingPacket.Check(packet, p)) {
 			return true;
 		}
-		NESSAnticheat.getInstance().getCheckManager().getPlayer(p).updatePacketValues(packet);
 		return MorePackets.Check(p, packet);
 	}
 

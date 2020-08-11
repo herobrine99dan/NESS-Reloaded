@@ -18,16 +18,15 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 	@Override
 	void checkEvent(PlayerInteractEvent e) {
 		Check(e);
-		Check1(e);
 	}
 
 	void Check(PlayerInteractEvent e) {
 		Action action = e.getAction();
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
 			NessPlayer player = manager.getPlayer(e.getPlayer());
-			player.setCPS(player.getCPS() + 1);
-			if (player.getCPS() > 18 && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
-				player.setViolation(new Violation("AutoClicker", "MaxCPS: " + player.getCPS()));
+			player.CPS++;
+			if (player.CPS > 18 && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
+				player.setViolation(new Violation("AutoClicker", "MaxCPS: " + player.CPS));
 				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);
 				}
@@ -35,23 +34,8 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 		}
 	}
 
-	void Check1(PlayerInteractEvent e) {
-		NessPlayer player = manager.getPlayer(e.getPlayer());
-		long delay = System.currentTimeMillis() - player.getCPSDelay();
-		long lastDelay = delay - player.getCPSlastDelay();
-		if (delay > 7 || e.getPlayer().isBlocking()) {
-			return;
-		}
-		if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-			e.setCancelled(true);
-		}
-		player.setViolation(new Violation("AutoClicker", "RepeatedDelay: " + delay + " Result: " + lastDelay));
-		player.setCPSlastDelay(delay);
-		player.setCPSDelay(System.currentTimeMillis());
-	}
-
 	@Override
 	void checkAsyncPeriodic(NessPlayer player) {
-		player.setCPS(0);
+		player.CPS = 0;
 	}
 }

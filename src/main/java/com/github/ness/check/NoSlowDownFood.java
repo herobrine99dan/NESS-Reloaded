@@ -24,7 +24,7 @@ public class NoSlowDownFood extends AbstractCheck<PlayerItemConsumeEvent> {
 			return;
 		}
 		NessPlayer p = manager.getPlayer(e.getPlayer());
-		double distance = p.getDistance();
+		double distance = p.getMovementValues().XZDiff;
 		distance -= e.getPlayer().getVelocity().getX();
 		distance -= e.getPlayer().getVelocity().getZ();
 		if (distance > 0.2 || e.getPlayer().isSprinting()) {

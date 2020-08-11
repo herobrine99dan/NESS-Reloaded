@@ -1,8 +1,7 @@
 package com.github.ness.check;
 
 import java.util.HashMap;
-
-import javax.swing.text.Utilities;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,13 +22,15 @@ import com.github.ness.utility.Utility;
 
 public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 
-	public static HashMap<String, Integer> noground = new HashMap<>();
-
 	HashMap<Player, Location> oldLoc = new HashMap<>();
-	public static HashMap<String, Boolean> blockPackets = new HashMap<>();
 
 	public OldMovementChecks(CheckManager manager) {
-		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
+		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerMoveEvent.class, 1, TimeUnit.SECONDS));
+	}
+	
+	@Override
+	void checkAsyncPeriodic(NessPlayer player) {
+		player.noGround = 0;
 	}
 
 	private void punish(PlayerMoveEvent e, String cheat) {
@@ -54,13 +55,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		Double hozDist = dist - (to.getY() - from.getY());
 		Double fallDist = (double) player.getFallDistance();
 		NessPlayer nessPlayer = this.manager.getPlayer(player);
-		oldLoc.put(player, event.getFrom());
 		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
 				|| nessPlayer.isTeleported()) {
-			return;
-		}
-		if (blockPackets.getOrDefault(player.getName(), false)) {
-			event.setCancelled(true);
 			return;
 		}
 		if (to.getY() < from.getY())
@@ -83,7 +79,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		}
 		dTG += player.getLocation().getY() % 1;
 		bottom = player.getLocation().getWorld().getBlockAt(player.getLocation().subtract(0, dTG, 0)).getType();
-		boolean carpet = false;
 		for (int x = -1; x <= 1; x++) {
 			for (int z = -1; z <= 1; z++) {
 				Material belowSel = player.getWorld().getBlockAt(player.getLocation().add(x, -1, z)).getType();
@@ -95,9 +90,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				belowSel = player.getWorld().getBlockAt(player.getLocation().add(x, -.01, z)).getType();
 				if (belowSel == Material.WATER_LILY)
 					lilypad = true;
-				if (belowSel == Material.CARPET || belowSel.toString().toLowerCase().contains("diode")
-						|| belowSel.toString().toLowerCase().contains("comparator") || belowSel == Material.SNOW)
-					carpet = true;
 				if (belowSel.isSolid()) {
 					nessPlayer.updateLastWasOnGround();
 				}
@@ -371,8 +363,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				&& !below.toString().toLowerCase().contains("stairs") && below != Material.SLIME_BLOCK) {
 			if (!Utility.getPlayerUnderBlock(player).getType().name().toLowerCase().contains("ice")
 					&& !Utility.getPlayerUpperBlock(player).getType().isSolid()) {
-				int failed = ((Integer) noground.getOrDefault(player.getName(), Integer.valueOf(0))).intValue();
-				noground.put(player.getName(), Integer.valueOf(failed + 1));
+				int failed = nessPlayer.noGround++;
 				if (failed > 3) {
 					if (!below.equals(Material.SLIME_BLOCK)) {
 						punish(event, "NoGround");
@@ -502,8 +493,9 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				manager.getPlayer(player).setViolation(new Violation("NoWeb", "(OnMove)"));
 			}
 			if (below.isSolid() && Utility.isOnGround(from)) {
-				this.manager.getPlayer(player).safeLoc = from;
+				//this.manager.getPlayer(player).safeLoc = from; //TODO Make a good LagBack System
 			}
 		}
+		oldLoc.put(player, event.getTo());
 	}
 }

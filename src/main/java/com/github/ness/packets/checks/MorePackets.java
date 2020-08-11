@@ -23,9 +23,8 @@ public class MorePackets {
 		if (np == null || sender.isInsideVehicle()) {
 			return true;
 		}
-		np.setNormalPacketsCounter(np.getNormalPacketsCounter() + 1);
 		// sender.sendMessage("Counter: " + np.getPacketscounter());
-		if (np.getNormalPacketsCounter() > maxPackets) {
+		if (np.normalPacketsCounter++ > maxPackets) {
 			/*
 			 * new BukkitRunnable() {
 			 * 
@@ -33,8 +32,7 @@ public class MorePackets {
 			 * sender.teleport(OldMovementChecks.safeLoc.getOrDefault(sender,
 			 * sender.getLocation())); } }.runTask(NESSAnticheat.main);
 			 */
-			OldMovementChecks.blockPackets.put(sender.getName(), true);
-			np.setViolation(new Violation("MorePackets", np.getNormalPacketsCounter() + ""));
+			np.setViolation(new Violation("MorePackets", np.normalPacketsCounter + ""));
 			return false;
 		}
 		return true;

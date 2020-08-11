@@ -68,7 +68,6 @@ public class NESSAnticheat extends JavaPlugin {
 		violationManager.initiatePeriodicTask();
 		getServer().getPluginManager().registerEvents(new NewPacketListener(), this);
 		Scheduler.startSyncScheduler();
-		Scheduler.startAsyncScheduler();
 		// new Protocols();
 
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);

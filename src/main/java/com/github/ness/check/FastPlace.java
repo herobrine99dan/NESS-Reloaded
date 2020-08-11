@@ -1,39 +1,49 @@
 package com.github.ness.check;
 
+import java.util.concurrent.TimeUnit;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 
-public class FastPlace extends AbstractCheck<BlockPlaceEvent>{
-	
+public class FastPlace extends AbstractCheck<BlockPlaceEvent> {
+
 	public FastPlace(CheckManager manager) {
-		super(manager, CheckInfo.eventOnly(BlockPlaceEvent.class));
-		// TODO Auto-generated constructor stub
+		super(manager, CheckInfo.eventWithAsyncPeriodic(BlockPlaceEvent.class, 1, TimeUnit.SECONDS));
 	}
-	
+
+	@Override
+	void checkAsyncPeriodic(NessPlayer player) {
+		player.blockPlace = 0;
+	}
+
 	@Override
 	void checkEvent(BlockPlaceEvent e) {
-       Check(e);
+		Check(e);
 	}
-    /**
-     * A Simple FastPlace check
-     * @param event
-     */
+
+	/**
+	 * A Simple FastPlace check
+	 * 
+	 * @param event
+	 */
 	public void Check(BlockPlaceEvent e) {
 		NessPlayer player = manager.getPlayer(e.getPlayer());
-		player.setBlockplace(player.getBlockplace()+1);
-		if(player.getBlockplace()>6) {
+		player.blockPlace++;
+		if (player.blockPlace > 6) {
 			try {
-				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);
 				}
-			}catch(Exception ex) {}
-			player.setViolation(new Violation("FastPlace",""));
+			} catch (Exception ex) {
+			}
+			player.setViolation(new Violation("FastPlace", ""));
 		}
-		
+
 	}
 
 }
