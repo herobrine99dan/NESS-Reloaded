@@ -3,8 +3,6 @@ package com.github.ness;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -53,8 +51,7 @@ public class CheckManager implements AutoCloseable {
 	 * Event classes whose package names do not start with any of the following will not be listened to
 	 * 
 	 */
-	private static final Set<String> EVENT_PACKAGES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-			"org.bukkit", "org.spigotmc", "com.github.ness")));
+	private static final String[] EVENT_PACKAGES = {"org.bukkit", "org.spigotmc", "com.github.ness"};
 
 	@Getter
 	private final NESSAnticheat ness;
