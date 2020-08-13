@@ -18,11 +18,9 @@ public class Scheduler {
 			public void run() {
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					NessPlayer np = NESSAnticheat.getInstance().getCheckManager().getPlayer(p);
-					if (!(np == null)) {
-						np.normalPacketsCounter = 0;
-					}
+					
 				}
 			}
-		}, 0L, 20L);
+		}, 0L, 10L);
 	}
 }

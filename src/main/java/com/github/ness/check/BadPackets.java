@@ -1,14 +1,18 @@
-package com.github.ness.packets.checks;
+package com.github.ness.check;
 
-import org.bukkit.entity.Player;
+import java.util.concurrent.TimeUnit;
 
-import com.github.ness.NESSAnticheat;
+import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.OldMovementChecks;
+import com.github.ness.packets.events.ReceivedPacketEvent;
 import com.github.ness.utility.Utility;
 
-public class BadPackets {
+public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
+
+	public BadPackets(CheckManager manager) {
+		super(manager, CheckInfo.eventOnly(ReceivedPacketEvent.class));
+	}
 	//I don't care about 1.12 timer bypass
 	private static final double MAX_PACKETS_PER_TICK = 1.12;
 
@@ -19,17 +23,18 @@ public class BadPackets {
 	 * @param p
 	 * @param packet
 	 */
-	public static boolean Check(Player p, Object packet) {
-		NessPlayer np = NESSAnticheat.getInstance().getCheckManager().getPlayer(p);
-		if (!packet.toString().toLowerCase().contains("position")) {
-			return true;
+	@Override
+	void checkEvent(ReceivedPacketEvent e) {
+		NessPlayer np = e.getNessPlayer();
+		if (!e.getPacket().getName().toLowerCase().contains("position")) {
+			return;
 		}
 
 		if (np.lastPacketTime != -1) {
 			final long difference = System.currentTimeMillis() - np.lastPacketTime;
 
 			if (difference >= 1000) {
-				final int ping = Utility.getPing(p);
+				final int ping = Utility.getPing(np.getPlayer());
 				double maxPackets = MAX_PACKETS_PER_TICK;
 				if (ping > 100 && ping < 300) {
 					float pingresult = ping / 100;
@@ -56,7 +61,7 @@ public class BadPackets {
 					 */
 					if (perecentageDifference > 7.0) {
 						np.setViolation(new Violation("BadPackets", perecentageDifference + " packets: " + movementsPerTick));
-						return false;
+						e.setCancelled(true);
 					}
 				}
 
@@ -69,7 +74,6 @@ public class BadPackets {
 		}
 
 		np.movementPackets++;
-		return true;
 	}
 
 }

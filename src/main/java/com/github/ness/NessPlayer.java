@@ -63,6 +63,8 @@ public class NessPlayer implements AutoCloseable {
 	public double lastStrafeDist; //Used in Strafe
 	public float lastStairDist; //Used in BadPackets
 	public int noGround; //Used in NoGround Check 
+	public long pingspooftimer; //For PingSpoof
+	public long oldpingspooftimer; //For PingSpoof
 	public int SpeedMaxDistanceViolationsAlert; //Used In MaxDistance Check (I'm applying the same concept which i've used to fix false positives in NoGround Check)
 	@Getter
 	private MovementValues movementValues;

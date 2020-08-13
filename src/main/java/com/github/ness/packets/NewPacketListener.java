@@ -8,10 +8,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.ness.NESSAnticheat;
-import com.github.ness.packets.checks.BadPackets;
-import com.github.ness.packets.checks.KillauraFalseFlyingPacket;
-import com.github.ness.packets.checks.MorePackets;
-import com.github.ness.packets.checks.PingSpoof;
 import com.github.ness.packets.events.ReceivedPacketEvent;
 import com.github.ness.packets.wrappers.PacketPlayInPositionLook;
 import com.github.ness.packets.wrappers.PacketPlayInUseEntity;
@@ -99,31 +95,6 @@ public class NewPacketListener implements Listener {
 		}
 		return packet;
 	}
-
-	/**
-	 * Execute all the packet checks
-	 * 
-	 * @param p
-	 * @param packet
-	 * @return True if the packet is NOT blocked
-	 */
-
-	public boolean executeActions(Player p, Object packet) {
-		if (p == null || packet == null || NESSAnticheat.getInstance() == null) {
-			return true;
-		}
-		String packetname = packet.getClass().getSimpleName().toLowerCase();
-		if (packetname.contains("position")) {
-			return BadPackets.Check(p, ReflectionUtility.getPacketName(packet));
-		} else if (packetname.contains("flying")) {
-			return PingSpoof.Check(p, packet);
-		}
-		if (KillauraFalseFlyingPacket.Check(packet, p)) {
-			return true;
-		}
-		return MorePackets.Check(p, packet);
-	}
-
 	/**
 	 * Get the Channel of a Player
 	 * 

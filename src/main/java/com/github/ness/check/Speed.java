@@ -103,7 +103,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 						bypass = true;
 					}
 				}
-				if (y > 0.36 && y < 0.419 && !(y == 0.404) && !(y == 0.365) && !(y == 0.395) && !bypass && !(y == 0.386)
+				if (y > 0.37 && y < 0.419 && !(y == 0.404) && !(y == 0.395) && !bypass && !(y == 0.386)
 						&& !(y == 0.414) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 					punish(e, "MiniJump1 " + y);
 				} else if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
