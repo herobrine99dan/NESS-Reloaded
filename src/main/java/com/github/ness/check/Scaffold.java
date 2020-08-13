@@ -24,7 +24,6 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent> {
 	void checkEvent(BlockPlaceEvent e) {
 		Check1(e);
 		Check2(e);
-		Check3(e);
 	}
 
 	public void Check1(BlockPlaceEvent event) {
@@ -50,23 +49,12 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent> {
 			if (!event.getBlock().getLocation().equals(target.getLocation()) && !event.isCancelled()
 					&& target.getType().isSolid() && !target.getType().name().toLowerCase().contains("sign")
 					&& !target.getType().toString().toLowerCase().contains("fence")
-					&& player.getLocation().getY() > event.getBlock().getLocation().getY())
+					&& player.getLocation().getY() > event.getBlock().getLocation().getY()) {
 				if (manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
 					event.setCancelled(true);
 				}
-				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold", "Impossible"));
-		}
-	}
-
-	public void Check3(BlockPlaceEvent e) {
-		Player p = e.getPlayer();
-		if (p.isSprinting() && !Utility.hasflybypass(e.getPlayer())
-				&& !(e.getPlayer().getGameMode() == GameMode.CREATIVE)) {
-			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-				e.setCancelled(true);
+				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold", "Impossible1"));
 			}
-			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Scaffold", "Impossible"));
 		}
 	}
-
 }

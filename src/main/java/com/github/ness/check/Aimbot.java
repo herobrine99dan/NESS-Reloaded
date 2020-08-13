@@ -28,7 +28,6 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	void checkEvent(PlayerMoveEvent e) {
 		Check(e);
 		Check1(e);
-		Check2(e);
 		Check3(e);
 		Check4(e);
 	}
@@ -96,23 +95,6 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 			return true;
 		}
 		return false;
-	}
-	
-	/**
-	 * Check if Yaw Rotations are equals
-	 * @param e
-	 */
-	public void Check2(PlayerMoveEvent event) {
-		Location to = event.getTo().clone();
-		Location from = event.getFrom().clone();
-		Player p = event.getPlayer();
-		float yaw = to.getYaw() - from.getYaw();
-		NessPlayer np = this.manager.getPlayer(p);
-		float result = yaw - np.lastYaw;
-		if(result == 0.0 && yaw != 0.0 && np.lastYaw != 0.0) {
-			np.setViolation(new Violation("Aimbot", "EqualRotations"));
-		}
-		np.lastYaw = yaw;
 	}
 
 	public void Check3(PlayerMoveEvent e) {

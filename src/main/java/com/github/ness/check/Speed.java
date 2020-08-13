@@ -24,15 +24,13 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
-		//Check(e);
+		// Check(e);
 		Check1(e);
 		Check3(e);
 	}
 
 	@Override
 	void checkAsyncPeriodic(NessPlayer player) {
-		player.SpeedMaxDistanceViolationsAlert = 0;
-		player.InvalidVelocitySpeedCounter = 0;
 	}
 
 	private void punish(PlayerMoveEvent e, String module) {
@@ -103,8 +101,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 						bypass = true;
 					}
 				}
-				if (y > 0.37 && y < 0.419 && !(y == 0.404) && !(y == 0.395) && !bypass && !(y == 0.386)
-						&& !(y == 0.414) && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
+				if (y > 0.37 && y < 0.419 && !(y == 0.404) && !(y == 0.395) && !bypass && !(y == 0.386) && !(y == 0.414)
+						&& !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 					punish(e, "MiniJump1 " + y);
 				} else if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 					punish(e, "MiniJump2 " + y);
@@ -136,22 +134,14 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		float resultX = Math.abs((float) (Math.sin(f) * p.getWalkSpeed())) + 0.02f;
 		float resultZ = Math.abs((float) (Math.cos(f) * p.getWalkSpeed())) + 0.02f;
 		float maxDist = resultX + resultZ + 0.04f;
-		if (p.isSneaking()) {
-			maxDist = 0.170f;
-		}
 		float xVelocity = (float) p.getVelocity().getX();
 		float zVelocity = (float) p.getVelocity().getZ();
 		maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.11;
 		maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.06;
-		if (!p.isOnGround()) {
-			maxDist += 0.01f;
-		} else if (p.isOnGround()) {
-			maxDist = 0.34f;
-		}
-		if (p.isSprinting() && p.isOnGround()) {
-			maxDist *= 1.2f;
+		if (p.isSprinting() && Utility.isMathematicallyOnGround(to.getY())) {
+			maxDist = 0.38f;
 		} else if (p.isSprinting()) {
-			maxDist *= 1.47f;
+			maxDist *= 1.48f;
 		}
 		if (to.clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")) {
 			maxDist *= 1.24f;
@@ -159,71 +149,34 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (from.clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")) {
 			maxDist *= 1.24f;
 		}
+		if (p.isSneaking()) {
+			maxDist = 0.172f;
+			maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.11;
+			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.06;
+		}
 		if (speedLevel > 0) {
 			dist -= (dist / 100.0) * (speedLevel * 20.0);
 		}
 		float result = dist - maxDist;
 		// p.sendMessage("maxDist: " + maxDist + " Dist: " + dist);
 		if (result > 0.1) {
-			np.SpeedMaxDistanceViolationsAlert++;
-			if (np.SpeedMaxDistanceViolationsAlert > 1) {
-				this.punish(event, "MaxDistance: " + dist + " Max: " + maxDist);
-				np.SpeedMaxDistanceViolationsAlert = 0;
-			}
+			this.punish(event, "MaxDistance: " + dist + " Max: " + maxDist);
 		}
 	}
 
 	public void Check3(PlayerMoveEvent e) {
-		Location to = e.getTo().clone();
-		Location from = e.getFrom().clone();
 		NessPlayer np = this.manager.getPlayer(e.getPlayer());
 		Player p = e.getPlayer();
 		double y = np.getMovementValues().yDiff;
 		double yresult = y - p.getVelocity().getY();
-		// Vector result = v.subtract(p.getVelocity());
 		if (Utility.hasflybypass(p) || Utility.hasBlock(p, Material.SLIME_BLOCK) || Utility.hasWater(p)
 				|| Utility.isInWater(p)) {
 			return;
 		}
-		if (Utility.getMaterialName(to).contains("water") || Utility.getMaterialName(to).contains("lava")
-				|| Utility.getMaterialName(from).contains("water") || Utility.getMaterialName(from).contains("water")) {
-			return;
-		}
-		if (Utility.getMaterialName(to).contains("ladder") || Utility.getMaterialName(from).contains("ladder")) {
-			return;
-		}
-		if (Utility.getMaterialName(to).contains("web") || Utility.getMaterialName(from).contains("web")) {
-			return;
-		}
-		if (Utility.getMaterialName(to).contains("stairs") || Utility.getMaterialName(from).contains("stairs")) {
-			return;
-		}
-		if (Utility.getMaterialName(to).contains("vine") || Utility.getMaterialName(from).contains("vine")) {
-			return;
-		}
-		if (Utility.getMaterialName(to).contains("fence") || Utility.getMaterialName(from).contains("fence")) {
-			return;
-		}
-		if (Utility.getMaterialName(to).contains("wall") || Utility.getMaterialName(from).contains("wall")) {
-			return;
-		}
-		if (Utility.getMaterialName(to).contains("carpet") || Utility.getMaterialName(from).contains("carpet")) {
-			return;
-		}
-		if (Utility.getMaterialName(to.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")
-				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")) {
-			return;
-		}
-		if (Math.abs(yresult) > 0.9) {
-			if (Utility.hasflybypass(p) || manager.getPlayer(e.getPlayer()).isTeleported()) {
-				return;
-			}
-			np.InvalidVelocitySpeedCounter++;
-			if (np.InvalidVelocitySpeedCounter < 1) {
-				manager.getPlayer(p).setViolation(new Violation("Speed", "InvalidVelocity: " + yresult));
-				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-					e.setCancelled(true);
-				}
+		if (Math.abs(yresult) > 0.9 && !manager.getPlayer(e.getPlayer()).isTeleported()) {
+			manager.getPlayer(p).setViolation(new Violation("Speed", "InvalidVelocity: " + yresult));
+			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+				e.setCancelled(true);
 			}
 		}
 	}

@@ -219,19 +219,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistance(OnMove)"));
 			}
 		}
-		if (player.isSneaking() && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED)) {
-			if (hozDist > .2 && oldLoc.containsKey(player) && oldLoc.get(player).getY() == player.getLocation().getY()
-					&& PlayerManager.timeSince("wasFlight", player) >= 2000
-					&& nessPlayer.getTimeSinceLastWasOnIce() >= 1000
-					&& PlayerManager.timeSince("isHit", player) >= 1000
-					&& PlayerManager.timeSince("teleported", player) >= 500) {
-				if (!player.getWorld().getBlockAt(from).getType().isSolid()
-						&& !player.getWorld().getBlockAt(to).getType().isSolid()) {
-					punish(event, "FastSneak");
-					manager.getPlayer(player).setViolation(new Violation("FastSneak", "(OnMove)"));
-				}
-			}
-		}
 		if (to.getY() == from.getY()) {
 			if (!groundAround) {
 				if (hozDist > .35 && nessPlayer.getTimeSinceLastWasOnIce() >= 1000) {
@@ -239,27 +226,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						punish(event, "Fly");
 						manager.getPlayer(player)
 								.setViolation(new Violation("Fly", "InvalidDistance(NoGround OnMove)"));
-					}
-				}
-			} else {
-				if (!player.isOnGround()) {
-					if (oldLoc.containsKey(player)) {
-						if (oldLoc.get(player).getY() == player.getLocation().getY()) {
-							if (hozDist > .35 && !player.hasPotionEffect(PotionEffectType.SPEED) && !player.isFlying())
-								if (PlayerManager.timeSince("teleported", player) >= 2000
-										&& PlayerManager.timeSince("isHit", player) >= 1000
-										&& PlayerManager.timeSince("wasFlight", player) >= 2000) {
-									if (!player.isInsideVehicle() || player.isInsideVehicle()
-											&& player.getVehicle().getType() != EntityType.HORSE) {
-										if (!player.getWorld().getBlockAt(from).getType().isSolid()
-												&& !player.getWorld().getBlockAt(to).getType().isSolid()) {
-											punish(event, "Fly");
-											manager.getPlayer(player)
-													.setViolation(new Violation("Fly", "InvalidDistancenoHit(OnMove)"));
-										}
-									}
-								}
-						}
 					}
 				}
 			}
@@ -305,19 +271,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 								|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE)
 							punish(event, "Fly");
 						manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistance1(OnMove)"));
-					}
-				}
-			}
-			if (player.isSneaking() && !player.hasPotionEffect(PotionEffectType.SPEED)) {
-				if (hozDist > .2 && oldLoc.containsKey(player)
-						&& oldLoc.get(player).getY() == player.getLocation().getY()
-						&& PlayerManager.timeSince("wasFlight", player) >= 2000
-						&& nessPlayer.getTimeSinceLastWasOnIce() >= 1000
-						&& PlayerManager.timeSince("isHit", player) >= 1000) {
-					if (!player.getWorld().getBlockAt(from).getType().isSolid()
-							&& !player.getWorld().getBlockAt(to).getType().isSolid()) {
-						punish(event, "FastSneak");
-						manager.getPlayer(player).setViolation(new Violation("FastSneak", "(OnMove)"));
 					}
 				}
 			}

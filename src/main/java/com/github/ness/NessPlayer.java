@@ -57,7 +57,6 @@ public class NessPlayer implements AutoCloseable {
 	public float lastPitch; // Used in GhostHand
 	public float lastYaw;
 	public int AimbotPatternCounter; // For Aimbot
-	public int InvalidVelocitySpeedCounter; // A Counter For Speed Invalid Velocity
 	public long lastPacketTime; //Used in BadPackets
 	public long movementPackets; //Used in BadPackets
 	public double lastStrafeDist; //Used in Strafe
@@ -65,7 +64,6 @@ public class NessPlayer implements AutoCloseable {
 	public int noGround; //Used in NoGround Check 
 	public long pingspooftimer; //For PingSpoof
 	public long oldpingspooftimer; //For PingSpoof
-	public int SpeedMaxDistanceViolationsAlert; //Used In MaxDistance Check (I'm applying the same concept which i've used to fix false positives in NoGround Check)
 	@Getter
 	private MovementValues movementValues;
 
