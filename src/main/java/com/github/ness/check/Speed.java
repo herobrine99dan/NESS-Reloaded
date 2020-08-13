@@ -24,7 +24,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
-		Check(e);
+		//Check(e);
 		Check1(e);
 		Check3(e);
 	}

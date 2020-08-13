@@ -13,8 +13,8 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 	public BadPackets(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(ReceivedPacketEvent.class));
 	}
-	//I don't care about 1.12 timer bypass
-	private static final double MAX_PACKETS_PER_TICK = 1.12;
+
+	private static final double MAX_PACKETS_PER_TICK = 1.08;
 
 	/**
 	 * From Crescent AntiCheat
@@ -60,7 +60,7 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 					 * likely to be cheating.
 					 */
 					if (perecentageDifference > 7.0) {
-						np.setViolation(new Violation("BadPackets", perecentageDifference + " packets: " + movementsPerTick));
+						np.setViolation(new Violation("BadPackets", Math.round(perecentageDifference) + " packets: " + movementsPerTick));
 						e.setCancelled(true);
 					}
 				}

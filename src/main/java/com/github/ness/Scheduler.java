@@ -17,8 +17,8 @@ public class Scheduler {
 			@Override
 			public void run() {
 				for (Player p : Bukkit.getOnlinePlayers()) {
-					NessPlayer np = NESSAnticheat.getInstance().getCheckManager().getPlayer(p);
-					
+					OldMovementChecks.oldLoc.remove(p);
+					OldMovementChecks.oldLoc.put(p, p.getLocation());
 				}
 			}
 		}, 0L, 10L);

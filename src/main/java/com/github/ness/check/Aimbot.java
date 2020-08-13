@@ -109,7 +109,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		float yaw = to.getYaw() - from.getYaw();
 		NessPlayer np = this.manager.getPlayer(p);
 		float result = yaw - np.lastYaw;
-		if(result == 0.0 && yaw != 0.0) {
+		if(result == 0.0 && yaw != 0.0 && np.lastYaw != 0.0) {
 			np.setViolation(new Violation("Aimbot", "EqualRotations"));
 		}
 		np.lastYaw = yaw;

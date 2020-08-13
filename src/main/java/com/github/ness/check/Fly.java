@@ -163,8 +163,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 					&& Utility.isMathematicallyOnGround(event.getFrom().getY()))) {
 				double yResult = Math.abs(yDiff - player.getVelocity().getY());
 				if (yResult != 0.0) {
-					player.sendMessage("InvalidJumpMotion " + yResult);
-					event.setCancelled(true);
+					punish(event, event.getPlayer(), "InvalidJumpMotion");
 				}
 			}
 		}

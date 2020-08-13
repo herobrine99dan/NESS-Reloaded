@@ -102,10 +102,6 @@
 									<pattern>nonapi.io.github.classgraph</pattern>
 									<shadedPattern>com.github.ness.shaded.nonapi.io.github.classgraph</shadedPattern>
 								</relocation>
-								<relocation>
-									<pattern>com.comphenix.packetwrapper</pattern>
-									<shadedPattern>com.github.ness.shaded.com.comphenix.packetwrapper</shadedPattern>
-								</relocation>
 							</relocations>
 						</configuration>
 					</execution>
@@ -141,11 +137,6 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- ProtocolLib -->
-		<dependency>
-			<groupId>com.comphenix.protocol</groupId>
-			<artifactId>ProtocolLib</artifactId>
-			<version>${protocollib.version}</version>
-		</dependency>
 		<!-- Spigot API -->
 		<dependency>
 			<groupId>org.spigotmc</groupId>

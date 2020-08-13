@@ -8,8 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
 import com.github.ness.CheckManager;
 import com.github.ness.nms.NPC;
 import com.github.ness.utility.Utility;
@@ -55,14 +53,14 @@ public class KillauraBotCheck extends AbstractCheck<EntityDamageByEntityEvent> {
 		return loc;
 	}
 
-	public static void Check1(PacketEvent event) {
-		Player p = event.getPlayer();
-		PacketContainer packet = event.getPacket();
-		if (p == null) {
-			return;
-		}
+	public static void Check1() {
+		//Player p = event.getPlayer();
+		//PacketContainer packet = event.getPacket();
+		//if (p == null) {
+		//	return;
+		//}
 		// WrapperPlayClientUseEntity pac = new WrapperPlayClientUseEntity(packet);
-		String id = npclist.getOrDefault(p.getName(), "");
+		//String id = npclist.getOrDefault(p.getName(), "");
 		// if (id.equals(Integer.toString(pac.getTargetID()))) {
 		// WarnHacks.warnHacks(p, "Killaura", 1, -1.0D, 2, "KillauraBot", false);
 		return;

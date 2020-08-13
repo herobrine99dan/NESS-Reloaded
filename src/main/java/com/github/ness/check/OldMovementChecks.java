@@ -22,7 +22,7 @@ import com.github.ness.utility.Utility;
 
 public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 
-	HashMap<Player, Location> oldLoc = new HashMap<>();
+	public static HashMap<Player, Location> oldLoc = new HashMap<>();
 
 	public OldMovementChecks(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerMoveEvent.class, 1, TimeUnit.SECONDS));
