@@ -1,10 +1,9 @@
 package com.github.ness.check;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -25,11 +24,11 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	void checkEvent(EntityDamageByEntityEvent e) {
 		Check(e);
 		Check1(e);
+		Check2(e);
 		Check3(e);
 		Check4(e);
 		Check5(e);
 		Check6(e);
-		Check7(e);
 	}
 
 	public void Check(EntityDamageByEntityEvent e) {
@@ -67,7 +66,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		}
 	}
 
-	public void Check3(EntityDamageByEntityEvent event) {
+	public void Check2(EntityDamageByEntityEvent event) {
 		if (event.getDamager() instanceof Player) {
 			Player player = (Player) event.getDamager();
 			if (player.getLocation().getPitch() == Math.round(player.getLocation().getPitch())) {
@@ -78,7 +77,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		}
 	}
 
-	public void Check4(EntityDamageByEntityEvent e) {
+	public void Check3(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player damager = (Player) e.getDamager();
 			if (isLookingAt(damager, e.getEntity().getLocation()) < -0.2D) {
@@ -87,18 +86,19 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		}
 	}
 
-	public void Check5(EntityDamageByEntityEvent e) {
+	public void Check4(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
 			if (!p.hasLineOfSight(e.getEntity())) {
-				if(!Utility.getMaterialName(p.getTargetBlock(null, 5).getLocation()).contains("slab")) {
+				Block b = p.getTargetBlock(null, 5);
+				if(!Utility.getMaterialName(b.getLocation()).contains("slab") && b.getType().isSolid() && b.getType().isOccluding()) {
 					punish(e, p, "WallHit");
 				}
 			}
 		}
 	}
 
-	public void Check6(EntityDamageByEntityEvent e) {
+	public void Check5(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			if (e.getEntity().getEntityId() == e.getDamager().getEntityId()) {
 				punish(e, (Player) e.getEntity(), "SelfHit");
@@ -106,7 +106,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		}
 	}
 
-	public void Check7(EntityDamageByEntityEvent e) {
+	public void Check6(EntityDamageByEntityEvent e) {
 		if (!e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK))
 			return;
 		if (e.getDamager() instanceof Player) {

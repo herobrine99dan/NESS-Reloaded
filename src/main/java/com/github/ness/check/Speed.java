@@ -27,6 +27,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		// Check(e);
 		Check1(e);
 		Check3(e);
+		Check4(e);
 	}
 
 	@Override
@@ -180,4 +181,34 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 	}
+
+	public void Check4(PlayerMoveEvent e) {
+		Location to = e.getTo().clone();
+		Location from = e.getFrom().clone();
+		NessPlayer np = this.manager.getPlayer(e.getPlayer());
+		double dist = this.manager.getPlayer(e.getPlayer()).getMovementValues().xzDiffMultiplier;
+		double lastDist = np.lastSpeedPredictionDist;
+		np.lastSpeedPredictionDist = dist;
+		boolean lastOnGround = np.lastSpeedPredictionOnGround;
+		np.lastSpeedPredictionOnGround = Utility.isMathematicallyOnGround(to.getY());
+		float friction = 0.91F;
+		if (Utility.getMaterialName(to).toLowerCase().contains("ladder")
+				|| Utility.getMaterialName(from).toLowerCase().contains("ladder")
+				|| Utility.hasVehicleNear(e.getPlayer(), 4) || e.getPlayer().getNearbyEntities(2, 2, 2).isEmpty()) {
+			return;
+		}
+		if (Utility.getMaterialName(to.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")
+				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")) {
+			return;
+		}
+		double shiftedLastDist = lastDist * friction;
+		double equalness = dist - shiftedLastDist;
+		float scaledEqualness = (float) (equalness * 136);
+		if (!Utility.isMathematicallyOnGround(to.getY()) && !lastOnGround) {
+			if (scaledEqualness > 1.1) {
+				this.punish(e, "InvalidFriction: " + scaledEqualness);
+			}
+		}
+	}
+
 }

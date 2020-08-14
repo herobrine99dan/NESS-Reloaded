@@ -99,6 +99,9 @@ public class NessPlayer implements AutoCloseable {
 
 	private final boolean devMode;
 
+	public double lastSpeedPredictionDist; //For Speed Prediction
+	public boolean lastSpeedPredictionOnGround; //For Speed Prediction
+
 	NessPlayer(Player player, boolean devMode) {
 		this.player = player;
 		this.teleported = false;
