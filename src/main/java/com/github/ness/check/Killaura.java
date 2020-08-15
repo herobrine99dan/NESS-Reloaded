@@ -38,7 +38,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Entity entity = e.getEntity();
 			double range = Math.hypot(p.getLocation().getX() - entity.getLocation().getX(),
 					p.getLocation().getZ() - entity.getLocation().getZ());
-			double maxReach = 3.35D;
+			double maxReach = 3.4D;
 			if (p.getGameMode().equals(GameMode.CREATIVE)) {
 				maxReach = 5.4D;
 			}
@@ -47,6 +47,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 					|| Utility.yawTo180F(p.getLocation().getYaw() - entity.getLocation().getYaw()) <= 90) {
 				maxReach += 0.2D;
 			}
+			maxReach += (Utility.getPing(p) / 100) / 10;
+			range -= Math.abs(p.getVelocity().getX()) + Math.abs(p.getVelocity().getZ());
 			if ((range > maxReach && range < 6.5D)
 					|| Utility.getHorizontalDistance(p.getLocation(), entity.getLocation()) > 5) {
 				this.punish(e, p, "Reach: " + range);

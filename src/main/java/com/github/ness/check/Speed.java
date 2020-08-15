@@ -102,7 +102,10 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 						bypass = true;
 					}
 				}
-				if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
+				if (y > 0.37 && y < 0.419 && !(y == 0.404) && !(y == 0.395) && !bypass && !(y == 0.386) && !(y == 0.414)
+						&& !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
+					punish(e, "MiniJump1 " + y);
+				} else if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 					punish(e, "MiniJump2 " + y);
 				}
 			}
@@ -129,13 +132,13 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		float f = to.getYaw() * 0.017453292F;
-		float resultX = Math.abs((float) (Math.sin(f) * p.getWalkSpeed())) + 0.02f;
-		float resultZ = Math.abs((float) (Math.cos(f) * p.getWalkSpeed())) + 0.02f;
+		float resultX = Math.abs((float) (Math.sin(f) * p.getWalkSpeed())) + 0.03f;
+		float resultZ = Math.abs((float) (Math.cos(f) * p.getWalkSpeed())) + 0.03f;
 		float maxDist = resultX + resultZ + 0.04f;
 		float xVelocity = (float) p.getVelocity().getX();
 		float zVelocity = (float) p.getVelocity().getZ();
-		maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.11;
-		maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.06;
+		maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.12;
+		maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.1;
 		if (p.isSprinting() && Utility.isMathematicallyOnGround(to.getY())) {
 			maxDist = 0.38f;
 		} else if (p.isSprinting()) {
@@ -155,6 +158,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (speedLevel > 0) {
 			dist -= (dist / 100.0) * (speedLevel * 20.0);
 		}
+		float pingresult = Utility.getPing(p) / 100;
+		float toAdd = pingresult / 7;
+		maxDist += toAdd;
 		float result = dist - maxDist;
 		// p.sendMessage("maxDist: " + maxDist + " Dist: " + dist);
 		if (result > 0.1) {
@@ -171,7 +177,11 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.isInWater(p)) {
 			return;
 		}
-		if (Math.abs(yresult) > 0.9 && !manager.getPlayer(e.getPlayer()).isTeleported()) {
+		double max = 0.9;
+		float pingresult = Utility.getPing(p) / 100;
+		float toAdd = pingresult / 6;
+		max += toAdd;
+		if (Math.abs(yresult) > max && !manager.getPlayer(e.getPlayer()).isTeleported()) {
 			manager.getPlayer(p).setViolation(new Violation("Speed", "InvalidVelocity: " + yresult));
 			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 				e.setCancelled(true);
@@ -198,11 +208,12 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")) {
 			return;
 		}
+		
 		double shiftedLastDist = lastDist * friction;
 		double equalness = dist - shiftedLastDist;
 		float scaledEqualness = (float) (equalness * 138);
 		if (!Utility.isMathematicallyOnGround(to.getY()) && !lastOnGround) {
-			if (scaledEqualness > 1.1) {
+			if (scaledEqualness > 1.25) {
 				this.punish(e, "InvalidFriction: " + scaledEqualness);
 			}
 		}

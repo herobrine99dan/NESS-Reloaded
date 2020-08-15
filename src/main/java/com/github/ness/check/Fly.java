@@ -32,7 +32,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Check3(e);
 		Check4(e);
 		Check5(e);
-		Check6(e);
+		//Check6(e);
 	}
 
 	protected List<String> bypasses = Arrays.asList("slab", "stair", "snow", "bed", "skull", "step", "slime");

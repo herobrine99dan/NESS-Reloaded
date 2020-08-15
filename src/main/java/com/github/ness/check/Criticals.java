@@ -24,7 +24,7 @@ public class Criticals extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check(EntityDamageByEntityEvent event) {
 		if (event.getDamager() instanceof Player) {
 			Player player = (Player) event.getDamager();
-			if (!player.isOnGround() && !Utility.hasflybypass(player)
+			if (!player.isOnGround() && !Utility.isMathematicallyOnGround(player.getLocation().getY()) && !Utility.hasflybypass(player)
 					&& !player.getLocation().getBlock().getRelative(BlockFace.DOWN).isLiquid()
 					&& !player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid()) {
 				if (player.getLocation().getY() % 1.0D == 0.0D && player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {

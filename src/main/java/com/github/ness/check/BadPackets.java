@@ -14,7 +14,7 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 		super(manager, CheckInfo.eventOnly(ReceivedPacketEvent.class));
 	}
 
-	private static final double MAX_PACKETS_PER_TICK = 1.08;
+	private static final double MAX_PACKETS_PER_TICK = 1.12;
 
 	/**
 	 * From Crescent AntiCheat
@@ -38,7 +38,7 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 				double maxPackets = MAX_PACKETS_PER_TICK;
 				if (ping > 100 && ping < 300) {
 					float pingresult = ping / 100;
-					float toAdd = pingresult / 10;
+					float toAdd = pingresult / 5;
 					maxPackets += toAdd;
 				}
 				// Check every second.

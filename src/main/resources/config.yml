@@ -60,7 +60,6 @@ enabled-checks:
   - 'InventoryHack'
   - 'Jesus'
   - 'Killaura'
-  - 'KillauraFalseFlying'
   - 'Hitbox'
   - 'MorePackets'
   - 'NoSlowDownBow'
