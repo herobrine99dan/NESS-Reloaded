@@ -36,6 +36,27 @@ public class Utility {
 		String v = Bukkit.getServer().getClass().getPackage().getName();
 		return v.substring(v.lastIndexOf('.') + 1);
 	}
+	
+    public static boolean nextToWall(Player p)
+    {
+        Location xp = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(), p.getLocation().getZ());
+        Location xn = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(), p.getLocation().getZ());
+        Location zp = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(), p.getLocation().getZ());
+        Location zn = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(), p.getLocation().getZ());
+        Location xpl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(), p.getLocation().getZ());
+        Location xnl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(), p.getLocation().getZ());
+        Location zpl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(), p.getLocation().getZ());
+        Location znl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(), p.getLocation().getZ());
+        if (xp.getBlock().getType().isSolid() && xpl.getBlock().getType().isSolid()) {
+        } else if (xn.getBlock().getType().isSolid() && xnl.getBlock().getType().isSolid()) {
+            return true;
+        } else if (zp.getBlock().getType().isSolid() && zpl.getBlock().getType().isSolid()) {
+            return true;
+        } else if (zn.getBlock().getType().isSolid() && znl.getBlock().getType().isSolid()) {
+            return true;
+        }
+        return false;
+    }
 
 	public static String getMaterialName(Location loc) {
 		return loc.getBlock().getType().name().toLowerCase();

@@ -179,7 +179,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 		double max = 0.9;
 		float pingresult = Utility.getPing(p) / 100;
-		float toAdd = pingresult / 6;
+		float toAdd = pingresult / 4;
 		max += toAdd;
 		if (Math.abs(yresult) > max && !manager.getPlayer(e.getPlayer()).isTeleported()) {
 			manager.getPlayer(p).setViolation(new Violation("Speed", "InvalidVelocity: " + yresult));
@@ -201,10 +201,10 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		float friction = 0.91F;
 		if (Utility.getMaterialName(to).toLowerCase().contains("ladder")
 				|| Utility.getMaterialName(from).toLowerCase().contains("ladder")
-				|| Utility.hasVehicleNear(e.getPlayer(), 4) || e.getPlayer().getNearbyEntities(2, 2, 2).isEmpty()) {
+				|| Utility.hasVehicleNear(e.getPlayer(), 4) || e.getPlayer().getNearbyEntities(2.3, 2.3, 2.3).isEmpty()) {
 			return;
 		}
-		if (Utility.getMaterialName(to.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")
+		if (Utility.nextToWall(e.getPlayer()) || Utility.getMaterialName(to.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")
 				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")) {
 			return;
 		}
@@ -213,7 +213,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		double equalness = dist - shiftedLastDist;
 		float scaledEqualness = (float) (equalness * 138);
 		if (!Utility.isMathematicallyOnGround(to.getY()) && !lastOnGround) {
-			if (scaledEqualness > 1.25) {
+			if (scaledEqualness > 1.15) {
 				this.punish(e, "InvalidFriction: " + scaledEqualness);
 			}
 		}

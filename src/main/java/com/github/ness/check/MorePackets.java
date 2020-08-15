@@ -14,17 +14,17 @@ public class MorePackets extends AbstractCheck<ReceivedPacketEvent> {
 	public MorePackets(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(ReceivedPacketEvent.class, 1, TimeUnit.SECONDS));
 	}
-	
+
 	@Override
 	void checkAsyncPeriodic(NessPlayer player) {
 		player.normalPacketsCounter = 0;
 	}
-	
+
 	@Override
 	void checkEvent(ReceivedPacketEvent e) {
 		int ping = Utility.getPing(e.getNessPlayer().getPlayer());
 		int maxpackets = 65;
-		int maxPackets = maxpackets * (ping / 100);
+		int maxPackets = maxpackets * ((ping / 100) / 6);
 		if (ping < 150) {
 			maxPackets = maxpackets;
 		}

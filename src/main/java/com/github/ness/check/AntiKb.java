@@ -38,7 +38,7 @@ public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 				if (Math.abs(to.distanceSquared(from)) < 0.1) {
 					manager.getPlayer(p).setViolation(new Violation("AntiKb", ""));
 				}
-			}, 5L);
+			}, 10L);
 		}
 	}
 }
