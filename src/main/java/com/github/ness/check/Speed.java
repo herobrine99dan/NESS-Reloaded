@@ -24,10 +24,10 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
-		// Check(e);
+		Check(e);
 		Check1(e);
+		Check2(e);
 		Check3(e);
-		Check4(e);
 	}
 
 	@Override
@@ -102,10 +102,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 						bypass = true;
 					}
 				}
-				if (y > 0.37 && y < 0.419 && !(y == 0.404) && !(y == 0.395) && !bypass && !(y == 0.386) && !(y == 0.414)
-						&& !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
-					punish(e, "MiniJump1 " + y);
-				} else if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
+				if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
 					punish(e, "MiniJump2 " + y);
 				}
 			}
@@ -165,7 +162,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
-	public void Check3(PlayerMoveEvent e) {
+	public void Check2(PlayerMoveEvent e) {
 		NessPlayer np = this.manager.getPlayer(e.getPlayer());
 		Player p = e.getPlayer();
 		double y = np.getMovementValues().yDiff;
@@ -182,7 +179,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
-	public void Check4(PlayerMoveEvent e) {
+	public void Check3(PlayerMoveEvent e) {
 		Location to = e.getTo().clone();
 		Location from = e.getFrom().clone();
 		NessPlayer np = this.manager.getPlayer(e.getPlayer());
@@ -203,7 +200,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 		double shiftedLastDist = lastDist * friction;
 		double equalness = dist - shiftedLastDist;
-		float scaledEqualness = (float) (equalness * 136);
+		float scaledEqualness = (float) (equalness * 138);
 		if (!Utility.isMathematicallyOnGround(to.getY()) && !lastOnGround) {
 			if (scaledEqualness > 1.1) {
 				this.punish(e, "InvalidFriction: " + scaledEqualness);

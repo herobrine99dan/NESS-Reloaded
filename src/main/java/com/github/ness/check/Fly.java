@@ -155,15 +155,16 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (Utility.getMaterialName(event.getTo().clone().add(0, -0.3, 0)).contains("slab")
 				|| event.getTo().getBlock().isLiquid()
 				|| event.getTo().clone().add(0, 1.8, 0).getBlock().getType().isSolid()
-				|| event.getTo().clone().add(0.3, 1.8, 0.3).getBlock().getType().isSolid() || event.getTo().clone().add(-0.3, 1.8, -0.3).getBlock().getType().isSolid()) {
+				|| event.getTo().clone().add(0.3, 1.8, 0.3).getBlock().getType().isSolid()
+				|| event.getTo().clone().add(-0.3, 1.8, -0.3).getBlock().getType().isSolid()) {
 			return;
 		}
 		if (yDiff > 0) {
-			if (player.getVelocity().getY() == 0.42f && (!Utility.isMathematicallyOnGround(event.getTo().getY())
-					&& Utility.isMathematicallyOnGround(event.getFrom().getY()))) {
+			if (player.getVelocity().getY() == 0.42f && !Utility.isMathematicallyOnGround(event.getTo().getY())
+					&& Utility.isMathematicallyOnGround(event.getFrom().getY())) {
 				double yResult = Math.abs(yDiff - player.getVelocity().getY());
 				if (yResult != 0.0) {
-					punish(event, event.getPlayer(), "InvalidJumpMotion");
+					punish(event, event.getPlayer(), "InvalidJumpMotion yResult: " + yResult + "  yDiff: " + yDiff);
 				}
 			}
 		}

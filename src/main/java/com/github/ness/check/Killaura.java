@@ -1,6 +1,7 @@
 package com.github.ness.check;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -37,12 +38,17 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Entity entity = e.getEntity();
 			double range = Math.hypot(p.getLocation().getX() - entity.getLocation().getX(),
 					p.getLocation().getZ() - entity.getLocation().getZ());
-			double maxReach = 3.25D;
-			if (!p.isSprinting() || isLookingAt(p, entity.getLocation()) < 0.6
-					|| Utility.specificBlockNear(e.getDamager().getLocation(), "water")) {
-				maxReach += 0.20D;
+			double maxReach = 3.35D;
+			if (p.getGameMode().equals(GameMode.CREATIVE)) {
+				maxReach = 5.4D;
 			}
-			if (range > maxReach && range < 6.5D) {
+			if (!p.isSprinting() || isLookingAt(p, entity.getLocation()) < 0.6
+					|| Utility.specificBlockNear(e.getDamager().getLocation(), "water")
+					|| Utility.yawTo180F(p.getLocation().getYaw() - entity.getLocation().getYaw()) <= 90) {
+				maxReach += 0.2D;
+			}
+			if ((range > maxReach && range < 6.5D)
+					|| Utility.getHorizontalDistance(p.getLocation(), entity.getLocation()) > 5) {
 				this.punish(e, p, "Reach: " + range);
 			}
 		}
@@ -91,7 +97,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Player p = (Player) e.getDamager();
 			if (!p.hasLineOfSight(e.getEntity())) {
 				Block b = p.getTargetBlock(null, 5);
-				if(!Utility.getMaterialName(b.getLocation()).contains("slab") && b.getType().isSolid() && b.getType().isOccluding()) {
+				if (!Utility.getMaterialName(b.getLocation()).contains("slab") && b.getType().isSolid()
+						&& b.getType().isOccluding()) {
 					punish(e, p, "WallHit");
 				}
 			}

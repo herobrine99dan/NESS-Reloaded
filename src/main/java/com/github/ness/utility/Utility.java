@@ -299,7 +299,8 @@ public class Utility {
 	}
 
 	public static ImmutableLoc locationToImmutableLoc(Location loc) {
-		return new ImmutableLoc(loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
+		return new ImmutableLoc(loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(),
+				loc.getPitch());
 	}
 
 	public static boolean specificBlockNear(Location loc, String m) {
