@@ -278,7 +278,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		if (!(player.isSneaking() && below.name().toLowerCase().contains("ladder")) && !player.isFlying() && !player.isOnGround()
 				&& to.getY() % 1.0 == 0 && PlayerManager.timeSince("lastJoin", player) >= 1000
 				&& PlayerManager.timeSince("teleported", player) >= 5000
-				&& !below.toString().toLowerCase().contains("stairs")) {
+				&& !below.toString().toLowerCase().contains("stairs") && !below.toString().toLowerCase().contains("slime")) {
 			if (!Utility.getPlayerUnderBlock(player).getType().name().toLowerCase().contains("ice")
 					&& !Utility.getPlayerUpperBlock(player).getType().isSolid()) {
 				int failed = nessPlayer.noGround++;
@@ -298,7 +298,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			}
 			if (!groundAround && !player.isFlying()) {
 				if (dist > maxSpd && !player.hasPotionEffect(PotionEffectType.JUMP) && !player.isFlying()
-						&& PlayerManager.timeSince("isHit", player) >= 2000 && bottom.name().toLowerCase().contains("slime")) {
+						&& PlayerManager.timeSince("isHit", player) >= 2000 && !bottom.name().toLowerCase().contains("slime")) {
 					punish(event, "Fly");
 					manager.getPlayer(player).setViolation(new Violation("Fly", "NoGround(OnMove)"));
 				}
@@ -330,7 +330,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			} else {
 				step: if (to.getY() - from.getY() > .6 && !player.isFlying() && groundAround
 						&& !player.hasPotionEffect(PotionEffectType.JUMP)
-						&& PlayerManager.timeSince("wasFlight", player) >= 100 && bottom.name().toLowerCase().contains("slime")) {
+						&& PlayerManager.timeSince("wasFlight", player) >= 100 && !bottom.name().toLowerCase().contains("slime")) {
 					for (Entity ent : player.getNearbyEntities(2, 2, 2)) {
 						if (ent instanceof Boat)
 							break step;
