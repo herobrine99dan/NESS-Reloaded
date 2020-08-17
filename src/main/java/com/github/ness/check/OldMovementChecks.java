@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
@@ -45,6 +46,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 	@Override
 	void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
+		
 		Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0, 1, 0)).getType();
 		Material bottom = null;
 		boolean devMode = false;
@@ -81,13 +83,11 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		for (int x = -1; x <= 1; x++) {
 			for (int z = -1; z <= 1; z++) {
 				Material belowSel = player.getWorld().getBlockAt(player.getLocation().add(x, -1, z)).getType();
-				for (Material mat : new Material[] { Material.ICE, Material.PACKED_ICE, Material.PISTON_BASE,
-						Material.PISTON_STICKY_BASE }) {
-					if (belowSel == mat)
-						ice = true;
+				if(belowSel.name().toLowerCase().contains("piston") || belowSel.name().toLowerCase().contains("ice")) {
+					ice = true;
 				}
 				belowSel = player.getWorld().getBlockAt(player.getLocation().add(x, -.01, z)).getType();
-				if (belowSel == Material.WATER_LILY)
+				if (belowSel.name().toLowerCase().contains("lily"))
 					lilypad = true;
 				if (belowSel.isSolid()) {
 					nessPlayer.updateLastWasOnGround();
@@ -100,10 +100,10 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 					Material belowSel = player.getWorld().getBlockAt(player.getLocation().add(x, y, z)).getType();
 					if (!belowSel.isSolid())
 						surrounded = false;
-					if (belowSel == Material.WEB) {
+					if (belowSel.name().toLowerCase().contains("web")) {
 						web = true;
 					}
-					if (belowSel == Material.CACTUS)
+					if (belowSel.name().toLowerCase().contains("cactus"))
 						cactus = true;
 				}
 			}
@@ -120,8 +120,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				}
 			}
 		}
-		if ((below == Material.WATER || below == Material.STATIONARY_WATER || below == Material.LAVA
-				|| below == Material.STATIONARY_LAVA) && !player.isFlying()) {
+		if ((below.name().toLowerCase().contains("water") || below.name().toLowerCase().contains("lava")) && !player.isFlying()) {
 			if (!waterAround && !lilypad
 					&& !player.getWorld().getBlockAt(player.getLocation().add(0, 1, 0)).isLiquid()) {
 				if ((Math.abs(from.getY() - to.getY()) + "").contains("00000000") || to.getY() == from.getY()) {
@@ -196,7 +195,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 								.getType();
 						if (!player.getWorld().getBlockAt(from).getType().isSolid()
 								&& !player.getWorld().getBlockAt(to).getType().isSolid()) {
-							if (small != Material.TRAP_DOOR && small != Material.IRON_TRAPDOOR) {
+							if (!small.name().toLowerCase().contains("trap")) {
 								if (devMode)
 									MSG.tell(player, "&9Dev> &7Speed amo: " + hozDist);
 								if (player.isBlocking()) {
@@ -229,47 +228,14 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				}
 			}
 		} else {
-			if (groundAround && !player.isFlying() && below == Material.LADDER
-					&& player.getWorld().getBlockAt(player.getLocation()).getType() == Material.LADDER) {
+			if (groundAround && !player.isFlying() && below.name().toLowerCase().contains("ladder")
+					&& player.getWorld().getBlockAt(player.getLocation()).getType().name().toLowerCase().contains("ladder")) {
 				if (from.getY() < to.getY() && PlayerManager.timeSince("isHit", player) >= 1000
 						&& Utility.distToBlock(player.getLocation()) >= 3
 						&& nessPlayer.getTimeSinceLastWasOnGround() >= 2000) {
 					if (vertDist > .118 && !player.isSneaking()) {
 						punish(event, "FastLadder");
 						manager.getPlayer(player).setViolation(new Violation("FastLadder", "(OnMove)"));
-					}
-				}
-			}
-		}
-		if (from.getY() % .5 != 0 && to.getY() % .5 != 0 && !player.isFlying()) {
-			String amo = "";
-			Double diff = 1.0;
-			if (oldLoc.containsKey(player)) {
-				amo = to.getY() - oldLoc.get(player).getY() + "";
-				diff = Math.abs(to.getY() - oldLoc.get(player).getY());
-				if (amo.contains("999999") || amo.contains("0000000")
-						|| ((diff < 0.05 && diff >= 0)) && !groundAround) {
-					boolean fly = true;
-					for (Material antMat : new Material[] { Material.STATIONARY_WATER, Material.WATER, Material.LAVA,
-							Material.STATIONARY_LAVA, Material.CAULDRON, Material.CACTUS, Material.CARPET,
-							Material.SNOW, Material.LADDER, Material.CHEST, Material.ENDER_CHEST,
-							Material.TRAPPED_CHEST, Material.VINE }) {
-						if (player.getWorld().getBlockAt(player.getLocation().add(0, 1, 0)).isLiquid()
-								|| player.getWorld().getBlockAt(player.getLocation()).getType() == antMat
-								|| below == antMat
-								|| player.getWorld().getBlockAt(player.getLocation()).getType().isSolid()) {
-							fly = false;
-						}
-					}
-					if (fly && !web && PlayerManager.timeSince("sincePlace", player) >= 1000
-							&& nessPlayer.getTimeSinceLastWasOnIce() >= 1000
-							&& PlayerManager.timeSince("isHit", player) >= 1000 && bottom != Material.SLIME_BLOCK
-							&& PlayerManager.timeSince("wasFlight", player) >= 500
-							&& nessPlayer.getTimeSinceLastWasOnGround() >= 1500) {
-						if (!player.isInsideVehicle()
-								|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE)
-							punish(event, "Fly");
-						manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistance1(OnMove)"));
 					}
 				}
 			}
@@ -303,21 +269,21 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			manager.getPlayer(player).setViolation(new Violation("IllegalMovement", "(OnMove)"));
 		}
 		if (dist == 0) {
-			if (!groundAround && !web && !player.isFlying() && bottom != Material.SLIME_BLOCK && bottom != Material.VINE
+			if (!groundAround && !web && !player.isFlying() && !bottom.name().toLowerCase().contains("ladder") && !bottom.name().toLowerCase().contains("vine")
 					&& !cactus && PlayerManager.timeSince("isHit", player) >= 500) {
 				punish(event, "Fly");
 				manager.getPlayer(player).setViolation(new Violation("Fly", "NoDist(OnMove)"));
 			}
 		} // Changing isOnGround method, check in server side
-		if (!(player.isSneaking() && below == Material.LADDER) && !player.isFlying() && !player.isOnGround()
+		if (!(player.isSneaking() && below.name().toLowerCase().contains("ladder")) && !player.isFlying() && !player.isOnGround()
 				&& to.getY() % 1.0 == 0 && PlayerManager.timeSince("lastJoin", player) >= 1000
 				&& PlayerManager.timeSince("teleported", player) >= 5000
-				&& !below.toString().toLowerCase().contains("stairs") && below != Material.SLIME_BLOCK) {
+				&& !below.toString().toLowerCase().contains("stairs")) {
 			if (!Utility.getPlayerUnderBlock(player).getType().name().toLowerCase().contains("ice")
 					&& !Utility.getPlayerUpperBlock(player).getType().isSolid()) {
 				int failed = nessPlayer.noGround++;
 				if (failed > 3) {
-					if (!below.equals(Material.SLIME_BLOCK)) {
+					if (!below.name().toLowerCase().contains("slime")) {
 						punish(event, "NoGround");
 						manager.getPlayer(player).setViolation(new Violation("NoGround", "(OnMove)"));
 					}
@@ -332,7 +298,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			}
 			if (!groundAround && !player.isFlying()) {
 				if (dist > maxSpd && !player.hasPotionEffect(PotionEffectType.JUMP) && !player.isFlying()
-						&& PlayerManager.timeSince("isHit", player) >= 2000 && bottom != Material.SLIME_BLOCK) {
+						&& PlayerManager.timeSince("isHit", player) >= 2000 && bottom.name().toLowerCase().contains("slime")) {
 					punish(event, "Fly");
 					manager.getPlayer(player).setViolation(new Violation("Fly", "NoGround(OnMove)"));
 				}
@@ -355,7 +321,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				} else {
 					if (hozDist == 0 && !player.hasPotionEffect(PotionEffectType.JUMP)
 							&& PlayerManager.timeSince("wasFlight", player) >= 3000
-							&& PlayerManager.timeSince("sincePlace", player) >= 1000 && bottom != Material.SLIME_BLOCK
+							&& PlayerManager.timeSince("sincePlace", player) >= 1000 && bottom.name().toLowerCase().contains("slime")
 							&& !cactus && PlayerManager.timeSince("isHit", player) >= 500) {
 						punish(event, "Fly");
 						manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistance5(OnMove)"));
@@ -364,7 +330,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			} else {
 				step: if (to.getY() - from.getY() > .6 && !player.isFlying() && groundAround
 						&& !player.hasPotionEffect(PotionEffectType.JUMP)
-						&& PlayerManager.timeSince("wasFlight", player) >= 100 && bottom != Material.SLIME_BLOCK) {
+						&& PlayerManager.timeSince("wasFlight", player) >= 100 && bottom.name().toLowerCase().contains("slime")) {
 					for (Entity ent : player.getNearbyEntities(2, 2, 2)) {
 						if (ent instanceof Boat)
 							break step;
@@ -379,7 +345,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 					}
 				}
 			}
-			if (from.getY() - to.getY() > .3 && fallDist <= .4 && below != Material.STATIONARY_WATER
+			if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().toLowerCase().contains("water")
 					&& !player.getLocation().getBlock().isLiquid()) {
 				if (hozDist < .1 || !groundAround) {
 					if (groundAround && hozDist > .05 && PlayerManager.timeSince("isHit", player) >= 1000) {
@@ -388,17 +354,16 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 							punish(event, "Speed");
 						manager.getPlayer(player).setViolation(new Violation("Speed", "(OnMove)"));
 					} else if (PlayerManager.timeSince("breakTime", player) >= 2000
-							&& PlayerManager.timeSince("teleported", player) >= 500 && below != Material.PISTON_BASE
-							&& below != Material.PISTON_STICKY_BASE) {
+							&& PlayerManager.timeSince("teleported", player) >= 500 && !below.name().toLowerCase().contains("piston")) {
 						if ((!player.isInsideVehicle()
 								|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))
 								&& !player.isFlying() && to.getY() > 0) {
-							if (bottom != Material.SLIME_BLOCK)
+							if (!bottom.name().toLowerCase().contains("slime"))
 								punish(event, "NoFall");
 							manager.getPlayer(player).setViolation(new Violation("NoFall", "(OnMove)"));
 						}
 					}
-				} else if (bottom != Material.SLIME_BLOCK) {
+				} else if (!bottom.name().toLowerCase().contains("slime")) {
 					if (!player.isInsideVehicle()
 							|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE
 									&& PlayerManager.timeSince("isHit", player) >= 1000)
@@ -406,7 +371,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 					manager.getPlayer(player).setViolation(new Violation("Speed", "BunnyHop (OnMove)"));
 				}
 			}
-			if (from.getY() - to.getY() > 0.3 && below != Material.STATIONARY_WATER
+			if (from.getY() - to.getY() > 0.3 && !below.name().toLowerCase().contains("water")
 					&& !player.getLocation().getBlock().isLiquid()) {
 				for (Double amo : new Double[] { .3959395, .8152412, .4751395, .5317675 }) {
 					if (Math.abs(fallDist - amo) < .01 && !web) {
@@ -439,7 +404,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 					manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistance6(OnMove)"));
 				// Block rightBelow = player.getLocation().subtract(0, .1, 0).getBlock();
 			}
-			if (player.getWorld().getBlockAt(player.getLocation()).getType() == Material.WEB) {
+			if (player.getWorld().getBlockAt(player.getLocation()).getType().name().toLowerCase().contains("web")) {
 				if (dist > .2 && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED))
 					punish(event, "NoWeb");
 				manager.getPlayer(player).setViolation(new Violation("NoWeb", "(OnMove)"));
