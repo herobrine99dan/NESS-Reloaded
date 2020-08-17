@@ -1,8 +1,5 @@
 package com.github.ness.check;
 
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -44,8 +41,7 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent> {
 	public void Check2(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		Block target = player.getTargetBlock(null, 5);
-		if (event.getBlock().getWorld().getBlockAt(event.getBlock().getLocation().subtract(0.0D, 1.0D, 0.0D))
-				.getType() == Material.AIR) {
+		if (Utility.getMaterialName(event.getBlock().getWorld().getBlockAt(event.getBlock().getLocation().subtract(0.0D, 1.0D, 0.0D)).getLocation()).contains("air")) {
 			if (!event.getBlock().getLocation().equals(target.getLocation()) && !event.isCancelled()
 					&& target.getType().isSolid() && !target.getType().name().toLowerCase().contains("sign")
 					&& !target.getType().toString().toLowerCase().contains("fence")

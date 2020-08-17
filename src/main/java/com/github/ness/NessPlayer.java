@@ -1,5 +1,7 @@
 package com.github.ness;
 
+import java.awt.Color;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,9 +18,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.ness.api.PlayerViolationEvent;
 import com.github.ness.api.Violation;
+import com.github.ness.utility.DiscordWebhook;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -64,6 +68,7 @@ public class NessPlayer implements AutoCloseable {
 	public int noGround; //Used in NoGround Check 
 	public long pingspooftimer; //For PingSpoof
 	public long oldpingspooftimer; //For PingSpoof
+	public List<Double> hitboxAngles; //For HitBox Check
 	@Getter
 	private MovementValues movementValues;
 
@@ -112,6 +117,7 @@ public class NessPlayer implements AutoCloseable {
 		this.normalPacketsCounter = 0;
 		this.lastPitch = 0;
 		this.devMode = devMode;
+		hitboxAngles = new ArrayList<Double>();
 	}
 
 	public void updateMovementValue(MovementValues values) {
@@ -138,20 +144,18 @@ public class NessPlayer implements AutoCloseable {
 	 * @param violation the violation
 	 */
 	public void setViolation(Violation violation) {
-
-		// Violation event
-		PlayerViolationEvent event = new PlayerViolationEvent(this.getPlayer(), this, violation,
-				checkViolationCounts.getOrDefault(violation.getCheck(), 0));
-		Bukkit.getServer().getPluginManager().callEvent(event);
-		if (event.isCancelled()) {
-			return;
-		}
-
 		// Bypass permissions
 		if (this.getPlayer().hasPermission("ness.bypass." + violation.getCheck().toLowerCase())) {
 			return;
 		}
 		if (this.getPlayer().hasPermission("ness.bypass.*")) {
+			return;
+		}
+		// Violation event
+		PlayerViolationEvent event = new PlayerViolationEvent(this.getPlayer(), this, violation,
+				checkViolationCounts.getOrDefault(violation.getCheck(), 0));
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		if (event.isCancelled()) {
 			return;
 		}
 		// Main method body
@@ -194,6 +198,33 @@ public class NessPlayer implements AutoCloseable {
 			((PlayerMoveEvent) e).setCancelled(true);
 		}
 		return cancel;
+	}
+	
+	public boolean sendWebhook(Violation violation, int violationCount) {
+		String webhookurl = NESSAnticheat.getInstance().getNessConfig().getWebHook();
+		if (webhookurl == null || webhookurl.isEmpty()) {
+			return false;
+		}
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				DiscordWebhook webhook = new DiscordWebhook(webhookurl);
+				Player hacker = NessPlayer.this.getPlayer();
+				webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle("Anti-Cheat")
+						.setDescription("hacker maybe is cheating!".replace("hacker", hacker.getName()))
+						.setColor(Color.RED).addField("Cheater", hacker.getName(), true)
+						.addField("Cheat", violation.getCheck() + "(module)".replace("module", violation.getDetails()), true)
+						.addField("VL", Integer.toString(violationCount), false));
+				// webhook.addEmbed(new DiscordWebhook.EmbedObject().setDescription("Player
+				// hacker seems to be use cheat(module)".replace("cheat", hack)
+				// .replace("module", module).replace("hacker", hacker.getName())));
+				try {
+					webhook.execute();
+				} catch (IOException e) {
+				}
+			}
+		}.runTaskAsynchronously(NESSAnticheat.getInstance());
+		return true;
 	}
 
 	@Override

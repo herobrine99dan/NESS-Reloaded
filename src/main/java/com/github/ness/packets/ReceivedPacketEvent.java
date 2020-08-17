@@ -1,4 +1,4 @@
-package com.github.ness.packets.events;
+package com.github.ness.packets;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;

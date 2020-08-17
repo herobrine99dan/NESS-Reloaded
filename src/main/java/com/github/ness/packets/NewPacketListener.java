@@ -8,7 +8,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.ness.NESSAnticheat;
-import com.github.ness.packets.events.ReceivedPacketEvent;
 import com.github.ness.packets.wrappers.PacketPlayInPositionLook;
 import com.github.ness.packets.wrappers.PacketPlayInUseEntity;
 import com.github.ness.packets.wrappers.SimplePacket;

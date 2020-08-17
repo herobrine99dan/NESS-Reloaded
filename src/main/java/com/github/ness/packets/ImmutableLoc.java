@@ -1,4 +1,4 @@
-package com.github.ness.packets.wrappers.manager;
+package com.github.ness.packets;
 
 import lombok.Getter;
 

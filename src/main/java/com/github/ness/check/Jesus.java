@@ -9,7 +9,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import com.github.ness.CheckManager;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.api.Violation;
-import com.github.ness.utility.ReflectionUtility;
 import com.github.ness.utility.Utility;
 
 public class Jesus extends AbstractCheck<PlayerMoveEvent> {
@@ -32,7 +31,7 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 	 */
 	public void Check(PlayerMoveEvent event) {
 		final Player player = event.getPlayer();
-		final Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0.0, 1.0, 0.0)).getType();
+		final Block below = player.getWorld().getBlockAt(event.getTo().subtract(0.0, 1.0, 0.0));
 		final Location from = event.getFrom();
 		final Location to = event.getTo();
 		boolean lilypad = false;
@@ -44,9 +43,9 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 						.getBlockAt(player.getLocation().add((double) x2, -1.0, (double) z2)).getType();
 				belowSel = player.getWorld().getBlockAt(player.getLocation().add((double) x2, -0.01, (double) z2))
 						.getType();
-				if (belowSel == Material.WATER_LILY) {
+				if (belowSel.name().toLowerCase().contains("lily")) {
 					lilypad = true;
-				} else if (belowSel.equals(Material.CARPET)) {
+				} else if (belowSel.name().toLowerCase().contains("carpet")) {
 					lilypad = true;
 				}
 			}
@@ -62,8 +61,7 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 				}
 			}
 		}
-		if ((below == Material.WATER || below == Material.STATIONARY_WATER || below == Material.LAVA
-				|| below == Material.STATIONARY_LAVA) && !player.isFlying() && !waterAround && !lilypad
+		if ((below.isLiquid()) && !player.isFlying() && !waterAround && !lilypad
 				&& !player.getWorld().getBlockAt(player.getLocation().add(0.0, 1.0, 0.0)).isLiquid()
 				&& (new StringBuilder(String.valueOf(Math.abs(from.getY() - to.getY()))).toString().contains("00000000")
 						|| to.getY() == from.getY())) {
@@ -88,11 +86,12 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 		Location loc = e.getTo().clone().add(0, -1, 0);
 		Location underloc = e.getTo().clone().add(0, 1, 0);
 		if (!player.isInsideVehicle()) {
-			if (block.isLiquid() && loc.getBlock().isLiquid() && player.getFallDistance() < 1 && !underloc.getBlock().isLiquid()) {
+			if (block.isLiquid() && loc.getBlock().isLiquid() && player.getFallDistance() < 1
+					&& !underloc.getBlock().isLiquid()) {
 				distance -= Math.abs(player.getVelocity().getX());
 				distance -= Math.abs(player.getVelocity().getZ());
 				double maxDist = 0.12;
-				if(NESSAnticheat.getInstance().getMinecraftVersion() > 1122) {
+				if (NESSAnticheat.getInstance().getMinecraftVersion() > 1122) {
 					maxDist = 0.18;
 				}
 				if (distance > maxDist) {

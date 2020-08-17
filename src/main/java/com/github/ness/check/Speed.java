@@ -1,12 +1,9 @@
 package com.github.ness.check;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -65,11 +62,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		// player.sendMessage("Time: "+Utility.around(System.currentTimeMillis(), 12));
-		if (Utility.specificBlockNear(player.getLocation(), Material.STATIONARY_LAVA)
-				|| Utility.specificBlockNear(player.getLocation(), Material.WATER)
-				|| Utility.specificBlockNear(player.getLocation(), Material.LAVA)
-				|| Utility.specificBlockNear(player.getLocation(), Material.STATIONARY_WATER)
-				|| Utility.hasflybypass(player) || Utility.specificBlockNear(player.getLocation(), Material.SNOW)) {
+		if (Utility.liquidNear(to) || Utility.hasflybypass(player) || Utility.specificBlockNear(player.getLocation(), "snow")) {
 			return;
 		}
 		if (!player.getNearbyEntities(5, 5, 5).isEmpty()) {
@@ -95,17 +88,11 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			if (to.getY() > from.getY()) {
 				double y = Utility.around(to.getY() - from.getY(), 6);
 
-				ArrayList<Block> blocchivicini = Utility.getSurrounding(Utility.getPlayerUnderBlock(player), false);
 				boolean bypass = false;
-				for (Block s : blocchivicini) {
-					if (s.getType().equals(Material.SLIME_BLOCK)) {
-						bypass = true;
-					}
-				}
 				if (y > 0.37 && y < 0.419 && !(y == 0.404) && !(y == 0.395) && !bypass && !(y == 0.386) && !(y == 0.414)
-						&& !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
+						&& !Utility.hasBlock(player, "slime")) {
 					punish(e, "MiniJump1 " + y);
-				} else if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
+				} else if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, "slime")) {
 					punish(e, "MiniJump2 " + y);
 				}
 			}
@@ -173,7 +160,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		double y = np.getMovementValues().yDiff;
 		double yresult = y - p.getVelocity().getY();
-		if (Utility.hasflybypass(p) || Utility.hasBlock(p, Material.SLIME_BLOCK) || Utility.hasWater(p)
+		if (Utility.hasflybypass(p) || Utility.hasBlock(p, "slime") || Utility.hasWater(p)
 				|| Utility.isInWater(p)) {
 			return;
 		}

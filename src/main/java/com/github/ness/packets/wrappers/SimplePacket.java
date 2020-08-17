@@ -17,7 +17,7 @@ public class SimplePacket {
 	
 	/**
 	 * This method cast this object to the PacketPlayInPositionLook Object
-	 * Can Return Null if this object isn't a PacketPlayInPositionLook Object
+	 * Return Null if this object isn't a PacketPlayInPositionLook Object
 	 * @return
 	 */
 	public PacketPlayInPositionLook getPositionPacket() {
@@ -30,7 +30,7 @@ public class SimplePacket {
 	
 	/**
 	 * This method cast this object to the PacketPlayInUseEntity Object
-	 * Can Return Null if this object isn't a PacketPlayInUseEntity Object
+	 * Return Null if this object isn't a PacketPlayInUseEntity Object
 	 * @return
 	 */
 	public PacketPlayInUseEntity getUseEntity() {

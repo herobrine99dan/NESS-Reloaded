@@ -1,4 +1,4 @@
-package com.github.ness.discord;
+package com.github.ness.utility;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.awt.Color;
@@ -142,7 +142,7 @@ public class DiscordWebhook {
         URL url = new URL(this.url);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.addRequestProperty("Content-Type", "application/json");
-        connection.addRequestProperty("User-Agent", "Java-DiscordWebhook-BY-Gelox_");
+        connection.addRequestProperty("User-Agent", "NESS Reloaded WebHook (Java-DiscordWebhook-BY-Gelox_)");
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
 

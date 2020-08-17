@@ -1,6 +1,6 @@
 package com.github.ness.packets.wrappers;
 
-import com.github.ness.packets.ReflectionUtility;
+import com.github.ness.utility.ReflectionUtility;
 
 public class PacketPlayInUseEntity
 extends SimplePacket {

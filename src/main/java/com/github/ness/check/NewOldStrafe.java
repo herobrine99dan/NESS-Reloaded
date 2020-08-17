@@ -9,6 +9,7 @@ import org.bukkit.util.Vector;
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
+import com.github.ness.utility.Utility;
 
 public class NewOldStrafe extends AbstractCheck<PlayerMoveEvent> {
 
@@ -34,7 +35,8 @@ public class NewOldStrafe extends AbstractCheck<PlayerMoveEvent> {
 		double result = Math.abs(np.lastStrafeAngle - angle);
 		if (np.lastStrafeAngle != 0 && result > 35 && result < 300 && Math.abs(yawDiff) < 8 && !p.isOnGround()
 				&& dist > .19 && !isAgainstBlock(e.getFrom()) && !isAgainstBlock(e.getTo())) {
-			manager.getPlayer(p).setViolation(new Violation("Strafe", "High Angle Diff: " + Math.abs(np.lastStrafeAngle - angle)));
+			manager.getPlayer(p)
+					.setViolation(new Violation("Strafe", "High Angle Diff: " + Math.abs(np.lastStrafeAngle - angle)));
 			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, "Strafe")) {
 				e.setCancelled(true);
 			}
@@ -52,14 +54,14 @@ public class NewOldStrafe extends AbstractCheck<PlayerMoveEvent> {
 		double expand = 0.31;
 		for (double x = -expand; x <= expand; x += expand) {
 			for (double z = -expand; z <= expand; z += expand) {
-				if (loc.clone().add(x, 0.0001, z).getBlock().getType() != Material.AIR) {
+				if (!Utility.getMaterialName(loc.clone().add(x, 0.0001, z)).contains("air")) {
 					return true;
 				}
 			}
 		}
 		for (double x = -expand; x <= expand; x += expand) {
 			for (double z = -expand; z <= expand; z += expand) {
-				if (loc.clone().add(x, 1.0001, z).getBlock().getType() != Material.AIR) {
+				if (!Utility.getMaterialName(loc.clone().add(x, 1.0001, z)).contains("air")) {
 					return true;
 				}
 			}

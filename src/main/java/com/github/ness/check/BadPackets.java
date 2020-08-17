@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.packets.events.ReceivedPacketEvent;
+import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.Utility;
 
 public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {

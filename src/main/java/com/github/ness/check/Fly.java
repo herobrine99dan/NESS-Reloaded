@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -93,7 +92,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		if (!bypass(e.getPlayer()) && player.getNearbyEntities(2, 2, 2).isEmpty()) {
-			if (player.isOnline() && !Utility.hasBlock(player, Material.SLIME_BLOCK)) {
+			if (player.isOnline() && !Utility.hasBlock(player, "slime")) {
 				if (player.isOnGround() && !Utility.isOnGround(e.getTo())) {
 					punish(e, player, "FalseGround");
 				} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY())) {
@@ -133,7 +132,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (!Utility.isMathematicallyOnGround(to.getY())) {
 			maxDist += Math.abs(player.getVelocity().getY()) * 0.4;
 		}
-		if (from.getBlock().getType() == Material.WEB && hozDist > maxDist) {
+		if ((Utility.getMaterialName(to).contains("web") || Utility.getMaterialName(from).contains("web")) && hozDist > maxDist) {
 			punish(e, player, "NoWeb");
 			// player.sendMessage("NoWebDist: " + hozDist);
 		}

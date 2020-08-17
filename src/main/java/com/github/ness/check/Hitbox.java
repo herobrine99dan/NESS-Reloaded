@@ -8,8 +8,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
+import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.killaura.heuristics.KillauraPlayerData;
 
 public class Hitbox extends AbstractCheck<EntityDamageByEntityEvent> {
 
@@ -25,8 +25,8 @@ public class Hitbox extends AbstractCheck<EntityDamageByEntityEvent> {
 	void Check(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
-			KillauraPlayerData kplayer = KillauraPlayerData.getInstance(p);
-			List<Double> data = kplayer.getAnglesList();
+			NessPlayer np = this.manager.getPlayer(p);
+			List<Double> data = np.hitboxAngles;
 			data.add(isLookingAt(p, e.getEntity().getLocation()));
 			double dist = p.getLocation().distanceSquared(e.getEntity().getLocation());
 			if(dist < 0.6) {
@@ -46,7 +46,7 @@ public class Hitbox extends AbstractCheck<EntityDamageByEntityEvent> {
 				}
 				data.clear();
 			}
-			kplayer.setAnglesList(data);
+			np.hitboxAngles = data;
 		}
 	}
 

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
@@ -63,7 +62,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			hozDist = dist - (from.getY() - to.getY());
 		Double vertDist = Math.abs(dist - hozDist);
 		double dTG = 0; // Distance to ground
-		boolean groundAround = PlayerManager.groundAround(player.getLocation()), waterAround = false;
+		boolean groundAround = Utility.groundAround(player.getLocation()), waterAround = false;
 		int radius = 2;
 		boolean ice = false, surrounded = true, lilypad = false, web = false, cactus = false;
 
@@ -233,7 +232,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			if (groundAround && !player.isFlying() && below == Material.LADDER
 					&& player.getWorld().getBlockAt(player.getLocation()).getType() == Material.LADDER) {
 				if (from.getY() < to.getY() && PlayerManager.timeSince("isHit", player) >= 1000
-						&& PlayerManager.distToBlock(player.getLocation()) >= 3
+						&& Utility.distToBlock(player.getLocation()) >= 3
 						&& nessPlayer.getTimeSinceLastWasOnGround() >= 2000) {
 					if (vertDist > .118 && !player.isSneaking()) {
 						punish(event, "FastLadder");

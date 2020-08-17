@@ -6,7 +6,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -36,30 +35,41 @@ public class Utility {
 		String v = Bukkit.getServer().getClass().getPackage().getName();
 		return v.substring(v.lastIndexOf('.') + 1);
 	}
-	
-    public static boolean nextToWall(Player p)
-    {
-        Location xp = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(), p.getLocation().getZ());
-        Location xn = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(), p.getLocation().getZ());
-        Location zp = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(), p.getLocation().getZ());
-        Location zn = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(), p.getLocation().getZ());
-        Location xpl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(), p.getLocation().getZ());
-        Location xnl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(), p.getLocation().getZ());
-        Location zpl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(), p.getLocation().getZ());
-        Location znl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(), p.getLocation().getZ());
-        if (xp.getBlock().getType().isSolid() && xpl.getBlock().getType().isSolid()) {
-        } else if (xn.getBlock().getType().isSolid() && xnl.getBlock().getType().isSolid()) {
-            return true;
-        } else if (zp.getBlock().getType().isSolid() && zpl.getBlock().getType().isSolid()) {
-            return true;
-        } else if (zn.getBlock().getType().isSolid() && znl.getBlock().getType().isSolid()) {
-            return true;
-        }
-        return false;
-    }
+
+	public static boolean nextToWall(Player p) {
+		Location xp = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(),
+				p.getLocation().getZ());
+		Location xn = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(),
+				p.getLocation().getZ());
+		Location zp = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(),
+				p.getLocation().getZ());
+		Location zn = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(),
+				p.getLocation().getZ());
+		Location xpl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(),
+				p.getLocation().getZ());
+		Location xnl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(),
+				p.getLocation().getZ());
+		Location zpl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(),
+				p.getLocation().getZ());
+		Location znl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(),
+				p.getLocation().getZ());
+		if (xp.getBlock().getType().isSolid() && xpl.getBlock().getType().isSolid()) {
+		} else if (xn.getBlock().getType().isSolid() && xnl.getBlock().getType().isSolid()) {
+			return true;
+		} else if (zp.getBlock().getType().isSolid() && zpl.getBlock().getType().isSolid()) {
+			return true;
+		} else if (zn.getBlock().getType().isSolid() && znl.getBlock().getType().isSolid()) {
+			return true;
+		}
+		return false;
+	}
 
 	public static String getMaterialName(Location loc) {
 		return loc.getBlock().getType().name().toLowerCase();
+	}
+	
+	public static String getMaterialName(Material m) {
+		return m.name().toLowerCase();
 	}
 
 	public static boolean hasWater(Player p) {
@@ -158,7 +168,7 @@ public class Utility {
 		}
 		return ping;
 	}
-
+	
 	public static void setPing(Player player, int ping) {
 		try {
 			Class<?> craftPlayerClass = Class.forName("org.bukkit.craftbukkit."
@@ -179,6 +189,21 @@ public class Utility {
 			res.add(0.0, yDif, 0.0);
 		}
 		return yDif;
+	}
+
+	public static boolean groundAround(Location loc) {
+		int radius = 2;
+		for (int x = -radius; x < radius; x++) {
+			for (int y = -radius; y < radius; y++) {
+				for (int z = -radius; z < radius; z++) {
+					Block block = loc.getWorld().getBlockAt(loc.clone().add(x, y, z));
+					if (block.isLiquid()) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	public static boolean redstoneAround(final Location loc) {
@@ -281,21 +306,17 @@ public class Utility {
 		return StandardCharsets.US_ASCII.newEncoder().canEncode(v.replaceAll("¡", "!").replaceAll("¿", "?"));
 	}
 
-	public static boolean hasBlock(Player p, Material m) {
-		boolean done = false;
-		for (int i = 0; i < 256; i++) {
-			Location loc = p.getLocation();
-			loc.setY(i);
-			if (loc.getBlock().getType().equals(m)) {
-				return true;
-			}
-		}
-		return done;
-	}
-
 	public static boolean hasBlock(Player p, String m) {
 		boolean done = false;
-		for (int i = 0; i < 256; i++) {
+		int min = (int) p.getLocation().getY() - 10;
+		int max = (int) (p.getLocation().getY() + 10);
+		if (min < 0) {
+			min = 0;
+		}
+		if (max > 255) {
+			max = 255;
+		}
+		for (int i = min; i < max; i++) {
 			Location loc = p.getLocation().clone();
 			loc.setY(i);
 			if (loc.getBlock().getType().name().toLowerCase().contains(m)) {
@@ -305,9 +326,9 @@ public class Utility {
 		return done;
 	}
 
-	public static boolean specificBlockNear(Location loc, Material m) {
+	public static boolean liquidNear(Location loc) {
 		for (Block b : Utility.getSurrounding(loc.getBlock(), true)) {
-			if (b.getType().equals(m)) {
+			if (b.isLiquid()) {
 				return true;
 			}
 		}
@@ -429,36 +450,6 @@ public class Utility {
 		return toReturn;
 	}
 
-	public static boolean flagyStuffNear(Location loc) {
-		boolean nearBlocks = false;
-		Iterator<Block> var3 = Utility.getSurrounding(loc.getBlock(), true).iterator();
-
-		while (var3.hasNext()) {
-			Block bl = var3.next();
-			if (bl.getType().name().toLowerCase().contains("step")) {
-				nearBlocks = true;
-
-				break;
-			}
-		}
-		var3 = Utility.getSurrounding(loc.getBlock(), false).iterator();
-
-		while (var3.hasNext()) {
-			Block bl = var3.next();
-			if (bl.getType().name().toLowerCase().contains("step")) {
-				nearBlocks = true;
-
-				break;
-			}
-		}
-		if (isBlock(loc.getBlock().getRelative(BlockFace.DOWN), new Material[] { Material.STEP, Material.BED,
-				Material.DOUBLE_STEP, Material.WOOD_DOUBLE_STEP, Material.WOOD_STEP })) {
-			nearBlocks = true;
-		}
-
-		return nearBlocks;
-	}
-
 	public static int getPotionEffectLevel(Player p, PotionEffectType pet) {
 		for (PotionEffect pe : p.getActivePotionEffects()) {
 			if (pe.getType().getName().equals(pet.getName())) {
@@ -466,21 +457,6 @@ public class Utility {
 			}
 		}
 		return 0;
-	}
-
-	public static boolean isBlock(Block block, Material[] materials) {
-		Material type = block.getType();
-		Material[] arrayOfMaterial = materials;
-		int j = materials.length;
-
-		for (int i = 0; i < j; i++) {
-			Material m = arrayOfMaterial[i];
-			if (m == type) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	public static double around(double i, int places) {
@@ -535,11 +511,11 @@ public class Utility {
 
 	public static boolean isInAir(Player player) {
 		for (Block block : Utility.getSurrounding(player.getLocation().getBlock(), false)) {
-			if (block.getType() == Material.AIR) {
+			if (Utility.getMaterialName(block.getLocation()).contains("air")) {
 				return true;
 			}
 		}
-		return player.getLocation().getBlock().getType() == Material.AIR;
+		return Utility.getMaterialName(player.getLocation()).contains("air");
 	}
 
 	public static ArrayList<Block> getSurrounding(Block block, boolean diagonals) {
@@ -674,18 +650,6 @@ public class Utility {
 		return false;
 	}
 
-	public static boolean matIsAdjacent(Location loc, Material material) {
-		Location check = loc.clone();
-		return getBlock(check.add(0, 0, 0.3)).getType() == material
-				|| getBlock(check.add(0.3, 0, 0)).getType() == material
-				|| getBlock(check.add(0, 0, -0.3)).getType() == material
-				|| getBlock(check.add(0, 0, -0.3)).getType() == material
-				|| getBlock(check.add(-0.3, 0, 0)).getType() == material
-				|| getBlock(check.add(-0.3, 0, 0)).getType() == material
-				|| getBlock(check.add(0, 0, 0.3)).getType() == material
-				|| getBlock(check.add(0, 0, 0.3)).getType() == material;
-	}
-
 	public static Block getBlock(Location loc) {
 		return loc.getBlock();
 	}
@@ -742,37 +706,37 @@ public class Utility {
 	}
 
 	public static boolean hasKbBypass(Player player) {
-		if (player.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().getType() != Material.AIR)
+		if (player.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
-		if (player.getLocation().add(1.0D, 0.0D, 0.0D).getBlock().getType() != Material.AIR)
+		if (player.getLocation().add(1.0D, 0.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
-		if (player.getLocation().add(0.0D, 0.0D, 1.0D).getBlock().getType() != Material.AIR)
+		if (player.getLocation().add(0.0D, 0.0D, 1.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
-		if (player.getLocation().add(-1.0D, 0.0D, 0.0D).getBlock().getType() != Material.AIR)
+		if (player.getLocation().add(-1.0D, 0.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
-		if (player.getLocation().add(0.0D, 0.0D, -1.0D).getBlock().getType() != Material.AIR)
+		if (player.getLocation().add(0.0D, 0.0D, -1.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
-		if (player.getLocation().add(1.0D, 1.0D, 0.0D).getBlock().getType() != Material.AIR)
+		if (player.getLocation().add(1.0D, 1.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
-		if (player.getLocation().add(0.0D, 1.0D, 1.0D).getBlock().getType() != Material.AIR)
+		if (player.getLocation().add(0.0D, 1.0D, 1.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
-		if (player.getLocation().add(-1.0D, 1.0D, 0.0D).getBlock().getType() != Material.AIR)
+		if (player.getLocation().add(-1.0D, 1.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
-		if (player.getLocation().add(0.0D, 1.0D, -1.0D).getBlock().getType() != Material.AIR)
+		if (player.getLocation().add(0.0D, 1.0D, -1.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
-		if (player.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().getType() != Material.AIR)
+		if (player.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
-		if (player.getLocation().add(1.0D, 2.0D, 0.0D).getBlock().getType() != Material.AIR)
+		if (player.getLocation().add(1.0D, 2.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
-		if (player.getLocation().add(0.0D, 2.0D, 1.0D).getBlock().getType() != Material.AIR)
+		if (player.getLocation().add(0.0D, 2.0D, 1.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
-		if (player.getLocation().add(0.0D, 2.0D, -1.0D).getBlock().getType() != Material.AIR)
+		if (player.getLocation().add(0.0D, 2.0D, -1.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
-		if (player.getLocation().add(-1.0D, 2.0D, 0.0D).getBlock().getType() != Material.AIR)
+		if (player.getLocation().add(-1.0D, 2.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
-		if (player.getLocation().add(1.0D, 2.0D, 1.0D).getBlock().getType() != Material.AIR)
+		if (player.getLocation().add(1.0D, 2.0D, 1.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
-		if (player.getLocation().add(-1.0D, 2.0D, -1.0D).getBlock().getType() != Material.AIR)
+		if (player.getLocation().add(-1.0D, 2.0D, -1.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
 		if (player.getVehicle() != null)
 			return true;

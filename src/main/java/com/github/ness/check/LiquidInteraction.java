@@ -2,7 +2,6 @@ package com.github.ness.check;
 
 import java.util.List;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.github.ness.CheckManager;
