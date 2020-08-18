@@ -34,25 +34,26 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
 	public void Check(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
-			Player p = (Player) e.getDamager();
+			Player player = (Player) e.getDamager();
 			Entity entity = e.getEntity();
-			double range = Math.hypot(p.getLocation().getX() - entity.getLocation().getX(),
-					p.getLocation().getZ() - entity.getLocation().getZ());
+			NessPlayer np = this.manager.getPlayer(player);
+			double range = Math.hypot(np.getMovementValues().getTo().getX() - entity.getLocation().getX(),
+					np.getMovementValues().getTo().getZ() - entity.getLocation().getZ());
 			double maxReach = 3.4D;
-			if (p.getGameMode().equals(GameMode.CREATIVE)) {
+			if (player.getGameMode().equals(GameMode.CREATIVE)) {
 				maxReach = 5.4D;
 			}
-			if (!p.isSprinting() || isLookingAt(p, entity.getLocation()) < 0.6
+			if (!player.isSprinting() || isLookingAt(player, entity.getLocation()) < 0.6
 					|| Utility.specificBlockNear(e.getDamager().getLocation(), "water")
-					|| Utility.yawTo180F(p.getLocation().getYaw() - entity.getLocation().getYaw()) <= 90) {
+					|| Utility.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
 				maxReach += 0.2D;
 			}
-			maxReach += (Utility.getPing(p) / 100) / 10;
-			range -= Math.abs(p.getVelocity().getX()) + Math.abs(p.getVelocity().getZ());
+			maxReach += (Utility.getPing(player) / 100) / 10;
+			range -= Math.abs(player.getVelocity().getX()) + Math.abs(player.getVelocity().getZ());
 			range -= Math.abs(entity.getVelocity().getX()) + Math.abs(entity.getVelocity().getZ());
 			if ((range > maxReach && range < 6.5D)
-					|| Utility.getHorizontalDistance(p.getLocation(), entity.getLocation()) > 5) {
-				this.punish(e, p, "Reach: " + range);
+					|| Utility.getHorizontalDistance(player.getLocation(), entity.getLocation()) > 5) {
+				this.punish(e, player, "Reach: " + range);
 			}
 		}
 	}

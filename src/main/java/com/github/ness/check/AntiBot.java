@@ -9,7 +9,7 @@ import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 
 public class AntiBot extends AbstractCheck<AsyncPlayerPreLoginEvent> {
-	int maxPlayers = 20;
+	int maxPlayers = 25;
 	int playerCounter = 0;
 	String message;
 	public static ArrayList<String> whitelistbypass = new ArrayList<String>();
