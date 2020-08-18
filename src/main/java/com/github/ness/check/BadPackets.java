@@ -1,7 +1,5 @@
 package com.github.ness.check;
 
-import java.util.concurrent.TimeUnit;
-
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;

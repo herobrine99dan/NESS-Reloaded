@@ -4,18 +4,18 @@ import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
+import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.GCDUtils;
 
-public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
+public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 
 	public Aimbot(CheckManager manager) {
-		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerMoveEvent.class, 1, TimeUnit.SECONDS));
+		super(manager, CheckInfo.eventWithAsyncPeriodic(ReceivedPacketEvent.class, 1, TimeUnit.SECONDS));
 		// TODO Auto-generated constructor stub
 	}
 
@@ -25,7 +25,7 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	}
 	
 	@Override
-	void checkEvent(PlayerMoveEvent e) {
+	void checkEvent(ReceivedPacketEvent e) {
 		Check(e);
 		Check1(e);
 		Check3(e);
@@ -38,22 +38,19 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	 * finding that constant, you can detect changes in pitch variation.
 	 * 
 	 */
-	public void Check(PlayerMoveEvent event) {
-		Location to = event.getTo().clone();
-		Location from = event.getFrom().clone();
-		Player p = event.getPlayer();
+	public void Check(ReceivedPacketEvent event) {
 		// float yaw = to.getYaw() - from.getYaw();
-		double pitch = Math.abs(to.getPitch() - from.getPitch());
+		NessPlayer player = event.getNessPlayer();
+		double pitch = Math.abs(player.getMovementValues().pitchDiff);
 		if (Math.abs(pitch) >= 10) {
 			return;
 		}
 		if (pitch == 0.0) {
 			return;
 		}
-		if (Math.abs(event.getTo().getPitch()) == 90) {
+		if (Math.abs(player.getMovementValues().getTo().getPitch()) == 90) {
 			return;
 		}
-		NessPlayer player = this.manager.getPlayer(p);
 		player.pitchDiff.add(pitch);
 		if (player.pitchDiff.size() >= 20) {
 			final double gcd = GCDUtils.gcdRational(player.pitchDiff);
@@ -77,8 +74,8 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 	/**
 	 * Check for some Aimbot Pattern
 	 */
-	public boolean Check1(PlayerMoveEvent e) {
-		NessPlayer player = manager.getPlayer(e.getPlayer());
+	public boolean Check1(ReceivedPacketEvent e) {
+		NessPlayer player = e.getNessPlayer();
 		float yawChange = (float) Math.abs(player.getMovementValues().yawDiff);
 		float pitchChange = (float) Math.abs(player.getMovementValues().pitchDiff);
 		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {
@@ -97,36 +94,35 @@ public class Aimbot extends AbstractCheck<PlayerMoveEvent> {
 		return false;
 	}
 
-	public void Check3(PlayerMoveEvent e) {
-		NessPlayer np = manager.getPlayer(e.getPlayer());
+	public void Check3(ReceivedPacketEvent e) {
+		NessPlayer np = e.getNessPlayer();
 		float yawChange = (float) Math.abs(np.getMovementValues().yawDiff);
 		float pitchChange = (float) Math.abs(np.getMovementValues().pitchDiff);
 		if (yawChange >= 1.0F && yawChange % 0.1F == 0.0F) {
 			if (yawChange % 1.0F == 0.0F || yawChange % 10.0F == 0.0F || yawChange % 30.0F == 0.0F) {
 				np.setViolation(new Violation("Aimbot", "Pattern1"));
-				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+				if (np.shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);
 				}
 			}
 		} else if (pitchChange >= 1.0F && pitchChange % 0.1F == 0.0F) {
 			if (pitchChange % 1.0F == 0.0F || pitchChange % 10.0F == 0.0F || pitchChange % 30.0F == 0.0F) {
 				np.setViolation(new Violation("Aimbot", "Pattern2"));
-				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+				if (np.shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);
 				}
 			}
 		}
 	}
 
-	public void Check4(PlayerMoveEvent e) {
-		Player p = e.getPlayer();
-		double yaw = Math.abs(this.manager.getPlayer(p).getMovementValues().yawDiff);
-		NessPlayer np = this.manager.getPlayer(p);
+	public void Check4(ReceivedPacketEvent e) {
+		NessPlayer np = e.getNessPlayer();
+		double yaw = Math.abs(np.getMovementValues().yawDiff);
 		if ((Math.round(Math.abs(yaw)) == Math.abs(yaw) && yaw < 340 && yaw > 0)) {
 			np.AimbotPatternCounter = np.AimbotPatternCounter + 1;
 			if (np.AimbotPatternCounter > 4) {
 				np.setViolation(new Violation("Aimbot", "Pattern3"));
-				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
+				if (np.shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);
 				}
 				np.AimbotPatternCounter = 0;

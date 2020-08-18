@@ -2,11 +2,12 @@ package com.github.ness;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import org.bukkit.entity.Player;
 
 import com.github.ness.utility.Utility;
+
+import lombok.Getter;
 
 public class MovementValues {
 
@@ -49,6 +50,10 @@ public class MovementValues {
 	 * Utility.specificBlockNear(to, "slime"); or Utility.hasBlock(p, "slime");
 	 */
 	public final boolean AroundSlime;
+	@Getter
+	ImmutableLoc to;
+	@Getter
+	ImmutableLoc from;
 
 	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from) {
 		AroundIce = Utility.specificBlockNear(Utility.locationFromImmutableLoc(to), "ice");
@@ -66,6 +71,8 @@ public class MovementValues {
 		yDiff = to.getY() - from.getY();
 		zDiff = to.getZ() - from.getZ();
 		XZDiff = Math.abs(xDiff) + Math.abs(zDiff);
+		this.to = to;
+		this.from = from;
 		xzDiffMultiplier = (xDiff * xDiff) + (zDiff * zDiff);
 	}
 
