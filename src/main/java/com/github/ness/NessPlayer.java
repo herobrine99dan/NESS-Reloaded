@@ -97,8 +97,8 @@ public class NessPlayer implements AutoCloseable {
 	}
 
 	// Used for Aimbot check
-	public List<Double> pitchDiff = new ArrayList<Double>();
-	public double lastGCD = Float.MIN_VALUE;
+	public List<Float> pitchDiff;
+	public double lastGCD = 0;
 
 	// Used for AutoClick check
 	@Getter
@@ -115,6 +115,7 @@ public class NessPlayer implements AutoCloseable {
 		this.lastPacketTime = 0;
 		this.blockPlace = 0;
 		this.CPS = 0;
+		this.pitchDiff = new ArrayList<Float>();
 		this.AimbotPatternCounter = 0;
 		this.normalPacketsCounter = 0;
 		this.lastPitch = 0;
