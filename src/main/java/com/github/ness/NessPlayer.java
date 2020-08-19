@@ -54,23 +54,26 @@ public class NessPlayer implements AutoCloseable {
 
 	@Getter
 	@Setter
-	public double lastStrafeAngle; //For the Beta NewOldStrafe Check
+	public double lastStrafeAngle; // For the Beta NewOldStrafe Check
 	public int blockPlace; // For FastPlace Check
 	public int normalPacketsCounter; // For MorePackets
 	public int CPS; // For AutoClicker
 	public float lastPitch; // Used in GhostHand
 	public float lastYaw;
 	public int AimbotPatternCounter; // For Aimbot
-	public long lastPacketTime; //Used in BadPackets
-	public long movementPackets; //Used in BadPackets
-	public double lastStrafeDist; //Used in Strafe
-	public float lastStairDist; //Used in BadPackets
-	public int noGround; //Used in NoGround Check 
-	public long pingspooftimer; //For PingSpoof
-	public long oldpingspooftimer; //For PingSpoof
-	public List<Double> hitboxAngles; //For HitBox Check
+	public long lastPacketTime; // Used in BadPackets
+	public long movementPackets; // Used in BadPackets
+	public double lastStrafeDist; // Used in Strafe
+	public float lastStairDist; // Used in BadPackets
+	public int noGround; // Used in NoGround Check
+	public long pingspooftimer; // For PingSpoof
+	public long oldpingspooftimer; // For PingSpoof
+	public List<Double> hitboxAngles; // For HitBox Check
+	private final MovementValues INITIAL_MOVE_VALUES = new MovementValues(this.getPlayer(),
+            new ImmutableLoc(this.getPlayer().getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
+            new ImmutableLoc(this.getPlayer().getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
 	@Getter
-	private MovementValues movementValues;
+	private volatile MovementValues movementValues = INITIAL_MOVE_VALUES;
 
 	// Used in OldMovementChecks
 
@@ -104,8 +107,8 @@ public class NessPlayer implements AutoCloseable {
 
 	private final boolean devMode;
 
-	public double lastSpeedPredictionDist; //For Speed Prediction
-	public boolean lastSpeedPredictionOnGround; //For Speed Prediction
+	public double lastSpeedPredictionDist; // For Speed Prediction
+	public boolean lastSpeedPredictionOnGround; // For Speed Prediction
 
 	NessPlayer(Player player, boolean devMode) {
 		this.player = player;
@@ -183,14 +186,14 @@ public class NessPlayer implements AutoCloseable {
 		 * .replaceFirst("%DETAILS%", violation.getDetails().toString())); } }
 		 */
 	}
-	
+
 	public boolean shouldCancel(Event e, String check) {
-		if(this.isTeleported()) {
+		if (this.isTeleported()) {
 			return false;
 		}
 		ConfigurationSection cancelsec = NESSAnticheat.main.getNessConfig().getViolationHandling()
 				.getConfigurationSection("cancel");
-		if(!cancelsec.getBoolean("enable")) {
+		if (!cancelsec.getBoolean("enable")) {
 			return false;
 		}
 		boolean cancel = checkViolationCounts.getOrDefault(check, 0) > cancelsec.getInt("vl", 10);
@@ -199,7 +202,7 @@ public class NessPlayer implements AutoCloseable {
 		}
 		return cancel;
 	}
-	
+
 	public boolean sendWebhook(Violation violation, int violationCount) {
 		String webhookurl = NESSAnticheat.getInstance().getNessConfig().getWebHook();
 		if (webhookurl == null || webhookurl.isEmpty()) {
@@ -212,8 +215,8 @@ public class NessPlayer implements AutoCloseable {
 				Player hacker = NessPlayer.this.getPlayer();
 				webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle("Anti-Cheat")
 						.setDescription("hacker maybe is cheating!".replace("hacker", hacker.getName()))
-						.setColor(Color.RED).addField("Cheater", hacker.getName(), true)
-						.addField("Cheat", violation.getCheck() + "(module)".replace("module", violation.getDetails()), true)
+						.setColor(Color.RED).addField("Cheater", hacker.getName(), true).addField("Cheat",
+								violation.getCheck() + "(module)".replace("module", violation.getDetails()), true)
 						.addField("VL", Integer.toString(violationCount), false));
 				// webhook.addEmbed(new DiscordWebhook.EmbedObject().setDescription("Player
 				// hacker seems to be use cheat(module)".replace("cheat", hack)
