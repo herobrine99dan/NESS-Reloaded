@@ -26,7 +26,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import com.github.ness.ImmutableLoc;
+import com.github.ness.data.ImmutableLoc;
 
 public class Utility {
 	public static String debug = "null";

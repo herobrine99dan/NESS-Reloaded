@@ -22,6 +22,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.ness.api.PlayerViolationEvent;
 import com.github.ness.api.Violation;
+import com.github.ness.data.ImmutableLoc;
+import com.github.ness.data.MovementValues;
 import com.github.ness.utility.DiscordWebhook;
 
 import lombok.Getter;
@@ -69,11 +71,8 @@ public class NessPlayer implements AutoCloseable {
 	public long pingspooftimer; // For PingSpoof
 	public long oldpingspooftimer; // For PingSpoof
 	public List<Double> hitboxAngles; // For HitBox Check
-	private final MovementValues INITIAL_MOVE_VALUES = new MovementValues(this.getPlayer(),
-            new ImmutableLoc(this.getPlayer().getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
-            new ImmutableLoc(this.getPlayer().getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
 	@Getter
-	private volatile MovementValues movementValues = INITIAL_MOVE_VALUES;
+	private volatile MovementValues movementValues;
 
 	// Used in OldMovementChecks
 
@@ -120,6 +119,9 @@ public class NessPlayer implements AutoCloseable {
 		this.normalPacketsCounter = 0;
 		this.lastPitch = 0;
 		this.devMode = devMode;
+		this.movementValues = new MovementValues(player,
+				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
+				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
 		hitboxAngles = new ArrayList<Double>();
 	}
 

@@ -11,5 +11,4 @@ To use NESS-Reloaded you must use Java 8 and a Spigot (or a fork of it) server.
 * [Maven](https://maven.apache.org/) - Dependency Management
 ## Contributors
  - A248 (A Developer of NESS Reloaded) https://github.com/A248
- - Islandscout (Aimbot PitchPattern check) https://www.spigotmc.org/resources/hawk-anticheat-mc-1-7-10-1-8-8.40343/
- - Wall_ (@Wall_#1920 on Discord)
+ - Islandscout (Helping me, some GCD Utils) https://www.spigotmc.org/resources/hawk-anticheat-mc-1-7-10-1-8-8.40343/

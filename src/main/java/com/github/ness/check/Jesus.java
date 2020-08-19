@@ -31,9 +31,9 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 	 */
 	public void Check(PlayerMoveEvent event) {
 		final Player player = event.getPlayer();
-		final Block below = player.getWorld().getBlockAt(event.getTo().subtract(0.0, 1.0, 0.0));
 		final Location from = event.getFrom().clone();
 		final Location to = event.getTo().clone();
+		final Block below = player.getWorld().getBlockAt(to.subtract(0.0, 1.0, 0.0));
 		boolean lilypad = false;
 		final int radius = 2;
 		boolean waterAround = false;

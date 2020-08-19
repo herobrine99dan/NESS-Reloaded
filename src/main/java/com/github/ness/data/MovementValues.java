@@ -1,4 +1,4 @@
-package com.github.ness;
+package com.github.ness.data;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -80,7 +80,6 @@ public class MovementValues {
 	public CompletableFuture<Double> calculateAsyncWithCancellation(ImmutableLoc to, ImmutableLoc from)
 			throws InterruptedException {
 		CompletableFuture<Double> completableFuture = new CompletableFuture<Double>();
-
 		Executors.newCachedThreadPool().submit(() -> {
 			double value = to.getX() - from.getX();
 			completableFuture.complete(value);

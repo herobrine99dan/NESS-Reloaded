@@ -31,6 +31,7 @@ import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
 
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.data.MovementValues;
 import com.github.ness.utility.Utility;
 
 import io.github.classgraph.ClassGraph;

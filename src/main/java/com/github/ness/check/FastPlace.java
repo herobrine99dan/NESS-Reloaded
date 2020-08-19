@@ -34,14 +34,14 @@ public class FastPlace extends AbstractCheck<BlockPlaceEvent> {
 	public void Check(BlockPlaceEvent e) {
 		NessPlayer player = manager.getPlayer(e.getPlayer());
 		player.blockPlace++;
-		if (player.blockPlace > 6) {
+		if (player.blockPlace > 9) {
 			try {
 				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);
 				}
 			} catch (Exception ex) {
 			}
-			player.setViolation(new Violation("FastPlace", ""));
+			player.setViolation(new Violation("FastPlace", "Placing: " + player.blockPlace));
 		}
 
 	}

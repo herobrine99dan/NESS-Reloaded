@@ -94,6 +94,8 @@ public class NessCommands implements CommandExecutor {
 				}
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', reportconfig.getString("report-done")
 						.replace("{cheater}", args[1]).replace("{cheat}", args[2])));
+				//TODO Make Accepted Checks
+				
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					if (p.hasPermission("ness.report")) {
 						p.sendMessage(ChatColor.translateAlternateColorCodes('&',
