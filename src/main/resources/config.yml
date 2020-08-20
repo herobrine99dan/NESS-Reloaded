@@ -21,6 +21,7 @@ violation-handling:
     enable: true
     vl: 6
     discord-webhook: ''
+    bungeecord: false
     notification: '&8[&b&lNESS&8]&r&7> &c%PLAYER% &7failed &c%HACK%&7. VL %VL% Details: %DETAILS%'
   cancel:
     enable: true

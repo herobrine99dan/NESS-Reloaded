@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 
 import com.github.ness.api.Violation;
 import com.github.ness.api.ViolationAction;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,12 +24,13 @@ public class ViolationManager {
 	private final NESSAnticheat ness;
 
 	private final Set<ViolationAction> actions = new CopyOnWriteArraySet<>();
-	
+
 	private String addViolationVariables(String message, Player player, Violation violation, int violationCount) {
-		return ChatColor.translateAlternateColorCodes('&',
-				message.replace("%PLAYER%", player.getName()).replace("%HACK%", violation.getCheck())
-						.replace("%DETAILS%", violation.getDetails() + ", "))
-						.replace("%VL%", Integer.toString(violationCount));
+		return ChatColor
+				.translateAlternateColorCodes('&',
+						message.replace("%PLAYER%", player.getName()).replace("%HACK%", violation.getCheck())
+								.replace("%DETAILS%", violation.getDetails() + ", "))
+				.replace("%VL%", Integer.toString(violationCount));
 	}
 
 	void addDefaultActions() {
@@ -48,6 +51,12 @@ public class ViolationManager {
 							if (violationCount > (notifyStaff.getInt("vl") - 1)) {
 								String notif = addViolationVariables(notification, player, violation, violationCount);
 								ness.getCheckManager().getPlayer(player).sendWebhook(violation, violationCount);
+								if (notifyStaff.getBoolean("bungeecord", false)) {
+									  ByteArrayDataOutput out = ByteStreams.newDataOutput();
+									  out.writeUTF("NESS-Reloaded");
+									  out.writeUTF(notif);
+									  player.sendPluginMessage(ness, "BungeeCord", out.toByteArray());
+								}
 								for (Player staff : Bukkit.getOnlinePlayers()) {
 									if (staff.hasPermission("ness.notify")
 											|| staff.hasPermission("ness.notify.hacks")) {
@@ -70,7 +79,7 @@ public class ViolationManager {
 						public void actOn(Player player, Violation violation, int violationCount) {
 							if (violationCount > (execCmd.getInt("vl") - 1)) {
 								String cmd = addViolationVariables(command, player, violation, violationCount);
-								Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);	
+								Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
 							}
 						}
 
