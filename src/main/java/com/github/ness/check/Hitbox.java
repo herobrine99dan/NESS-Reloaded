@@ -41,7 +41,7 @@ public class Hitbox extends AbstractCheck<EntityDamageByEntityEvent> {
 				if (this.manager.getPlayer(p).isDevMode()) {
 					p.sendMessage("FalseAngleCheck: Result " + result + " Size: " + data.size());
 				}
-				if (result < 0.6) {
+				if (result < 0.70) {
 					punish(e, p, "FalseAngle: " + result);
 				}
 				data.clear();

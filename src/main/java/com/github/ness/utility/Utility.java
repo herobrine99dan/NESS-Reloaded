@@ -1,7 +1,5 @@
 package com.github.ness.utility;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -34,6 +32,10 @@ public class Utility {
 	public static String getNMS() {
 		String v = Bukkit.getServer().getClass().getPackage().getName();
 		return v.substring(v.lastIndexOf('.') + 1);
+	}
+	
+	public static double round(double value, int precision) {
+		return (double)Math.round(value * precision) / precision;
 	}
 
 	public static boolean nextToWall(Player p) {
@@ -541,14 +543,6 @@ public class Utility {
 		return blocks;
 	}
 
-	public static double round(double value, int places) {
-		if (places < 0) {
-			throw new IllegalArgumentException();
-		}
-		BigDecimal bd = new BigDecimal(value);
-		bd = bd.setScale(places, RoundingMode.HALF_UP);
-		return bd.doubleValue();
-	}
 
 	public static boolean isOnSlime(Player p) {
 		return Utility.getMaterialName(getPlayerUnderBlock(p).getLocation()).contains("slime");

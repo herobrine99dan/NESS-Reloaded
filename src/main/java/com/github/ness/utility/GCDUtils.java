@@ -4,10 +4,9 @@ import java.util.List;
 
 public class GCDUtils {
 
-	/**
-	 * @author Islandscout Methods The GCD Methods come from
-	 *         https://github.com/HawkAnticheat/Hawk/blob/master/src/me/islandscout/hawk/util/MathPlus.java
-	 *         The Sensitivity Method come directly from Islandscout brain
+	/** @author Islandscout 
+	 *  Methods from https://github.com/HawkAnticheat/Hawk/blob/master/src/me/islandscout/hawk/util/MathPlus.java
+	 *  The Sensitivity Method come directly from Islandscout brain
 	 */
 
 	public static float gcdRational(float a, float b) {

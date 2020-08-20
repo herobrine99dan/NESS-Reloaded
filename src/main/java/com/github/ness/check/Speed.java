@@ -125,7 +125,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		float zVelocity = (float) p.getVelocity().getZ();
 		maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.12;
 		maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.1;
-		if (p.isSprinting() && Utility.isMathematicallyOnGround(to.getY())) {
+		if (p.isSprinting() && Utility.isMathematicallyOnGround(to.getY()) && Utility.isMathematicallyOnGround(from.getY()) && p.isOnGround()) {
 			maxDist = 0.38f;
 		} else if (p.isSprinting()) {
 			maxDist *= 1.48f;

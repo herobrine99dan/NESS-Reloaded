@@ -94,8 +94,8 @@ public class NessCommands implements CommandExecutor {
 				}
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', reportconfig.getString("report-done")
 						.replace("{cheater}", args[1]).replace("{cheat}", args[2])));
-				//TODO Make Accepted Checks
-				
+				// TODO Make Accepted Checks
+
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					if (p.hasPermission("ness.report")) {
 						p.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -135,8 +135,8 @@ public class NessCommands implements CommandExecutor {
 		Map<String, Integer> violationMap = ness.getCheckManager().getPlayer(target).checkViolationCounts;
 		sendMessage(sender, header.replace("%TARGET%", name));
 		for (Map.Entry<String, Integer> entry : violationMap.entrySet()) {
-			sendMessage(sender, body.replace("%HACK%", entry.getKey()).replace("%VL%",
-					Integer.toString(entry.getValue())));
+			sendMessage(sender,
+					body.replace("%HACK%", entry.getKey()).replace("%VL%", Integer.toString(entry.getValue())));
 		}
 	}
 
@@ -147,8 +147,7 @@ public class NessCommands implements CommandExecutor {
 			return;
 		}
 		ness.getCheckManager().getPlayer(target).checkViolationCounts.clear();
-		sendMessage(sender, ness.getNessConfig().getMessages().getString("", "&7Cleared violations for &e%TARGET%")
-				.replace("%TAGET%", target.getName()));
+		sendMessage(sender, "&7Cleared violations for &e%TARGET%".replace("%TARGET%", target.getName()));
 	}
 
 	private void sendVersion(CommandSender sender) {
