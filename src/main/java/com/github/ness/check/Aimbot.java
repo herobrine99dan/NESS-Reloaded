@@ -2,10 +2,6 @@ package com.github.ness.check;
 
 import java.util.concurrent.TimeUnit;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerMoveEvent;
-
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
@@ -23,22 +19,20 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 	void checkAsyncPeriodic(NessPlayer player) {
 		player.AimbotPatternCounter = 0;
 	}
-	
+
 	@Override
 	void checkEvent(ReceivedPacketEvent e) {
+		if (!e.getPacket().getName().contains("look")) {
+			return;
+		}
+		sensitivityCalculator(e);
 		Check(e);
 		Check1(e);
 		Check3(e);
 		Check4(e);
 	}
 
-	/**
-	 * All changes in pitch should be divisible by a constant. That constant is
-	 * determined by your mouse sensitivity in game. By calculating the gcd and
-	 * finding that constant, you can detect changes in pitch variation.
-	 * 
-	 */
-	public void Check(ReceivedPacketEvent event) {
+	public void sensitivityCalculator(ReceivedPacketEvent event) {
 		// float yaw = to.getYaw() - from.getYaw();
 		NessPlayer player = event.getNessPlayer();
 		float pitch = (float) Math.abs(player.getMovementValues().pitchDiff);
@@ -58,16 +52,26 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 				player.lastGCD = gcd;
 			}
 			double result = Math.abs(gcd - player.lastGCD);
-			//NumberFormat formatter = new DecimalFormat("0.00000000000");
-			//int sensitivityinteger = adaptSensitivity(sensitivity, gcd);
-			//p.sendMessage("GCD: " + gcd + " Sensitivity: " + sensitivityinteger);
-			if (result > 0.001 || gcd < 0.0001) {
-				player.setViolation(new Violation("Aimbot", "GCDCheck" + "GCD: " + (float) gcd));
+			if (result < 0.01) {
+				player.sensitivity = GCDUtils.getSensitivity((float) gcd);
 			}
 			// formatter.format(result));
 			player.pitchDiff.clear();
 			player.lastGCD = gcd;
 		}
+	}
+
+	public void Check(ReceivedPacketEvent e) {
+		NessPlayer np = e.getNessPlayer();
+		float var132 = GCDUtils.getSensitivity((float) np.lastGCD) * 0.6F + 0.2F; // Sensitivity * 0.6F + 0.2F
+		float var141 = var132 * var132 * var132 * 8.0F;
+		double yawResult = np.getMovementValues().yawDiff - np.lastYaw;
+		float var15 = (float) yawResult / (var141 * 0.15F);
+		float x = (float) (var15 - Math.floor(var15));
+		if (x > 0.1 && x < 0.87) {
+			np.setViolation(new Violation("Aimbot", "ImpossibleRotations"));
+		}
+		np.lastYaw = (float) np.getMovementValues().yawDiff;
 	}
 
 	/**

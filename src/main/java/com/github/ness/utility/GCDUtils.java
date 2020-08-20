@@ -5,8 +5,9 @@ import java.util.List;
 public class GCDUtils {
 
 	/**
-	 * @author Islandscout Methods from
+	 * @author Islandscout Methods The GCD Methods come from
 	 *         https://github.com/HawkAnticheat/Hawk/blob/master/src/me/islandscout/hawk/util/MathPlus.java
+	 *         The Sensitivity Method come directly from Islandscout brain
 	 */
 
 	public static float gcdRational(float a, float b) {
@@ -32,6 +33,10 @@ public class GCDUtils {
 		float ans = dividend / divisor;
 		float error = Math.max(dividend, divisor) * 1E-3F;
 		return (int) (ans + error);
+	}
+
+	public static float getSensitivity(float gcd) {
+		return (float) ((Math.cbrt(gcd / 8 / 0.15) - 0.2) / 0.6);
 	}
 
 }

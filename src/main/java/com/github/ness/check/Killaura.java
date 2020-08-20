@@ -29,7 +29,6 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		Check3(e);
 		Check4(e);
 		Check5(e);
-		Check6(e);
 	}
 
 	public void Check(EntityDamageByEntityEvent e) {
@@ -114,21 +113,6 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			if (e.getEntity().getEntityId() == e.getDamager().getEntityId()) {
 				punish(e, (Player) e.getEntity(), "SelfHit");
 			}
-		}
-	}
-
-	public void Check6(EntityDamageByEntityEvent e) {
-		if (!e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK))
-			return;
-		if (e.getDamager() instanceof Player) {
-			Player p = (Player) e.getDamager();
-			NessPlayer np = manager.getPlayer(p);
-			float pitch = p.getEyeLocation().getPitch();
-			if (np.lastPitch > pitch - 10.5D) {
-				// p.sendMessage(String.valueOf(pitch - 10.5D) + " | " + np.lastPitch);
-				// p.sendMessage("Cheats!");
-			}
-			np.lastPitch = pitch;
 		}
 	}
 

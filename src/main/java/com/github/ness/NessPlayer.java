@@ -60,8 +60,6 @@ public class NessPlayer implements AutoCloseable {
 	public int blockPlace; // For FastPlace Check
 	public int normalPacketsCounter; // For MorePackets
 	public int CPS; // For AutoClicker
-	public float lastPitch; // Used in GhostHand
-	public float lastYaw;
 	public int AimbotPatternCounter; // For Aimbot
 	public long lastPacketTime; // Used in BadPackets
 	public long movementPackets; // Used in BadPackets
@@ -70,9 +68,12 @@ public class NessPlayer implements AutoCloseable {
 	public int noGround; // Used in NoGround Check
 	public long pingspooftimer; // For PingSpoof
 	public long oldpingspooftimer; // For PingSpoof
+	public float lastYaw;
 	public List<Double> hitboxAngles; // For HitBox Check
 	@Getter
 	private volatile MovementValues movementValues;
+	@Getter
+	public float sensitivity;
 
 	// Used in OldMovementChecks
 
@@ -118,7 +119,7 @@ public class NessPlayer implements AutoCloseable {
 		this.pitchDiff = new ArrayList<Float>();
 		this.AimbotPatternCounter = 0;
 		this.normalPacketsCounter = 0;
-		this.lastPitch = 0;
+		this.sensitivity = 0;
 		this.devMode = devMode;
 		this.movementValues = new MovementValues(player,
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
