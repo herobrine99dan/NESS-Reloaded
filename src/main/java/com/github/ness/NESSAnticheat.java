@@ -7,15 +7,14 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.ServicePriority;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ness.api.NESSApi;
 import com.github.ness.nms.NMSHandler;
 import com.github.ness.packets.NewPacketListener;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
+
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.ServicePriority;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.Getter;
 
@@ -63,7 +62,8 @@ public class NESSAnticheat extends JavaPlugin {
 		getCommand("ness").setExecutor(new NessCommands(this));
 
 		checkManager = new CheckManager(this);
-		CompletableFuture<?> future = checkManager.loadAsync();
+		CompletableFuture<?> future = checkManager.loadChecks();
+		getServer().getPluginManager().registerEvents(checkManager.coreListener, this);
 
 		violationManager = new ViolationManager(this);
 		violationManager.addDefaultActions();
@@ -87,7 +87,6 @@ public class NESSAnticheat extends JavaPlugin {
 		return Integer.valueOf(first.replace("(MC: ", "").replace(")", "").replace(" ", "").replace(".", ""));
 	}
 
-	@SuppressWarnings("deprecation")
 	private NMSHandler findNMSHandler() {
 		String packageName = Bukkit.getServer().getClass().getPackage().getName(); // org.bukkit.craftbukkit.v1_8_R3
 		String nmsVersion = packageName.substring("org.bukkit.craftbukkit.v".length()); // 1_8_R3

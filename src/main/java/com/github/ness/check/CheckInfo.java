@@ -14,9 +14,17 @@ import org.bukkit.event.Event;
  */
 public class CheckInfo<T extends Event> {
 
+	/**
+	 * Interval of repeating async task, {@code -1} for none
+	 * 
+	 */
 	final long asyncInterval;
 	final TimeUnit units;
 	
+	/**
+	 * Event to listen to, {@code null} for none
+	 * 
+	 */
 	final Class<T> event;
 	
 	private CheckInfo(Class<T> event, long asyncInterval, TimeUnit units) {
