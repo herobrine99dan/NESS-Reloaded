@@ -2,7 +2,6 @@ package com.github.ness;
 
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -171,7 +170,7 @@ public class NessCommands implements CommandExecutor {
 		sendMessage(sender,
 				'\n' + "/ness toggle <dev|debug> - Toggle debug or dev mode." + '\n'
 						+ "/ness vl <player> - View player violations." + '\n' + "/ness reload - Reload configuration."
-						+ '\n' + '\n' + "&7Authors: " + StringUtils.join(ness.getDescription().getAuthors(), ", "));
+						+ '\n' + '\n' + "&7Authors: " + String.join(", ", ness.getDescription().getAuthors()));
 	}
 
 	private void sendMessage(CommandSender sender, String msg) {
