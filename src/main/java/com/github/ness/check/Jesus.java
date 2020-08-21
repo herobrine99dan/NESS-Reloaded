@@ -21,7 +21,6 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
 		Check(e);
-		Check1(e);
 	}
 
 	/**
@@ -75,31 +74,4 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 		}
 		manager.getPlayer(p).setViolation(new Violation("Jesus", module));
 	}
-
-	public void Check1(PlayerMoveEvent e) {
-		Player player = e.getPlayer();
-		if (Utility.hasflybypass(player) && !Utility.hasEntityNear(player, 4)) {
-			return;
-		}
-		double distance = Math.abs(this.manager.getPlayer(player).getMovementValues().XZDiff);
-		Block block = e.getTo().getBlock();
-		Location loc = e.getTo().clone().add(0, -1, 0);
-		Location underloc = e.getTo().clone().add(0, 1, 0);
-		if (!player.isInsideVehicle()) {
-			if (block.isLiquid() && loc.getBlock().isLiquid() && player.getFallDistance() < 1
-					&& !underloc.getBlock().isLiquid()) {
-				distance -= Math.abs(player.getVelocity().getX());
-				distance -= Math.abs(player.getVelocity().getZ());
-				double maxDist = 0.12;
-				if (NESSAnticheat.getInstance().getMinecraftVersion() > 1122) {
-					maxDist = 0.18;
-				}
-				if (distance > maxDist) {
-					// MSG.tell((CommandSender)player, "&7dist: &e" + distance);
-					punish(e, e.getPlayer(), 2, "WaterSpeed");
-				}
-			}
-		}
-	}
-
 }
