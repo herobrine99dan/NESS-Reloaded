@@ -70,7 +70,6 @@ enabled-checks:
   - 'SpamBot'
   - 'Speed'
   - 'PingSpoof'
-  - 'Strafe'
   - 'TeleportEvent'
 
 #

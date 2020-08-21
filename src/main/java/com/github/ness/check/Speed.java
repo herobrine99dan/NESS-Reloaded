@@ -135,11 +135,10 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		} else if (p.isSprinting()) {
 			maxDist *= 1.20f;
 		}
-		if (to.clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")) {
-			maxDist *= 1.24f;
-		}
-		if (from.clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")) {
-			maxDist *= 1.24f;
+		if (to.clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")
+				|| from.clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")
+				|| Utility.specificBlockNear(from.clone().add(0, -0.4, 0), "ice")) {
+			maxDist *= 1.34f;
 		}
 		if (p.isSneaking()) {
 			maxDist = 0.172f;
@@ -181,7 +180,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		double y = np.getMovementValues().yDiff;
 		double yresult = y - p.getVelocity().getY();
-		if (Utility.hasflybypass(p) || Utility.hasBlock(p, "slime") && !p.getAllowFlight()) {
+		if (Utility.hasflybypass(p) || Utility.hasBlock(p, "slime") || p.getAllowFlight()
+				|| Utility.specificBlockNear(e.getTo().clone().add(0, -0.3, 0), "lily")) {
 			return;
 		}
 		double max = 0.9;

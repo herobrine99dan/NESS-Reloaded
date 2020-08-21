@@ -35,7 +35,7 @@ public class NoSlowDownBow extends AbstractCheck<EntityShootBowEvent> {
 			 */
 			distance -= o.getVelocity().getX();
 			distance -= o.getVelocity().getZ();
-			if (distance > 0.2 || o.isSprinting()) {
+			if (distance > 0.23 || o.isSprinting()) {
 				if (manager.getPlayer(o).shouldCancel(e, this.getClass().getSimpleName())) {
 					e.setCancelled(true);
 				}

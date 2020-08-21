@@ -120,16 +120,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				}
 			}
 		}
-		if ((below.name().toLowerCase().contains("water") || below.name().toLowerCase().contains("lava"))
-				&& !player.isFlying()) {
-			if (!waterAround && !lilypad
-					&& !player.getWorld().getBlockAt(player.getLocation().add(0, 1, 0)).isLiquid()) {
-				if ((Math.abs(from.getY() - to.getY()) + "").contains("00000000") || to.getY() == from.getY()) {
-					punish(event, "Jesus");
-					manager.getPlayer(player).setViolation(new Violation("Jesus", "Physics(OnMove)"));
-				}
-			}
-		}
 
 		if (debugMode) {
 			MSG.tell(player, "&7dist: &e" + dist);

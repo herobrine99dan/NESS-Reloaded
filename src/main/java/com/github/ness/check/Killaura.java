@@ -40,12 +40,12 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 					np.getMovementValues().getTo().getZ() - entity.getLocation().getZ());
 			double maxReach = 3.4D;
 			if (player.getGameMode().equals(GameMode.CREATIVE)) {
-				maxReach = 5.4D;
+				maxReach = 5.5D;
 			}
 			if (!player.isSprinting() || isLookingAt(player, entity.getLocation()) < 0.6
 					|| Utility.specificBlockNear(e.getDamager().getLocation(), "water")
 					|| Utility.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
-				maxReach += 0.2D;
+				maxReach += 0.5D;
 			}
 			maxReach += (Utility.getPing(player) / 100) / 10;
 			range -= Math.abs(player.getVelocity().getX()) + Math.abs(player.getVelocity().getZ());

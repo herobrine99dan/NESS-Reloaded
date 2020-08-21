@@ -1,2 +1,2 @@
-mvn package
+mvn clean verify
 pause
