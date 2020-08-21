@@ -78,10 +78,13 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check2(EntityDamageByEntityEvent event) {
 		if (event.getDamager() instanceof Player) {
 			Player player = (Player) event.getDamager();
+			if(event.getEntity().getLocation().distance(player.getLocation()) < 1.5) {
+				return;
+			}
 			if (player.getLocation().getPitch() == Math.round(player.getLocation().getPitch())) {
 				punish(event, player, "PerfectAngle");
 			} else if (player.getLocation().getYaw() == Math.round(player.getLocation().getYaw())) {
-				punish(event, player, "PerfectAngle");
+				punish(event, player, "PerfectAngle1");
 			}
 		}
 	}

@@ -16,7 +16,7 @@ public class PingSpoof extends AbstractCheck<ReceivedPacketEvent> {
 		NessPlayer np = e.getNessPlayer();
 		np.pingspooftimer = System.currentTimeMillis();
 		double diff = np.pingspooftimer - np.oldpingspooftimer;
-		if (Utility.getPing(np.getPlayer()) > 200 && (diff > 40) && (diff < 70)) {
+		if (Utility.getPing(np.getPlayer()) > 150 && (diff > 40) && (diff < 70)) {
 			// sender.teleport(OldMovementChecks.safeLoc.getOrDefault(sender,
 			// sender.getLocation()));
 			np.setViolation(new Violation("PingSpoof", ""));

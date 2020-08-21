@@ -4,6 +4,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.CheckManager;
 import com.github.ness.api.Violation;
@@ -19,6 +20,24 @@ public class Criticals extends AbstractCheck<EntityDamageByEntityEvent> {
 	@Override
 	void checkEvent(EntityDamageByEntityEvent e) {
 		Check(e);
+		//newCheck(e);
+	}
+
+	public void newCheck(EntityDamageByEntityEvent event) {
+		if (event.getDamager() instanceof Player) {
+			Player player = (Player) event.getDamager();
+			if (player.getFallDistance() > 0 && !player.isOnGround() && !Utility.hasflybypass(player)
+					&& !player.getLocation().getBlock().getRelative(BlockFace.DOWN).isLiquid()
+					&& !player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid()) {
+				if (Utility.isMathematicallyOnGround(player.getLocation().getY())
+						|| player.hasPotionEffect(PotionEffectType.BLINDNESS)) {
+					if (manager.getPlayer(player).shouldCancel(event, this.getClass().getSimpleName())) {
+						event.setCancelled(true);
+					}
+					manager.getPlayer(player).setViolation(new Violation("Criticals", ""));
+				}
+			}
+		}
 	}
 
 	public void Check(EntityDamageByEntityEvent event) {

@@ -50,7 +50,6 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 				final double movementsPerTick = ((double) np.movementPackets / ((double) difference / 1000.0)) / 20.0;
 				if (movementsPerTick > maxPackets) {
 					// The player is sending more packets than allowed.
-
 					final double perecentageDifference = ((movementsPerTick - maxPackets) / maxPackets) * 100.0;
 
 					/*
@@ -61,9 +60,18 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 						np.setViolation(new Violation("BadPackets", Math.round(perecentageDifference) + " packets: " + movementsPerTick));
 						e.setCancelled(true);
 					}
+				} else if(movementsPerTick > 0.05 && movementsPerTick < 1) {
+					if((np.lastPacketsPerTicks - movementsPerTick) < 0.15) {
+						if(np.isDevMode()) {
+							np.getPlayer().sendMessage("Ticks: " + movementsPerTick);
+						}
+						np.setViolation(new Violation("BadPackets", "Packets: " + movementsPerTick));
+						e.setCancelled(true);
+					}
 				}
 
 				// Reset everything.
+				np.lastPacketsPerTicks = (float) movementsPerTick;
 				np.lastPacketTime = System.currentTimeMillis();
 				np.movementPackets = 0;
 			}
