@@ -59,7 +59,6 @@ enabled-checks:
   - 'LiquidInteraction'
   - 'NameExploit'
   - 'InventoryHack'
-  - 'Jesus'
   - 'Killaura'
   - 'Hitbox'
   - 'MorePackets'

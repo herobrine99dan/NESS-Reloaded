@@ -14,6 +14,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.github.ness.api.NESSApi;
 import com.github.ness.nms.NMSHandler;
 import com.github.ness.packets.NewPacketListener;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 
 import lombok.Getter;
 
@@ -74,8 +76,10 @@ public class NESSAnticheat extends JavaPlugin {
 
 		getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(this), this, ServicePriority.Low);
 		minecraftVersion = this.getVersion();
-	    this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-	    this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeCordListener());
+		if (this.getNessConfig().getViolationHandling().getConfigurationSection("notify-staff").getBoolean("bungeecord", false)) {
+		    this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+		    this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeCordListener());
+		}
 	}
 	
 	public int getVersion() {

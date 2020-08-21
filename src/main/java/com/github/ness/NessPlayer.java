@@ -158,6 +158,12 @@ public class NessPlayer implements AutoCloseable {
 		if (this.getPlayer().hasPermission("ness.bypass.*")) {
 			return;
 		}
+		//We have too much violations to handle, so we disable some
+		if(violation.getCheck().equals("Speed") || violation.getCheck().equals("Fly") || violation.getCheck().equals("Strafe")) {
+			if(Math.random() > 0.5) {
+				return;
+			}
+		}
 		// Violation event
 		PlayerViolationEvent event = new PlayerViolationEvent(this.getPlayer(), this, violation,
 				checkViolationCounts.getOrDefault(violation.getCheck(), 0));

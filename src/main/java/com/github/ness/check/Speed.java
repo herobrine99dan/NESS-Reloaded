@@ -121,25 +121,19 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		float f = to.getYaw() * 0.017453292F;
-		float resultX = Math.abs((float) (Math.sin(f) * p.getWalkSpeed())) + 0.03f;
-		float resultZ = Math.abs((float) (Math.cos(f) * p.getWalkSpeed())) + 0.03f;
+		float resultX = Math.abs((float) (Math.sin(f) * p.getWalkSpeed())) + 0.08f;
+		float resultZ = Math.abs((float) (Math.cos(f) * p.getWalkSpeed())) + 0.08f;
 		float maxDist = resultX + resultZ + 0.04f;
-		final boolean isInWater = to.getBlock().isLiquid() && to.clone().add(0, -0.5, 0).getBlock().isLiquid() && to.clone().add(0, 0.3, 0).getBlock().isLiquid() && p.getFallDistance() < 1;
-		if (isInWater) {
-			maxDist = 0.12f;
-			if (NESSAnticheat.getInstance().getMinecraftVersion() > 1122) {
-				maxDist = 0.2f;
-			}
-		}
+		final boolean isInWater = to.getBlock().isLiquid() && to.clone().add(0, -0.1, 0).getBlock().isLiquid();
 		float xVelocity = (float) p.getVelocity().getX();
 		float zVelocity = (float) p.getVelocity().getZ();
 		maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.12;
-		maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.1;
+		maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.2;
 		if (p.isSprinting() && Utility.isMathematicallyOnGround(to.getY())
 				&& Utility.isMathematicallyOnGround(from.getY()) && p.isOnGround()) {
 			maxDist = 0.56f;
 		} else if (p.isSprinting()) {
-			maxDist *= 1.48f;
+			maxDist *= 1.20f;
 		}
 		if (to.clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")) {
 			maxDist *= 1.24f;
@@ -152,6 +146,16 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.11;
 			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.09;
 		}
+		if (p.getAllowFlight()) {
+			maxDist += 1.3;
+		}
+		if (isInWater) {
+			maxDist = getMaxWaterSpeed();
+			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.3f;
+			if (p.isSprinting()) {
+				maxDist += 0.1f;
+			}
+		}
 		if (speedLevel > 0) {
 			dist -= (dist / 100.0) * (speedLevel * 20.0);
 		}
@@ -160,9 +164,16 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		maxDist += toAdd;
 		float result = dist - maxDist;
 		// p.sendMessage("maxDist: " + maxDist + " Dist: " + dist);
-		if (result > 0.1) {
+		if (result > 0.1 && !np.isTeleported()) {
 			this.punish(event, "MaxDistance: " + dist + " Max: " + maxDist);
 		}
+	}
+
+	private float getMaxWaterSpeed() {
+		if (NESSAnticheat.getInstance().getMinecraftVersion() > 1122) {
+			return 0.2f;
+		}
+		return 0.12f;
 	}
 
 	public void Check2(PlayerMoveEvent e) {
@@ -170,7 +181,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		double y = np.getMovementValues().yDiff;
 		double yresult = y - p.getVelocity().getY();
-		if (Utility.hasflybypass(p) || Utility.hasBlock(p, "slime")) {
+		if (Utility.hasflybypass(p) || Utility.hasBlock(p, "slime") && !p.getAllowFlight()) {
 			return;
 		}
 		double max = 0.9;

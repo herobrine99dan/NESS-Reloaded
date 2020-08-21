@@ -140,7 +140,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	public void Check5(PlayerMoveEvent e) {
 		double yDist = this.manager.getPlayer(e.getPlayer()).getMovementValues().yDiff;
-		if (yDist > 0 && !bypass(e.getPlayer())) {
+		if (yDist > 0 && !bypass(e.getPlayer()) && !e.getPlayer().getAllowFlight()) {
 			double yResult = yDist - e.getPlayer().getVelocity().getY();
 			if (yResult > 0.58) {
 				punish(e, e.getPlayer(), "HighDistance");
