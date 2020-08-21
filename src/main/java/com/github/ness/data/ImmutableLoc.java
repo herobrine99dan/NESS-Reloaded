@@ -1,9 +1,15 @@
 package com.github.ness.data;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+
 import lombok.Getter;
 
 public class ImmutableLoc {
 
+	@Getter
+	private final String world;
 	@Getter
 	private final double x;
 	@Getter
@@ -11,19 +17,54 @@ public class ImmutableLoc {
 	@Getter
 	private final double z;
 	@Getter
-	private final String world;
+	private final float yaw;
 	@Getter
 	private final double pitch;
-	@Getter
-	private final float yaw;
 
 	public ImmutableLoc(String world, double x, double y, double z, float yaw, double pitch) {
+		this.world = world;
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		this.yaw = yaw;
 		this.pitch = pitch;
-		this.world = world;
+		this.yaw = yaw;
+	}
+	
+	/**
+	 * Creates an immutable location from a bukkit location
+	 * 
+	 * @param location the bukkit location
+	 * @return the immutable location
+	 */
+	public static ImmutableLoc of(Location location) {
+		return new ImmutableLoc(location.getWorld().getName(), location.getX(), location.getY(), location.getZ(),
+				location.getYaw(), location.getPitch());
+	}
+	
+	/**
+	 * Creates an immutable location from a bukkit location, with an overridden world
+	 * 
+	 * @param location the bukkit location
+	 * @param worldName the world
+	 * @return the immutable location
+	 */
+	public static ImmutableLoc of(Location location, String world) {
+		return new ImmutableLoc(world, location.getX(), location.getY(), location.getZ(),
+				location.getYaw(), location.getPitch());
+	}
+	
+	/**
+	 * Converts back to a bukkit location
+	 * 
+	 * @return the bukkit location
+	 */
+	public Location toBukkitLocation() {
+		String worldName = getWorld();
+		World world = Bukkit.getWorld(worldName);
+		if (world == null) {
+			throw new IllegalStateException("World " + worldName + " vanished");
+		}
+		return new Location(world, getX(), getY(), getZ(), (float) getYaw(), (float) getPitch());
 	}
 
 	@Override

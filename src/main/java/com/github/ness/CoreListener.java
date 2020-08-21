@@ -1,9 +1,11 @@
 package com.github.ness;
 
+import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
-import com.github.ness.utility.Utility;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -20,15 +22,20 @@ public class CoreListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onMove(PlayerMoveEvent event) {
-		if (event.getTo() == null || event.getFrom() == null || event.getPlayer() == null) {
+		Location destination = event.getTo();
+		if (destination == null) {
 			return;
 		}
-		if (event.getTo().getWorld().getName() != event.getFrom().getWorld().getName()) {
+		String destinationWorld = destination.getWorld().getName();
+		Location source = event.getFrom();
+		String sourceWorld = source.getWorld().getName();
+		if (!destinationWorld.equals(sourceWorld)) {
 			return;
 		}
-		MovementValues values = new MovementValues(event.getPlayer(), Utility.locationToImmutableLoc(event.getTo().clone()),
-				Utility.locationToImmutableLoc(event.getFrom().clone()));
-		manager.getPlayer(event.getPlayer()).updateMovementValue(values);
+		Player player = event.getPlayer();
+		MovementValues values = new MovementValues(player, ImmutableLoc.of(destination, destinationWorld),
+				ImmutableLoc.of(source, sourceWorld));
+		manager.getPlayer(player).updateMovementValue(values);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
