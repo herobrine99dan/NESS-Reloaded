@@ -23,10 +23,9 @@ public class MorePackets extends AbstractCheck<ReceivedPacketEvent> {
 	@Override
 	void checkEvent(ReceivedPacketEvent e) {
 		int ping = Utility.getPing(e.getNessPlayer().getPlayer());
-		int maxpackets = 65;
-		int maxPackets = maxpackets * ((ping / 100) / 6);
+		int maxPackets = 65 + ((ping / 100) * 5);
 		if (ping < 200) {
-			maxPackets = maxpackets;
+			maxPackets = 65 + ((ping / 100) * 3);
 		}
 		// System.out.println("Sono qua");
 		// sender.sendMessage("MaxPackets: " + maxPackets);

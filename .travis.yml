@@ -1,1 +1,8 @@
 language: java
+deploy:
+  provider: releases
+  api_key: "GITHUB OAUTH TOKEN"
+  file: "NESS-LastBuild.jar"
+  skip_cleanup: true
+  on:
+    tags: true

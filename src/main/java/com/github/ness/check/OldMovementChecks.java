@@ -317,7 +317,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			}
 			if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().toLowerCase().contains("water")
 					&& !player.getLocation().getBlock().isLiquid()) {
-				if (hozDist < .1 || !groundAround) {
+				if (hozDist < .2 || !groundAround) {
 					if (groundAround && hozDist > .05 && PlayerManager.timeSince("isHit", player) >= 1000) {
 						if (!player.isInsideVehicle()
 								|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE)
@@ -329,9 +329,15 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						if ((!player.isInsideVehicle()
 								|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))
 								&& !player.isFlying() && to.getY() > 0) {
-							if (!bottom.name().toLowerCase().contains("slime"))
+							if (!bottom.name().toLowerCase().contains("slime") && !Utility.hasWater(player)
+									&& !Utility.isInWater(player) && !Utility.specificBlockNear(event.getTo(), "lava")
+									&& !Utility.specificBlockNear(event.getTo(), "water")
+									&& !Utility.specificBlockNear(event.getTo(), "fire")
+									&& !Utility.getMaterialName(event.getTo()).contains("fire") && !Utility
+											.getMaterialName(event.getTo().clone().add(0, 0.4, 0)).contains("fire")) {
 								punish(event, "NoFall");
-							manager.getPlayer(player).setViolation(new Violation("NoFall", "(OnMove)"));
+								manager.getPlayer(player).setViolation(new Violation("NoFall", "(OnMove)"));
+							}
 						}
 					}
 				} else if (!bottom.name().toLowerCase().contains("slime")) {

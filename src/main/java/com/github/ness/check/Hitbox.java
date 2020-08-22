@@ -29,7 +29,7 @@ public class Hitbox extends AbstractCheck<EntityDamageByEntityEvent> {
 			List<Double> data = np.hitboxAngles;
 			data.add(isLookingAt(p, e.getEntity().getLocation()));
 			double dist = p.getLocation().distanceSquared(e.getEntity().getLocation());
-			if(dist < 0.6) {
+			if(dist < 1) {
 				return;
 			}
 			if (data.size() >= 5) {

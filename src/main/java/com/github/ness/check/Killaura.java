@@ -45,11 +45,12 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			if (!player.isSprinting() || isLookingAt(player, entity.getLocation()) < 0.6
 					|| Utility.specificBlockNear(e.getDamager().getLocation(), "water")
 					|| Utility.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
-				maxReach += 0.5D;
+				maxReach += 0.4D;
 			}
 			maxReach += (Utility.getPing(player) / 100) / 10;
-			range -= Math.abs(player.getVelocity().getX()) + Math.abs(player.getVelocity().getZ());
-			range -= Math.abs(entity.getVelocity().getX()) + Math.abs(entity.getVelocity().getZ());
+			maxReach += (Math.abs(player.getVelocity().getY()) + Math.abs(player.getVelocity().getY())) * 0.25;
+			maxReach += Math.abs(player.getVelocity().getX()) + Math.abs(player.getVelocity().getZ());
+			maxReach += Math.abs(entity.getVelocity().getX()) + Math.abs(entity.getVelocity().getZ());
 			if ((range > maxReach && range < 6.5D)
 					|| Utility.getHorizontalDistance(player.getLocation(), entity.getLocation()) > 5) {
 				this.punish(e, player, "Reach: " + range);
@@ -78,9 +79,6 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check2(EntityDamageByEntityEvent event) {
 		if (event.getDamager() instanceof Player) {
 			Player player = (Player) event.getDamager();
-			if(event.getEntity().getLocation().distance(player.getLocation()) < 1.5) {
-				return;
-			}
 			if (player.getLocation().getPitch() == Math.round(player.getLocation().getPitch())) {
 				punish(event, player, "PerfectAngle");
 			} else if (player.getLocation().getYaw() == Math.round(player.getLocation().getYaw())) {
