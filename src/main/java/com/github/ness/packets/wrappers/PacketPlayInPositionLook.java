@@ -1,5 +1,6 @@
 package com.github.ness.packets.wrappers;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.bukkit.Bukkit;
@@ -7,44 +8,64 @@ import org.bukkit.Bukkit;
 import lombok.Getter;
 
 public class PacketPlayInPositionLook extends SimplePacket {
+	
+	private static final boolean is1_8 = Bukkit.getVersion().contains("1.8");
+	
+	private static volatile boolean initialised;
+	private static Method aMethod;
+	private static Method bMethod;
+	private static Method cMethod;
+	
 	@Getter
-	private double x;
+	private final double x;
 	@Getter
-	private double y;
+	private final double y;
 	@Getter
-	private double z;
+	private final double z;
 
 	public PacketPlayInPositionLook(Object object) {
 		super(object);
+		initialiseMethodsIfNecessary(object);
+		this.x = invokeDoubleMethod(object, aMethod);
+		this.y = invokeDoubleMethod(object, bMethod);
+		this.z = invokeDoubleMethod(object, cMethod);
+	}
+	
+	private static void initialiseMethodsIfNecessary(Object packetObject) {
+		if (!initialised) {
+			Class<?> packetClass = packetObject.getClass();
+			synchronized (PacketPlayInPositionLook.class) {
+				if (!initialised) {
+					aMethod = getDoubleMethod(packetClass, "a");
+					bMethod = getDoubleMethod(packetClass, "b");
+					cMethod = getDoubleMethod(packetClass, "c");
+					initialised = true;
+				}
+			}
+		}	
+	}
+	
+	private static Method getDoubleMethod(Class<?> clazz, String methodName) {
 		try {
-			/*
-			 * this.x = (Double) ReflectionUtility.getDeclaredField(object, "a"); this.y =
-			 * (Double) ReflectionUtility.getDeclaredField(object, "b"); this.z = (Double)
-			 * ReflectionUtility.getDeclaredField(object, "c"); this.yaw = (Float)
-			 * ReflectionUtility.getDeclaredField(object, "d"); this.pitch = (Float)
-			 * ReflectionUtility.getDeclaredField(object, "e");
-			 */
-
-			this.x = (Double) getMethodValue(object, "a");
-			this.y = (Double) getMethodValue(object, "b");
-			this.z = (Double) getMethodValue(object, "c");
-
-		} catch (Exception exception) {
-			exception.printStackTrace();
+			if (is1_8) {
+				return clazz.getMethod(methodName);
+			} else {
+				return clazz.getMethod(methodName, double.class);
+			}
+		} catch (NoSuchMethodException ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
-
-	public double getMethodValue(Object clazz, String value) {
+	
+	private static double invokeDoubleMethod(Object packetObject, Method method) {
 		try {
-			if (Bukkit.getVersion().contains("1.8")) {
-				Method m = clazz.getClass().getMethod(value);
-				return (double) m.invoke(clazz);
+			if (is1_8) {
+				return (double) method.invoke(packetObject);
 			} else {
-				Method m = clazz.getClass().getMethod(value, double.class);
-				return (double) m.invoke(clazz, 0.0);
+				return (double) method.invoke(packetObject, 0D);
 			}
-		} catch (Exception ex) {
-			return -101010.0;
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
