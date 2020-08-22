@@ -2,7 +2,9 @@ package com.github.ness;
 
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -17,6 +19,8 @@ import lombok.AllArgsConstructor;
 public class NessCommands implements CommandExecutor {
 
 	private final NESSAnticheat ness;
+	
+	private static final Logger logger = LogManager.getLogger(NessCommands.class);
 
 	private String getPermission(String arg) {
 		if (arg == null) {
@@ -46,8 +50,14 @@ public class NessCommands implements CommandExecutor {
 				switch (args[0].toLowerCase()) {
 				case "reload":
 					ness.getNessConfig().reloadConfiguration(ness);
-					ness.getCheckManager().reloadChecks();
-					sendMessage(sender, "&aReloaded NESS!");
+					ness.getCheckManager().reloadChecks().whenComplete((ignore, ex) -> {
+						if (ex != null) {
+							logger.warn("Error while reloading", ex);
+							sendMessage(sender, "&cError reloading NESS, check your server console for details.");
+							return;
+						}
+						sendMessage(sender, "&aReloaded NESS!");
+					});
 					break;
 				case "vl":
 					showViolations(sender, (args.length >= 2) ? Bukkit.getPlayer(args[1]) : null);
@@ -160,7 +170,7 @@ public class NessCommands implements CommandExecutor {
 		sendMessage(sender,
 				'\n' + "/ness toggle <dev|debug> - Toggle debug or dev mode." + '\n'
 						+ "/ness vl <player> - View player violations." + '\n' + "/ness reload - Reload configuration."
-						+ '\n' + '\n' + "&7Authors: " + StringUtils.join(ness.getDescription().getAuthors(), ", "));
+						+ '\n' + '\n' + "&7Authors: " + String.join(", ", ness.getDescription().getAuthors()));
 	}
 
 	private void sendMessage(CommandSender sender, String msg) {

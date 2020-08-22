@@ -7,15 +7,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.github.ness.api.NESSApi;
+import com.github.ness.packets.NewPacketListener;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.github.ness.api.NESSApi;
-import com.github.ness.nms.NMSHandler;
-import com.github.ness.packets.NewPacketListener;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 
 import lombok.Getter;
 
@@ -29,8 +27,6 @@ public class NESSAnticheat extends JavaPlugin {
 	private CheckManager checkManager;
 	@Getter
 	private ViolationManager violationManager;
-	@Getter
-	private NMSHandler nmsHandler;
 	@Getter
 	private int minecraftVersion;
 	
@@ -51,19 +47,14 @@ public class NESSAnticheat extends JavaPlugin {
 			getLogger().warning(
 					"Your messages.yml is outdated! Until you regenerate it, NESS will use default values for some messages.");
 		}
-		NMSHandler nmsHandler = findNMSHandler();
-		if (nmsHandler == null) {
-			setEnabled(false);
-			return;
-		}
-		this.nmsHandler = nmsHandler;
-		logger.debug("Configuration loaded and NMS version detected. Initiating checks...");
+		logger.debug("Configuration loaded. Initiating checks...");
 
 		executor = Executors.newSingleThreadScheduledExecutor();
 		getCommand("ness").setExecutor(new NessCommands(this));
 
 		checkManager = new CheckManager(this);
-		CompletableFuture<?> future = checkManager.loadAsync();
+		CompletableFuture<?> future = checkManager.loadChecks();
+		getServer().getPluginManager().registerEvents(checkManager.coreListener, this);
 
 		violationManager = new ViolationManager(this);
 		violationManager.addDefaultActions();
@@ -85,24 +76,6 @@ public class NESSAnticheat extends JavaPlugin {
 	public int getVersion() {
 		String first = Bukkit.getVersion().substring(Bukkit.getVersion().indexOf("(MC: "));
 		return Integer.valueOf(first.replace("(MC: ", "").replace(")", "").replace(" ", "").replace(".", ""));
-	}
-
-	@SuppressWarnings("deprecation")
-	private NMSHandler findNMSHandler() {
-		String packageName = Bukkit.getServer().getClass().getPackage().getName(); // org.bukkit.craftbukkit.v1_8_R3
-		String nmsVersion = packageName.substring("org.bukkit.craftbukkit.v".length()); // 1_8_R3
-		logger.debug("NMS version {}", nmsVersion);
-		try {
-			Class<?> handlerClass = Class.forName("com.github.ness.nms.NMS_" + nmsVersion);
-			if (NMSHandler.class.isAssignableFrom(handlerClass)) {
-				return (NMSHandler) handlerClass.newInstance();
-			}
-		} catch (ClassNotFoundException ex) {
-			logger.warn("Your server's version ({}) is not recognised.", nmsVersion);
-		} catch (InstantiationException | IllegalAccessException ex) {
-			logger.warn("Could not determine server version / NMS handler", ex);
-		}
-		return null;
 	}
 	
 	public static NESSAnticheat getInstance() {
