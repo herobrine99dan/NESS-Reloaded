@@ -40,17 +40,12 @@ public class CheckManager implements AutoCloseable {
 	}
 
 	CompletableFuture<?> loadChecks() {
-		return CompletableFuture.supplyAsync(this::getAllChecks, ness.getExecutor()).handleAsync((checks, ex1) -> {
-			if (ex1 != null) {
-				logger.error("Unable to instantiate new checks", ex1);
-				return null;
+		return CompletableFuture.supplyAsync(this::getAllChecks, ness.getExecutor()).whenCompleteAsync((checks, ex) -> {
+			if (ex != null) {
+				logger.error("Unable to instantiate new checks", ex);
+				return;
 			}
 			processChecks(checks);
-			return null;
-		}).whenComplete((ignore, ex) -> {
-			if (ex != null) {
-				logger.error("Unable to load checks");
-			}
 		});
 	}
 	
@@ -63,28 +58,30 @@ public class CheckManager implements AutoCloseable {
 	private Set<AbstractCheck<?>> getAllChecks() {
 		Set<AbstractCheck<?>> checks = new HashSet<>();
 		for (String checkName : ness.getNessConfig().getEnabledChecks()) {
-			if (!checkName.equals("AbstractCheck") && !checkName.equals("CheckInfo")) {
-				try {
-					Class<?> clazz = Class.forName("com.github.ness.check." + checkName);
-					if (AbstractCheck.class.isAssignableFrom(clazz)) {
-						Constructor<?> constructor = clazz.getDeclaredConstructor(CheckManager.class);
-						checks.add((AbstractCheck<?>) constructor.newInstance(this));
-					} else {
-						// This is our fault
-						logger.warn("Check class {} does not extend AbstractCheck", clazz);
-					}
-				} catch (ClassNotFoundException ex) {
-
-					// No class found!
-					// This is the user's fault
-					logger.warn("Check {} from the config does not exist", checkName, ex);
-				} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-						| IllegalArgumentException | InvocationTargetException ex) {
-
-					// Reflection error!
+			if (checkName.equals("AbstractCheck") || checkName.equals("CheckInfo")) {
+				logger.warn("Check {} from the config does not exist", checkName);
+				continue;
+			}
+			try {
+				Class<?> clazz = Class.forName("com.github.ness.check." + checkName);
+				if (!AbstractCheck.class.isAssignableFrom(clazz)) {
 					// This is our fault
-					logger.warn("Could not instantiate check {}", checkName, ex);
+					logger.warn("Check class {} does not extend AbstractCheck", clazz);
+					continue;
 				}
+				Constructor<?> constructor = clazz.getDeclaredConstructor(CheckManager.class);
+				checks.add((AbstractCheck<?>) constructor.newInstance(this));
+			} catch (ClassNotFoundException ex) {
+
+				// No class found
+				// This is the user's fault
+				logger.warn("Check {} from the config does not exist", checkName, ex);
+			} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
+					| IllegalArgumentException | InvocationTargetException ex) {
+
+				// Reflection error
+				// This is our fault
+				logger.warn("Could not instantiate check {}", checkName, ex);
 			}
 		}
 		return checks;
@@ -125,7 +122,7 @@ public class CheckManager implements AutoCloseable {
 	 * @param player the player to remove
 	 */
 	void removePlayer(Player player) {
-		logger.debug("Removing player {}", player);
+		logger.debug("Forcibly removing player {}", player);
 		playerCache.invalidate(player.getUniqueId());
 	}
 
