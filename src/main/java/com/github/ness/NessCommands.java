@@ -19,7 +19,7 @@ import lombok.AllArgsConstructor;
 public class NessCommands implements CommandExecutor {
 
 	private final NESSAnticheat ness;
-	
+
 	private static final Logger logger = LogManager.getLogger(NessCommands.class);
 
 	private String getPermission(String arg) {
@@ -73,6 +73,16 @@ public class NessCommands implements CommandExecutor {
 					break;
 				case "gui":
 					guiCommand(sender);
+					break;
+				case "debug":
+					NessPlayer np = ness.getCheckManager().getPlayer((Player) sender);
+					if (np.isDebugMode()) {
+						this.sendMessage(sender, "&7 Debug Mode &c Disabled&7!");
+						np.setDebugMode(false);
+					} else {
+						this.sendMessage(sender, "&7 Debug Mode &a Enabled&7!");
+						np.setDebugMode(true);
+					}
 					break;
 				default:
 					usage(sender);
