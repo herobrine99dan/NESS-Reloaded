@@ -1,14 +1,35 @@
 # NESS-Reloaded
 NESS Anti-Cheat reloaded is a recoded version of the old NESS, developed by MSWS.
-This Anti-Cheat aims to block a lot of movement and combat cheats using simple and strong methods.
-I'm testing it with Spigot, but i think it will work with other spigot forks.
-NESS-Reloaded is OpenSource! It uses the GPL-3.0 so you can do what you want with it, but you have to give me credits.
-You can report issues in the **Github Issues Page** or in our **Discord Server** (https://discord.gg/63JGnay)
+This anticheat aims to block a lot of movement and combat cheats using simple and strong methods.
+
+Although tested on Spigot, NESS should work with most forks.
+
+## Download
+
+Use the [SpigotMC page](https://www.spigotmc.org/resources/ness-anti-cheat-reloaded.75887/) for all downloads.
+
+## Bug Reports
+You can report issues, false positives, and bypasses on the **Github Issues** page or our **[Discord Server](https://discord.gg/63JGnay)**.
+
 ## Prerequisites
-To use NESS-Reloaded you must use Java 8 and a Spigot (or a fork of it) server.
+To use NESS-Reloaded you must use:
+
+* Java 8 or later
+* Spigot, Paper, or a fork of either
+
 ## Built With
-* [ClassGraph](https://github.com/classgraph/classgraph) - The Java Classpath Scanner
-* [Maven](https://maven.apache.org/) - Dependency Management
+* Bukkit - the well-known plugin API
+* [Caffeine](https://github.com/ben-manes/caffeine) - High-performance caching library
+* [Maven](https://maven.apache.org/) - Build system and dependency management
+
 ## Contributors
- - A248 (A Developer of NESS Reloaded) https://github.com/A248
- - Islandscout (GCD Utils) https://github.com/HawkAnticheat/Hawk
+ - [herobrine99dan](https://github.com/herobrine99dan) (Lead developer of NESS Reloaded)
+ - [A248](https://github.com/A248) (Another developer of NESS Reloaded) 
+ - Islandscout (GCD Utils) (developer of [Hawk](https://github.com/HawkAnticheat/Hawk))
+ 
+Also see the [extended contributors page](https://github.com/herobrine99dan/NESS-Reloaded/graphs/contributors).
+
+## License
+
+NESS-Reloaded is open-source under the GNU GPL v3 or later.
+ 
