@@ -99,6 +99,7 @@ public class CheckManager implements AutoCloseable {
 	@Override
 	public void close() {
 		logger.debug("Closing all checks");
+		Set<AbstractCheck<?>> checks = this.checks;
 		checks.forEach(AbstractCheck::close);
 		checks.clear();
 		HandlerList.unregisterAll(ness);
