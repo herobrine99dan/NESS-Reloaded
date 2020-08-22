@@ -1,6 +1,8 @@
 package com.github.ness.packets;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -21,6 +23,24 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 
 public class NewPacketListener implements Listener {
+	
+	private static final Method getHandleMethod;
+	private static final Field playerConnectionField;
+	private static final Field networkManagerField;
+	private static final Field channelField;
+	
+	static {
+		Class<?> craftPlayerClass;
+		try {
+			craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + ReflectionUtility.ver() + ".entity.CraftPlayer");
+			getHandleMethod = craftPlayerClass.getMethod("getHandle");
+			playerConnectionField = getHandleMethod.getReturnType().getDeclaredField("playerConnection");
+			networkManagerField = playerConnectionField.getType().getDeclaredField("networkManager");
+			channelField = networkManagerField.getType().getDeclaredField("channel");
+		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | NoSuchFieldException ex) {
+			throw new ExceptionInInitializerError(ex);
+		}
+	}
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
@@ -33,13 +53,11 @@ public class NewPacketListener implements Listener {
 	}
 
 	/**
-	 * remove the Channel Handler from a player
+	 * Remove our channel handler from the pipeline
 	 * 
-	 * @param player
-	 * @throws Exception
+	 * @param player the player
 	 */
-
-	public void removePlayer(Player player) {
+	private void removePlayer(Player player) {
 		Channel channel = getChannel(player);
 		// Channel channel = ((CraftPlayer)
 		// player).getHandle().playerConnection.networkManager.channel;
@@ -49,13 +67,11 @@ public class NewPacketListener implements Listener {
 	}
 
 	/**
-	 * inject the Channel Handler inside a player
+	 * Inject our own channel handler into the pipeline
 	 * 
-	 * @param player
-	 * @throws Exception
+	 * @param player the player
 	 */
-
-	public void injectPlayer(Player player) {
+	private void injectPlayer(Player player) {
 		ChannelDuplexHandler channelDuplexHandler = new ChannelDuplexHandler() {
 			@Override
 			public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
@@ -76,7 +92,7 @@ public class NewPacketListener implements Listener {
 		pipeline.addBefore("packet_handler", player.getName() + "NESSListener", channelDuplexHandler);
 	}
 
-	public SimplePacket getPacketObject(Object p) {
+	private SimplePacket getPacketObject(Object p) {
 		String packetname = p.getClass().getSimpleName().toLowerCase();
 		SimplePacket packet;
 		if (packetname.contains("position")) {
@@ -90,25 +106,20 @@ public class NewPacketListener implements Listener {
 	}
 
 	/**
-	 * Get the Channel of a Player
+	 * Gets the netty Channel of a Player
 	 * 
-	 * @param player
-	 * @return
+	 * @param player the bukkit player
+	 * @return the channel, never {@code null}
+	 * @throws IllegalStateException if reflection failed
 	 */
-
-	public Channel getChannel(Player player) {
+	private static Channel getChannel(Player player) {
 		try {
-			Class<?> craftplayerclass = (Class<?>) Class
-					.forName("org.bukkit.craftbukkit." + ReflectionUtility.ver() + ".entity.CraftPlayer");
-			// Object craftedplayer = craftplayerclass.cast(player);
-			Object handle = craftplayerclass.getMethod("getHandle").invoke(player);
-			Object playerConnection = handle.getClass().getDeclaredField("playerConnection").get(handle);
-			Object networkManager = playerConnection.getClass().getDeclaredField("networkManager")
-					.get(playerConnection);
-			Channel channel = (Channel) networkManager.getClass().getDeclaredField("channel").get(networkManager);
-			return channel;
-		} catch (ClassNotFoundException | IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | InvocationTargetException | NoSuchMethodException e) {
-			throw new IllegalStateException(e);
+			Object handle = getHandleMethod.invoke(player);
+			Object playerConnection = playerConnectionField.get(handle);
+			Object networkManager = networkManagerField.get(playerConnection);
+			return (Channel) channelField.get(networkManager);
+		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
