@@ -40,9 +40,12 @@ public class CoreListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onQuit(PlayerQuitEvent evt) {
+		Player player = evt.getPlayer();
 		long tenSecondsLater = 20L * 10L;
 		Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
-			manager.removePlayer(evt.getPlayer());
+			if (player.isOnline()) {
+				manager.removePlayer(player);
+			}
 		}, tenSecondsLater);
 	}
 	
