@@ -23,7 +23,7 @@ import lombok.Getter;
 
 public class CheckManager implements AutoCloseable {
 
-	private final Cache<UUID, NessPlayer> playerCache = Caffeine.newBuilder().expireAfterAccess(Duration.ofMinutes(10L)).build();
+	private final Cache<UUID, NessPlayer> playerCache = Caffeine.newBuilder().expireAfterAccess(Duration.ofMinutes(5L)).build();
 
 	final CoreListener coreListener;
 
