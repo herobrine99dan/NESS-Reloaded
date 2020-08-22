@@ -49,8 +49,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 
 		Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0, 1, 0)).getType();
 		Material bottom = null;
-		boolean devMode = false;
-		boolean debugMode = false;
+		final boolean devMode = this.manager.getPlayer(player).isDevMode();
+		final boolean debugMode = false;
 		Location from = event.getFrom(), to = event.getTo();
 		Double dist = from.distance(to);
 		Double hozDist = dist - (to.getY() - from.getY());
@@ -128,7 +128,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			MSG.tell(player, "&7Z: &e" + player.getLocation().getZ() + " &7V: &e" + player.getVelocity().getZ());
 			MSG.tell(player, "&7hozDist: &e" + hozDist + " &7vertDist: &e" + vertDist + " &7fallDist: &e" + fallDist);
 			MSG.tell(player,
-					"&7below: &e" + MSG.camelCase(below.toString()) + " bottom: " + MSG.camelCase(bottom.toString()));
+					"&7below: &e" + Utility.getMaterialName(below) + " bottom: " + Utility.getMaterialName(bottom));
 			MSG.tell(player, "&7dTG: " + dTG);
 			MSG.tell(player,
 					"&7groundAround: &e" + MSG.torF(groundAround) + " &7onGround: " + MSG.torF(player.isOnGround()));

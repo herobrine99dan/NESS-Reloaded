@@ -1,5 +1,7 @@
 package com.github.ness.packets;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,20 +24,12 @@ public class NewPacketListener implements Listener {
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
-		try {
-			injectPlayer(event.getPlayer());
-		} catch (Exception e) {
-
-		}
+		injectPlayer(event.getPlayer());
 	}
 
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event) {
-		try {
-			removePlayer(event.getPlayer());
-		} catch (Exception e) {
-
-		}
+		removePlayer(event.getPlayer());
 	}
 
 	/**
@@ -45,12 +39,12 @@ public class NewPacketListener implements Listener {
 	 * @throws Exception
 	 */
 
-	public void removePlayer(Player player) throws Exception {
+	public void removePlayer(Player player) {
 		Channel channel = getChannel(player);
 		// Channel channel = ((CraftPlayer)
 		// player).getHandle().playerConnection.networkManager.channel;
 		channel.eventLoop().submit(() -> {
-			channel.pipeline().remove(player.getName()+ "NESSListener");
+			channel.pipeline().remove(player.getName() + "NESSListener");
 		});
 	}
 
@@ -61,7 +55,7 @@ public class NewPacketListener implements Listener {
 	 * @throws Exception
 	 */
 
-	public void injectPlayer(Player player) throws Exception {
+	public void injectPlayer(Player player) {
 		ChannelDuplexHandler channelDuplexHandler = new ChannelDuplexHandler() {
 			@Override
 			public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
@@ -70,7 +64,7 @@ public class NewPacketListener implements Listener {
 						NESSAnticheat.getInstance().getCheckManager().getPlayer(player),
 						NewPacketListener.this.getPacketObject(packet));
 				Bukkit.getPluginManager().callEvent(event);
-				if(!event.isCancelled()) {
+				if (!event.isCancelled()) {
 					super.channelRead(channelHandlerContext, packet);
 				}
 			}
@@ -79,7 +73,7 @@ public class NewPacketListener implements Listener {
 		// ChannelPipeline pipeline = ((CraftPlayer)
 		// player).getHandle().playerConnection.networkManager.channel
 		ChannelPipeline pipeline = getChannel(player).pipeline();
-		pipeline.addBefore("packet_handler", player.getName()+ "NESSListener", channelDuplexHandler);
+		pipeline.addBefore("packet_handler", player.getName() + "NESSListener", channelDuplexHandler);
 	}
 
 	public SimplePacket getPacketObject(Object p) {
@@ -94,6 +88,7 @@ public class NewPacketListener implements Listener {
 		}
 		return packet;
 	}
+
 	/**
 	 * Get the Channel of a Player
 	 * 
@@ -112,9 +107,8 @@ public class NewPacketListener implements Listener {
 					.get(playerConnection);
 			Channel channel = (Channel) networkManager.getClass().getDeclaredField("channel").get(networkManager);
 			return channel;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return null;
+		} catch (ClassNotFoundException | IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | InvocationTargetException | NoSuchMethodException e) {
+			throw new IllegalStateException(e);
 		}
 	}
 
