@@ -26,11 +26,11 @@ import lombok.EqualsAndHashCode;
 
 public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
-	private List<HardLimitEntry> hardLimits = new ArrayList<>();
+	private final List<HardLimitEntry> hardLimits = new ArrayList<>();
 	
-	private Set<DeviationEntry> deviationRequirements = new HashSet<>();
+	private final Set<DeviationEntry> deviationRequirements = new HashSet<>();
 	
-	private Set<DeviationEntry> superDeviationRequirements = new HashSet<>();
+	private final Set<DeviationEntry> superDeviationRequirements = new HashSet<>();
 
 	private final int totalRetentionSecs;
 	
@@ -246,6 +246,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 	 */
 	static int getStdDevPercent(List<Long> periods) {
 		long average = calculateAverage(periods);
+		logger.trace("Calculated average is {}", average);
 
 		double standardDeviation = 0;
 		for (long period : periods) {
@@ -269,7 +270,6 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 			sum += period;
 		}
 		long result = sum / samples.size();
-		logger.trace("Calculated average is {}", result);
 		return result;
 	}
 
