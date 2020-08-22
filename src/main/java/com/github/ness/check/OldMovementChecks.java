@@ -202,10 +202,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						}
 					}
 				}
-			} else if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000
-					&& PlayerManager.timeSince("teleported", player) >= 500) {
-				punish(event, "Fly");
-				manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistance(OnMove)"));
 			}
 		}
 		if (groundAround && !player.isFlying() && below.name().toLowerCase().contains("ladder") && player.getWorld()

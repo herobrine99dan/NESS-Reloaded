@@ -60,8 +60,8 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 						np.setViolation(new Violation("BadPackets", Math.round(perecentageDifference) + " packets: " + movementsPerTick));
 						e.setCancelled(true);
 					}
-				} else if(movementsPerTick > 0.05 && movementsPerTick < 1) {
-					if((np.lastPacketsPerTicks - movementsPerTick) < 0.15) {
+				} else if(movementsPerTick > 0.05 && movementsPerTick < 0.9) {
+					if((np.lastPacketsPerTicks - movementsPerTick) < 0.1) {
 						if(np.isDevMode()) {
 							np.getPlayer().sendMessage("Ticks: " + movementsPerTick);
 						}
