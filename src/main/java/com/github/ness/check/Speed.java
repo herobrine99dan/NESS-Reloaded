@@ -26,6 +26,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Check(e);
 		Check1(e);
 		Check2(e);
+		Check3(e);
 	}
 
 	@Override
@@ -59,11 +60,11 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (Utility.hasflybypass(player)) {
 			return;
 		}
-		if (Utility.isStairs(Utility.getPlayerUnderBlock(player).getLocation()) || Utility.isStairs(to)) {
+		if (Utility.specificBlockNear(to, "stair")) {
 			return;
 		}
 		// player.sendMessage("Time: "+Utility.around(System.currentTimeMillis(), 12));
-		if (Utility.liquidNear(to) || Utility.hasflybypass(player)
+		if (Utility.specificBlockNear(to,"liquid") || Utility.hasflybypass(player)
 				|| Utility.specificBlockNear(player.getLocation(), "snow")) {
 			return;
 		}
@@ -107,7 +108,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		NessPlayer np = this.manager.getPlayer(p);
-		if (np.isTeleported() || Utility.hasVehicleNear(p, 3) || Utility.hasEntityNear(p, 3)) {
+		if (np.isTeleported() || Utility.hasVehicleNear(p, 3) || Utility.hasLivingEntityNear(p, 3)) {
 			return;
 		}
 		float dist = (float) np.getMovementValues().XZDiff;
@@ -195,4 +196,17 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 	}
+
+	public void Check3(PlayerMoveEvent e) {
+		NessPlayer np = this.manager.getPlayer(e.getPlayer());
+		Player p = e.getPlayer();
+		double y = np.getMovementValues().yDiff;
+		double yresult = y - p.getVelocity().getY();
+		if (Utility.hasflybypass(p) || Utility.hasBlock(p, "slime")
+				|| Utility.getMaterialName(e.getTo()).contains("ladder")
+				|| Utility.getMaterialName(e.getFrom()).contains("ladder")) {
+			return;
+		}
+	}
+
 }

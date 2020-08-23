@@ -93,7 +93,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		}
 		if (!bypass(e.getPlayer()) && player.getNearbyEntities(2, 2, 2).isEmpty()) {
 			if (player.isOnline() && !Utility.hasBlock(player, "slime")) {
-				if (player.isOnGround() && !Utility.isOnGround(e.getTo())) {
+				if (player.isOnGround() && !Utility.groundAround(e.getTo())) {
 					punish(e, player, "FalseGround");
 				} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY())) {
 					punish(e, player, "FalseGround1");
@@ -185,7 +185,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (Utility.getMaterialName(Utility.getPlayerUnderBlock(p).getLocation()).contains("water")) {
 			return true;
 		}
-		for (Block b : Utility.getSurrounding(p.getLocation().getBlock(), true)) {
+		for (Block b : Utility.getBlocksAround(p.getLocation())) {
 			if (b.getType().isSolid()) {
 				return true;
 			}

@@ -52,7 +52,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			maxReach += Math.abs(player.getVelocity().getX()) + Math.abs(player.getVelocity().getZ());
 			maxReach += Math.abs(entity.getVelocity().getX()) + Math.abs(entity.getVelocity().getZ());
 			if ((range > maxReach && range < 6.5D)
-					|| Utility.getHorizontalDistance(player.getLocation(), entity.getLocation()) > 5) {
+					|| Utility.getDistance3D(player.getLocation(), entity.getLocation()) > 5) {
 				this.punish(e, player, "Reach: " + range);
 			}
 		}

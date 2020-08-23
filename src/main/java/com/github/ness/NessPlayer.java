@@ -164,7 +164,7 @@ public class NessPlayer implements AutoCloseable {
 		}
 		//We have too much violations to handle, so we disable some
 		if(violation.getCheck().equals("Speed") || violation.getCheck().equals("Fly") || violation.getCheck().equals("Strafe")) {
-			if(Math.random() > 0.5) {
+			if(this.isTeleported()) {
 				return;
 			}
 		}

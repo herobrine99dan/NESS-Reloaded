@@ -207,7 +207,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		if (groundAround && !player.isFlying() && below.name().toLowerCase().contains("ladder") && player.getWorld()
 				.getBlockAt(player.getLocation()).getType().name().toLowerCase().contains("ladder")) {
 			if (from.getY() < to.getY() && PlayerManager.timeSince("isHit", player) >= 1000
-					&& Utility.distToBlock(player.getLocation()) >= 3
+					&& Utility.calculateFallDistance(player.getLocation()) >= 3
 					&& nessPlayer.getTimeSinceLastWasOnGround() >= 2000) {
 				if (vertDist > .118 && !player.isSneaking()) {
 					punish(event, "FastLadder");
@@ -325,9 +325,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						if ((!player.isInsideVehicle()
 								|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))
 								&& !player.isFlying() && to.getY() > 0) {
-							if (!bottom.name().toLowerCase().contains("slime") && !Utility.hasWater(player)
-									&& !Utility.isInWater(player) && !Utility.specificBlockNear(event.getTo(), "lava")
-									&& !Utility.specificBlockNear(event.getTo(), "water")
+							if (!bottom.name().toLowerCase().contains("slime") && !Utility.hasBlock(player, "water")
+									&& !Utility.isInWater(player) && !Utility.specificBlockNear(event.getTo(), "liquid")
 									&& !Utility.specificBlockNear(event.getTo(), "fire")
 									&& !Utility.getMaterialName(event.getTo()).contains("fire") && !Utility
 											.getMaterialName(event.getTo().clone().add(0, 0.4, 0)).contains("fire")) {
@@ -382,7 +381,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 					punish(event, "NoWeb");
 				manager.getPlayer(player).setViolation(new Violation("NoWeb", "(OnMove)"));
 			}
-			if (below.isSolid() && Utility.isOnGround(from)) {
+			if (below.isSolid() && groundAround) {
 				// this.manager.getPlayer(player).safeLoc = from; //TODO Make a good LagBack
 				// System
 			}

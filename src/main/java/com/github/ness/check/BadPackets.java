@@ -61,11 +61,12 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 						e.setCancelled(true);
 					}
 				} else if(movementsPerTick > 0.05 && movementsPerTick < 0.9) {
-					if((np.lastPacketsPerTicks - movementsPerTick) < 0.1) {
+					double result = np.lastPacketsPerTicks - movementsPerTick;
+					if(result < 0.1) {
 						if(np.isDevMode()) {
-							np.getPlayer().sendMessage("Ticks: " + movementsPerTick);
+							np.getPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
 						}
-						np.setViolation(new Violation("BadPackets", "Packets: " + movementsPerTick));
+						np.setViolation(new Violation("BadPackets", "Packets: " + movementsPerTick + " Result: " + result));
 						e.setCancelled(true);
 					}
 				}
