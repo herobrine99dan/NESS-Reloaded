@@ -77,7 +77,9 @@ public abstract class AbstractCheck<E extends Event> {
 		@Override
 		public void callEvent(Event event) {
 			try {
-				checkEvent((E) event);
+				if (info.event.isInstance(event)) {
+					checkEvent((E) event);
+				}
 			} catch (Throwable ex) {
 				logger.warn("NESS made a mistake in listening to an event. Please report this error on Github.", ex);
 			}
