@@ -57,16 +57,18 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 					 * likely to be cheating.
 					 */
 					if (perecentageDifference > 7.0) {
-						np.setViolation(new Violation("BadPackets", Math.round(perecentageDifference) + " packets: " + movementsPerTick));
+						np.setViolation(new Violation("BadPackets",
+								Math.round(perecentageDifference) + " packets: " + movementsPerTick));
 						e.setCancelled(true);
 					}
-				} else if(movementsPerTick > 0.05 && movementsPerTick < 0.9) {
+				} else if (movementsPerTick > 0.084 && movementsPerTick < 0.9) {
 					double result = np.lastPacketsPerTicks - movementsPerTick;
-					if(result < 0.1) {
-						if(np.isDevMode()) {
-							np.getPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
-						}
-						np.setViolation(new Violation("BadPackets", "Packets: " + movementsPerTick + " Result: " + result));
+					if (np.isDevMode()) {
+						np.getPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
+					}
+					if (result == 0 || (result > -0.02 && result < 0.05)) {
+						np.setViolation(
+								new Violation("BadPackets", "Packets: " + movementsPerTick + " Result: " + result));
 						e.setCancelled(true);
 					}
 				}

@@ -18,8 +18,7 @@ public class TestCheck extends AbstractCheck<PlayerMoveEvent> {
 	void checkEvent(PlayerMoveEvent e) {
 		Player p = e.getPlayer();
 		//getBlocksAround
-		final float blocks = (float) ((3.5*p.getVelocity().getY())/-0.71);
-		p.sendMessage("damage: " + (float) Utility.calcDamage(blocks));
+		p.sendMessage("damage: " + (float) Utility.calcDamage((3.5*p.getVelocity().getY())/-0.71));
 	}
 
 }

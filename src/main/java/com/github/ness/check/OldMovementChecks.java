@@ -331,6 +331,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 									&& !Utility.getMaterialName(event.getTo()).contains("fire") && !Utility
 											.getMaterialName(event.getTo().clone().add(0, 0.4, 0)).contains("fire")) {
 								punish(event, "NoFall");
+								player.damage(Math.abs(Utility.calcDamage((3.5*player.getVelocity().getY())/-0.71)));
 								manager.getPlayer(player).setViolation(new Violation("NoFall", "(OnMove)"));
 							}
 						}
@@ -375,11 +376,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						&& nessPlayer.getTimeSinceLastWasOnIce() >= 1000)
 					manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistance6(OnMove)"));
 				// Block rightBelow = player.getLocation().subtract(0, .1, 0).getBlock();
-			}
-			if (player.getWorld().getBlockAt(player.getLocation()).getType().name().toLowerCase().contains("web")) {
-				if (dist > .2 && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED))
-					punish(event, "NoWeb");
-				manager.getPlayer(player).setViolation(new Violation("NoWeb", "(OnMove)"));
 			}
 			if (below.isSolid() && groundAround) {
 				// this.manager.getPlayer(player).safeLoc = from; //TODO Make a good LagBack
