@@ -67,7 +67,6 @@ enabled-checks:
   - 'NameExploit'
   - 'OldMovementChecks'
   - 'Scaffold'
-  - 'SpamBot'
   - 'Speed'
   - 'PingSpoof'
   - 'TeleportEvent'
@@ -104,8 +103,7 @@ checks:
       #
       # For example, '16:3' means that if the player's clicks in the past 3 seconds average 16 CPS, trigger a violation.
       cps-and-required-span:
-        - '16:3'
-        - '16:1'
+        - '35:2'
     # A more advanced consistency check
     constancy:
       # These are pairs of standard deviation percentages and sample counts
@@ -118,14 +116,13 @@ checks:
       # For example, '30:8' means that if the standard deviation in the interval between clicks over a sample
       # of 8 intervals, divided by the average interval, is greater than 30%, trigger a violation.
       deviation-and-sample:
-        - '30:8'
-        - '15:16'
+        - '30:10'
       # These are pairs of standard deviation percentages and sample counts
       #
       # These are conceptually similar to the previous. However, this measures the standard deviations between
       # the standard deviations. Thus, it is called the "super deviation".
       superdeviation-and-supersample:
-        - '10:8'
+        - '60:10'
       span-millis: 800
 
 #

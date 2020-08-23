@@ -27,6 +27,9 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent> {
 		Player player = event.getPlayer();
 		final double MAX_ANGLE = Math.toRadians(90);
 		BlockFace placedFace = event.getBlock().getFace(event.getBlockAgainst());
+		if(placedFace == null) {
+			return;
+		}
 		final Vector placedVector = new Vector(placedFace.getModX(), placedFace.getModY(), placedFace.getModZ());
 		float placedAngle = player.getLocation().getDirection().angle(placedVector);
 
@@ -41,6 +44,9 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent> {
 	public void Check2(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		Block target = player.getTargetBlock(null, 5);
+		if(target == null) {
+			return;
+		}
 		if (Utility.getMaterialName(event.getBlock().getWorld().getBlockAt(event.getBlock().getLocation().subtract(0.0D, 1.0D, 0.0D)).getLocation()).contains("air")) {
 			if (!event.getBlock().getLocation().equals(target.getLocation()) && !event.isCancelled()
 					&& target.getType().isSolid() && !target.getType().name().toLowerCase().contains("sign")
