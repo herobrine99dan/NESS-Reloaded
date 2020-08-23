@@ -60,8 +60,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (!bypass(event.getPlayer())) {
 			if (Utility.isClimbableBlock(p.getLocation().getBlock())) {
 				double distance = np.getMovementValues().yDiff;
-				if (distance > 0.155D) {
-					punish(event, p, "FastLadder: " + distance);
+				if (distance > 0.155D && p.getVelocity().getY() < 0) {
+					punish(event, p, "FastLadder: " + (float) distance);
 				}
 			}
 		}

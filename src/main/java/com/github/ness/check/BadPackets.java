@@ -66,9 +66,9 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 					if (np.isDevMode()) {
 						np.getPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
 					}
-					if (result == 0 || (result > -0.02 && result < 0.05)) {
+					if (result == 0 || (result > 0 && result < 0.05)) {
 						np.setViolation(
-								new Violation("BadPackets", "Packets: " + movementsPerTick + " Result: " + result));
+								new Violation("BadPackets", "[EXPERIMENTAL] Packets: " + movementsPerTick + " Result: " + result));
 						e.setCancelled(true);
 					}
 				}

@@ -173,8 +173,8 @@ public class Utility {
 	public static boolean hasBlock(Player p, String m) {
 		boolean done = false;
 		Location loc = p.getLocation().clone();
-		int min = (int) loc.getY() - 10;
-		int max = (int) (loc.getY() + 10);
+		int min = (int) loc.getY() - 15;
+		int max = (int) (loc.getY() + 15);
 		if (min < 0) {
 			min = 0;
 		}

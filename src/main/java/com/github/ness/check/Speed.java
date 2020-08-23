@@ -64,8 +64,13 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		// player.sendMessage("Time: "+Utility.around(System.currentTimeMillis(), 12));
-		if (Utility.specificBlockNear(to,"liquid") || Utility.hasflybypass(player)
-				|| Utility.specificBlockNear(player.getLocation(), "snow")) {
+		if (Utility.specificBlockNear(to, "liquid") || Utility.hasflybypass(player)
+				|| Utility.specificBlockNear(player.getLocation(), "snow")
+				|| Utility.specificBlockNear(player.getLocation(), "chest")
+				|| Utility.specificBlockNear(player.getLocation(), "ladder")
+				|| Utility.specificBlockNear(player.getLocation(), "pot")
+				|| Utility.specificBlockNear(player.getLocation(), "bed")
+				|| Utility.specificBlockNear(player.getLocation(), "detector")) {
 			return;
 		}
 		if (!player.getNearbyEntities(5, 5, 5).isEmpty()) {
@@ -79,8 +84,16 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.getMaterialName(from).toLowerCase().contains("ladder")) {
 			return;
 		}
+		if (Utility.getMaterialName(to).toLowerCase().contains("pot")
+				|| Utility.getMaterialName(from).toLowerCase().contains("pot")) {
+			return;
+		}
 		if (Utility.getMaterialName(to.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")
 				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")) {
+			return;
+		}
+		if (Utility.getMaterialName(to.clone().add(0, 0.5, 0)).toLowerCase().contains("bed")
+				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("bed")) {
 			return;
 		}
 		if (to.add(0, -1, 0).getBlock().getType().name().contains("detector")
