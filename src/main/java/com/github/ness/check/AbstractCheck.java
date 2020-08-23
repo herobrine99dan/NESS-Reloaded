@@ -68,9 +68,10 @@ public abstract class AbstractCheck<E extends Event> {
 	}
 	
 	private class NessRegisteredListener extends RegisteredListener {
-
+		
 		NessRegisteredListener() {
-			super(null, null, EventPriority.NORMAL, manager.getNess(), false);
+			super(HandlerListUtils.DummyListener.INSTANCE, HandlerListUtils.DummyEventExecutor.INSTANCE,
+					EventPriority.NORMAL, manager.getNess(), false);
 		}
 		
 		@SuppressWarnings("unchecked")
