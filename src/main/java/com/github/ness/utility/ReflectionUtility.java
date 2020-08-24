@@ -1,5 +1,6 @@
 package com.github.ness.utility;
 
+import java.awt.Color;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -26,6 +27,15 @@ public class ReflectionUtility {
 
 	public static String getPacketName(Object packet) {
 		return packet.toString().substring(0, packet.toString().indexOf("@")).replace("net.minecraft.server.", "").replace(ver()+".", "");
+	}
+	
+	public static Color getColorByName(String name) {
+	    try {
+	        return (Color)Color.class.getField(name.toUpperCase()).get(null);
+	    } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
 	}
 
 	public static Class<?> wrapperToPrimitive(Class<?> clazz) {

@@ -25,6 +25,7 @@ import com.github.ness.api.Violation;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.utility.DiscordWebhook;
+import com.github.ness.utility.ReflectionUtility;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -168,7 +169,6 @@ public class NessPlayer implements AutoCloseable {
 		if (this.getPlayer().hasPermission("ness.bypass.*")) {
 			return;
 		}
-		// We have too much violations to handle, so we disable some
 		if (violation.getCheck().equals("Speed") || violation.getCheck().equals("Fly")
 				|| violation.getCheck().equals("Strafe")) {
 			if (this.isTeleported()) {
@@ -233,7 +233,10 @@ public class NessPlayer implements AutoCloseable {
 		if (notify != null) {
 			final String title = notify.getString("discord-title", "Anti-Cheat");
 			final String description = notify.getString("discord-description", "<hacker> maybe is cheating!");
-			final Color color = Color.getColor(notify.getString("discord-color", "RED"));
+			final Color color = ReflectionUtility.getColorByName(notify.getString("discord-color", "RED"));
+			if(this.isDebugMode()) {
+				System.out.println("Color:" + color.toString());
+			}
 			new BukkitRunnable() {
 				@Override
 				public void run() {

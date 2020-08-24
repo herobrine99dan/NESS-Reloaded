@@ -75,13 +75,17 @@ public class NessCommands implements CommandExecutor {
 					guiCommand(sender);
 					break;
 				case "debug":
-					NessPlayer np = ness.getCheckManager().getPlayer((Player) sender);
-					if (np.isDebugMode()) {
-						this.sendMessage(sender, "&7 Debug Mode &c Disabled&7!");
-						np.setDebugMode(false);
-					} else {
-						this.sendMessage(sender, "&7 Debug Mode &a Enabled&7!");
-						np.setDebugMode(true);
+					if(sender instanceof Player) {
+						NessPlayer np = ness.getCheckManager().getPlayer((Player) sender);
+						if (np.isDebugMode()) {
+							this.sendMessage(sender, "&7Debug Mode &cDisabled&7!");
+							np.setDebugMode(false);
+						} else {
+							this.sendMessage(sender, "&7Debug Mode &aEnabled&7!");
+							np.setDebugMode(true);
+						}
+					}else {
+						this.sendMessage(sender, "&7Sorry but to use this command you have to be a Player");
 					}
 					break;
 				default:
