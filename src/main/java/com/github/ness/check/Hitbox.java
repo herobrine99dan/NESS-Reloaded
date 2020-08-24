@@ -26,41 +26,33 @@ public class Hitbox extends AbstractCheck<EntityDamageByEntityEvent> {
 		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
 			NessPlayer np = this.manager.getPlayer(p);
-			List<Double> data = np.hitboxAngles;
-			data.add(isLookingAt(p, e.getEntity().getLocation()));
-			double dist = p.getLocation().distanceSquared(e.getEntity().getLocation());
-			if(dist < 1) {
+			double dist = p.getLocation().distance(e.getEntity().getLocation());
+			if (dist < 1.5) {
 				return;
 			}
-			if (data.size() >= 5) {
-				double result = 0;
-				for (Double d : data) {
-					result += d;
-				}
-				result = result / data.size();
-				if (this.manager.getPlayer(p).isDevMode()) {
-					p.sendMessage("FalseAngleCheck: Result " + result + " Size: " + data.size());
-				}
-				if (result < 0.70) {
-					punish(e, p, "FalseAngle: " + result);
-				}
-				data.clear();
+			final double angle = isLookingAt(p, e.getEntity().getLocation());
+			if (angle < 0.6) {
+				np.setViolation(new Violation("Hitbox", " Low Angle: " + angle), e);
 			}
-			np.hitboxAngles = data;
 		}
-	}
-
-	private void punish(EntityDamageByEntityEvent e, Player p, String module) {
-		if (manager.getPlayer(p).shouldCancel(e, "Hitbox")) {
-			e.setCancelled(true);
-		}
-		manager.getPlayer(p).setViolation(new Violation("Hitbox", module));
 	}
 
 	private double isLookingAt(Player player, Location target) {
 		Location eye = player.getEyeLocation();
 		Vector toEntity = target.toVector().subtract(eye.toVector());
-		double dot = toEntity.normalize().dot(eye.getDirection());
-		return dot;
+		double dot = toEntity.normalize().dot(getDirection(eye));
+
+		return dot;// dot > 0.99D
+	}
+
+	private static Vector getDirection(Location loc) {
+		Vector vector = new Vector();
+		double rotX = loc.getYaw();
+		double rotY = 3;
+		vector.setY(-Math.sin(Math.toRadians(rotY)));
+		double xz = Math.cos(Math.toRadians(rotY));
+		vector.setX(-xz * Math.sin(Math.toRadians(rotX)));
+		vector.setZ(xz * Math.cos(Math.toRadians(rotX)));
+		return vector;
 	}
 }

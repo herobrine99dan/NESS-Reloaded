@@ -20,7 +20,7 @@ public class NESSApiImpl implements NESSApi {
 
 	@Override
 	public void flagHack(Violation violation, Player player) {
-		this.ness.getCheckManager().getPlayer(player).setViolation(violation);
+		this.ness.getCheckManager().getPlayer(player).setViolation(violation, null);
 	}
 
 }

@@ -120,16 +120,24 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	private double isLookingAt(Player player, Location target) {
 		Location eye = player.getEyeLocation();
 		Vector toEntity = target.toVector().subtract(eye.toVector());
-		double dot = toEntity.normalize().dot(eye.getDirection());
+		double dot = toEntity.normalize().dot(getDirection(eye));
 
 		return dot;// dot > 0.99D
 	}
+	
+	private static Vector getDirection(Location loc) {
+		Vector vector = new Vector();
+		double rotX = loc.getYaw();
+		double rotY = 3;
+		vector.setY(-Math.sin(Math.toRadians(rotY)));
+		double xz = Math.cos(Math.toRadians(rotY));
+		vector.setX(-xz * Math.sin(Math.toRadians(rotX)));
+		vector.setZ(xz * Math.cos(Math.toRadians(rotX)));
+		return vector;
+	}
 
 	private void punish(EntityDamageByEntityEvent e, Player p, String module) {
-		if (manager.getPlayer(p).shouldCancel(e, this.getClass().getSimpleName())) {
-			e.setCancelled(true);
-		}
-		manager.getPlayer(p).setViolation(new Violation("Killaura", module));
+		manager.getPlayer(p).setViolation(new Violation("Killaura", module), e);
 	}
 
 }

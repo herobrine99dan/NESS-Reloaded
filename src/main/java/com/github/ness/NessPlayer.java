@@ -68,7 +68,6 @@ public class NessPlayer implements AutoCloseable {
 	public long pingspooftimer; // For PingSpoof
 	public long oldpingspooftimer; // For PingSpoof
 	public float lastYaw;
-	public List<Double> hitboxAngles; // For HitBox Check
 	@Getter
 	private volatile MovementValues movementValues;
 	@Getter
@@ -129,7 +128,6 @@ public class NessPlayer implements AutoCloseable {
 		this.movementValues = new MovementValues(player,
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
-		hitboxAngles = new ArrayList<Double>();
 	}
 
 	public long nanoTimeDifference(String action) {
@@ -154,12 +152,11 @@ public class NessPlayer implements AutoCloseable {
 		return violation.get();
 	}
 
-
 	/**
-	 * 	/**
-	 * Used to indicate the player was detected for cheating
+	 * /** Used to indicate the player was detected for cheating
+	 * 
 	 * @param violation the violation
-	 * @param e the event (if it is null, this check will not be cancelled)
+	 * @param e         the event (if it is null, this check will not be cancelled)
 	 */
 	public void setViolation(Violation violation, Cancellable e) {
 		// Bypass permissions
@@ -189,12 +186,15 @@ public class NessPlayer implements AutoCloseable {
 
 		}
 		final boolean cancel = checkViolationCounts.getOrDefault(violation.getCheck(), 0) > cancelsec.getInt("vl", 10);
-		if (cancel && (e != null)) {
-			if (violation.getCheck().equals("Fly") || violation.getCheck().equals("Nofall")
-					|| (violation.getCheck().equals("Speed") && violation.getDetails().startsWith("InvalidVelocity"))) {
-				this.dragDown();
-			} else {
-				e.setCancelled(true);
+		if (cancel) {
+			if (e != null) {
+				if (violation.getCheck().equals("Fly") || violation.getCheck().equals("Nofall")
+						|| (violation.getCheck().equals("Speed")
+								&& violation.getDetails().startsWith("InvalidVelocity"))) {
+					this.dragDown();
+				} else {
+					e.setCancelled(true);
+				}
 			}
 		}
 		// Main method body

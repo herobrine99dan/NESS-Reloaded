@@ -8,6 +8,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
+import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
 
 public class FastLadder extends AbstractCheck<PlayerMoveEvent> {
@@ -26,7 +27,7 @@ public class FastLadder extends AbstractCheck<PlayerMoveEvent> {
 				&& !Utility.hasflybypass(p) || !this.manager.getPlayer(p).isTeleported()) {
 			double distance = np.getMovementValues().yDiff;
 			if (distance > 0.155D && p.getVelocity().getY() < 0) {
-				punish(event, p, "FastLadder: " + (float) distance);
+				np.setViolation(new Violation("FastLadder", "Dist: " + (float) distance), event);
 			}
 		}
 	}

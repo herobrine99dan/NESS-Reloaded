@@ -38,10 +38,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (Utility.hasflybypass(p) || manager.getPlayer(e.getPlayer()).isTeleported()) {
 			return;
 		}
-		manager.getPlayer(p).setViolation(new Violation("Speed", module));
-		if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-			e.setCancelled(true);
-		}
+		manager.getPlayer(p).setViolation(new Violation("Speed", module), e);
 	}
 
 	/**
@@ -213,10 +210,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		float toAdd = pingresult / 4;
 		max += toAdd;
 		if (Math.abs(yresult) > max && !manager.getPlayer(e.getPlayer()).isTeleported()) {
-			manager.getPlayer(p).setViolation(new Violation("Speed", "InvalidVelocity: " + yresult));
-			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-				e.setCancelled(true);
-			}
+			this.punish(e, "InvalidVelocity: " + yresult);
 		}
 	}
 

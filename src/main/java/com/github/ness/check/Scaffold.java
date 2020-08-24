@@ -34,10 +34,7 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent> {
 		float placedAngle = player.getLocation().getDirection().angle(placedVector);
 
 		if (placedAngle > MAX_ANGLE) {
-			if (manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
-				event.setCancelled(true);
-			}
-			manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold", "HighAngle"));
+			manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold", "HighAngle"), event);
 		}
 	}
 
@@ -52,10 +49,7 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent> {
 					&& target.getType().isSolid() && !target.getType().name().toLowerCase().contains("sign")
 					&& !target.getType().toString().toLowerCase().contains("fence")
 					&& player.getLocation().getY() > event.getBlock().getLocation().getY()) {
-				if (manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
-					event.setCancelled(true);
-				}
-				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold", "Impossible1"));
+				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold", "Impossible1"), event);
 			}
 		}
 	}

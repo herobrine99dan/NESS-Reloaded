@@ -19,7 +19,7 @@ public class PingSpoof extends AbstractCheck<ReceivedPacketEvent> {
 		if (Utility.getPing(np.getPlayer()) > 150 && (diff > 40) && (diff < 70)) {
 			// sender.teleport(OldMovementChecks.safeLoc.getOrDefault(sender,
 			// sender.getLocation()));
-			np.setViolation(new Violation("PingSpoof", ""));
+			np.setViolation(new Violation("PingSpoof", ""), null);
 			Utility.setPing(np.getPlayer(), 100);
 		}
 		np.oldpingspooftimer = np.pingspooftimer;

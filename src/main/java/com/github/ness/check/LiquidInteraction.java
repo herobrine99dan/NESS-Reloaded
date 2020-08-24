@@ -21,10 +21,7 @@ public class LiquidInteraction extends AbstractCheck<BlockPlaceEvent>{
 		if (e.getBlockAgainst().isLiquid()) {
 			String type = e.getBlock().getType().name();
 			if (!whitelistedMaterials.contains(type)) {
-				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-					e.setCancelled(true);
-				}
-				manager.getPlayer(e.getPlayer()).setViolation(new Violation("LiquidInteraction", type));
+				manager.getPlayer(e.getPlayer()).setViolation(new Violation("LiquidInteraction", type), e);
 			}
 		}
 	}

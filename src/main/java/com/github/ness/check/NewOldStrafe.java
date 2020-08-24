@@ -36,10 +36,7 @@ public class NewOldStrafe extends AbstractCheck<PlayerMoveEvent> {
 		if (np.lastStrafeAngle != 0 && result > 35 && result < 300 && Math.abs(yawDiff) < 8 && !p.isOnGround()
 				&& dist > .19 && !isAgainstBlock(e.getFrom()) && !isAgainstBlock(e.getTo())) {
 			manager.getPlayer(p)
-					.setViolation(new Violation("Strafe", "High Angle Diff: " + Math.abs(np.lastStrafeAngle - angle)));
-			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, "Strafe")) {
-				e.setCancelled(true);
-			}
+					.setViolation(new Violation("Strafe", "High Angle Diff: " + Math.abs(np.lastStrafeAngle - angle)), e);
 		}
 
 		np.lastStrafeAngle = angle;
