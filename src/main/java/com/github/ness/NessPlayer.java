@@ -224,41 +224,32 @@ public class NessPlayer implements AutoCloseable {
 		return cancel;
 	}
 
-	public boolean sendWebhook(Violation violation, int violationCount) {
-		final String webhookurl = NESSAnticheat.getInstance().getNessConfig().getWebHook();
+	public void sendWebhook(Violation violation, int violationCount) {
+		final String webhookurl = NESSAnticheat.getInstance().getNessConfig().getDiscordWebHook();
 		if (webhookurl == null || webhookurl.isEmpty()) {
-			return false;
+			return;
 		}
-		ConfigurationSection notify = NESSAnticheat.getInstance().getNessConfig().getNotifyStaff();
-		if (notify != null) {
-			final String title = notify.getString("discord-title", "Anti-Cheat");
-			final String description = notify.getString("discord-description", "<hacker> maybe is cheating!");
-			final Color color = ReflectionUtility.getColorByName(notify.getString("discord-color", "RED"));
-			if(this.isDebugMode()) {
-				System.out.println("Color:" + color.toString());
-			}
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					DiscordWebhook webhook = new DiscordWebhook(webhookurl);
-					Player hacker = NessPlayer.this.getPlayer();
-					webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle(title)
-							.setDescription(description.replaceFirst("<hacker>", hacker.getName())).setColor(color)
-							.addField("Cheater", hacker.getName(), true)
-							.addField("Cheat",
-									violation.getCheck() + "(module)".replace("module", violation.getDetails()), true)
-							.addField("VL", Integer.toString(violationCount), false));
-					// webhook.addEmbed(new DiscordWebhook.EmbedObject().setDescription("Player
-					// hacker seems to be use cheat(module)".replace("cheat", hack)
-					// .replace("module", module).replace("hacker", hacker.getName())));
-					try {
-						webhook.execute();
-					} catch (IOException e) {
-					}
+		NessConfig config = NESSAnticheat.getInstance().getNessConfig();
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				DiscordWebhook webhook = new DiscordWebhook(webhookurl);
+				Player hacker = NessPlayer.this.getPlayer();
+				webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle(config.getDiscordTitle())
+						.setDescription(config.getDiscordDescription().replaceFirst("<hacker>", hacker.getName()))
+						.setColor(config.getDiscordColor()).addField("Cheater", hacker.getName(), true)
+						.addField("Cheat", violation.getCheck() + "(module)".replace("module", violation.getDetails()),
+								true)
+						.addField("VL", Integer.toString(violationCount), false));
+				// webhook.addEmbed(new DiscordWebhook.EmbedObject().setDescription("Player
+				// hacker seems to be use cheat(module)".replace("cheat", hack)
+				// .replace("module", module).replace("hacker", hacker.getName())));
+				try {
+					webhook.execute();
+				} catch (IOException e) {
 				}
-			}.runTaskAsynchronously(NESSAnticheat.getInstance());
-		}
-		return true;
+			}
+		}.runTaskAsynchronously(NESSAnticheat.getInstance());
 	}
 
 	@Override

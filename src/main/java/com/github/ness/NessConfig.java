@@ -1,5 +1,6 @@
 package com.github.ness;
 
+import java.awt.Color;
 import java.io.File;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.utility.ReflectionUtility;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,7 +23,13 @@ public class NessConfig {
 	private final String cfgFileName;
 	private final String msgsFileName;
 	@Getter
-	private String webHook;
+	private String discordWebHook;
+	@Getter
+	private String discordTitle;
+	@Getter
+	private String discordDescription;
+	@Getter
+	private Color discordColor;
 	private YamlConfiguration config;
 	@Getter(AccessLevel.PACKAGE)
 	private YamlConfiguration messages;
@@ -38,7 +46,10 @@ public class NessConfig {
 		}
 		config = YamlConfiguration.loadConfiguration(cfgFile);
 		messages = YamlConfiguration.loadConfiguration(msgsFile);
-		webHook = this.getViolationHandling().getConfigurationSection("notify-staff").getString("discord-webhook", "");
+		discordWebHook = this.getViolationHandling().getConfigurationSection("notify-staff").getString("discord-webhook", "");
+		this.discordTitle = this.getNotifyStaff().getString("discord-title", "Anti-Cheat");
+		this.discordDescription = this.getNotifyStaff().getString("discord-description", "<hacker> maybe is cheating!");
+		this.discordColor = ReflectionUtility.getColorByName(this.getNotifyStaff().getString("discord-color", "RED"));
 	}
 
 	boolean checkConfigVersion() {
