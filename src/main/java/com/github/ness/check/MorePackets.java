@@ -34,7 +34,7 @@ public class MorePackets extends AbstractCheck<ReceivedPacketEvent> {
 			return;
 		}
 		// sender.sendMessage("Counter: " + np.getPacketscounter());
-		if (np.normalPacketsCounter++ > maxPackets) {
+		if (np.normalPacketsCounter++ > maxPackets && np.nanoTimeDifference("onJoin") > 2500) {
 			/*
 			 * new BukkitRunnable() {
 			 * 

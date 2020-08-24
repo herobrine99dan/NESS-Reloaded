@@ -1,16 +1,17 @@
 package com.github.ness;
 
-import com.github.ness.data.ImmutableLoc;
-import com.github.ness.data.MovementValues;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import com.github.ness.data.ImmutableLoc;
+import com.github.ness.data.MovementValues;
 
 public class CoreListener implements Listener {
 
@@ -18,6 +19,11 @@ public class CoreListener implements Listener {
 	
 	CoreListener(CheckManager manager) {
 		this.manager = manager;
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onJoin(PlayerJoinEvent event) {
+		manager.getPlayer(event.getPlayer()).actionTime.put("onJoin", System.nanoTime() / 1000_000L);
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -41,7 +47,7 @@ public class CoreListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onQuit(PlayerQuitEvent evt) {
 		Player player = evt.getPlayer();
-		long tenSecondsLater = 20L * 10L;
+		final long tenSecondsLater = 20L * 10L;
 		Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 			if (player.isOnline()) {
 				manager.removePlayer(player);

@@ -61,6 +61,10 @@ public class NessConfig {
 		return config.getConfigurationSection("violation-handling");
 	}
 	
+	public ConfigurationSection getNotifyStaff() {
+		return getViolationHandling().getConfigurationSection("notify-staff");
+	}
+	
 	public ConfigurationSection getCheck(Class<? extends AbstractCheck<?>> check) {
 		return config.getConfigurationSection("checks." + check.getSimpleName().toLowerCase());
 	}

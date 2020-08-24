@@ -78,6 +78,7 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	@Setter
 	private boolean debugMode;
+	public Map<String, Long> actionTime;
 
 	// Used in OldMovementChecks
 
@@ -120,6 +121,7 @@ public class NessPlayer implements AutoCloseable {
 		this.lastPacketTime = 0;
 		this.blockPlace = 0;
 		this.CPS = 0;
+		this.actionTime = Collections.synchronizedMap(new HashMap<>());
 		this.pitchDiff = new ArrayList<Float>();
 		this.AimbotPatternCounter = 0;
 		this.normalPacketsCounter = 0;
@@ -129,6 +131,10 @@ public class NessPlayer implements AutoCloseable {
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
 		hitboxAngles = new ArrayList<Double>();
+	}
+
+	public long nanoTimeDifference(String action) {
+		return (System.nanoTime() / 1000_000L) - this.actionTime.getOrDefault(action, (long) 0);
 	}
 
 	public void updateMovementValue(MovementValues values) {
@@ -162,9 +168,10 @@ public class NessPlayer implements AutoCloseable {
 		if (this.getPlayer().hasPermission("ness.bypass.*")) {
 			return;
 		}
-		//We have too much violations to handle, so we disable some
-		if(violation.getCheck().equals("Speed") || violation.getCheck().equals("Fly") || violation.getCheck().equals("Strafe")) {
-			if(this.isTeleported()) {
+		// We have too much violations to handle, so we disable some
+		if (violation.getCheck().equals("Speed") || violation.getCheck().equals("Fly")
+				|| violation.getCheck().equals("Strafe")) {
+			if (this.isTeleported()) {
 				return;
 			}
 		}
@@ -218,29 +225,36 @@ public class NessPlayer implements AutoCloseable {
 	}
 
 	public boolean sendWebhook(Violation violation, int violationCount) {
-		String webhookurl = NESSAnticheat.getInstance().getNessConfig().getWebHook();
+		final String webhookurl = NESSAnticheat.getInstance().getNessConfig().getWebHook();
 		if (webhookurl == null || webhookurl.isEmpty()) {
 			return false;
 		}
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				DiscordWebhook webhook = new DiscordWebhook(webhookurl);
-				Player hacker = NessPlayer.this.getPlayer();
-				webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle("Anti-Cheat")
-						.setDescription("hacker maybe is cheating!".replace("hacker", hacker.getName()))
-						.setColor(Color.RED).addField("Cheater", hacker.getName(), true).addField("Cheat",
-								violation.getCheck() + "(module)".replace("module", violation.getDetails()), true)
-						.addField("VL", Integer.toString(violationCount), false));
-				// webhook.addEmbed(new DiscordWebhook.EmbedObject().setDescription("Player
-				// hacker seems to be use cheat(module)".replace("cheat", hack)
-				// .replace("module", module).replace("hacker", hacker.getName())));
-				try {
-					webhook.execute();
-				} catch (IOException e) {
+		ConfigurationSection notify = NESSAnticheat.getInstance().getNessConfig().getNotifyStaff();
+		if (notify != null) {
+			final String title = notify.getString("discord-title", "Anti-Cheat");
+			final String description = notify.getString("discord-description", "<hacker> maybe is cheating!");
+			final Color color = Color.getColor(notify.getString("discord-color", "RED"));
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					DiscordWebhook webhook = new DiscordWebhook(webhookurl);
+					Player hacker = NessPlayer.this.getPlayer();
+					webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle(title)
+							.setDescription(description.replaceFirst("<hacker>", hacker.getName())).setColor(color)
+							.addField("Cheater", hacker.getName(), true)
+							.addField("Cheat",
+									violation.getCheck() + "(module)".replace("module", violation.getDetails()), true)
+							.addField("VL", Integer.toString(violationCount), false));
+					// webhook.addEmbed(new DiscordWebhook.EmbedObject().setDescription("Player
+					// hacker seems to be use cheat(module)".replace("cheat", hack)
+					// .replace("module", module).replace("hacker", hacker.getName())));
+					try {
+						webhook.execute();
+					} catch (IOException e) {
+					}
 				}
-			}
-		}.runTaskAsynchronously(NESSAnticheat.getInstance());
+			}.runTaskAsynchronously(NESSAnticheat.getInstance());
+		}
 		return true;
 	}
 
