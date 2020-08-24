@@ -15,11 +15,24 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class Utility {
+	
 
+	/**
+	 * Round a value
+	 * @param value
+	 * @param precision (For example 100 will round 0.25065 to 0.25)
+	 * @return
+	 */
 	public static double round(double value, int precision) {
 		return (double) Math.round(value * precision) / precision;
 	}
 
+	/**
+	 * Check if a player is next to a wall
+	 * 
+	 * @param p
+	 * @return
+	 */
 	public static boolean nextToWall(Player p) {
 		Location xp = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(),
 				p.getLocation().getZ());
@@ -48,19 +61,35 @@ public class Utility {
 		return false;
 	}
 
+	/**
+	 * Get the material name from the location and convert it to lowercase
+	 * @param loc
+	 * @return the material name
+	 */
 	public static String getMaterialName(Location loc) {
 		return loc.getBlock().getType().name().toLowerCase();
 	}
 
+	/**
+	 * Get the material name and convert it to lowercase
+	 * @param loc
+	 * @return the material name
+	 */
 	public static String getMaterialName(Material m) {
 		return m.name().toLowerCase();
 	}
 
+	/**
+	 * Check if a block is climbable
+	 * @param b
+	 * @return
+	 */
 	public static boolean isClimbableBlock(Block b) {
 		String block = Utility.getMaterialName(b.getLocation());
 		return block.contains("ladder") || block.contains("vine");
 	}
 
+	
 	public static boolean isWeb(Location loc) {
 		return Utility.getMaterialName(loc.clone().add(0, -0.2, 0)).contains("web");
 	}

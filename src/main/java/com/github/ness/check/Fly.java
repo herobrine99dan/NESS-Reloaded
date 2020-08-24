@@ -26,10 +26,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
-		Check1(e);
 		Check2(e);
 		Check3(e);
-		Check4(e);
 		Check5(e);
 		//Check6(e);
 	}
@@ -45,24 +43,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				}
 			} catch (Exception ex) {
 				e.setCancelled(true);
-			}
-		}
-	}
-
-	/**
-	 * Check to detect max distance on ladder
-	 * 
-	 * @param event
-	 */
-	public void Check1(PlayerMoveEvent event) {
-		Player p = event.getPlayer();
-		NessPlayer np = this.manager.getPlayer(p);
-		if (!bypass(event.getPlayer())) {
-			if (Utility.isClimbableBlock(p.getLocation().getBlock())) {
-				double distance = np.getMovementValues().yDiff;
-				if (distance > 0.155D && p.getVelocity().getY() < 0) {
-					punish(event, p, "FastLadder: " + (float) distance);
-				}
 			}
 		}
 	}
@@ -112,29 +92,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Player player = e.getPlayer();
 		if (e.getTo().getPitch() > 90.0f || e.getTo().getPitch() < -90.0f) {
 			punish(e, player, "IllegalMovement");
-		}
-	}
-
-	/**
-	 * Check for high web distance
-	 * 
-	 * @param e
-	 */
-	public void Check4(PlayerMoveEvent e) {
-		Player player = e.getPlayer();
-		Location from = e.getFrom();
-		Location to = e.getTo();
-		if (player.isFlying() || player.hasPotionEffect(PotionEffectType.SPEED)) {
-			return;
-		}
-		Double hozDist = this.manager.getPlayer(player).getMovementValues().XZDiff;
-		double maxDist = 0.2;
-		if (!Utility.isMathematicallyOnGround(to.getY())) {
-			maxDist += Math.abs(player.getVelocity().getY()) * 0.4;
-		}
-		if ((Utility.getMaterialName(to).contains("web") || Utility.getMaterialName(from).contains("web")) && hozDist > maxDist) {
-			punish(e, player, "NoWeb");
-			// player.sendMessage("NoWebDist: " + hozDist);
 		}
 	}
 

@@ -1,24 +1,22 @@
 package com.github.ness.check;
 
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.CheckManager;
 import com.github.ness.utility.Utility;
 
-public class TestCheck extends AbstractCheck<PlayerMoveEvent> {
+public class TestCheck extends AbstractCheck<PlayerInteractEvent> {
 
 	public TestCheck(CheckManager manager) {
-		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
+		super(manager, CheckInfo.eventOnly(PlayerInteractEvent.class));
 	}
 
 	@Override
-	void checkEvent(PlayerMoveEvent e) {
+	void checkEvent(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
-		//getBlocksAround
-		p.sendMessage("damage: " + (float) Utility.calcDamage((3.5*p.getVelocity().getY())/-0.71));
+		//To Test getBlocksAround
+		
 	}
 
 }

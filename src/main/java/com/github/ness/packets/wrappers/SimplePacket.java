@@ -1,5 +1,7 @@
 package com.github.ness.packets.wrappers;
 
+import com.github.ness.utility.ReflectionUtility;
+
 public class SimplePacket {
 	private Object packet;
 
@@ -39,6 +41,14 @@ public class SimplePacket {
 		}else {
 			return null;
 		}
+	}
+	
+	public Object getField(String field) {
+		return ReflectionUtility.getField(packet, field);
+	}
+	
+	public Object getDeclaredField(String field) {
+		return ReflectionUtility.getDeclaredField(packet, field);
 	}
 
 }

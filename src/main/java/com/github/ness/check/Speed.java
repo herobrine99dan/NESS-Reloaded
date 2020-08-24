@@ -135,29 +135,29 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		float f = to.getYaw() * 0.017453292F;
-		float resultX = Math.abs((float) (Math.sin(f) * p.getWalkSpeed())) + 0.08f;
-		float resultZ = Math.abs((float) (Math.cos(f) * p.getWalkSpeed())) + 0.08f;
-		float maxDist = resultX + resultZ + 0.04f;
+		float resultX = Math.abs((float) (Math.sin(f) * p.getWalkSpeed())) + 0.04f;
+		float resultZ = Math.abs((float) (Math.cos(f) * p.getWalkSpeed())) + 0.04f;
+		float maxDist = resultX + resultZ + 0.03f;
 		final boolean isInWater = to.getBlock().isLiquid() && to.clone().add(0, -0.1, 0).getBlock().isLiquid();
 		float xVelocity = (float) p.getVelocity().getX();
 		float zVelocity = (float) p.getVelocity().getZ();
-		maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.12;
-		maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.2;
+		maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.14;
+		maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.18;
 		if (p.isSprinting() && Utility.isMathematicallyOnGround(to.getY())
-				&& Utility.isMathematicallyOnGround(from.getY()) && p.isOnGround()) {
+				&& Utility.isMathematicallyOnGround(from.getY())) {
 			maxDist = 0.56f;
 		} else if (p.isSprinting()) {
-			maxDist *= 1.20f;
+			maxDist *= 1.21f;
 		}
 		if (to.clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")
 				|| from.clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")
 				|| Utility.specificBlockNear(from.clone().add(0, -0.4, 0), "ice")) {
-			maxDist *= 1.34f;
+			maxDist *= 1.35f;
 		}
 		if (p.isSneaking()) {
 			maxDist = 0.172f;
-			maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.11;
-			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.09;
+			maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.14;
+			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.18;
 		}
 		if (p.getAllowFlight()) {
 			maxDist += 1.3;
@@ -168,6 +168,16 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			if (p.isSprinting()) {
 				maxDist += 0.1f;
 			}
+		}
+		if (Utility.getMaterialName(to).contains("web") || Utility.getMaterialName(from).contains("web")
+				|| Utility.getMaterialName(to.clone().add(0, 0.2, 0)).contains("web")
+				|| Utility.getMaterialName(from.clone().add(0, 0.2, 0)).contains("web")) {
+			maxDist = 0.2f;
+			if (p.isSprinting()) {
+				maxDist *= 1.21f;
+			}
+			maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.14;
+			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.25;
 		}
 		if (speedLevel > 0) {
 			dist -= (dist / 100.0) * (speedLevel * 20.0);

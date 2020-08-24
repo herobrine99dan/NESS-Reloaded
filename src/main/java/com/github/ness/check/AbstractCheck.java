@@ -4,7 +4,7 @@ import java.util.concurrent.ScheduledFuture;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.RegisteredListener;
@@ -44,6 +44,10 @@ public abstract class AbstractCheck<E extends Event> {
 	AbstractCheck(CheckManager manager, CheckInfo<E> info) {
 		this.manager = manager;
 		this.info = info;
+	}
+	
+	public NessPlayer getNessPlayer(Player p) {
+		return this.manager.getPlayer(p);
 	}
 	
 	private class State {

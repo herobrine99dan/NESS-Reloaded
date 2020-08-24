@@ -12,7 +12,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
-import com.github.ness.utility.IconMenu;
 
 public class ViolationGUI {
 

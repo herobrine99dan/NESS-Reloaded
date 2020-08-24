@@ -7,13 +7,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.github.ness.api.NESSApi;
-import com.github.ness.packets.NewPacketListener;
-
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.ness.api.NESSApi;
+import com.github.ness.packets.PacketListener;
 
 import lombok.Getter;
 
@@ -59,7 +58,7 @@ public class NESSAnticheat extends JavaPlugin {
 		violationManager = new ViolationManager(this);
 		violationManager.addDefaultActions();
 		violationManager.initiatePeriodicTask();
-		getServer().getPluginManager().registerEvents(new NewPacketListener(), this);
+		getServer().getPluginManager().registerEvents(new PacketListener(), this);
 		Scheduler.startSyncScheduler();
 		// new Protocols();
 

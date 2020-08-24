@@ -24,10 +24,6 @@ public class ReflectionUtility {
 		String pkg = Bukkit.getServer().getClass().getPackage().getName();
 		return pkg.substring(pkg.lastIndexOf(".") + 1);
 	}
-
-	public static String getPacketName(Object packet) {
-		return packet.toString().substring(0, packet.toString().indexOf("@")).replace("net.minecraft.server.", "").replace(ver()+".", "");
-	}
 	
 	public static Color getColorByName(String name) {
 	    try {

@@ -22,7 +22,7 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 
-public class NewPacketListener implements Listener {
+public class PacketListener implements Listener {
 	
 	private static final Method getHandleMethod;
 	private static final Field playerConnectionField;
@@ -78,7 +78,7 @@ public class NewPacketListener implements Listener {
 				// We can drop the packet disabling this super method!
 				ReceivedPacketEvent event = new ReceivedPacketEvent(
 						NESSAnticheat.getInstance().getCheckManager().getPlayer(player),
-						NewPacketListener.this.getPacketObject(packet));
+						PacketListener.this.getPacketObject(packet));
 				Bukkit.getPluginManager().callEvent(event);
 				if (!event.isCancelled()) {
 					super.channelRead(channelHandlerContext, packet);

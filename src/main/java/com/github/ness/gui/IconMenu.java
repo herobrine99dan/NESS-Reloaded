@@ -1,4 +1,4 @@
-package com.github.ness.utility;
+package com.github.ness.gui;
 
 import java.util.List;
 
