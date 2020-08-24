@@ -25,12 +25,6 @@ public class BlockBreakChecks extends AbstractCheck<BlockBreakEvent> {
 		Block b = event.getBlock();
 		Block target = p.getTargetBlock(null, 5);
 		if (!(target.getY() == b.getY() && target.getX() == b.getX() && target.getZ() == b.getZ())) {
-			try {
-				if (manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
-					event.setCancelled(true);
-				}
-			} catch (Exception ex) {
-			}
 		}
 	}
 

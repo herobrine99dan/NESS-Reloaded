@@ -26,7 +26,7 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 			return;
 		}
 		Check(e);
-		//Check1(e);
+		// Check1(e);
 		Check2(e);
 		Check3(e);
 	}
@@ -52,19 +52,19 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 			}
 			double result = Math.abs(gcd - player.lastGCD);
 			if (result < 0.01) {
-			final float sensitivity = (float) Utility.round(GCDUtils.getSensitivity((float) gcd), 100);
-			player.sensitivity = sensitivity;
+				final float sensitivity = (float) Utility.round(GCDUtils.getSensitivity((float) gcd), 100);
+				player.sensitivity = sensitivity;
 			}
 			if (result < 0.01) {
 				final float sensitivity = (float) Utility.round(GCDUtils.getSensitivity((float) gcd), 100);
-				if(player.isDevMode()) {
+				if (player.isDevMode()) {
 					player.getPlayer().sendMessage("Setting Sensitivity to: " + sensitivity);
 				}
 				player.sensitivity = sensitivity;
 			}
 			if (result > 0.001 || gcd < 0.0001) {
-				//TODO Trying to fix Cinematic Mode 
-				player.setViolation(new Violation("Aimbot", "GCDCheck" + "GCD: " + (float) gcd));
+				// TODO Trying to fix Cinematic Mode
+				player.setViolation(new Violation("Aimbot", "GCDCheck" + "GCD: " + (float) gcd), null);
 			}
 			// formatter.format(result));
 			player.pitchDiff.clear();
@@ -74,10 +74,10 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 
 	public void Check1(ReceivedPacketEvent e) {
 		NessPlayer np = e.getNessPlayer();
-		if(np.sensitivity == 0) {
+		if (np.sensitivity == 0) {
 			return;
 		}
-		if(np.getMovementValues().yawDiff < 1) {
+		if (np.getMovementValues().yawDiff < 1) {
 			return;
 		}
 		float firstvar = np.sensitivity * 0.6F + 0.2F;
@@ -85,9 +85,9 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 		double yawResult = np.getMovementValues().yawDiff - np.lastYaw;
 		float thirdvar = (float) yawResult / (secondvar * 0.15F);
 		float x = (float) (thirdvar - Math.floor(thirdvar));
-		//TODO Fixing Smooth Camera
+		// TODO Fixing Smooth Camera
 		if (x > 0.1 && x < 0.95) {
-			np.setViolation(new Violation("Aimbot", "ImpossibleRotations: " + x));
+			np.setViolation(new Violation("Aimbot", "ImpossibleRotations: " + x), null);
 		}
 		np.lastYaw = (float) np.getMovementValues().yawDiff;
 	}
@@ -100,16 +100,10 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 		float yawChange = (float) Math.abs(player.getMovementValues().yawDiff);
 		float pitchChange = (float) Math.abs(player.getMovementValues().pitchDiff);
 		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {
-			if (player.shouldCancel(e, this.getClass().getSimpleName())) {
-				e.setCancelled(true);
-			}
-			player.setViolation(new Violation("Aimbot", "PerfectAura"));
+			player.setViolation(new Violation("Aimbot", "PerfectAura"), e);
 			return true;
 		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {
-			if (player.shouldCancel(e, this.getClass().getSimpleName())) {
-				e.setCancelled(true);
-			}
-			player.setViolation(new Violation("Aimbot", "PerfectAura1"));
+			player.setViolation(new Violation("Aimbot", "PerfectAura1"), e);
 			return true;
 		}
 		return false;
@@ -121,10 +115,7 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 		if ((Math.round(Math.abs(yaw)) == Math.abs(yaw) && yaw < 340 && yaw > 0)) {
 			np.AimbotPatternCounter = np.AimbotPatternCounter + 1;
 			if (np.AimbotPatternCounter > 4) {
-				np.setViolation(new Violation("Aimbot", "Pattern3"));
-				if (np.shouldCancel(e, this.getClass().getSimpleName())) {
-					e.setCancelled(true);
-				}
+				np.setViolation(new Violation("Aimbot", "Pattern3"), e);
 				np.AimbotPatternCounter = 0;
 			}
 		}

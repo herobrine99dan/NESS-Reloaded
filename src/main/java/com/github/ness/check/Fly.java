@@ -27,7 +27,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
 		Check2(e);
-		Check3(e);
 		Check5(e);
 		//Check6(e);
 	}
@@ -36,14 +35,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	public void punish(PlayerMoveEvent e, Player p, String module) {
 		if (!Utility.hasflybypass(p)) {
-			manager.getPlayer(p).setViolation(new Violation("Fly", module));
-			try {
-				if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-					e.setCancelled(true);
-				}
-			} catch (Exception ex) {
-				e.setCancelled(true);
-			}
+			manager.getPlayer(p).setViolation(new Violation("Fly", module), e);
 		}
 	}
 
@@ -80,18 +72,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				}
 			}
 
-		}
-	}
-
-	/**
-	 * Check for high pitch and yaw
-	 * 
-	 * @param e
-	 */
-	public void Check3(PlayerMoveEvent e) {
-		Player player = e.getPlayer();
-		if (e.getTo().getPitch() > 90.0f || e.getTo().getPitch() < -90.0f) {
-			punish(e, player, "IllegalMovement");
 		}
 	}
 

@@ -22,14 +22,7 @@ public class ElytraCheats extends AbstractCheck<PlayerMoveEvent> {
 		float yDiff = (float) this.manager.getPlayer(p).getMovementValues().yDiff;
 		float xzDiff = (float) this.manager.getPlayer(p).getMovementValues().XZDiff;
 		if (xzDiff > 1.5 || yDiff > 1) {
-			manager.getPlayer(p).setViolation(new Violation("ElytraCheats", "HighDistance"));
-			try {
-				if (manager.getPlayer(p).shouldCancel(event, this.getClass().getSimpleName())) {
-					event.setCancelled(true);
-				}
-			} catch (Exception ex) {
-				event.setCancelled(true);
-			}
+			manager.getPlayer(p).setViolation(new Violation("ElytraCheats", "HighDistance"), event);
 		}
 	}
 

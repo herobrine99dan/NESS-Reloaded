@@ -23,12 +23,7 @@ public class AntiUnicode extends AbstractCheck<AsyncPlayerChatEvent>  {
 		 * Check if player send Unicode message
 		 */
 		if (!asciiEncoder.get().canEncode(e.getMessage())) {
-			manager.getPlayer(e.getPlayer()).setViolation(new Violation("AntiUnicode", e.getMessage()));
-			try {
-				if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-					e.setCancelled(true);
-				}
-			}catch(Exception ex) {}
+			manager.getPlayer(e.getPlayer()).setViolation(new Violation("AntiUnicode", e.getMessage()), e);
 		}	
 	}
 

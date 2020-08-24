@@ -37,10 +37,7 @@ public class FastStairs extends AbstractCheck<PlayerMoveEvent> {
 		float distance = (float) np.getMovementValues().XZDiff;
 		distance = (float) (distance - (Math.abs(p.getVelocity().getX()) + Math.abs(p.getVelocity().getZ())));
 		if (distance > 0.4f && np.lastStairDist > 0.5f) {
-			manager.getPlayer(p).setViolation(new Violation("FastStairs", "Distance: " + distance));
-			if (manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-				e.setCancelled(true);
-			}
+			manager.getPlayer(p).setViolation(new Violation("FastStairs", "Distance: " + distance), e);
 		}
 		np.lastStairDist = distance;
 	}

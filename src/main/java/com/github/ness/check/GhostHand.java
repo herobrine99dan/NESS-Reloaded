@@ -67,13 +67,7 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent> {
 				return;
 			}
 			if (block.getBlock().getType().isSolid() || !targetBlock.equals(event.getClickedBlock())) {
-				try {
-					if (manager.getPlayer(event.getPlayer()).shouldCancel(event, this.getClass().getSimpleName())) {
-						event.setCancelled(true);
-					}
-				} catch (Exception ex) {
-				}
-				p.setViolation(new Violation("GhostHand", ""));
+				p.setViolation(new Violation("GhostHand", ""), event);
 			}
 		}, 2L);
 	}

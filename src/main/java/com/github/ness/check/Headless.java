@@ -26,12 +26,7 @@ public class Headless extends AbstractCheck<PlayerMoveEvent> {
         float pitch = p.getLocation().getPitch();
         if(pitch < -90 || pitch > 90)
         {
-    		try {
-    			if(manager.getPlayer(e.getPlayer()).shouldCancel(e, this.getClass().getSimpleName())) {
-    				e.setCancelled(true);
-    			}
-    		}catch(Exception ex) {}
-            manager.getPlayer(p).setViolation(new Violation("HeadLess",""));
+            manager.getPlayer(p).setViolation(new Violation("HeadLess",""), e);
         }
 	}
 

@@ -58,8 +58,7 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 					 */
 					if (perecentageDifference > 7.0) {
 						np.setViolation(new Violation("BadPackets",
-								Math.round(perecentageDifference) + " packets: " + movementsPerTick));
-						e.setCancelled(true);
+								Math.round(perecentageDifference) + " packets: " + movementsPerTick), e);
 					}
 				} else if (movementsPerTick > 0.084 && movementsPerTick < 0.9) {
 					double result = np.lastPacketsPerTicks - movementsPerTick;
@@ -68,8 +67,7 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 					}
 					if (result == 0 || (result > 0 && result < 0.003)) {
 						np.setViolation(
-								new Violation("BadPackets", "[EXPERIMENTAL] Packets: " + movementsPerTick + " Result: " + result));
-						e.setCancelled(true);
+								new Violation("BadPackets", "[EXPERIMENTAL] Packets: " + movementsPerTick + " Result: " + result), e);
 					}
 				}
 

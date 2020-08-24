@@ -1,6 +1,5 @@
 package com.github.ness;
 
-import java.awt.Color;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -13,9 +12,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -25,7 +24,6 @@ import com.github.ness.api.Violation;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.utility.DiscordWebhook;
-import com.github.ness.utility.ReflectionUtility;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -156,12 +154,14 @@ public class NessPlayer implements AutoCloseable {
 		return violation.get();
 	}
 
+
 	/**
+	 * 	/**
 	 * Used to indicate the player was detected for cheating
-	 * 
 	 * @param violation the violation
+	 * @param e the event (if it is null, this check will not be cancelled)
 	 */
-	public void setViolation(Violation violation) {
+	public void setViolation(Violation violation, Cancellable e) {
 		// Bypass permissions
 		if (this.getPlayer().hasPermission("ness.bypass." + violation.getCheck().toLowerCase())) {
 			return;
@@ -182,6 +182,21 @@ public class NessPlayer implements AutoCloseable {
 		if (event.isCancelled()) {
 			return;
 		}
+		// Cancel method
+		ConfigurationSection cancelsec = NESSAnticheat.main.getNessConfig().getViolationHandling()
+				.getConfigurationSection("cancel");
+		if (!cancelsec.getBoolean("enable")) {
+
+		}
+		final boolean cancel = checkViolationCounts.getOrDefault(violation.getCheck(), 0) > cancelsec.getInt("vl", 10);
+		if (cancel && (e != null)) {
+			if (violation.getCheck().equals("Fly") || violation.getCheck().equals("Nofall")
+					|| (violation.getCheck().equals("Speed") && violation.getDetails().startsWith("InvalidVelocity"))) {
+				this.dragDown();
+			} else {
+				e.setCancelled(true);
+			}
+		}
 		// Main method body
 		this.violation.compareAndSet(null, violation);
 		checkViolationCounts.merge(violation.getCheck(), 1, (c1, c2) -> c1 + c2);
@@ -192,36 +207,6 @@ public class NessPlayer implements AutoCloseable {
 						"Dev mode violation: Check " + violation.getCheck() + ". Details: " + violation.getDetails());
 			}
 		}
-
-		/*
-		 * if (player.hasPermission("ness.bypass.*") ||
-		 * player.hasPermission("ness.bypass." + violation.getCheck())) { return; } //
-		 * player.sendMessage("HACK: " + violation.getCheck() + " Module: " + //
-		 * Arrays.toString(violation.getDetails())); NessConfig config =
-		 * NESSAnticheat.main.getNessConfig(); ConfigurationSection cs =
-		 * config.getViolationHandling().getConfigurationSection("notify-staff");
-		 * if(!cs.getBoolean("enable")) { return; } for (Player p :
-		 * Bukkit.getOnlinePlayers()) { if (p.hasPermission("ness.notify.hacks")) {
-		 * p.sendMessage(cs.getString("notification").replaceFirst("%PLAYER%",
-		 * player.getName()) .replaceFirst("%HACK%", violation.getCheck())
-		 * .replaceFirst("%DETAILS%", violation.getDetails().toString())); } }
-		 */
-	}
-
-	public boolean shouldCancel(Event e, String check) {
-		if (this.isTeleported()) {
-			return false;
-		}
-		ConfigurationSection cancelsec = NESSAnticheat.main.getNessConfig().getViolationHandling()
-				.getConfigurationSection("cancel");
-		if (!cancelsec.getBoolean("enable")) {
-			return false;
-		}
-		boolean cancel = checkViolationCounts.getOrDefault(check, 0) > cancelsec.getInt("vl", 10);
-		if (e instanceof PlayerMoveEvent && cancel) {
-			((PlayerMoveEvent) e).setCancelled(true);
-		}
-		return cancel;
 	}
 
 	public void sendWebhook(Violation violation, int violationCount) {
