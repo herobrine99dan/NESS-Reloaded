@@ -209,6 +209,9 @@ public class NessPlayer implements AutoCloseable {
 		}
 	}
 
+	/**
+	 * The new dragDown method will teleport the player down adding his velocity to his location
+	 */
 	public void dragDown() {
 		new BukkitRunnable() {
 			@Override
@@ -222,6 +225,11 @@ public class NessPlayer implements AutoCloseable {
 		}.runTask(NESSAnticheat.getInstance());
 	}
 
+	/**
+	 * This method send a webhook with the violation message to Discord
+	 * @param violation
+	 * @param violationCount
+	 */
 	public void sendWebhook(Violation violation, int violationCount) {
 		final String webhookurl = NESSAnticheat.getInstance().getNessConfig().getDiscordWebHook();
 		if (webhookurl == null || webhookurl.isEmpty()) {

@@ -196,17 +196,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				}
 			}
 		}
-		if (groundAround && !player.isFlying() && below.name().toLowerCase().contains("ladder") && player.getWorld()
-				.getBlockAt(player.getLocation()).getType().name().toLowerCase().contains("ladder")) {
-			if (from.getY() < to.getY() && PlayerManager.timeSince("isHit", player) >= 1000
-					&& Utility.calculateFallDistance(player.getLocation()) >= 3
-					&& nessPlayer.getTimeSinceLastWasOnGround() >= 2000) {
-				if (vertDist > .118 && !player.isSneaking()) {
-					// TODO Maybe we can remove this
-					punish(event, "FastLadder", "(OnMove)");
-				}
-			}
-		}
 		if (player.getWorld().getHighestBlockAt(player.getLocation()).getLocation().distance(player.getLocation()) <= .5
 				|| player.isOnGround()) {
 			if (hozDist > .6 && !player.hasPotionEffect(PotionEffectType.SPEED) && !player.isFlying()

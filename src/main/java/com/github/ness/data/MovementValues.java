@@ -57,15 +57,22 @@ public class MovementValues {
 	ImmutableLoc from;
 
 	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from) {
-		AroundIce = Utility.specificBlockNear(to.toBukkitLocation(), "ice");
-		AroundLiquids = Utility.specificBlockNear(to.toBukkitLocation(), "liquid");
-		boolean slimenear = Utility.specificBlockNear(to.toBukkitLocation(), "slime");
-		if (!slimenear) {
-			AroundSlime = Utility.hasBlock(p, "slime");
+		if (Bukkit.isPrimaryThread()) {
+			AroundIce = Utility.specificBlockNear(to.toBukkitLocation(), "ice");
+			AroundLiquids = Utility.specificBlockNear(to.toBukkitLocation(), "liquid");
+			boolean slimenear = Utility.specificBlockNear(to.toBukkitLocation(), "slime");
+			if (!slimenear) {
+				AroundSlime = Utility.hasBlock(p, "slime");
+			} else {
+				AroundSlime = Utility.specificBlockNear(to.toBukkitLocation(), "slime");
+			}
+			AroundStairs = Utility.specificBlockNear(to.toBukkitLocation(), "stair");
 		} else {
-			AroundSlime = Utility.specificBlockNear(to.toBukkitLocation(), "slime");
+			AroundIce = false;
+			AroundLiquids = false;
+			AroundSlime = false;
+			AroundStairs = false;
 		}
-		AroundStairs = Utility.specificBlockNear(to.toBukkitLocation(), "stair");
 		yawDiff = to.getYaw() - from.getYaw();
 		pitchDiff = to.getPitch() - from.getPitch();
 		xDiff = to.getX() - from.getX();

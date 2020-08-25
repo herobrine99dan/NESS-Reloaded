@@ -24,7 +24,7 @@ public class FastLadder extends AbstractCheck<PlayerMoveEvent> {
 		Player p = event.getPlayer();
 		NessPlayer np = this.manager.getPlayer(p);
 		if (Utility.isClimbableBlock(p.getLocation().getBlock()) && !p.hasPotionEffect(PotionEffectType.JUMP)
-				&& !Utility.hasflybypass(p) || !this.manager.getPlayer(p).isTeleported()) {
+				&& !Utility.hasflybypass(p) && !this.manager.getPlayer(p).isTeleported()) {
 			double distance = np.getMovementValues().yDiff;
 			if (distance > 0.155D && p.getVelocity().getY() < 0) {
 				np.setViolation(new Violation("FastLadder", "Dist: " + (float) distance), event);
