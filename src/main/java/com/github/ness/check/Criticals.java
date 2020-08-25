@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.github.ness.CheckManager;
+import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
 
@@ -18,7 +19,7 @@ public class Criticals extends AbstractCheck<EntityDamageByEntityEvent> {
 	@Override
 	void checkEvent(EntityDamageByEntityEvent e) {
 		Check(e);
-		//newCheck(e);
+		// newCheck(e);
 	}
 
 	public void Check(EntityDamageByEntityEvent event) {
@@ -27,9 +28,10 @@ public class Criticals extends AbstractCheck<EntityDamageByEntityEvent> {
 			if (!player.isOnGround() && player.getFallDistance() > 0 && !Utility.hasflybypass(player)
 					&& !player.getLocation().getBlock().getRelative(BlockFace.DOWN).isLiquid()
 					&& !player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid()) {
-				if (player.getLocation().getY() % 1.0D == 0.0D
+				NessPlayer np = manager.getPlayer(player);
+				if (np.getMovementValues().getTo().getY() % 1.0D == 0.0D
 						&& player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
-					manager.getPlayer(player).setViolation(new Violation("Criticals", ""), event);
+					np.setViolation(new Violation("Criticals", ""), event);
 				}
 			}
 		}

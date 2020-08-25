@@ -31,7 +31,7 @@ public class Hitbox extends AbstractCheck<EntityDamageByEntityEvent> {
 				return;
 			}
 			final double angle = isLookingAt(p, e.getEntity().getLocation());
-			if (angle < 0.6) {
+			if (angle < 0.65) {
 				np.setViolation(new Violation("Hitbox", " Low Angle: " + angle), e);
 			}
 		}

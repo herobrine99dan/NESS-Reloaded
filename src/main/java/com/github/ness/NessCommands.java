@@ -29,10 +29,14 @@ public class NessCommands implements CommandExecutor {
 		switch (arg) {
 		case "reload":
 			return "ness.command.reload";
-		case "version":
-			return "ness.command.usage";
 		case "report":
 			return "ness.command.report";
+		case "vl":
+			return "ness.command.vl";
+		case "clear":
+			return "ness.command.clear";
+		case "debug":
+			return "ness.command.clear";
 		case "gui":
 			return "ness.command.gui";
 		default:
@@ -63,16 +67,25 @@ public class NessCommands implements CommandExecutor {
 					showViolations(sender, (args.length >= 2) ? Bukkit.getPlayer(args[1]) : null);
 					break;
 				case "clear":
-					clearViolations(sender, (args.length >= 2) ? Bukkit.getPlayer(args[1]) : null);
+					Player target = (args.length >= 2) ? Bukkit.getPlayer(args[1]) : null;
+					if (target == null) {
+						sendMessage(sender, ness.getNessConfig().getMessages().getString("commands.not-found-player",
+								"&cTarget player not specified, not found, or offline."));
+						break;
+					}
+					ness.getCheckManager().getPlayer(target).checkViolationCounts.clear();
+					sendMessage(sender, "&7Cleared violations for &e%TARGET%".replace("%TARGET%", target.getName()));
 					break;
 				case "version":
-					sendVersion(sender);
+					sendMessage(sender, "&7Version " + ness.getDescription().getVersion());
 					break;
 				case "report":
 					reportCommand(sender, args);
 					break;
 				case "gui":
-					guiCommand(sender);
+					if (sender instanceof Player) {
+						new ViolationGUI(sender).createGUI();
+					}
 					break;
 				case "debug":
 					if(sender instanceof Player) {
@@ -100,12 +113,6 @@ public class NessCommands implements CommandExecutor {
 		return true;
 	}
 
-	private void guiCommand(CommandSender sender) {
-		if (sender instanceof Player) {
-			new ViolationGUI(sender).createGUI();
-		}
-	}
-
 	private void reportCommand(CommandSender sender, String[] args) {
 		ConfigurationSection reportconfig = ness.getNessConfig().getMessages().getConfigurationSection("commands")
 				.getConfigurationSection("report-command");
@@ -121,7 +128,7 @@ public class NessCommands implements CommandExecutor {
 				// TODO Make Accepted Checks
 
 				for (Player p : Bukkit.getOnlinePlayers()) {
-					if (p.hasPermission("ness.report")) {
+					if (p.hasPermission("ness.notify")) {
 						p.sendMessage(ChatColor.translateAlternateColorCodes('&',
 								reportconfig.getString("staff-message").replace("{sender}", sender.getName())
 										.replace("{cheater}", Bukkit.getPlayer(args[1]).getName())
@@ -164,23 +171,9 @@ public class NessCommands implements CommandExecutor {
 		}
 	}
 
-	private void clearViolations(CommandSender sender, Player target) {
-		if (target == null) {
-			sendMessage(sender, ness.getNessConfig().getMessages().getString("commands.not-found-player",
-					"&cTarget player not specified, not found, or offline."));
-			return;
-		}
-		ness.getCheckManager().getPlayer(target).checkViolationCounts.clear();
-		sendMessage(sender, "&7Cleared violations for &e%TARGET%".replace("%TARGET%", target.getName()));
-	}
-
-	private void sendVersion(CommandSender sender) {
-		sendMessage(sender, "&7Version " + ness.getDescription().getVersion());
-	}
-
 	private void usage(CommandSender sender) {
 		sendMessage(sender, "&aNESS Anticheat");
-		sendVersion(sender);
+		sendMessage(sender, "&7Version " + ness.getDescription().getVersion());
 		sendMessage(sender,
 				'\n' + "/ness toggle <dev|debug> - Toggle debug or dev mode." + '\n'
 						+ "/ness vl <player> - View player violations." + '\n' + "/ness reload - Reload configuration."
