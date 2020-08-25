@@ -33,14 +33,12 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		player.noGround = 0;
 	}
 
-	private void punish(PlayerMoveEvent e, String cheat) {
+	private void punish(PlayerMoveEvent e, String cheat, String module) {
 		NessPlayer nessPlayer = manager.getPlayer(e.getPlayer());
 		if (nessPlayer.isTeleported()) {
 			return;
 		}
-		if (nessPlayer.shouldCancel(e, cheat)) {
-			e.setCancelled(true);
-		}
+		nessPlayer.setViolation(new Violation(cheat, module), e);
 	}
 
 	@Override
@@ -138,15 +136,13 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		}
 
 		if (surrounded && (hozDist > .2 || to.getBlockY() < from.getBlockY())) {
-			punish(event, "NoClip");
-			manager.getPlayer(player).setViolation(new Violation("NoClip", "(OnMove)"));
+			punish(event, "NoClip", "(OnMove)");
 		}
 		if (player.isInsideVehicle()) {
 			if (!groundAround && from.getY() <= to.getY()) {
 				if (!player.isInsideVehicle()
 						|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE)
-					punish(event, "Fly");
-				manager.getPlayer(player).setViolation(new Violation("Fly", "HighDistance(OnMove)"));
+					punish(event, "Fly", "HighDistance(OnMove)");
 			}
 		}
 		// SPEED/FLIGHT CHECK
@@ -190,13 +186,9 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 								if (devMode)
 									MSG.tell(player, "&9Dev> &7Speed amo: " + hozDist);
 								if (player.isBlocking()) {
-									punish(event, "NoSlowDown");
-									manager.getPlayer(player)
-											.setViolation(new Violation("NoSlowDown", "HighDistance(OnMove)"));
+									punish(event, "NoSlowDown", "HighDistance(OnMove)");
 								} else {
-									punish(event, "Speed");
-									manager.getPlayer(player)
-											.setViolation(new Violation("Speed", "MaxDistance(OnMove)"));
+									punish(event, "Speed", "MaxDistance(OnMove)");
 								}
 							}
 						}
@@ -210,8 +202,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 					&& Utility.calculateFallDistance(player.getLocation()) >= 3
 					&& nessPlayer.getTimeSinceLastWasOnGround() >= 2000) {
 				if (vertDist > .118 && !player.isSneaking()) {
-					punish(event, "FastLadder");
-					manager.getPlayer(player).setViolation(new Violation("FastLadder", "(OnMove)"));
+					// TODO Maybe we can remove this
+					punish(event, "FastLadder", "(OnMove)");
 				}
 			}
 		}
@@ -224,8 +216,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000) {
 							if (devMode)
 								MSG.tell(player, "&9Dev> &7Speed amo: " + hozDist);
-							punish(event, "Speed");
-							manager.getPlayer(player).setViolation(new Violation("Speed", "(OnMove)"));
+							punish(event, "Speed", "(OnMove)");
 						}
 					}
 				}
@@ -233,15 +224,13 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		} else {
 			if (from.getY() == to.getY() && groundAround && player.isOnGround()) {
 				if (hozDist > .6 && !player.hasPotionEffect(PotionEffectType.SPEED) && !player.isFlying()) {
-					punish(event, "Speed");
-					manager.getPlayer(player).setViolation(new Violation("Speed", "(OnMove)"));
+					punish(event, "Speed", "(OnMove)");
 				}
 			}
 		}
 		if (player.getLocation().getYaw() > 360 || player.getLocation().getYaw() < -360
 				|| player.getLocation().getPitch() > 90 || player.getLocation().getPitch() < -90) {
-			punish(event, "IllegalMovement");
-			manager.getPlayer(player).setViolation(new Violation("IllegalMovement", "(OnMove)"));
+			punish(event, "IllegalMovement", "(OnMove)");
 		} // Changing isOnGround method, check in server side
 		if (!(player.isSneaking() && below.name().toLowerCase().contains("ladder")) && !player.isFlying()
 				&& !player.isOnGround() && to.getY() % 1.0 == 0 && PlayerManager.timeSince("lastJoin", player) >= 1000
@@ -253,8 +242,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				int failed = nessPlayer.noGround++;
 				if (failed > 3) {
 					if (!below.name().toLowerCase().contains("slime")) {
-						punish(event, "NoGround");
-						manager.getPlayer(player).setViolation(new Violation("NoGround", "(OnMove)"));
+						punish(event, "NoGround", "(OnMove)");
 					}
 				}
 			}
@@ -269,18 +257,15 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				if (dist > maxSpd && !player.hasPotionEffect(PotionEffectType.JUMP) && !player.isFlying()
 						&& PlayerManager.timeSince("isHit", player) >= 2000
 						&& !bottom.name().toLowerCase().contains("slime")) {
-					punish(event, "Fly");
-					manager.getPlayer(player).setViolation(new Violation("Fly", "NoGround(OnMove)"));
+					punish(event, "Fly", "NoGround(OnMove)");
 				}
 				if (from.getY() >= to.getY()) {
 					double vel = from.getY() - to.getY();
 					if ((vel > 0.0999 && vel < 0.1) && to.getY() > 0) {
-						punish(event, "Fly");
-						manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistance3(OnMove)"));
+						punish(event, "Fly", "InvalidDistance3(OnMove)");
 					}
 					if (vel == .125) {
-						punish(event, "Fly");
-						manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistance4(OnMove)"));
+						punish(event, "Fly", "InvalidDistance4(OnMove)");
 					}
 				} else {
 					if (hozDist == 0 && !player.hasPotionEffect(PotionEffectType.JUMP)
@@ -288,8 +273,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 							&& PlayerManager.timeSince("sincePlace", player) >= 1000
 							&& bottom.name().toLowerCase().contains("slime") && !cactus
 							&& PlayerManager.timeSince("isHit", player) >= 500) {
-						punish(event, "Fly");
-						manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistance5(OnMove)"));
+						punish(event, "Fly", "InvalidDistance5(OnMove)");
 					}
 				}
 			} else {
@@ -301,13 +285,11 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						if (ent instanceof Boat)
 							break step;
 					}
-					punish(event, "Step");
-					manager.getPlayer(player).setViolation(new Violation("Step", "(OnMove)"));
+					punish(event, "Step", "(OnMove)");
 				}
 				if (from.getY() - to.getY() > 1 && fallDist == 0) {
 					if (from.getY() - to.getY() > 2) {
-						punish(event, "Phase");
-						manager.getPlayer(player).setViolation(new Violation("Phase", "(OnMove)"));
+						punish(event, "Phase", "(OnMove)");
 					}
 				}
 			}
@@ -317,8 +299,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 					if (groundAround && hozDist > .05 && PlayerManager.timeSince("isHit", player) >= 1000) {
 						if (!player.isInsideVehicle()
 								|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE)
-							punish(event, "Speed");
-						manager.getPlayer(player).setViolation(new Violation("Speed", "(OnMove)"));
+							punish(event, "Speed", "(OnMove)");
 					} else if (PlayerManager.timeSince("breakTime", player) >= 2000
 							&& PlayerManager.timeSince("teleported", player) >= 500
 							&& !below.name().toLowerCase().contains("piston")) {
@@ -330,9 +311,9 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 									&& !Utility.specificBlockNear(event.getTo(), "fire")
 									&& !Utility.getMaterialName(event.getTo()).contains("fire") && !Utility
 											.getMaterialName(event.getTo().clone().add(0, 0.4, 0)).contains("fire")) {
-								punish(event, "NoFall");
-								player.damage(Math.abs(Utility.calcDamage((3.5*player.getVelocity().getY())/-0.71)));
-								manager.getPlayer(player).setViolation(new Violation("NoFall", "(OnMove)"));
+								punish(event, "NoFall", "(OnMove)");
+								player.damage(
+										Math.abs(Utility.calcDamage((3.5 * player.getVelocity().getY()) / -0.71)));
 							}
 						}
 					}
@@ -340,8 +321,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 					if (!player.isInsideVehicle()
 							|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE
 									&& PlayerManager.timeSince("isHit", player) >= 1000)
-						punish(event, "Speed");
-					manager.getPlayer(player).setViolation(new Violation("Speed", "BunnyHop (OnMove)"));
+						punish(event, "Speed", "BunnyHop (OnMove)");
 				}
 			}
 			if (from.getY() - to.getY() > 0.3 && !below.name().toLowerCase().contains("water")
@@ -350,8 +330,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 					if (Math.abs(fallDist - amo) < .01 && !web) {
 						if (groundAround && below.isSolid() && PlayerManager.timeSince("sincePlace", player) >= 1000
 								&& PlayerManager.timeSince("isHit", player) >= 1000)
-							punish(event, "Speed");
-						manager.getPlayer(player).setViolation(new Violation("Speed", "BunnyHop (OnMove)"));
+							punish(event, "Speed", "BunnyHop (OnMove)");
 					}
 				}
 				/*
@@ -374,7 +353,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				if (!groundAround && hozDist > .32 && vertDist == 0 && !player.isFlying()
 						&& PlayerManager.timeSince("sincePlace", player) >= 1000
 						&& nessPlayer.getTimeSinceLastWasOnIce() >= 1000)
-					manager.getPlayer(player).setViolation(new Violation("Fly", "InvalidDistance6(OnMove)"));
+					this.punish(event, "Fly", "InvalidDistance6(OnMove)");
 				// Block rightBelow = player.getLocation().subtract(0, .1, 0).getBlock();
 			}
 			if (below.isSolid() && groundAround) {

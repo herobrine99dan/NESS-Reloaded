@@ -12,11 +12,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.ness.api.PlayerViolationEvent;
@@ -207,6 +207,19 @@ public class NessPlayer implements AutoCloseable {
 						"Dev mode violation: Check " + violation.getCheck() + ". Details: " + violation.getDetails());
 			}
 		}
+	}
+
+	public void dragDown() {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				Location result = NessPlayer.this.player.getLocation().clone();
+				result.add(NessPlayer.this.player.getVelocity());
+				if(!result.clone().add(0, 0.2, 0).getBlock().getType().isSolid()) {
+				NessPlayer.this.player.teleport(result, TeleportCause.PLUGIN);
+				}
+			}
+		}.runTask(NESSAnticheat.getInstance());
 	}
 
 	public void sendWebhook(Violation violation, int violationCount) {
