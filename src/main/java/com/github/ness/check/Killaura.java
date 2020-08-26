@@ -7,7 +7,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
@@ -66,10 +65,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 				Location loc1 = p.getLocation();
 				float grade = loc.getYaw() - loc1.getYaw();
-				if (Math.abs(grade) > 9350) {
-					return;
-				}
-				if (Math.round(grade) > 340.0) {
+				if (Math.round(grade) > 356.0) {
 					punish(e, p, "HighYaw " + grade);
 				}
 			}, 3L);
@@ -128,7 +124,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	private static Vector getDirection(Location loc) {
 		Vector vector = new Vector();
 		double rotX = loc.getYaw();
-		double rotY = 3;
+		double rotY = loc.getPitch();
 		vector.setY(-Math.sin(Math.toRadians(rotY)));
 		double xz = Math.cos(Math.toRadians(rotY));
 		vector.setX(-xz * Math.sin(Math.toRadians(rotX)));
