@@ -77,7 +77,7 @@ public class NessCommands implements CommandExecutor {
 					sendMessage(sender, "&7Cleared violations for &e%TARGET%".replace("%TARGET%", target.getName()));
 					break;
 				case "version":
-					sendMessage(sender, "&7Version " + ness.getDescription().getVersion());
+					sendMessage(sender, "&7NESS Version: " + ness.getDescription().getVersion());
 					break;
 				case "report":
 					reportCommand(sender, args);
@@ -88,7 +88,7 @@ public class NessCommands implements CommandExecutor {
 					}
 					break;
 				case "debug":
-					if(sender instanceof Player) {
+					if (sender instanceof Player) {
 						NessPlayer np = ness.getCheckManager().getPlayer((Player) sender);
 						if (np.isDebugMode()) {
 							this.sendMessage(sender, "&7Debug Mode &cDisabled&7!");
@@ -97,7 +97,7 @@ public class NessCommands implements CommandExecutor {
 							this.sendMessage(sender, "&7Debug Mode &aEnabled&7!");
 							np.setDebugMode(true);
 						}
-					}else {
+					} else {
 						this.sendMessage(sender, "&7Sorry but to use this command you have to be a Player");
 					}
 					break;
@@ -156,8 +156,6 @@ public class NessCommands implements CommandExecutor {
 			return;
 		}
 		String name = target.getName();
-		sendMessage(sender, ness.getNessConfig().getMessages()
-				.getString("commands.show-violations.starting", "7Listing violations...").replace("%TARGET%", name));
 		String header = ness.getNessConfig().getMessages().getString("commands.show-violations.header",
 				"&7Violations for &e%TARGET%");
 		String body = ness.getNessConfig().getMessages().getString("commands.show-violations.body",
@@ -174,10 +172,14 @@ public class NessCommands implements CommandExecutor {
 	private void usage(CommandSender sender) {
 		sendMessage(sender, "&aNESS Anticheat");
 		sendMessage(sender, "&7Version " + ness.getDescription().getVersion());
-		sendMessage(sender,
-				'\n' + "/ness toggle <dev|debug> - Toggle debug or dev mode." + '\n'
-						+ "/ness vl <player> - View player violations." + '\n' + "/ness reload - Reload configuration."
-						+ '\n' + '\n' + "&7Authors: " + String.join(", ", ness.getDescription().getAuthors()));
+		sendMessage(sender, "/ness reload - Reload configuration");
+		sendMessage(sender, "/ness vl <player> - Show violations for a player");
+		sendMessage(sender, "/ness clear <player> - Clear player violations");
+		sendMessage(sender, "/ness version - View the NESS Reloaded Version");
+		sendMessage(sender, "/ness report <player> <reason> - Send a report to staffers");
+		sendMessage(sender, "/ness gui - Open a gui where you can see violations of players");
+		sendMessage(sender, "/ness debug - Enable / Disable Debug Mode");
+		sendMessage(sender, "&7Authors: " + String.join(", ", ness.getDescription().getAuthors()));
 	}
 
 	private void sendMessage(CommandSender sender, String msg) {

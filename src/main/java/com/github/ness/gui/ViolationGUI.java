@@ -23,7 +23,7 @@ public class ViolationGUI {
 
 	public void createGUI() {
 		Player p = (Player) sender;
-		IconMenu menu = new IconMenu("§c§lNESS Violation Manager", 9, new IconMenu.OptionClickEventHandler() {
+		IconMenu menu = new IconMenu("§c§lNESS Violation Manager", 45, new IconMenu.OptionClickEventHandler() {
 			@Override
 			public void onOptionClick(IconMenu.OptionClickEvent event) {
 				/*
