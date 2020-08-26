@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -73,12 +74,22 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (!player.getNearbyEntities(5, 5, 5).isEmpty()) {
 			return;
 		}
-		if (to.add(0, -1, 0).getBlock().getType().name().contains("chest")
-				|| from.add(0, -1, 0).getBlock().getType().name().contains("chest")) {
+		if (Utility.getMaterialName(to.add(0, -1, 0)).contains("chest")
+				|| Utility.getMaterialName(from.add(0, -1, 0)).contains("chest")) {
+			return;
+		}
+		if (Utility.getMaterialName(to.add(0, 1.8, 0)).contains("chorus")
+				|| Utility.getMaterialName(from.add(0, 1.6, 0)).contains("chorus")) {
 			return;
 		}
 		if (Utility.getMaterialName(to).toLowerCase().contains("ladder")
 				|| Utility.getMaterialName(from).toLowerCase().contains("ladder")) {
+			return;
+		}
+		if (Utility.getMaterialName(to).toLowerCase().contains("sea")
+				|| Utility.getMaterialName(from).toLowerCase().contains("sea")
+				|| Utility.getMaterialName(to.clone().add(0, 0.5, 0)).toLowerCase().contains("sea")
+				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("sea")) {
 			return;
 		}
 		if (Utility.getMaterialName(to).toLowerCase().contains("pot")
@@ -93,8 +104,8 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("bed")) {
 			return;
 		}
-		if (to.add(0, -1, 0).getBlock().getType().name().contains("detector")
-				|| from.add(0, -1, 0).getBlock().getType().name().contains("detector")) {
+		if (Utility.getMaterialName(to.add(0, -1, 0)).contains("detector")
+				|| Utility.getMaterialName(from.add(0, -1, 0)).contains("detector")) {
 			return;
 		}
 		if (!player.isInsideVehicle() && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.JUMP)) {
@@ -156,9 +167,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.14;
 			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.18;
 		}
-		if (p.getAllowFlight()) {
-			maxDist += 1.3;
-		}
 		if (isInWater) {
 			maxDist = getMaxWaterSpeed();
 			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.3f;
@@ -166,6 +174,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				maxDist += 0.1f;
 			}
 		}
+
 		if (Utility.getMaterialName(to).contains("web") || Utility.getMaterialName(from).contains("web")
 				|| Utility.getMaterialName(to.clone().add(0, 0.2, 0)).contains("web")
 				|| Utility.getMaterialName(from.clone().add(0, 0.2, 0)).contains("web")) {
@@ -175,6 +184,19 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			}
 			maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.14;
 			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.25;
+		}
+		if (Utility.getMaterialName(to).contains("stairs") || Utility.getMaterialName(from).contains("stairs")
+				|| Utility.getMaterialName(to.clone().add(0, 0.3, 0)).contains("stairs")
+				|| Utility.getMaterialName(to.clone().add(0, -0.3, 0)).contains("stairs")) {
+			maxDist = 0.45f;
+			if (p.isSprinting()) {
+				maxDist *= 1.26f;
+			}
+			maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.14;
+			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.25;
+		}
+		if (p.getAllowFlight()) {
+			maxDist += 1.3;
 		}
 		if (speedLevel > 0) {
 			dist -= (dist / 100.0) * (speedLevel * 20.0);

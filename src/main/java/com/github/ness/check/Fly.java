@@ -79,7 +79,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		double yDist = this.manager.getPlayer(e.getPlayer()).getMovementValues().yDiff;
 		if (yDist > 0 && !bypass(e.getPlayer()) && !e.getPlayer().getAllowFlight()) {
 			double yResult = yDist - e.getPlayer().getVelocity().getY();
-			if (yResult > 0.58 && !Utility.specificBlockNear(e.getTo().clone(), "lily")) {
+			if (yResult > 0.58 && !Utility.specificBlockNear(e.getTo().clone(), "lily") && !Utility.hasBlock(e.getPlayer(), "slime")) {
 				punish(e, e.getPlayer(), "HighDistance");
 			}
 		}

@@ -55,7 +55,6 @@ enabled-checks:
   - 'FastLadder'
   - 'FastPlace'
   - 'ChestESP'
-  - 'FastStairs'
   - 'Fly'
   - 'GhostHand'
   - 'Headless'

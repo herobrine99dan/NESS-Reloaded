@@ -46,9 +46,9 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 					|| Utility.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
 				maxReach += 0.3D;
 			}
-			maxReach += (Utility.getPing(player) / 100) / 15;
+			maxReach += (Utility.getPing(player) / 100) / 9;
 			maxReach += (Math.abs(np.getMovementValues().yDiff) + Math.abs(entity.getVelocity().getY())) * 0.20;
-			maxReach += Math.abs(np.getMovementValues().xDiff * 0.5) + Math.abs(np.getMovementValues().zDiff * 0.5);
+			maxReach += Math.abs(np.getMovementValues().xDiff * 0.6) + Math.abs(np.getMovementValues().zDiff * 0.6);
 			maxReach += Math.abs(entity.getVelocity().getX()) + Math.abs(entity.getVelocity().getZ());
 			if ((range > maxReach && range < 6.5D)
 					|| Utility.getDistance3D(player.getLocation(), entity.getLocation()) > 5) {
@@ -65,7 +65,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 				Location loc1 = p.getLocation();
 				float grade = loc.getYaw() - loc1.getYaw();
-				if (Math.round(grade) > 356.0) {
+				if (Math.round(grade) > 357.0) {
 					punish(e, p, "HighYaw " + grade);
 				}
 			}, 3L);

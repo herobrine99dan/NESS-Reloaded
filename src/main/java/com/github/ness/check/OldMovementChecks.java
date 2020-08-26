@@ -22,8 +22,6 @@ import com.github.ness.utility.Utility;
 
 public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 
-	public static HashMap<Player, Location> oldLoc = new HashMap<>();
-
 	public OldMovementChecks(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerMoveEvent.class, 1, TimeUnit.SECONDS));
 	}
@@ -196,25 +194,9 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				}
 			}
 		}
-		if (player.getWorld().getHighestBlockAt(player.getLocation()).getLocation().distance(player.getLocation()) <= .5
-				|| player.isOnGround()) {
-			if (hozDist > .6 && !player.hasPotionEffect(PotionEffectType.SPEED) && !player.isFlying()
-					&& PlayerManager.timeSince("wasFlight", player) >= 3000) {
-				if (oldLoc.containsKey(player)) {
-					if (oldLoc.get(player).getY() < to.getY() + 2 && PlayerManager.timeSince("isHit", player) >= 2000) {
-						if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000) {
-							if (devMode)
-								MSG.tell(player, "&9Dev> &7Speed amo: " + hozDist);
-							punish(event, "Speed", "(OnMove)");
-						}
-					}
-				}
-			}
-		} else {
-			if (from.getY() == to.getY() && groundAround && player.isOnGround()) {
-				if (hozDist > .6 && !player.hasPotionEffect(PotionEffectType.SPEED) && !player.isFlying()) {
-					punish(event, "Speed", "(OnMove)");
-				}
+		if (from.getY() == to.getY() && groundAround && player.isOnGround()) {
+			if (hozDist > .6 && !player.hasPotionEffect(PotionEffectType.SPEED) && !player.isFlying()) {
+				punish(event, "Speed", "(OnMove)");
 			}
 		}
 		if (player.getLocation().getYaw() > 360 || player.getLocation().getYaw() < -360
@@ -350,6 +332,5 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				// System
 			}
 		}
-		oldLoc.put(player, event.getTo());
 	}
 }
