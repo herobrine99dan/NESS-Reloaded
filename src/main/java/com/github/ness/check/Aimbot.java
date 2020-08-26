@@ -64,7 +64,7 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 			}
 			if (result > 0.001 || gcd < 0.0001) {
 				// TODO Trying to fix Cinematic Mode
-				player.setViolation(new Violation("Aimbot", "GCDCheck" + "GCD: " + (float) gcd), null);
+				player.setViolation(new Violation("Aimbot", "GCDCheck" + " GCD: " + (float) gcd), null);
 			}
 			// formatter.format(result));
 			player.pitchDiff.clear();

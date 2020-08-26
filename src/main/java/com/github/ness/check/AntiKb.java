@@ -35,7 +35,7 @@ public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 			}
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 				Location to = p.getLocation();
-				if (Math.abs(to.distanceSquared(from)) < 0.1) {
+				if (Math.abs(to.distanceSquared(from)) < 0.1 && !Utility.specificBlockNear(to, "water")) {
 					manager.getPlayer(p).setViolation(new Violation("AntiKb", ""), null);
 				}
 			}, 10L);

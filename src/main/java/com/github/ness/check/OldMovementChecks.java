@@ -196,11 +196,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				}
 			}
 		}
-		if (from.getY() == to.getY() && groundAround && player.isOnGround()) {
-			if (hozDist > .6 && !player.hasPotionEffect(PotionEffectType.SPEED) && !player.isFlying()) {
-				punish(event, "Speed", "(OnMove)");
-			}
-		}
 		if (player.getLocation().getYaw() > 360 || player.getLocation().getYaw() < -360
 				|| player.getLocation().getPitch() > 90 || player.getLocation().getPitch() < -90) {
 			punish(event, "IllegalMovement", "(OnMove)");

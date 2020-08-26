@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
+import com.github.ness.utility.Utility;
 
 public class GhostHand extends AbstractCheck<PlayerInteractEvent> {
 
@@ -48,6 +49,9 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent> {
 			return;
 		}
 		if (targetBlock.getLocation().getBlock().getType().name().toLowerCase().contains("slab")) {
+			return;
+		}
+		if(Utility.getMaterialName(targetBlock.getLocation()).contains("sea")) {
 			return;
 		}
 		if (targetBlock.getLocation().add(0, 1, 0).getBlock().getType().name().toLowerCase().contains("slab")) {

@@ -89,8 +89,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	public void Check3(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-		Location to = event.getTo();
-		Location from = event.getFrom();
+		Location to = event.getTo().clone();
+		Location from = event.getFrom().clone();
 		double yDiff = event.getTo().getY() - event.getFrom().getY();
 		if (Utility.getMaterialName(event.getTo().clone().add(0, -0.3, 0)).contains("slab")
 				|| event.getTo().getBlock().isLiquid()
