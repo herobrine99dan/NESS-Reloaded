@@ -57,32 +57,40 @@ public class CheckManager implements AutoCloseable {
 
 	private Set<AbstractCheck<?>> getAllChecks() {
 		Set<AbstractCheck<?>> checks = new HashSet<>();
+
+		checkLoadLoop:
 		for (String checkName : ness.getNessConfig().getEnabledChecks()) {
 			if (checkName.equals("AbstractCheck") || checkName.equals("CheckInfo")) {
 				logger.warn("Check {} from the config does not exist", checkName);
 				continue;
 			}
-			try {
-				Class<?> clazz = Class.forName("com.github.ness.check." + checkName);
-				if (!AbstractCheck.class.isAssignableFrom(clazz)) {
-					// This is our fault
-					logger.warn("Check class {} does not extend AbstractCheck", clazz);
-					continue;
+			Class<?> clazz;
+			for (ChecksPackage checkPackage : ChecksPackage.values()) {
+				String clazzName = "com.github.ness.check" + checkPackage.prefix() + '.' + checkName;
+				try {
+					clazz = Class.forName(clazzName);
+					if (!AbstractCheck.class.isAssignableFrom(clazz)) {
+						// This is our fault
+						logger.warn("Check exists as {} but does not extend AbstractCheck", clazzName);
+						continue;
+					}
+					Constructor<?> constructor = clazz.getDeclaredConstructor(CheckManager.class);
+					checks.add((AbstractCheck<?>) constructor.newInstance(this));
+					continue checkLoadLoop;
+
+				} catch (ClassNotFoundException ignored) {
+					// expected when the check is actually in another package
+
+				} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
+						| IllegalArgumentException | InvocationTargetException ex) {
+
+					// ReflectiveOperationException or other RuntimeException
+					// This is likely our fault
+					logger.warn("Could not instantiate check {}", clazzName, ex);
+					continue checkLoadLoop;
 				}
-				Constructor<?> constructor = clazz.getDeclaredConstructor(CheckManager.class);
-				checks.add((AbstractCheck<?>) constructor.newInstance(this));
-			} catch (ClassNotFoundException ex) {
-
-				// No class found
-				// This is the user's fault
-				logger.warn("Check {} from the config does not exist", checkName, ex);
-			} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-					| IllegalArgumentException | InvocationTargetException ex) {
-
-				// Reflection error
-				// This is our fault
-				logger.warn("Could not instantiate check {}", checkName, ex);
 			}
+			logger.warn("Check {} does not exist in any package", checkName);
 		}
 		return checks;
 	}
