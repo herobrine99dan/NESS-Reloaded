@@ -77,6 +77,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 		dTG += player.getLocation().getY() % 1;
+		nessPlayer.distanceFromGround = dTG;
 		bottom = player.getLocation().getWorld().getBlockAt(player.getLocation().subtract(0, dTG, 0)).getType();
 		for (int x = -1; x <= 1; x++) {
 			for (int z = -1; z <= 1; z++) {

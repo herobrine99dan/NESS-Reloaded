@@ -69,6 +69,7 @@ public class NessPlayer implements AutoCloseable {
 	public long pingspooftimer; // For PingSpoof
 	public long oldpingspooftimer; // For PingSpoof
 	public float lastYaw;
+	public double distanceFromGround;
 	@Getter
 	private volatile MovementValues movementValues;
 	@Getter
@@ -211,23 +212,24 @@ public class NessPlayer implements AutoCloseable {
 	}
 
 	/**
-	 * The new dragDown method will teleport the player down adding his velocity to his location
+	 * The new dragDown method will teleport the player down adding his velocity to
+	 * his location
 	 */
 	public void dragDown() {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				Location result = NessPlayer.this.player.getLocation().clone();
-				result.add(NessPlayer.this.player.getVelocity());
-				if(!result.clone().add(0, 0.2, 0).getBlock().getType().isSolid()) {
+				result.add(0, distanceFromGround * -1, 0);
+				result.add(0, 0.3, 0);
 				NessPlayer.this.player.teleport(result, TeleportCause.PLUGIN);
-				}
 			}
 		}.runTask(NESSAnticheat.getInstance());
 	}
 
 	/**
 	 * This method send a webhook with the violation message to Discord
+	 * 
 	 * @param violation
 	 * @param violationCount
 	 */
