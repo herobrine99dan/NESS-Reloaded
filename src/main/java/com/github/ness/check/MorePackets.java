@@ -6,6 +6,7 @@ import com.github.ness.CheckManager;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
+import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.Utility;
 
@@ -29,7 +30,7 @@ public class MorePackets extends AbstractCheck<ReceivedPacketEvent> {
 			return;
 		}
 		// sender.sendMessage("Counter: " + np.getPacketscounter());
-		if (np.normalPacketsCounter++ > maxPackets && np.nanoTimeDifference("onJoin") > 2500) {
+		if (np.normalPacketsCounter++ > maxPackets && np.nanoTimeDifference(PlayerAction.JOIN) > 2500) {
 			/*
 			 * new BukkitRunnable() {
 			 * 

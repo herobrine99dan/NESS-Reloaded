@@ -6,12 +6,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
+import com.github.ness.data.PlayerAction;
 
 public class CoreListener implements Listener {
 
@@ -23,7 +25,14 @@ public class CoreListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onJoin(PlayerJoinEvent event) {
-		manager.getPlayer(event.getPlayer()).actionTime.put("onJoin", System.nanoTime() / 1000_000L);
+		manager.getPlayer(event.getPlayer()).actionTime.put(PlayerAction.JOIN, System.nanoTime() / 1000_000L);
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onDamage(EntityDamageByEntityEvent event) {
+		if(event.getEntity() instanceof Player) {
+			manager.getPlayer((Player) event.getEntity()).actionTime.put(PlayerAction.DAMAGE, System.nanoTime() / 1000_000L);
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)

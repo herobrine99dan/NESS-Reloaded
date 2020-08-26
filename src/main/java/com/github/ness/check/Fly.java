@@ -14,6 +14,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
+import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
 public class Fly extends AbstractCheck<PlayerMoveEvent> {
@@ -26,9 +27,9 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
+		Check1(e);
 		Check2(e);
-		Check5(e);
-		//Check6(e);
+		Check3(e);
 	}
 
 	protected List<String> bypasses = Arrays.asList("slab", "stair", "snow", "bed", "skull", "step", "slime");
@@ -44,7 +45,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	 * 
 	 * @param e
 	 */
-	public void Check2(PlayerMoveEvent e) {
+	public void Check1(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
 		if (Bukkit.getVersion().contains("1.8")) {
 			return;
@@ -75,31 +76,63 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
-	public void Check5(PlayerMoveEvent e) {
+	public void Check2(PlayerMoveEvent e) {
 		double yDist = this.manager.getPlayer(e.getPlayer()).getMovementValues().yDiff;
 		if (yDist > 0 && !bypass(e.getPlayer()) && !e.getPlayer().getAllowFlight()) {
 			double yResult = yDist - e.getPlayer().getVelocity().getY();
-			if (yResult > 0.58 && !Utility.specificBlockNear(e.getTo().clone(), "lily") && !Utility.hasBlock(e.getPlayer(), "slime")) {
+			if (yResult > 0.58 && !Utility.specificBlockNear(e.getTo().clone(), "lily")
+					&& !Utility.hasBlock(e.getPlayer(), "slime")) {
 				punish(e, e.getPlayer(), "HighDistance");
 			}
 		}
 	}
 
-	public void Check6(PlayerMoveEvent event) {
+	public void Check3(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
+		Location to = event.getTo();
+		Location from = event.getFrom();
 		double yDiff = event.getTo().getY() - event.getFrom().getY();
 		if (Utility.getMaterialName(event.getTo().clone().add(0, -0.3, 0)).contains("slab")
 				|| event.getTo().getBlock().isLiquid()
 				|| event.getTo().clone().add(0, 1.8, 0).getBlock().getType().isSolid()
 				|| event.getTo().clone().add(0.3, 1.8, 0.3).getBlock().getType().isSolid()
-				|| event.getTo().clone().add(-0.3, 1.8, -0.3).getBlock().getType().isSolid()) {
+				|| event.getTo().clone().add(-0.3, 1.8, -0.3).getBlock().getType().isSolid()
+				|| Utility.specificBlockNear(event.getTo(), "liquid") || Utility.hasflybypass(player)
+				|| Utility.specificBlockNear(player.getLocation(), "snow")
+				|| Utility.specificBlockNear(player.getLocation(), "chest")
+				|| Utility.specificBlockNear(player.getLocation(), "ladder")
+				|| Utility.specificBlockNear(player.getLocation(), "pot")
+				|| Utility.specificBlockNear(player.getLocation(), "bed")
+				|| Utility.specificBlockNear(player.getLocation(), "detector")
+				|| Utility.specificBlockNear(player.getLocation(), "stair")
+				|| Utility.getMaterialName(to.add(0, -1, 0)).contains("chest")
+				|| Utility.getMaterialName(from.add(0, -1, 0)).contains("chest")
+				|| Utility.getMaterialName(to.add(0, 1.8, 0)).contains("chorus")
+				|| Utility.getMaterialName(from.add(0, 1.6, 0)).contains("chorus")
+				|| Utility.getMaterialName(to).toLowerCase().contains("ladder")
+				|| Utility.getMaterialName(from).toLowerCase().contains("ladder")
+				|| Utility.getMaterialName(to).toLowerCase().contains("vine")
+				|| Utility.getMaterialName(from).toLowerCase().contains("vine")
+				|| Utility.getMaterialName(to).toLowerCase().contains("sea")
+				|| Utility.getMaterialName(from).toLowerCase().contains("sea")
+				|| Utility.getMaterialName(to.clone().add(0, 0.3, 0)).toLowerCase().contains("sea")
+				|| Utility.getMaterialName(to.clone().add(0, -0.2, 0)).toLowerCase().contains("sea")
+				|| Utility.getMaterialName(to).toLowerCase().contains("pot")
+				|| Utility.getMaterialName(from).toLowerCase().contains("pot")
+				|| Utility.getMaterialName(to.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")
+				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")
+				|| Utility.getMaterialName(to.clone().add(0, 0.5, 0)).toLowerCase().contains("bed")
+				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("bed")
+				|| Utility.getMaterialName(to.add(0, -1, 0)).contains("detector")
+				|| Utility.getMaterialName(from.add(0, -1, 0)).contains("detector")) {
 			return;
 		}
-		if (yDiff > 0) {
+		// !player.getNearbyEntities(4, 4, 4).isEmpty()
+		if (yDiff > 0 && !player.isInsideVehicle()) {
 			if (player.getVelocity().getY() == 0.42f && !Utility.isMathematicallyOnGround(event.getTo().getY())
 					&& Utility.isMathematicallyOnGround(event.getFrom().getY())) {
 				double yResult = Math.abs(yDiff - player.getVelocity().getY());
-				if (yResult != 0.0) {
+				if (yResult != 0.0 && this.manager.getPlayer(player).nanoTimeDifference(PlayerAction.DAMAGE) > 1000) {
 					punish(event, event.getPlayer(), "InvalidJumpMotion yResult: " + yResult + "  yDiff: " + yDiff);
 				}
 			}

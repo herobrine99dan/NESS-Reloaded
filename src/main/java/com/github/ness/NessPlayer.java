@@ -23,6 +23,7 @@ import com.github.ness.api.PlayerViolationEvent;
 import com.github.ness.api.Violation;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
+import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.DiscordWebhook;
 
 import lombok.Getter;
@@ -76,7 +77,7 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	@Setter
 	private boolean debugMode;
-	public Map<String, Long> actionTime;
+	public Map<PlayerAction, Long> actionTime;
 
 	// Used in OldMovementChecks
 
@@ -130,7 +131,7 @@ public class NessPlayer implements AutoCloseable {
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
 	}
 
-	public long nanoTimeDifference(String action) {
+	public long nanoTimeDifference(PlayerAction action) {
 		return (System.nanoTime() / 1000_000L) - this.actionTime.getOrDefault(action, (long) 0);
 	}
 
