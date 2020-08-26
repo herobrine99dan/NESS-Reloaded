@@ -47,8 +47,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 				maxReach += 0.3D;
 			}
 			maxReach += (Utility.getPing(player) / 100) / 9;
-			maxReach += (Math.abs(np.getMovementValues().yDiff) + Math.abs(entity.getVelocity().getY())) * 0.20;
-			maxReach += Math.abs(np.getMovementValues().xDiff * 0.6) + Math.abs(np.getMovementValues().zDiff * 0.6);
+			maxReach += (Math.abs(np.getMovementValues().yDiff) + Math.abs(entity.getVelocity().getY())) * 0.25;
+			maxReach += Math.abs(np.getMovementValues().xDiff * 0.7) + Math.abs(np.getMovementValues().zDiff * 0.7);
 			maxReach += Math.abs(entity.getVelocity().getX()) + Math.abs(entity.getVelocity().getZ());
 			if ((range > maxReach && range < 6.5D)
 					|| Utility.getDistance3D(player.getLocation(), entity.getLocation()) > 5) {

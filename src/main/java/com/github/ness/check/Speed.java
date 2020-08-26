@@ -86,10 +86,14 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.getMaterialName(from).toLowerCase().contains("ladder")) {
 			return;
 		}
+		if (Utility.getMaterialName(to).toLowerCase().contains("vine")
+				|| Utility.getMaterialName(from).toLowerCase().contains("vine")) {
+			return;
+		}
 		if (Utility.getMaterialName(to).toLowerCase().contains("sea")
 				|| Utility.getMaterialName(from).toLowerCase().contains("sea")
-				|| Utility.getMaterialName(to.clone().add(0, 0.5, 0)).toLowerCase().contains("sea")
-				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("sea")) {
+				|| Utility.getMaterialName(to.clone().add(0, 0.3, 0)).toLowerCase().contains("sea")
+				|| Utility.getMaterialName(to.clone().add(0, -0.2, 0)).toLowerCase().contains("sea")) {
 			return;
 		}
 		if (Utility.getMaterialName(to).toLowerCase().contains("pot")
@@ -116,7 +120,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				if (y > 0.37 && y < 0.419 && !(y == 0.404) && !(y == 0.395) && !bypass && !(y == 0.386) && !(y == 0.414)
 						&& !Utility.hasBlock(player, "slime")) {
 					punish(e, "MiniJump1 " + y);
-				} else if (y > 0.248 && y < 0.333 && !Utility.hasBlock(player, "slime")) {
+				} else if (y > 0.283 && y < 0.333 && !Utility.hasBlock(player, "slime")) {
 					punish(e, "MiniJump2 " + y);
 				}
 			}
