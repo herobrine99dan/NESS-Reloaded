@@ -10,6 +10,8 @@ import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
@@ -270,7 +272,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 					if (groundAround && hozDist > .05 && PlayerManager.timeSince("isHit", player) >= 1000) {
 						if (!player.isInsideVehicle()
 								|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE)
-							punish(event, "Speed", "(OnMove)");
+							punish(event, "Speed", "HighDistance");
 					} else if (PlayerManager.timeSince("breakTime", player) >= 2000
 							&& PlayerManager.timeSince("teleported", player) >= 500
 							&& !below.name().toLowerCase().contains("piston")) {
@@ -280,8 +282,10 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 							if (!bottom.name().toLowerCase().contains("slime") && !Utility.hasBlock(player, "water")
 									&& !Utility.isInWater(player) && !Utility.specificBlockNear(event.getTo(), "liquid")
 									&& !Utility.specificBlockNear(event.getTo(), "fire")
-									&& !Utility.getMaterialName(event.getTo()).contains("fire") && !Utility
-											.getMaterialName(event.getTo().clone().add(0, 0.4, 0)).contains("fire")) {
+									&& !Utility.getMaterialName(event.getTo()).contains("fire")
+									&& !Utility.getMaterialName(event.getTo().clone().add(0, 0.4, 0)).contains("fire")
+									&& !player.getLastDamageCause().getCause().equals(DamageCause.FIRE)
+									&& !player.getLastDamageCause().getCause().equals(DamageCause.FIRE_TICK)) {
 								punish(event, "NoFall", "(OnMove)");
 								player.damage(
 										Math.abs(Utility.calcDamage((3.5 * player.getVelocity().getY()) / -0.71)));
