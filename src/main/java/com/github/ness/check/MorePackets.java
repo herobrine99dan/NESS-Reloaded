@@ -11,9 +11,13 @@ import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.Utility;
 
 public class MorePackets extends AbstractCheck<ReceivedPacketEvent> {
+	
+	int maxPackets;
 
 	public MorePackets(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(ReceivedPacketEvent.class, 1, TimeUnit.SECONDS));
+		this.maxPackets = this.manager.getNess().getNessConfig().getCheck(this.getClass())
+				.getInt("maxpackets", 65);
 	}
 
 	@Override
@@ -24,7 +28,7 @@ public class MorePackets extends AbstractCheck<ReceivedPacketEvent> {
 	@Override
 	void checkEvent(ReceivedPacketEvent e) {
 		int ping = Utility.getPing(e.getNessPlayer().getPlayer());
-		int maxPackets = 65 + ((ping / 100) * 6);
+		int maxPackets = this.maxPackets + ((ping / 100) * 6);
 		NessPlayer np = e.getNessPlayer();
 		if (np == null) {
 			return;

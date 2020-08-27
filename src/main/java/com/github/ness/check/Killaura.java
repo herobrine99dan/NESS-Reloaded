@@ -16,8 +16,18 @@ import com.github.ness.utility.Utility;
 
 public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
+	double maxYaw;
+	double minAngle;
+	double maxReach;
+	
 	public Killaura(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
+		this.maxYaw = this.manager.getNess().getNessConfig().getCheck(this.getClass())
+				.getDouble("maxyaw", 357);
+		this.minAngle = this.manager.getNess().getNessConfig().getCheck(this.getClass())
+				.getDouble("minangle", -0.2);
+		this.maxReach = this.manager.getNess().getNessConfig().getCheck(this.getClass())
+				.getDouble("maxreach", 3.4);
 	}
 
 	@Override
@@ -37,18 +47,18 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			NessPlayer np = this.manager.getPlayer(player);
 			double range = Math.hypot(np.getMovementValues().getTo().getX() - entity.getLocation().getX(),
 					np.getMovementValues().getTo().getZ() - entity.getLocation().getZ());
-			double maxReach = 3.4D;
+			double maxReach = this.maxReach;
 			if (player.getGameMode().equals(GameMode.CREATIVE)) {
 				maxReach = 5.5D;
 			}
 			if (!player.isSprinting() || isLookingAt(player, entity.getLocation()) < 0.6
 					|| Utility.specificBlockNear(e.getDamager().getLocation(), "water")
 					|| Utility.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
-				maxReach += 0.3D;
+				maxReach += 0.4D;
 			}
 			maxReach += (Utility.getPing(player) / 100) / 9;
 			maxReach += (Math.abs(np.getMovementValues().yDiff) + Math.abs(entity.getVelocity().getY())) * 0.3;
-			maxReach += Math.abs(np.getMovementValues().xDiff * 0.8) + Math.abs(np.getMovementValues().zDiff * 0.8);
+			maxReach += Math.abs(np.getMovementValues().xDiff * 0.7) + Math.abs(np.getMovementValues().zDiff * 0.7);
 			maxReach += Math.abs(entity.getVelocity().getX()) + Math.abs(entity.getVelocity().getZ());
 			if ((range > maxReach && range < 6.5D)
 					|| Utility.getDistance3D(player.getLocation(), entity.getLocation()) > 5) {
@@ -65,7 +75,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 				Location loc1 = p.getLocation();
 				float grade = loc.getYaw() - loc1.getYaw();
-				if (Math.round(grade) > 357.0) {
+				if (Math.round(grade) > maxYaw) {
 					punish(e, p, "HighYaw " + grade);
 				}
 			}, 3L);
@@ -86,7 +96,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check3(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			Player damager = (Player) e.getDamager();
-			if (isLookingAt(damager, e.getEntity().getLocation()) < -0.2D) {
+			if (isLookingAt(damager, e.getEntity().getLocation()) < minAngle) {
 				punish(e, damager, "Angles/Hitbox " + isLookingAt(damager, e.getEntity().getLocation()));
 			}
 		}

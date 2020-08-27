@@ -221,7 +221,10 @@ public class NessPlayer implements AutoCloseable {
 			public void run() {
 				Location result = NessPlayer.this.player.getLocation().clone();
 				result.add(0, distanceFromGround * -1, 0);
-				result.add(0, 0.3, 0);
+				result.add(0, 0.4, 0);
+				if (NessPlayer.this.isDevMode()) {
+					NessPlayer.this.player.sendMessage("DragDown: " + result);
+				}
 				NessPlayer.this.player.teleport(result, TeleportCause.PLUGIN);
 			}
 		}.runTask(NESSAnticheat.getInstance());

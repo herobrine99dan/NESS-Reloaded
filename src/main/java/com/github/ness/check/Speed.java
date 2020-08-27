@@ -17,9 +17,13 @@ import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
 
 public class Speed extends AbstractCheck<PlayerMoveEvent> {
+	
+	double maxInvalidVelocity;
 
 	public Speed(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerMoveEvent.class, 1, TimeUnit.SECONDS));
+		this.maxInvalidVelocity = this.manager.getNess().getNessConfig().getCheck(this.getClass())
+				.getDouble("maxinvalidvelocity", 0.9);
 	}
 
 	@Override

@@ -13,9 +13,12 @@ import com.github.ness.utility.Utility;
 
 public class InventoryHack extends AbstractCheck<InventoryClickEvent> {
 
+	double maxdist;
 
 	public InventoryHack(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(InventoryClickEvent.class));
+		this.maxdist = this.manager.getNess().getNessConfig().getCheck(this.getClass())
+				.getDouble("maxdist", 0.1);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -43,7 +46,7 @@ public class InventoryHack extends AbstractCheck<InventoryClickEvent> {
 				Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 					Location to = player.getLocation();
 					double distance = to.distanceSquared(from);
-					if (distance > 0.1) {
+					if (distance > maxdist) {
 						manager.getPlayer(player).setViolation(new Violation("InventoryHack", "Dist:" + distance), e);
 					}
 				}, 2L);
