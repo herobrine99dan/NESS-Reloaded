@@ -79,6 +79,9 @@ public class NessPlayer implements AutoCloseable {
 	@Setter
 	private boolean debugMode;
 	public Map<PlayerAction, Long> actionTime;
+	@Getter
+	@Setter
+	private boolean mouseRecord;
 
 	// Used in OldMovementChecks
 
@@ -217,10 +220,17 @@ public class NessPlayer implements AutoCloseable {
 			@Override
 			public void run() {
 				Location result = NessPlayer.this.player.getLocation().clone();
-				result.add(0, distanceFromGround * -1, 0);
+				double dtgResult = distanceFromGround - 1;
+				if(dtgResult < 1) {
+					dtgResult = 0.5;
+				}
+				result.add(0, dtgResult * -1, 0);
 				result.add(0, 0.4, 0);
 				if (NessPlayer.this.isDevMode()) {
-					NessPlayer.this.player.sendMessage("DragDown: " + result);
+					NessPlayer.this.player.sendMessage("DragDown: " + distanceFromGround);
+				}
+				if(result.getBlock().getType().isSolid()) {
+					result.add(0, 0.7, 0);
 				}
 				NessPlayer.this.player.teleport(result, TeleportCause.PLUGIN);
 			}

@@ -20,11 +20,10 @@ import com.github.ness.utility.Utility;
 public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	double maxY;
-	
+
 	public Fly(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
-		this.maxY = this.manager.getNess().getNessConfig().getCheck(this.getClass())
-				.getDouble("maxydist", 0.58);
+		this.maxY = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getDouble("maxydist", 0.58);
 	}
 
 	@Override
@@ -66,7 +65,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.getMaterialName(e.getTo().clone()).contains("carpet")) {
 			return;
 		}
-		if (player.getNearbyEntities(2, 2, 2).isEmpty() && !Utility.hasflybypass(player) && !this.manager.getPlayer(player).isTeleported()) {
+		if (player.getNearbyEntities(2, 2, 2).isEmpty() && !Utility.hasflybypass(player)
+				&& !this.manager.getPlayer(player).isTeleported()) {
 			if (player.isOnline() && !Utility.hasBlock(player, "slime") && !player.isInsideVehicle()) {
 				if (player.isOnGround() && !Utility.groundAround(e.getTo())) {
 					punish(e, player, "FalseGround");
@@ -100,6 +100,9 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| event.getTo().clone().add(0, 1.8, 0).getBlock().getType().isSolid()
 				|| event.getTo().clone().add(0.3, 1.8, 0.3).getBlock().getType().isSolid()
 				|| event.getTo().clone().add(-0.3, 1.8, -0.3).getBlock().getType().isSolid()
+				|| event.getTo().clone().add(0, 2, 0).getBlock().getType().isSolid()
+				|| event.getTo().clone().add(0.3, 2, 0.3).getBlock().getType().isSolid()
+				|| event.getTo().clone().add(-0.3, 2, -0.3).getBlock().getType().isSolid()
 				|| Utility.specificBlockNear(event.getTo(), "liquid") || Utility.hasflybypass(player)
 				|| Utility.specificBlockNear(player.getLocation(), "snow")
 				|| Utility.specificBlockNear(player.getLocation(), "chest")
@@ -127,7 +130,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.getMaterialName(to.clone().add(0, 0.5, 0)).toLowerCase().contains("bed")
 				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("bed")
 				|| Utility.getMaterialName(to.add(0, -1, 0)).contains("detector")
-				|| Utility.getMaterialName(from.add(0, -1, 0)).contains("detector")) {
+				|| Utility.getMaterialName(from.add(0, -1, 0)).contains("detector")
+				|| Utility.specificBlockNear(to.clone(), "ice")) {
 			return;
 		}
 		// !player.getNearbyEntities(4, 4, 4).isEmpty()

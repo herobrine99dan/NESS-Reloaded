@@ -1,6 +1,5 @@
 package com.github.ness.check;
 
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Location;
@@ -10,7 +9,6 @@ import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -267,7 +265,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				if (hozDist < .2 || !groundAround) {
 					if (groundAround && hozDist > .05 && PlayerManager.timeSince("isHit", player) >= 1000 && !Utility.specificBlockNear(to.clone(), "water")) {
 						if (!player.isInsideVehicle()
-								|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE)
+								|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE && !Utility.specificBlockNear(to.clone(), "ice"))
 							punish(event, "Speed", "HighDistance");
 					} else if (PlayerManager.timeSince("breakTime", player) >= 2000
 							&& PlayerManager.timeSince("teleported", player) >= 500
