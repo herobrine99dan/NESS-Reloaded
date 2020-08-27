@@ -184,10 +184,7 @@ public class NessPlayer implements AutoCloseable {
 		// Cancel method
 		ConfigurationSection cancelsec = NESSAnticheat.main.getNessConfig().getViolationHandling()
 				.getConfigurationSection("cancel");
-		if (!cancelsec.getBoolean("enable")) {
-
-		}
-		final boolean cancel = checkViolationCounts.getOrDefault(violation.getCheck(), 0) > cancelsec.getInt("vl", 10);
+		final boolean cancel = checkViolationCounts.getOrDefault(violation.getCheck(), 0) > cancelsec.getInt("vl", 10) && cancelsec.getBoolean("enable", false);
 		if (cancel) {
 			if (e != null) {
 				if (violation.getCheck().equals("Fly") || violation.getCheck().equals("Nofall")

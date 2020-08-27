@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.github.ness.api.PlayerPunishEvent;
 import com.github.ness.api.Violation;
 import com.github.ness.api.ViolationAction;
 import com.google.common.io.ByteArrayDataOutput;
@@ -52,10 +53,10 @@ public class ViolationManager {
 								String notif = addViolationVariables(notification, player, violation, violationCount);
 								ness.getCheckManager().getPlayer(player).sendWebhook(violation, violationCount);
 								if (notifyStaff.getBoolean("bungeecord", false)) {
-									  ByteArrayDataOutput out = ByteStreams.newDataOutput();
-									  out.writeUTF("NESS-Reloaded");
-									  out.writeUTF(notif);
-									  player.sendPluginMessage(ness, "BungeeCord", out.toByteArray());
+									ByteArrayDataOutput out = ByteStreams.newDataOutput();
+									out.writeUTF("NESS-Reloaded");
+									out.writeUTF(notif);
+									player.sendPluginMessage(ness, "BungeeCord", out.toByteArray());
 								}
 								for (Player staff : Bukkit.getOnlinePlayers()) {
 									if (staff.hasPermission("ness.notify")
@@ -79,7 +80,13 @@ public class ViolationManager {
 						public void actOn(Player player, Violation violation, int violationCount) {
 							if (violationCount > (execCmd.getInt("vl") - 1)) {
 								String cmd = addViolationVariables(command, player, violation, violationCount);
-								Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+								PlayerPunishEvent event = new PlayerPunishEvent(player,
+										ViolationManager.this.ness.getCheckManager().getPlayer(player), violation,
+										violationCount, command);
+								Bukkit.getPluginManager().callEvent(event);
+								if (!event.isCancelled()) {
+									Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+								}
 							}
 						}
 
