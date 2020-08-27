@@ -1,7 +1,5 @@
 package com.github.ness.check;
 
-import java.util.HashMap;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -12,11 +10,13 @@ import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
 
 public class FastLadder extends AbstractCheck<PlayerMoveEvent> {
-
-	protected HashMap<String, Integer> noground = new HashMap<String, Integer>();
+	
+	double maxDist;
 
 	public FastLadder(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
+		this.maxDist = this.manager.getNess().getNessConfig().getCheck(this.getClass())
+				.getDouble("maxdist", 0.155D);
 	}
 
 	@Override

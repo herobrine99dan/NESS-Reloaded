@@ -19,10 +19,12 @@ import com.github.ness.utility.Utility;
 
 public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
-	protected HashMap<String, Integer> noground = new HashMap<String, Integer>();
-
+	double maxY;
+	
 	public Fly(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
+		this.maxY = this.manager.getNess().getNessConfig().getCheck(this.getClass())
+				.getDouble("maxydist", 0.58);
 	}
 
 	@Override
@@ -64,8 +66,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.getMaterialName(e.getTo().clone()).contains("carpet")) {
 			return;
 		}
-		if (!bypass(e.getPlayer()) && player.getNearbyEntities(2, 2, 2).isEmpty()) {
-			if (player.isOnline() && !Utility.hasBlock(player, "slime")) {
+		if (player.getNearbyEntities(2, 2, 2).isEmpty() && !Utility.hasflybypass(player) && !this.manager.getPlayer(player).isTeleported()) {
+			if (player.isOnline() && !Utility.hasBlock(player, "slime") && !player.isInsideVehicle()) {
 				if (player.isOnGround() && !Utility.groundAround(e.getTo())) {
 					punish(e, player, "FalseGround");
 				} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY())) {
@@ -78,9 +80,10 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	public void Check2(PlayerMoveEvent e) {
 		double yDist = this.manager.getPlayer(e.getPlayer()).getMovementValues().yDiff;
-		if (yDist > 0 && !bypass(e.getPlayer()) && !e.getPlayer().getAllowFlight()) {
+		Player player = e.getPlayer();
+		if (yDist > 0 && !player.isInsideVehicle() && !e.getPlayer().getAllowFlight()) {
 			double yResult = yDist - e.getPlayer().getVelocity().getY();
-			if (yResult > 0.58 && !Utility.specificBlockNear(e.getTo().clone(), "lily")
+			if (yResult > this.maxY && !Utility.specificBlockNear(e.getTo().clone(), "lily")
 					&& !Utility.hasBlock(e.getPlayer(), "slime")) {
 				punish(e, e.getPlayer(), "HighDistance");
 			}
@@ -137,29 +140,5 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				}
 			}
 		}
-	}
-
-	public boolean bypass(Player p) {
-		if (p.isInsideVehicle()) {
-			return true;
-		}
-		if (p.hasPotionEffect(PotionEffectType.SPEED) || p.hasPotionEffect(PotionEffectType.JUMP)) {
-			return true;
-		}
-		if (Utility.isWeb(p.getLocation())) {
-			return true;
-		}
-		if (Utility.hasflybypass(p) || this.manager.getPlayer(p).isTeleported()) {
-			return true;
-		}
-		if (Utility.getMaterialName(Utility.getPlayerUnderBlock(p).getLocation()).contains("water")) {
-			return true;
-		}
-		for (Block b : Utility.getBlocksAround(p.getLocation())) {
-			if (b.getType().isSolid()) {
-				return true;
-			}
-		}
-		return false;
 	}
 }

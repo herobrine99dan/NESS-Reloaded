@@ -7,12 +7,13 @@ import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.Utility;
 
 public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
+	private double MAX_PACKETS_PER_TICK = 1.12;
 
 	public BadPackets(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(ReceivedPacketEvent.class));
+		this.MAX_PACKETS_PER_TICK = this.manager.getNess().getNessConfig().getCheck(BadPackets.class)
+				.getDouble("maxpackets", 1.12);
 	}
-
-	private static final double MAX_PACKETS_PER_TICK = 1.12;
 
 	/**
 	 * From Crescent AntiCheat
@@ -66,8 +67,8 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 						np.getPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
 					}
 					if (result == 0 || (result > 0 && result < 0.003)) {
-						np.setViolation(
-								new Violation("BadPackets", "[EXPERIMENTAL] Packets: " + movementsPerTick + " Result: " + result), e);
+						np.setViolation(new Violation("BadPackets",
+								"[EXPERIMENTAL] Packets: " + movementsPerTick + " Result: " + result), e);
 					}
 				}
 

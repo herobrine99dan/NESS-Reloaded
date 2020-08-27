@@ -11,8 +11,11 @@ import com.github.ness.api.Violation;
 
 public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 
+	int maxCPS;
+
 	public AutoClicker(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerInteractEvent.class, 1, TimeUnit.SECONDS));
+		this.maxCPS = this.manager.getNess().getNessConfig().getCheck(AutoClicker.class).getInt("maxCPS", 18);
 	}
 
 	@Override
@@ -25,7 +28,7 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
 			NessPlayer player = manager.getPlayer(e.getPlayer());
 			player.CPS++;
-			if (player.CPS > 18 && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
+			if (player.CPS > maxCPS && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
 				player.setViolation(new Violation("AutoClicker", "MaxCPS: " + player.CPS), e);
 			}
 		}

@@ -26,7 +26,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	void checkEvent(PlayerMoveEvent e) {
 		Check1(e);
 		Check2(e);
-		Check3(e);
 	}
 
 	@Override
@@ -61,19 +60,19 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		float f = to.getYaw() * 0.017453292F;
-		float resultX = Math.abs((float) (Math.sin(f) * p.getWalkSpeed())) + 0.04f;
-		float resultZ = Math.abs((float) (Math.cos(f) * p.getWalkSpeed())) + 0.04f;
-		float maxDist = resultX + resultZ + 0.03f;
+		float resultX = Math.abs((float) (Math.sin(f) * p.getWalkSpeed()));
+		float resultZ = Math.abs((float) (Math.cos(f) * p.getWalkSpeed()));
+		float maxDist = resultX + resultZ;
 		final boolean isInWater = to.getBlock().isLiquid() && to.clone().add(0, -0.1, 0).getBlock().isLiquid();
 		float xVelocity = (float) p.getVelocity().getX();
 		float zVelocity = (float) p.getVelocity().getZ();
 		maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.14;
-		maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.18;
+		maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.16;
 		if (p.isSprinting() && Utility.isMathematicallyOnGround(to.getY())
 				&& Utility.isMathematicallyOnGround(from.getY())) {
 			maxDist = 0.56f;
 		} else if (p.isSprinting()) {
-			maxDist *= 1.21f;
+			maxDist *= 1.24f;
 		}
 		if (to.clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")
 				|| from.clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")
@@ -83,11 +82,11 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (p.isSneaking()) {
 			maxDist = 0.172f;
 			maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.14;
-			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.18;
+			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.16;
 		}
 		if (isInWater) {
 			maxDist = getMaxWaterSpeed();
-			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.3f;
+			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.26f;
 			if (p.isSprinting()) {
 				maxDist += 0.1f;
 			}
@@ -101,7 +100,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				maxDist *= 1.21f;
 			}
 			maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.14;
-			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.25;
+			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.17;
 		}
 		if (Utility.getMaterialName(to).contains("stairs") || Utility.getMaterialName(from).contains("stairs")
 				|| Utility.getMaterialName(to.clone().add(0, 0.3, 0)).contains("stairs")
@@ -111,7 +110,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				maxDist *= 1.26f;
 			}
 			maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.14;
-			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.25;
+			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.18;
 		}
 		if (p.getAllowFlight()) {
 			maxDist += 1.3;
@@ -120,7 +119,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			dist -= (dist / 100.0) * (speedLevel * 20.0);
 		}
 		float pingresult = Utility.getPing(p) / 100;
-		float toAdd = pingresult / 10;
+		float toAdd = pingresult / 7;
 		maxDist += toAdd;
 		float result = dist - maxDist;
 		// p.sendMessage("maxDist: " + maxDist + " Dist: " + dist);
@@ -151,18 +150,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		max += toAdd;
 		if (Math.abs(yresult) > max && !manager.getPlayer(e.getPlayer()).isTeleported()) {
 			this.punish(e, "InvalidVelocity: " + yresult);
-		}
-	}
-
-	public void Check3(PlayerMoveEvent e) {
-		NessPlayer np = this.manager.getPlayer(e.getPlayer());
-		Player p = e.getPlayer();
-		double y = np.getMovementValues().yDiff;
-		double yresult = y - p.getVelocity().getY();
-		if (Utility.hasflybypass(p) || Utility.hasBlock(p, "slime")
-				|| Utility.getMaterialName(e.getTo()).contains("ladder")
-				|| Utility.getMaterialName(e.getFrom()).contains("ladder")) {
-			return;
 		}
 	}
 

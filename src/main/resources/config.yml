@@ -137,6 +137,19 @@ checks:
   liquidinteraction:
     whitelisted-materials:
       - 'WATER_LILY'
+  autoclicker:
+    maxCPS: 18
+  badpackets:
+    maxpackets: 1.12
+  elytracheats:
+    maxxzdiff: 1.5
+    maxydiff: 1
+  fastladder:
+    maxdist: 0.155
+  fastplace:
+    maxblockplaced: 14
+  Fly:
+    maxydist: 0.58;
     
 
 # If you change this, you will receive warnings in console
