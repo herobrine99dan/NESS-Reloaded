@@ -101,6 +101,21 @@ public class NessCommands implements CommandExecutor {
 						this.sendMessage(sender, "&7Sorry but to use this command you have to be a Player");
 					}
 					break;
+				case "mouserecord":
+					if (sender instanceof Player) {
+						NessPlayer np = ness.getCheckManager().getPlayer((Player) sender);
+						if (np.isMouseRecord()) {
+							this.sendMessage(sender, "&7You've stopped the Mouse Record Process!");
+							np.mouseRecordValues.clear();
+							np.setMouseRecord(false);
+						} else {
+							this.sendMessage(sender, "&7Recording Mouse Movements");
+							np.setMouseRecord(true);
+						}
+					} else {
+						this.sendMessage(sender, "&7Sorry but to use this command you have to be a Player");
+					}
+					break;
 				default:
 					usage(sender);
 					break;

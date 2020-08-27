@@ -1,5 +1,6 @@
 package com.github.ness;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -82,6 +83,7 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	@Setter
 	private boolean mouseRecord;
+	public List<Point> mouseRecordValues;
 
 	// Used in OldMovementChecks
 
@@ -124,6 +126,7 @@ public class NessPlayer implements AutoCloseable {
 		this.lastPacketTime = 0;
 		this.blockPlace = 0;
 		this.CPS = 0;
+		this.mouseRecordValues = new ArrayList<Point>();
 		this.actionTime = Collections.synchronizedMap(new HashMap<>());
 		this.pitchDiff = new ArrayList<Float>();
 		this.AimbotPatternCounter = 0;

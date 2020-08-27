@@ -28,6 +28,8 @@ public class NESSAnticheat extends JavaPlugin {
 	private ViolationManager violationManager;
 	@Getter
 	private int minecraftVersion;
+	@Getter
+	private MouseRecord mouseRecord;
 	
 	private static final Logger logger = LogManager.getLogger(NESSAnticheat.class);
 
@@ -35,7 +37,7 @@ public class NESSAnticheat extends JavaPlugin {
 	public void onEnable() {
 		main = this;
 		logger.info("NESS uses log4j2 for logging");
-		
+		mouseRecord = new MouseRecord(this);
 		nessConfig = new NessConfig("config.yml", "messages.yml");
 		nessConfig.reloadConfiguration(this);
 		if (!nessConfig.checkConfigVersion()) {
