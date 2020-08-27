@@ -6,6 +6,8 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -17,7 +19,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class MouseRecord implements Listener {
 
-	private final static int SIZE = 100;
+	private final static int SIZE = 60;
 	NESSAnticheat ness;
 
 	public MouseRecord(NESSAnticheat nessAnticheat) {
@@ -28,6 +30,9 @@ public class MouseRecord implements Listener {
 	@EventHandler
 	public void onMove(PlayerMoveEvent e) {
 		NessPlayer np = ness.getCheckManager().getPlayer(e.getPlayer());
+		if(np.getMovementValues().yawDiff == 0.0) {
+			return;
+		}
 		Location to = e.getTo().clone();
 		if (np.isMouseRecord()) {
 			if (np.mouseRecordValues.size() < SIZE) {
@@ -43,7 +48,7 @@ public class MouseRecord implements Listener {
 	}
 
 	public void render(NessPlayer np) {
-		BufferedImage img = new BufferedImage(400, 220, BufferedImage.TYPE_INT_RGB);
+		BufferedImage img = new BufferedImage(400, 320, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = img.createGraphics();
 		g.setBackground(Color.BLACK);
 		g.setColor(Color.WHITE);
@@ -53,10 +58,22 @@ public class MouseRecord implements Listener {
 			lastValue = p;
 		}
 		try {
-			ImageIO.write(img, "PNG", new File(this.ness.getDataFolder(), System.currentTimeMillis() + ".png"));
+			Path path = this.ness.getDataFolder().toPath().resolve("records")
+					.resolve(System.currentTimeMillis() + ".png");
+			ImageIO.write(img, "PNG", path.toFile());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println(getAverage(np.mouseRecordValues));
+		System.out.println(np.mouseRecordValues);
+	}
+
+	private double getAverage(List<Point> list) {
+		double d = 0;
+		for (Point p : list) {
+			d += p.getX();
+		}
+		return d / list.size();
 	}
 
 }

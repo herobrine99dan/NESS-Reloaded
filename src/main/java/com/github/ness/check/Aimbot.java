@@ -52,11 +52,7 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 			}
 			double result = Math.abs(gcd - player.lastGCD);
 			if (result < 0.01) {
-				final float sensitivity = (float) Utility.round(GCDUtils.getSensitivity((float) gcd), 100);
-				player.sensitivity = sensitivity;
-			}
-			if (result < 0.01) {
-				final float sensitivity = (float) Utility.round(GCDUtils.getSensitivity((float) gcd), 100);
+				final double sensitivity = GCDUtils.getSensitivity(gcd);
 				if (player.isDevMode()) {
 					player.getPlayer().sendMessage("Setting Sensitivity to: " + sensitivity);
 				}
@@ -80,7 +76,7 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 		if (np.getMovementValues().yawDiff < 1) {
 			return;
 		}
-		float firstvar = np.sensitivity * 0.6F + 0.2F;
+		double firstvar = np.sensitivity * 0.6F + 0.2F;
 		float secondvar = (float) (Math.pow(firstvar, 3f) * 8.0F);
 		double yawResult = np.getMovementValues().yawDiff - np.lastYaw;
 		float thirdvar = (float) yawResult / (secondvar * 0.15F);

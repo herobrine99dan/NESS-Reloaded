@@ -137,13 +137,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		if (surrounded && (hozDist > .2 || to.getBlockY() < from.getBlockY())) {
 			punish(event, "NoClip", "(OnMove)");
 		}
-		if (player.isInsideVehicle()) {
-			if (!groundAround && from.getY() <= to.getY()) {
-				if (!player.isInsideVehicle()
-						|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE)
-					punish(event, "Fly", "HighDistance(OnMove)");
-			}
-		}
 		// SPEED/FLIGHT CHECK
 		Double maxSpd = 0.4209;
 		Material mat = null;

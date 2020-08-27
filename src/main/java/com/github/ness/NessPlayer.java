@@ -74,7 +74,7 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	private volatile MovementValues movementValues;
 	@Getter
-	public float sensitivity;
+	public double sensitivity;
 	public float lastPacketsPerTicks;
 	@Getter
 	@Setter

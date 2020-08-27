@@ -34,8 +34,8 @@ public class GCDUtils {
 		return (int) (ans + error);
 	}
 
-	public static float getSensitivity(float gcd) {
-		return (float) ((Math.cbrt(gcd / 8 / 0.15) - 0.2) / 0.6);
+	public static double getSensitivity(double gcd) {
+		return (Math.cbrt(gcd / 8 / 0.15) - 0.2) / 0.6;
 	}
 
 }
