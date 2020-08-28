@@ -17,7 +17,6 @@ import com.github.ness.api.Violation;
 import com.github.ness.utility.Utility;
 
 public class Speed extends AbstractCheck<PlayerMoveEvent> {
-	
 
 	public Speed(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerMoveEvent.class, 1, TimeUnit.SECONDS));

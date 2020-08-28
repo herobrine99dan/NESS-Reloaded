@@ -101,7 +101,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Player player = event.getPlayer();
 		Location to = event.getTo().clone();
 		Location from = event.getFrom().clone();
-		double yDiff = event.getTo().getY() - event.getFrom().getY();
+		final double yDiff = event.getTo().getY() - event.getFrom().getY();
 		if (Utility.getMaterialName(event.getTo().clone().add(0, -0.3, 0)).contains("slab")
 				|| event.getTo().getBlock().isLiquid()
 				|| event.getTo().clone().add(0, 1.8, 0).getBlock().getType().isSolid()
@@ -110,14 +110,14 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| event.getTo().clone().add(0, 2, 0).getBlock().getType().isSolid()
 				|| event.getTo().clone().add(0.3, 2, 0.3).getBlock().getType().isSolid()
 				|| event.getTo().clone().add(-0.3, 2, -0.3).getBlock().getType().isSolid()
-				|| Utility.specificBlockNear(event.getTo(), "liquid") || Utility.hasflybypass(player)
-				|| Utility.specificBlockNear(player.getLocation(), "snow")
-				|| Utility.specificBlockNear(player.getLocation(), "chest")
-				|| Utility.specificBlockNear(player.getLocation(), "ladder")
-				|| Utility.specificBlockNear(player.getLocation(), "pot")
-				|| Utility.specificBlockNear(player.getLocation(), "bed")
-				|| Utility.specificBlockNear(player.getLocation(), "detector")
-				|| Utility.specificBlockNear(player.getLocation(), "stair")
+				|| Utility.specificBlockNear(event.getTo().clone(), "liquid") || Utility.hasflybypass(player)
+				|| Utility.specificBlockNear(player.getLocation().clone(), "snow")
+				|| Utility.specificBlockNear(player.getLocation().clone(), "chest")
+				|| Utility.specificBlockNear(player.getLocation().clone(), "ladder")
+				|| Utility.specificBlockNear(player.getLocation().clone(), "pot")
+				|| Utility.specificBlockNear(player.getLocation().clone(), "bed")
+				|| Utility.specificBlockNear(player.getLocation().clone(), "detector")
+				|| Utility.specificBlockNear(player.getLocation().clone(), "stair")
 				|| Utility.getMaterialName(to.add(0, -1, 0)).contains("chest")
 				|| Utility.getMaterialName(from.add(0, -1, 0)).contains("chest")
 				|| Utility.getMaterialName(to.add(0, 1.8, 0)).contains("chorus")

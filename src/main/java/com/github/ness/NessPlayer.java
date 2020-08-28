@@ -190,7 +190,8 @@ public class NessPlayer implements AutoCloseable {
 		// Cancel method
 		ConfigurationSection cancelsec = NESSAnticheat.main.getNessConfig().getViolationHandling()
 				.getConfigurationSection("cancel");
-		final boolean cancel = checkViolationCounts.getOrDefault(violation.getCheck(), 0) > cancelsec.getInt("vl", 10) && cancelsec.getBoolean("enable", false);
+		final boolean cancel = checkViolationCounts.getOrDefault(violation.getCheck(), 0) > cancelsec.getInt("vl", 10)
+				&& cancelsec.getBoolean("enable", false);
 		if (cancel) {
 			if (e != null) {
 				if (violation.getCheck().equals("Fly") || violation.getCheck().equals("Nofall")
@@ -224,7 +225,7 @@ public class NessPlayer implements AutoCloseable {
 			public void run() {
 				Location result = NessPlayer.this.player.getLocation().clone();
 				double dtgResult = distanceFromGround - 1;
-				if(dtgResult < 1) {
+				if (dtgResult < 1) {
 					dtgResult = 0.5;
 				}
 				result.add(0, dtgResult * -1, 0);
@@ -232,7 +233,8 @@ public class NessPlayer implements AutoCloseable {
 				if (NessPlayer.this.isDevMode()) {
 					NessPlayer.this.player.sendMessage("DragDown: " + distanceFromGround);
 				}
-				if(result.getBlock().getType().isSolid()) {
+				if (result.getBlock().getType().isSolid()
+						|| result.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
 					result.add(0, 0.7, 0);
 				}
 				NessPlayer.this.player.teleport(result, TeleportCause.PLUGIN);

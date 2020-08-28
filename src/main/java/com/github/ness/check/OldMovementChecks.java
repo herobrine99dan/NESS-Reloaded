@@ -256,9 +256,11 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().toLowerCase().contains("water")
 					&& !player.getLocation().getBlock().isLiquid()) {
 				if (hozDist < .2 || !groundAround) {
-					if (groundAround && hozDist > .05 && PlayerManager.timeSince("isHit", player) >= 1000 && !Utility.specificBlockNear(to.clone(), "water")) {
+					if (groundAround && hozDist > .05 && PlayerManager.timeSince("isHit", player) >= 1000
+							&& !Utility.specificBlockNear(to.clone(), "water")) {
 						if (!player.isInsideVehicle()
-								|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE && !Utility.specificBlockNear(to.clone(), "ice"))
+								|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE
+										&& !Utility.specificBlockNear(to.clone(), "ice"))
 							punish(event, "Speed", "HighDistance");
 					} else if (PlayerManager.timeSince("breakTime", player) >= 2000
 							&& PlayerManager.timeSince("teleported", player) >= 500
@@ -269,13 +271,22 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 							if (!bottom.name().toLowerCase().contains("slime") && !Utility.hasBlock(player, "water")
 									&& !Utility.isInWater(player) && !Utility.specificBlockNear(event.getTo(), "liquid")
 									&& !Utility.specificBlockNear(event.getTo(), "fire")
-									&& !Utility.getMaterialName(event.getTo()).contains("fire")
-									&& !Utility.getMaterialName(event.getTo().clone().add(0, 0.4, 0)).contains("fire")
-									&& !player.getLastDamageCause().getCause().equals(DamageCause.FIRE)
-									&& !player.getLastDamageCause().getCause().equals(DamageCause.FIRE_TICK)) {
-								punish(event, "NoFall", "(OnMove)");
-								player.damage(
-										Math.abs(Utility.calcDamage((3.5 * player.getVelocity().getY()) / -0.71)));
+									&& !Utility.getMaterialName(event.getTo()).contains("fire") && !Utility
+											.getMaterialName(event.getTo().clone().add(0, 0.4, 0)).contains("fire")) {
+								boolean gotFire = false;
+								if (player.getLastDamageCause() != null) {
+									if (player.getLastDamageCause().getCause() != null) {
+										if (player.getLastDamageCause().getCause().name().toLowerCase()
+												.contains("fire")) {
+											gotFire = true;
+										}
+									}
+								}
+								if (!gotFire) {
+									punish(event, "NoFall", "(OnMove)");
+									player.damage(
+											Math.abs(Utility.calcDamage((3.5 * player.getVelocity().getY()) / -0.71)));
+								}
 							}
 						}
 					}
