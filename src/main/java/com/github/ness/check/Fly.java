@@ -19,11 +19,12 @@ import com.github.ness.utility.Utility;
 
 public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
-	double maxY;
+	double maxInvalidVelocity;
 
 	public Fly(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
-		this.maxY = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getDouble("maxydist", 0.58);
+		this.maxInvalidVelocity = this.manager.getNess().getNessConfig().getCheck(this.getClass())
+				.getDouble("maxinvalidvelocity", 0.9);
 	}
 
 	@Override
@@ -35,9 +36,9 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	protected List<String> bypasses = Arrays.asList("slab", "stair", "snow", "bed", "skull", "step", "slime");
 
-	public void punish(PlayerMoveEvent e, Player p, String module) {
-		if (!Utility.hasflybypass(p)) {
-			manager.getPlayer(p).setViolation(new Violation("Fly", module), e);
+	public void punish(PlayerMoveEvent e, String module) {
+		if (!Utility.hasflybypass(e.getPlayer())) {
+			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly", module), e);
 		}
 	}
 
@@ -69,9 +70,9 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				&& !this.manager.getPlayer(player).isTeleported()) {
 			if (player.isOnline() && !Utility.hasBlock(player, "slime") && !player.isInsideVehicle()) {
 				if (player.isOnGround() && !Utility.groundAround(e.getTo())) {
-					punish(e, player, "FalseGround");
+					punish(e, "FalseGround");
 				} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY())) {
-					punish(e, player, "FalseGround1");
+					punish(e, "FalseGround1");
 				}
 			}
 
@@ -79,14 +80,20 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	public void Check2(PlayerMoveEvent e) {
-		double yDist = this.manager.getPlayer(e.getPlayer()).getMovementValues().yDiff;
-		Player player = e.getPlayer();
-		if (yDist > 0 && !player.isInsideVehicle() && !e.getPlayer().getAllowFlight()) {
-			double yResult = yDist - e.getPlayer().getVelocity().getY();
-			if (yResult > this.maxY && !Utility.specificBlockNear(e.getTo().clone(), "lily")
-					&& !Utility.hasBlock(e.getPlayer(), "slime")) {
-				punish(e, e.getPlayer(), "HighDistance");
-			}
+		NessPlayer np = this.manager.getPlayer(e.getPlayer());
+		Player p = e.getPlayer();
+		double y = np.getMovementValues().yDiff;
+		double yresult = y - p.getVelocity().getY();
+		if (Utility.hasflybypass(p) || Utility.hasBlock(p, "slime") || p.getAllowFlight()
+				|| Utility.specificBlockNear(e.getTo().clone().add(0, -0.3, 0), "lily")) {
+			return;
+		}
+		double max = maxInvalidVelocity;
+		float pingresult = Utility.getPing(p) / 100;
+		float toAdd = pingresult / 4;
+		max += toAdd;
+		if (Math.abs(yresult) > max && !manager.getPlayer(e.getPlayer()).isTeleported()) {
+			punish(e, "InvalidVelocity: " + yresult);
 		}
 	}
 
@@ -140,7 +147,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 					&& Utility.isMathematicallyOnGround(event.getFrom().getY())) {
 				double yResult = Math.abs(yDiff - player.getVelocity().getY());
 				if (yResult != 0.0 && this.manager.getPlayer(player).nanoTimeDifference(PlayerAction.DAMAGE) > 1000) {
-					punish(event, event.getPlayer(), "InvalidJumpMotion yResult: " + yResult + "  yDiff: " + yDiff);
+					punish(event, "InvalidJumpMotion yResult: " + yResult + "  yDiff: " + yDiff);
 				}
 			}
 		}

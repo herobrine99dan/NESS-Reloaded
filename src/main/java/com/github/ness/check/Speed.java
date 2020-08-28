@@ -18,18 +18,14 @@ import com.github.ness.utility.Utility;
 
 public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	
-	double maxInvalidVelocity;
 
 	public Speed(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerMoveEvent.class, 1, TimeUnit.SECONDS));
-		this.maxInvalidVelocity = this.manager.getNess().getNessConfig().getCheck(this.getClass())
-				.getDouble("maxinvalidvelocity", 0.9);
 	}
 
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
 		Check1(e);
-		Check2(e);
 	}
 
 	@Override
@@ -138,23 +134,4 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 		return 0.12f;
 	}
-
-	public void Check2(PlayerMoveEvent e) {
-		NessPlayer np = this.manager.getPlayer(e.getPlayer());
-		Player p = e.getPlayer();
-		double y = np.getMovementValues().yDiff;
-		double yresult = y - p.getVelocity().getY();
-		if (Utility.hasflybypass(p) || Utility.hasBlock(p, "slime") || p.getAllowFlight()
-				|| Utility.specificBlockNear(e.getTo().clone().add(0, -0.3, 0), "lily")) {
-			return;
-		}
-		double max = 0.9;
-		float pingresult = Utility.getPing(p) / 100;
-		float toAdd = pingresult / 4;
-		max += toAdd;
-		if (Math.abs(yresult) > max && !manager.getPlayer(e.getPlayer()).isTeleported()) {
-			this.punish(e, "InvalidVelocity: " + yresult);
-		}
-	}
-
 }

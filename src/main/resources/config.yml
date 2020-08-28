@@ -149,7 +149,7 @@ checks:
   fastplace:
     maxblockplaced: 14
   fly:
-    maxydist: 0.58
+    maxinvalidvelocity: 0.9
   inventoryhack:
     maxdist: 0.1
   killaura:
@@ -158,8 +158,6 @@ checks:
     maxreach: 3.4
   morepackets:
     maxpackets: 65
-  speed:
-    maxinvalidvelocity: 0.9
 
 # If you change this, you will receive warnings in console
 config-version: 1
