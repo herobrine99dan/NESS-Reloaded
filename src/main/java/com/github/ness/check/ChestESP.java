@@ -10,7 +10,6 @@ public class ChestESP extends AbstractCheck<ChunkLoadEvent> {
 		// TODO Auto-generated constructor stub
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	void checkEvent(ChunkLoadEvent event) {
 		/*try {

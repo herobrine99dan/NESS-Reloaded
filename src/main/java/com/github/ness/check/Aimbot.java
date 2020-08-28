@@ -7,7 +7,6 @@ import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.GCDUtils;
-import com.github.ness.utility.Utility;
 
 public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 	

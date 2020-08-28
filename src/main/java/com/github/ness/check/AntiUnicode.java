@@ -3,7 +3,6 @@ package com.github.ness.check;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.github.ness.CheckManager;

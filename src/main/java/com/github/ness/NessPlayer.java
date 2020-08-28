@@ -69,20 +69,21 @@ public class NessPlayer implements AutoCloseable {
 	public int noGround; // Used in NoGround Check
 	public long pingspooftimer; // For PingSpoof
 	public long oldpingspooftimer; // For PingSpoof
-	public float lastYaw;
-	public double distanceFromGround;
+	public float lastYaw; //For Aimbot
+	public double distanceFromGround; //Updated from OldMovementsCheck
+	public double flyYSum; //The sum beetween positive y values
 	@Getter
 	private volatile MovementValues movementValues;
 	@Getter
-	public double sensitivity;
-	public float lastPacketsPerTicks;
+	public double sensitivity; //The Player Sensitivity
+	public float lastPacketsPerTicks; //Used in BadPackets
 	@Getter
 	@Setter
 	private boolean debugMode;
 	public Map<PlayerAction, Long> actionTime;
 	@Getter
 	@Setter
-	private boolean mouseRecord;
+	private boolean mouseRecord; //Is the player recording?
 	public List<Point> mouseRecordValues;
 
 	// Used in OldMovementChecks
@@ -115,6 +116,7 @@ public class NessPlayer implements AutoCloseable {
 	@Getter
 	private final Set<Long> clickHistory = ConcurrentHashMap.newKeySet();
 
+	@Getter
 	private final boolean devMode;
 
 	public double lastSpeedPredictionDist; // For Speed Prediction
@@ -145,10 +147,6 @@ public class NessPlayer implements AutoCloseable {
 	public void updateMovementValue(MovementValues values) {
 		this.movementValues = values;
 
-	}
-
-	public boolean isDevMode() {
-		return devMode;
 	}
 
 	/**

@@ -1,15 +1,12 @@
 package com.github.ness.check;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
@@ -29,6 +26,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
+		Check(e);
 		Check1(e);
 		Check2(e);
 		Check3(e);
@@ -39,6 +37,27 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	public void punish(PlayerMoveEvent e, String module) {
 		if (!Utility.hasflybypass(e.getPlayer())) {
 			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly", module), e);
+		}
+	}
+
+	/**
+	 * Check for Invalid Upper Motion
+	 */
+	public void Check(PlayerMoveEvent e) {
+		NessPlayer np = this.manager.getPlayer(e.getPlayer());
+		Player p = e.getPlayer();
+		double y = np.getMovementValues().yDiff;
+		if (Utility.hasflybypass(p) || Utility.hasBlock(p, "slime") || p.getAllowFlight()) {
+			return;
+		}
+		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || Utility.groundAround(e.getTo().clone())) {
+			np.flyYSum = 0;
+		}
+		if (y > 0 && p.getVelocity().getY() < 0) {
+			np.flyYSum += y;
+			if(np.isDevMode()) {
+				p.sendMessage("ySum: " + (float) np.flyYSum);
+			}
 		}
 	}
 
@@ -79,6 +98,11 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
+	/**
+	 * Check for Invalid Gravity
+	 * 
+	 * @param e
+	 */
 	public void Check2(PlayerMoveEvent e) {
 		NessPlayer np = this.manager.getPlayer(e.getPlayer());
 		Player p = e.getPlayer();
@@ -97,6 +121,11 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
+	/**
+	 * Check for Invalid Jump Motion (normal should be 0.42F)
+	 * 
+	 * @param event
+	 */
 	public void Check3(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		Location to = event.getTo().clone();

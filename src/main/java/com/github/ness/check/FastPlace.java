@@ -2,9 +2,7 @@ package com.github.ness.check;
 
 import java.util.concurrent.TimeUnit;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;

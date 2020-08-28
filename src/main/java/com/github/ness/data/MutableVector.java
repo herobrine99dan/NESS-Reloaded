@@ -132,11 +132,6 @@ public class MutableVector implements Cloneable {
 		return (int) Math.floor(this.z);
 	}
 
-	public MutableVector setX(int x) {
-		this.x = x;
-		return this;
-	}
-
 	public MutableVector clone() {
 		try {
 			return (MutableVector) super.clone();
