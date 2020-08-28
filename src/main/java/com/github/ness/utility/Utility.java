@@ -166,6 +166,10 @@ public class Utility {
 		}
 		return false;
 	}
+	
+	public static boolean isOnGround(Location loc) {
+		return loc.clone().subtract(0, 0.2, 0).getBlock().getType().isSolid();
+	}
 
 	public static List<Block> getBlocksAround(Location loc) {
 		List<Block> result = new ArrayList<>();

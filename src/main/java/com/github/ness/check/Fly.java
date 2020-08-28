@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
@@ -32,8 +33,6 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Check3(e);
 	}
 
-	protected List<String> bypasses = Arrays.asList("slab", "stair", "snow", "bed", "skull", "step", "slime");
-
 	public void punish(PlayerMoveEvent e, String module) {
 		if (!Utility.hasflybypass(e.getPlayer())) {
 			manager.getPlayer(e.getPlayer()).setViolation(new Violation("Fly", module), e);
@@ -47,16 +46,26 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		NessPlayer np = this.manager.getPlayer(e.getPlayer());
 		Player p = e.getPlayer();
 		double y = np.getMovementValues().yDiff;
-		if (Utility.hasflybypass(p) || Utility.hasBlock(p, "slime") || p.getAllowFlight()) {
-			return;
-		}
-		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || Utility.groundAround(e.getTo().clone())) {
+		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || Utility.isOnGround(e.getTo())
+				|| Utility.hasflybypass(p) || Utility.hasBlock(p, "slime") || p.getAllowFlight() || Utility.isInWater(p)
+				|| Utility.specificBlockNear(e.getTo().clone(), "lily")
+				|| Utility.specificBlockNear(e.getTo().clone(), "sea")
+				|| Utility.specificBlockNear(e.getTo().clone(), "slabs")
+				|| Utility.specificBlockNear(e.getTo().clone(), "stairs")) {
 			np.flyYSum = 0;
 		}
-		if (y > 0 && p.getVelocity().getY() < 0) {
+		if (y > 0) {
 			np.flyYSum += y;
-			if(np.isDevMode()) {
-				p.sendMessage("ySum: " + (float) np.flyYSum);
+			double max = 1.30;
+			double jumpBoost = 0;
+			if (p.getPotionEffect(PotionEffectType.JUMP) != null) {
+				jumpBoost = p.getPotionEffect(PotionEffectType.JUMP).getAmplifier() + 1;
+			}
+			max += jumpBoost * (max / 2);
+			if (np.flyYSum > max) {
+				if (np.isDevMode()) {
+					p.sendMessage("ySum: " + (float) np.flyYSum);
+				}
 			}
 		}
 	}
