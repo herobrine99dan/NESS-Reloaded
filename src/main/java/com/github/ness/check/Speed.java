@@ -23,6 +23,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
 		Check1(e);
+		Check2(e);
 	}
 
 	@Override
@@ -39,51 +40,40 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 
 	public void Check1(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
-		if (Utility.hasflybypass(p)) {
-			return;
-		}
 		NessPlayer np = this.manager.getPlayer(p);
-		if (np.isTeleported() || Utility.hasVehicleNear(p, 3)) {
-			return;
-		}
-		float dist = (float) np.getMovementValues().XZDiff;
+		float dist = (float) np.getMovementValues().XZDiff; //Our XZ Distance
 		Location to = event.getTo().clone();
 		Location from = event.getFrom().clone();
-		if (p.getGameMode() == GameMode.SPECTATOR || p.isInsideVehicle()) {
+		int speedLevel = Utility.getPotionEffectLevel(p, PotionEffectType.SPEED); //We handle the speed potion
+		if (speedLevel > 2 || p.getGameMode() == GameMode.SPECTATOR || p.isInsideVehicle() || np.isTeleported()
+				|| Utility.hasVehicleNear(p, 3) || Utility.hasflybypass(p)) {
 			return;
 		}
-		int speedLevel = Utility.getPotionEffectLevel(p, PotionEffectType.SPEED);
-		if (speedLevel > 2) {
-			return;
-		}
-		float f = to.getYaw() * 0.017453292F;
-		float resultX = Math.abs((float) (Math.sin(f) * p.getWalkSpeed()));
-		float resultZ = Math.abs((float) (Math.cos(f) * p.getWalkSpeed()));
-		float maxDist = resultX + resultZ;
+		//TODO Handle Slowness Potion
+		final double f = to.getYaw() * 0.017453292F;
+		double walkSpeed = p.isSprinting() && !p.hasPotionEffect(PotionEffectType.BLINDNESS) ? (0.3 * p.getWalkSpeed()) / 0.2 : p.getWalkSpeed();
+		final double resultX = Math.abs((Math.sin(f) * walkSpeed)); //We calculate the correct speed Distance for X and Z coords
+		final double resultZ = Math.abs((Math.cos(f) * walkSpeed));
+		double maxDist = resultX + resultZ;
 		final boolean isInWater = to.getBlock().isLiquid() && to.clone().add(0, -0.1, 0).getBlock().isLiquid();
-		float xVelocity = (float) p.getVelocity().getX();
-		float zVelocity = (float) p.getVelocity().getZ();
-		maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.14;
-		maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.16;
-		if (p.isSprinting() && Utility.isMathematicallyOnGround(to.getY())
-				&& Utility.isMathematicallyOnGround(from.getY())) {
-			maxDist = 0.56f;
-		} else if (p.isSprinting()) {
-			maxDist *= 1.24f;
-		}
+		final double xzVelocity = (Math.abs(p.getVelocity().getX()) + Math.abs(p.getVelocity().getZ())) * 1.18; //We add the player velocity to have compatibility with other plugins and to add speed in air
+		final double yVelocity = Math.abs(p.getVelocity().getY()) * 0.26; //For safety we add also the yVelocity (0.42 = 0.105)
+		maxDist += xzVelocity;
+		maxDist += yVelocity;
 		if (to.clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")
 				|| from.clone().add(0, -1, 0).getBlock().getType().name().toLowerCase().contains("ice")
 				|| Utility.specificBlockNear(from.clone().add(0, -0.4, 0), "ice")) {
-			maxDist *= 1.35f;
+			maxDist *= 1.3;
 		}
+		//We handle Sneaking
 		if (p.isSneaking()) {
-			maxDist = 0.172f;
-			maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.14;
-			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.16;
+			maxDist = adaptWalkSpeed(0.155,p);
+			maxDist += xzVelocity;
+			maxDist += yVelocity;
 		}
 		if (isInWater) {
-			maxDist = getMaxWaterSpeed();
-			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.26f;
+			maxDist = getMaxWaterSpeed(walkSpeed);
+			maxDist += yVelocity;
 			if (p.isSprinting()) {
 				maxDist += 0.1f;
 			}
@@ -92,22 +82,19 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (Utility.getMaterialName(to).contains("web") || Utility.getMaterialName(from).contains("web")
 				|| Utility.getMaterialName(to.clone().add(0, 0.2, 0)).contains("web")
 				|| Utility.getMaterialName(from.clone().add(0, 0.2, 0)).contains("web")) {
-			maxDist = 0.2f;
+			maxDist = adaptWalkSpeed(0.172,p);
 			if (p.isSprinting()) {
 				maxDist *= 1.21f;
 			}
-			maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.14;
-			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.17;
+			maxDist += xzVelocity;
+			maxDist += yVelocity;
 		}
 		if (Utility.getMaterialName(to).contains("stairs") || Utility.getMaterialName(from).contains("stairs")
 				|| Utility.getMaterialName(to.clone().add(0, 0.3, 0)).contains("stairs")
 				|| Utility.getMaterialName(to.clone().add(0, -0.3, 0)).contains("stairs")) {
-			maxDist = 0.45f;
-			if (p.isSprinting()) {
-				maxDist *= 1.26f;
-			}
-			maxDist += (float) (Math.abs(zVelocity) + Math.abs(xVelocity)) * 1.14;
-			maxDist += (float) Math.abs(p.getVelocity().getY()) * 0.18;
+			maxDist = walkSpeed * 1.58;
+			maxDist += xzVelocity;
+			maxDist += yVelocity;
 		}
 		if (p.getAllowFlight()) {
 			maxDist += 1.3;
@@ -118,17 +105,38 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		float pingresult = Utility.getPing(p) / 100;
 		float toAdd = pingresult / 7;
 		maxDist += toAdd;
-		float result = dist - maxDist;
+		double result = dist - maxDist;
 		// p.sendMessage("maxDist: " + maxDist + " Dist: " + dist);
 		if (result > 0.1 && !np.isTeleported()) {
 			this.punish(event, "MaxDistance: " + dist + " Max: " + maxDist);
 		}
 	}
+	
+	private double adaptWalkSpeed(double n, Player p) {
+		return (n * p.getWalkSpeed()) / 0.2;
+	}
 
-	private float getMaxWaterSpeed() {
+	private double getMaxWaterSpeed(double n) {
 		if (NESSAnticheat.getInstance().getMinecraftVersion() > 1122) {
-			return 0.2f;
+			return n * 0.7;
 		}
-		return 0.12f;
+		return n * 0.6;
+	}
+
+	// Make A Friction Check
+	public void Check2(PlayerMoveEvent event) {
+		Player p = event.getPlayer();
+		NessPlayer np = this.manager.getPlayer(p);
+		if (np.isTeleported() || Utility.hasVehicleNear(p, 3)) {
+			return;
+		}
+		final float dist = (float) np.getMovementValues().XZDiff;
+		float maxDist = 0.30F;
+		maxDist += (Math.abs(p.getVelocity().getX()) + Math.abs(p.getVelocity().getZ())) * 1.2;
+		if (p.isOnGround()) {
+			if (dist > maxDist) {
+				this.punish(event, "MaxDistance: " + dist + " Max: " + maxDist);
+			}
+		}
 	}
 }

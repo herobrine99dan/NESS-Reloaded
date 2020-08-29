@@ -221,11 +221,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				}
 				if (from.getY() >= to.getY()) {
 					double vel = from.getY() - to.getY();
-					if ((vel > 0.0999 && vel < 0.1) && to.getY() > 0) {
+					if ((vel > 0.09 && vel < 0.1) && to.getY() > 0) {
 						punish(event, "Fly", "InvalidDistance3(OnMove)");
-					}
-					if (vel == .125) {
-						punish(event, "Fly", "InvalidDistance4(OnMove)");
 					}
 				} else {
 					if (hozDist == 0 && !player.hasPotionEffect(PotionEffectType.JUMP)
@@ -245,12 +242,13 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						if (ent instanceof Boat)
 							break step;
 					}
-					punish(event, "Step", "(OnMove)");
-				}
-				if (from.getY() - to.getY() > 1 && fallDist == 0) {
-					if (from.getY() - to.getY() > 2) {
-						punish(event, "Phase", "(OnMove)");
+					if (player.getVelocity().getY() < 0.45) {
+						punish(event, "Step", "(OnMove)");
 					}
+				}
+				if (from.getY() - to.getY() > 2 && fallDist == 0 && player.getVelocity().getY() < 0.45) {
+					punish(event, "Phase", "(OnMove)");
+
 				}
 			}
 			if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().toLowerCase().contains("water")
