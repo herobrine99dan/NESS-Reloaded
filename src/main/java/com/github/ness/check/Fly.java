@@ -31,6 +31,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Check1(e);
 		Check2(e);
 		Check3(e);
+		Check4(e);
 	}
 
 	public void punish(PlayerMoveEvent e, String module) {
@@ -59,7 +60,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			double max = 1.30;
 			double jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
 			max += jumpBoost * (max / 2);
-			if (np.flyYSum > max) {
+			if (np.flyYSum > max && p.getVelocity().getY() < 0) {
 				if (np.isDevMode()) {
 					p.sendMessage("ySum: " + (float) np.flyYSum);
 				}
@@ -187,4 +188,22 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 	}
+
+	public void Check4(PlayerMoveEvent event) {
+		Player player = event.getPlayer();
+		if (player.isDead()) {
+			NessPlayer np = this.manager.getPlayer(player);
+			if((np.getMovementValues().XZDiff > 0.3 || np.getMovementValues().yDiff > 0.16) && !np.isTeleported()) {
+				punish(event, "GhostMode");
+			}
+		}
+	}
+	
+	public void Check5(PlayerMoveEvent event) {
+		Player player = event.getPlayer();
+		if (player.getFallDistance() < 7 && player.getVelocity().getY() < -2.0D) {
+			punish(event, "InvalidMove" + "FallDist: " + (float) player.getFallDistance() + " Velocity: " + (float) player.getVelocity().getY());
+		}
+	}
+
 }

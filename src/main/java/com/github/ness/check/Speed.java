@@ -49,7 +49,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.hasVehicleNear(p, 3) || Utility.hasflybypass(p)) {
 			return;
 		}
-		//TODO Handle Slowness Potion
+		//TODO Handle Slowness Potion (Slowness decreases walking speed by 15% × level)
 		final double f = to.getYaw() * 0.017453292F;
 		double walkSpeed = p.isSprinting() && !p.hasPotionEffect(PotionEffectType.BLINDNESS) ? (0.3 * p.getWalkSpeed()) / 0.2 : p.getWalkSpeed();
 		final double resultX = Math.abs((Math.sin(f) * walkSpeed)); //We calculate the correct speed Distance for X and Z coords
