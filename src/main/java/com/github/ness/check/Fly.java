@@ -57,10 +57,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		if (y > 0) {
 			np.flyYSum += y;
 			double max = 1.30;
-			double jumpBoost = 0;
-			if (p.getPotionEffect(PotionEffectType.JUMP) != null) {
-				jumpBoost = p.getPotionEffect(PotionEffectType.JUMP).getAmplifier() + 1;
-			}
+			double jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
 			max += jumpBoost * (max / 2);
 			if (np.flyYSum > max) {
 				if (np.isDevMode()) {

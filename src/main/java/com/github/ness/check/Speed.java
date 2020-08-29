@@ -43,7 +43,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		NessPlayer np = this.manager.getPlayer(p);
-		if (np.isTeleported() || Utility.hasVehicleNear(p, 3) || Utility.hasLivingEntityNear(p, 3)) {
+		if (np.isTeleported() || Utility.hasVehicleNear(p, 3)) {
 			return;
 		}
 		float dist = (float) np.getMovementValues().XZDiff;

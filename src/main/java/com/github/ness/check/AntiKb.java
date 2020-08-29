@@ -30,7 +30,7 @@ public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 		if (event.getEntity() instanceof Player) {
 			Player p = (Player) event.getEntity();
 			final Location from = p.getLocation();
-			if(Utility.isClimbableBlock(p.getLocation().getBlock()) || Utility.isWeb(p.getLocation()) || Utility.hasKbBypass(p)) {
+			if(Utility.isClimbableBlock(p.getLocation().getBlock()) || Utility.specificBlockNear(from.clone(), "web") || Utility.hasKbBypass(p)) {
 				return;
 			}
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {

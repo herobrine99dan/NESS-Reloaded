@@ -2,6 +2,7 @@ package com.github.ness.utility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -15,10 +16,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class Utility {
-	
 
 	/**
 	 * Round a value
+	 * 
 	 * @param value
 	 * @param precision (For example 100 will round 0.25065 to 0.25)
 	 * @return
@@ -63,6 +64,7 @@ public class Utility {
 
 	/**
 	 * Get the material name from the location and convert it to lowercase
+	 * 
 	 * @param loc
 	 * @return the material name
 	 */
@@ -72,6 +74,7 @@ public class Utility {
 
 	/**
 	 * Get the material name and convert it to lowercase
+	 * 
 	 * @param loc
 	 * @return the material name
 	 */
@@ -81,17 +84,13 @@ public class Utility {
 
 	/**
 	 * Check if a block is climbable
+	 * 
 	 * @param b
 	 * @return
 	 */
 	public static boolean isClimbableBlock(Block b) {
 		String block = Utility.getMaterialName(b.getLocation());
 		return block.contains("ladder") || block.contains("vine");
-	}
-
-	
-	public static boolean isWeb(Location loc) {
-		return Utility.getMaterialName(loc.clone().add(0, -0.2, 0)).contains("web");
 	}
 
 	public static boolean hasVehicleNear(Player p, int range) {
@@ -120,7 +119,7 @@ public class Utility {
 	}
 
 	public static int getPing(final Player player) {
-		int ping = 900;
+		int ping = 76;
 		try {
 			final Object entityPlayer = player.getClass().getMethod("getHandle", new Class[0]).invoke(player,
 					new Object[0]);
@@ -166,23 +165,20 @@ public class Utility {
 		}
 		return false;
 	}
-	
+
 	public static boolean isOnGround(Location loc) {
 		return loc.clone().subtract(0, 0.2, 0).getBlock().getType().isSolid();
 	}
 
-	public static List<Block> getBlocksAround(Location loc) {
+	public static List<Block> getBlocksAround(Location loc, int radius) {
 		List<Block> result = new ArrayList<>();
-		result.add(loc.getBlock());
-		for (double y = -0.5; y < 1; y += 0.5) {
-			result.add(loc.clone().add(0.5D, y, -0.5D).getBlock());
-			result.add(loc.clone().add(0.5D, y, 0.0D).getBlock());
-			result.add(loc.clone().add(-0.5D, y, 0.0D).getBlock());
-			result.add(loc.clone().add(0.0D, y, -0.5D).getBlock());
-			result.add(loc.clone().add(0.0D, y, 0.5D).getBlock());
-			result.add(loc.clone().add(-0.5D, y, -0.5D).getBlock());
-			result.add(loc.clone().add(0.5D, y, 0.5D).getBlock());
-			result.add(loc.clone().add(-0.5D, y, 0.5D).getBlock());
+		for (int x = -radius; x < radius; x++) {
+			for (int y = -radius; y < radius; y++) {
+				for (int z = -radius; z < radius; z++) {
+					Block block = loc.getWorld().getBlockAt(loc.clone().add(x, y, z));
+					result.add(block);
+				}
+			}
 		}
 		return result;
 	}
@@ -228,7 +224,7 @@ public class Utility {
 	}
 
 	public static boolean specificBlockNear(Location loc, String m) {
-		for (Block b : Utility.getBlocksAround(loc)) {
+		for (Block b : Utility.getBlocksAround(loc, 2)) {
 			if (m.equals("liquid")) {
 				if (b.isLiquid()) {
 					return true;
@@ -265,37 +261,15 @@ public class Utility {
 	public static int getPotionEffectLevel(Player p, PotionEffectType pet) {
 		for (PotionEffect pe : p.getActivePotionEffects()) {
 			if (pe.getType().getName().equals(pet.getName())) {
-				return pe.getAmplifier();
+				return pe.getAmplifier() + 1;
 			}
 		}
 		return 0;
 	}
 
-	public static double around(double i, int places) {
-		String around;
-		try {
-			if (Double.toString(i).length() > places - 2) {
-				if (!Double.toString(i).contains("-")) {
-					around = Double.toString(i).substring(0, places - 1);
-				} else {
-					around = Double.toString(i).substring(0, places);
-				}
-			} else {
-				around = Math.round(i) + "";
-			}
-		} catch (Exception e) {
-			return i;
-		}
-		return Double.parseDouble(around);
-	}
-
 	public static boolean isInWater(Player player) {
 		final Material m = player.getLocation().getBlock().getType();
 		return m.name().toLowerCase().contains("water");
-	}
-
-	public static boolean isOnSlime(Player p) {
-		return Utility.getMaterialName(p.getLocation().add(0, -0.5, 0)).contains("slime");
 	}
 
 	public static float yawTo180F(float flub) {
@@ -307,15 +281,7 @@ public class Utility {
 		}
 		return flub;
 	}
-
-	public static boolean isOnSpecificBlock(Player p, String type) {
-		return Utility.getMaterialName(p.getLocation().add(0, -0.5, 0)).contains(type);
-	}
-
-	public static double getFraction(final double value) {
-		return value % 1.0;
-	}
-
+	
 	public static boolean hasKbBypass(Player player) {
 		if (player.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
