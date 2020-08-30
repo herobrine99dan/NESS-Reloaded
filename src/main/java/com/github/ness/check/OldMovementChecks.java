@@ -16,6 +16,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
+import com.github.ness.data.ImmutableLoc;
 import com.github.ness.utility.MSG;
 import com.github.ness.utility.PlayerManager;
 import com.github.ness.utility.Utility;
@@ -328,8 +329,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				// Block rightBelow = player.getLocation().subtract(0, .1, 0).getBlock();
 			}
 			if (below.isSolid() && groundAround) {
-				// this.manager.getPlayer(player).safeLoc = from; //TODO Make a good LagBack
-				// System
+				nessPlayer.safeLocation = ImmutableLoc.of(event.getFrom());
 			}
 		}
 	}
