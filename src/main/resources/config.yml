@@ -49,7 +49,6 @@ enabled-checks:
   - 'AntiUnicode'
   - 'AntiKb'
   - 'BadPackets'
-  - 'BlockBreakChecks'
   - 'Criticals'
   - 'FastEat'
   - 'FastLadder'
