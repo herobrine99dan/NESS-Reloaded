@@ -39,6 +39,8 @@ public class NessCommands implements CommandExecutor {
 			return "ness.command.clear";
 		case "gui":
 			return "ness.command.gui";
+		case "debugvelocity":
+			return "ness.command.debugvelocity";
 		default:
 			return "ness.command.usage";
 		}
@@ -101,6 +103,17 @@ public class NessCommands implements CommandExecutor {
 						this.sendMessage(sender, "&7Sorry but to use this command you have to be a Player");
 					}
 					break;
+				case "debugvelocity":
+					if (sender instanceof Player) {
+						Player p = (Player) sender;
+						if(args.length > 1) {
+							p.setVelocity(p.getLocation().getDirection().multiply(Double.valueOf(args[1])));
+							p.sendMessage("Done!");
+						}
+					} else {
+						this.sendMessage(sender, "&7Sorry but to use this command you have to be a Player");
+					}
+					break;	
 				case "mouserecord":
 					if (sender instanceof Player) {
 						NessPlayer np = ness.getCheckManager().getPlayer((Player) sender);
