@@ -23,7 +23,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	@Override
 	void checkEvent(PlayerMoveEvent e) {
 		Check1(e);
-		Check2(e);
 	}
 
 	@Override
@@ -121,22 +120,5 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			return n * 0.7;
 		}
 		return n * 0.6;
-	}
-
-	// Make A Friction Check
-	public void Check2(PlayerMoveEvent event) {
-		Player p = event.getPlayer();
-		NessPlayer np = this.manager.getPlayer(p);
-		if (np.isTeleported() || Utility.hasVehicleNear(p, 3)) {
-			return;
-		}
-		final float dist = (float) np.getMovementValues().XZDiff;
-		float maxDist = 0.30F;
-		maxDist += (Math.abs(p.getVelocity().getX()) + Math.abs(p.getVelocity().getZ())) * 1.2;
-		if (p.isOnGround()) {
-			if (dist > maxDist) {
-				this.punish(event, "MaxDistance: " + dist + " Max: " + maxDist);
-			}
-		}
 	}
 }
