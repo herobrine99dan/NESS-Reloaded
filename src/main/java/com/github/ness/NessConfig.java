@@ -15,20 +15,16 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class NessConfig {
+@Getter public class NessConfig {
 
 	private static final int CONFIG_VERSION = 1;
 	private static final int MESSAGES_VERSION = 1;
 
 	private final String cfgFileName;
 	private final String msgsFileName;
-	@Getter
 	private String discordWebHook;
-	@Getter
 	private String discordTitle;
-	@Getter
 	private String discordDescription;
-	@Getter
 	private Color discordColor;
 	private YamlConfiguration config;
 	@Getter(AccessLevel.PACKAGE)

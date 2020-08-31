@@ -55,8 +55,6 @@ public class NessPlayer implements AutoCloseable {
 	 */
 	public final Map<String, Integer> checkViolationCounts = Collections.synchronizedMap(new HashMap<>());
 
-	@Getter
-	@Setter
 	public double lastStrafeAngle; // For the Beta NewOldStrafe Check
 	public int blockPlace; // For FastPlace Check
 	public int normalPacketsCounter; // For MorePackets
@@ -74,7 +72,6 @@ public class NessPlayer implements AutoCloseable {
 	public double flyYSum; //The sum beetween positive y values
 	@Getter
 	private volatile MovementValues movementValues;
-	@Getter
 	public double sensitivity; //The Player Sensitivity
 	public float lastPacketsPerTicks; //Used in BadPackets
 	@Getter
