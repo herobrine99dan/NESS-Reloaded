@@ -26,6 +26,7 @@ import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.DiscordWebhook;
+import com.github.ness.utility.Utility;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -83,6 +84,8 @@ public class NessPlayer implements AutoCloseable {
 	private boolean mouseRecord; //Is the player recording?
 	public List<Point> mouseRecordValues;
 	public ImmutableLoc safeLocation;
+	public int airTicks;
+	public double lastSpeedDist;
 
 	// Used in OldMovementChecks
 
@@ -143,6 +146,11 @@ public class NessPlayer implements AutoCloseable {
 	}
 
 	public void updateMovementValue(MovementValues values) {
+		if(!Utility.isMathematicallyOnGround(values.getTo().getY())) {
+			airTicks++;
+		} else {
+			airTicks = 0;
+		}
 		this.movementValues = values;
 
 	}
