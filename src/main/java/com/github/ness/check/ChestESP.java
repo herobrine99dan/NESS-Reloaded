@@ -11,7 +11,7 @@ public class ChestESP extends AbstractCheck<ChunkLoadEvent> {
 	}
 
 	@Override
-	void checkEvent(ChunkLoadEvent event) {
+	protected void checkEvent(ChunkLoadEvent event) {
 		/*try {
 			Bukkit.getScheduler().runTaskAsynchronously(manager.getNess(), () -> {
 				int X = event.getChunk().getX() * 16;

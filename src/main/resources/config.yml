@@ -56,7 +56,6 @@ enabled-checks:
   - 'ChestESP'
   - 'Fly'
   - 'GhostHand'
-  - 'Headless'
   - 'LiquidInteraction'
   - 'NameExploit'
   - 'InventoryHack'

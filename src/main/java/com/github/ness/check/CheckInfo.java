@@ -33,7 +33,7 @@ public class CheckInfo<T extends Event> {
 		this.units = units;
 	}
 	
-	static <T extends Event> CheckInfo<T> eventWithAsyncPeriodic(Class<T> event, long interval, TimeUnit units) {
+	public static <T extends Event> CheckInfo<T> eventWithAsyncPeriodic(Class<T> event, long interval, TimeUnit units) {
 		return new CheckInfo<>(event, interval, units);
 	}
 	

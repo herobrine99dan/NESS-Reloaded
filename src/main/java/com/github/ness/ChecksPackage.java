@@ -4,6 +4,9 @@ enum ChecksPackage {
 
 	MAIN(""),
 	COMBAT(".combat"),
+	MOVEMENT(".movement"),
+	PACKET(".packet"),
+	WORLD(".world"),
 	MISC(".misc");
 	
 	private final String prefix;

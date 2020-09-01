@@ -26,7 +26,7 @@ import com.github.ness.utility.HandlerListUtils;
  */
 public abstract class AbstractCheck<E extends Event> {
 
-	final CheckManager manager;
+	protected final CheckManager manager;
 	private final CheckInfo<E> info;
 	
 	private State state;
@@ -41,7 +41,7 @@ public abstract class AbstractCheck<E extends Event> {
 	 * @param manager the check manager
 	 * @param info information about the check, designated by the check itself
 	 */
-	AbstractCheck(CheckManager manager, CheckInfo<E> info) {
+	protected AbstractCheck(CheckManager manager, CheckInfo<E> info) {
 		this.manager = manager;
 		this.info = info;
 	}
@@ -132,7 +132,7 @@ public abstract class AbstractCheck<E extends Event> {
 	 * 
 	 * @param player the ness player
 	 */
-	void checkAsyncPeriodic(NessPlayer player) {
+	protected void checkAsyncPeriodic(NessPlayer player) {
 		
 	}
 	
@@ -142,7 +142,7 @@ public abstract class AbstractCheck<E extends Event> {
 	 * 
 	 * @param evt the event
 	 */
-	void checkEvent(E evt) {
+	protected void checkEvent(E evt) {
 		
 	}
 	

@@ -16,7 +16,7 @@ public class FastEat extends AbstractCheck<FoodLevelChangeEvent> {
 	}
 	
 	@Override
-	void checkEvent(FoodLevelChangeEvent e) {
+	protected void checkEvent(FoodLevelChangeEvent e) {
        Check(e);
 	}
 
