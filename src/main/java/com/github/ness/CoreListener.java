@@ -10,13 +10,13 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerVelocityEvent;
 
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 
 public class CoreListener implements Listener {
-
 	private final CheckManager manager;
 	
 	CoreListener(CheckManager manager) {
@@ -26,6 +26,16 @@ public class CoreListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onJoin(PlayerJoinEvent event) {
 		manager.getPlayer(event.getPlayer()).actionTime.put(PlayerAction.JOIN, System.nanoTime() / 1000_000L);
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onVelocity(PlayerVelocityEvent event) {
+		NessPlayer nessPlayer = this.manager.getPlayer(event.getPlayer());
+		nessPlayer.velocity = ImmutableLoc.of(event.getVelocity().toLocation(event.getPlayer().getWorld()));
+		nessPlayer.actionTime.put(PlayerAction.VELOCITY, System.nanoTime() / 1000_000L);
+		if(nessPlayer.isDevMode()) {
+			event.getPlayer().sendMessage("Velocity: " + nessPlayer.velocity);
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)

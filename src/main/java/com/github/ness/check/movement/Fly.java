@@ -54,6 +54,9 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.specificBlockNear(e.getTo().clone(), "stairs")) {
 			np.flyYSum = 0;
 		}
+		if(np.nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
+			y -= Math.abs(np.velocity.getY());
+		}
 		if (y > 0) {
 			np.flyYSum += y;
 			double max = 1.30;
@@ -94,7 +97,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			if (player.isOnline() && !Utility.hasBlock(player, "slime") && !player.isInsideVehicle()) {
 				if (player.isOnGround() && !Utility.groundAround(e.getTo())) {
 					punish(e, "FalseGround");
-				} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY())) {
+				} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY()) && !Utility.specificBlockNear(e.getTo().clone(), "web")) {
 					punish(e, "FalseGround1");
 				}
 			}
@@ -113,13 +116,16 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		double y = np.getMovementValues().yDiff;
 		double yresult = y - p.getVelocity().getY();
 		if (Utility.hasflybypass(p) || Utility.hasBlock(p, "slime") || p.getAllowFlight()
-				|| Utility.specificBlockNear(e.getTo().clone().add(0, -0.3, 0), "lily")) {
+				|| Utility.specificBlockNear(e.getTo().clone().add(0, -0.3, 0), "lily") || p.isInsideVehicle()) {
 			return;
 		}
 		double max = maxInvalidVelocity;
 		float pingresult = Utility.getPing(p) / 100;
 		float toAdd = pingresult / 4;
 		max += toAdd;
+		if(np.nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
+			y -= Math.abs(np.velocity.getY());
+		}
 		if (Math.abs(yresult) > max && !manager.getPlayer(e.getPlayer()).isTeleported()) {
 			punish(e, "InvalidVelocity: " + yresult);
 		}
@@ -171,7 +177,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("bed")
 				|| Utility.getMaterialName(to.add(0, -1, 0)).contains("detector")
 				|| Utility.getMaterialName(from.add(0, -1, 0)).contains("detector")
-				|| Utility.specificBlockNear(to.clone(), "ice")) {
+				|| Utility.specificBlockNear(to.clone(), "ice") || Utility.hasflybypass(player)) {
 			return;
 		}
 		// !player.getNearbyEntities(4, 4, 4).isEmpty()

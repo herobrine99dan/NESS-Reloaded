@@ -1,5 +1,5 @@
 package com.github.ness.data;
 
 public enum PlayerAction {
-	JOIN, DAMAGE
+	JOIN, DAMAGE, VELOCITY
 }

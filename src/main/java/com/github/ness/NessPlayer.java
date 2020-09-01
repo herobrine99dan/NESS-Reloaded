@@ -86,6 +86,7 @@ public class NessPlayer implements AutoCloseable {
 	public ImmutableLoc safeLocation;
 	public int airTicks;
 	public double lastSpeedDist;
+	public ImmutableLoc velocity;
 
 	// Used in OldMovementChecks
 

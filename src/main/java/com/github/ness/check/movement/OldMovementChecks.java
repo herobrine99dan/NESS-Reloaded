@@ -19,6 +19,7 @@ import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.data.ImmutableLoc;
+import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.MSG;
 import com.github.ness.utility.PlayerManager;
 import com.github.ness.utility.Utility;
@@ -55,6 +56,10 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		Double dist = from.distance(to);
 		Double hozDist = dist - (to.getY() - from.getY());
 		Double fallDist = (double) player.getFallDistance();
+		if(nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1000) {
+			hozDist -= Math.abs(nessPlayer.velocity.getX()) + Math.abs(nessPlayer.velocity.getZ());
+			dist -= Math.abs(nessPlayer.velocity.getX()) + Math.abs(nessPlayer.velocity.getY()) + Math.abs(nessPlayer.velocity.getZ());
+		}
 		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
 				|| nessPlayer.isTeleported()) {
 			return;
@@ -222,19 +227,12 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						&& !bottom.name().toLowerCase().contains("slime")) {
 					punish(event, "Fly", "NoGround(OnMove)");
 				}
-				if (from.getY() >= to.getY()) {
-					double vel = from.getY() - to.getY();
-					if ((vel > 0.09 && vel < 0.1) && to.getY() > 0) {
-						punish(event, "Fly", "InvalidDistance3(OnMove)");
-					}
-				} else {
-					if (hozDist == 0 && !player.hasPotionEffect(PotionEffectType.JUMP)
-							&& PlayerManager.timeSince("wasFlight", player) >= 3000
-							&& PlayerManager.timeSince("sincePlace", player) >= 1000
-							&& bottom.name().toLowerCase().contains("slime") && !cactus
-							&& PlayerManager.timeSince("isHit", player) >= 500) {
-						punish(event, "Fly", "InvalidDistance5(OnMove)");
-					}
+				if (hozDist == 0 && !player.hasPotionEffect(PotionEffectType.JUMP)
+						&& PlayerManager.timeSince("wasFlight", player) >= 3000
+						&& PlayerManager.timeSince("sincePlace", player) >= 1000
+						&& bottom.name().toLowerCase().contains("slime") && !cactus
+						&& PlayerManager.timeSince("isHit", player) >= 500) {
+					punish(event, "Fly", "InvalidDistance5(OnMove)");
 				}
 			} else {
 				step: if (to.getY() - from.getY() > .6 && !player.isFlying() && groundAround
