@@ -50,7 +50,9 @@ public class NESSAnticheat extends JavaPlugin {
 					"Your messages.yml is outdated! Until you regenerate it, NESS will use default values for some messages.");
 		}
 		logger.debug("Configuration loaded. Initiating checks...");
-
+		if(this.getVersion()> 1152 && this.getVersion() < 1162) {
+			getLogger().warning("Please use 1.16.2 Spigot Version since 1.16/1.16.1 has a lot of false flags");
+		}
 		executor = Executors.newSingleThreadScheduledExecutor();
 		getCommand("ness").setExecutor(new NessCommands(this));
 		if (!new File(this.getDataFolder(), "records").exists()) {
@@ -64,7 +66,6 @@ public class NESSAnticheat extends JavaPlugin {
 		violationManager.addDefaultActions();
 		violationManager.initiatePeriodicTask();
 		getServer().getPluginManager().registerEvents(new PacketListener(), this);
-
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);
 
 		getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(this), this, ServicePriority.Low);
