@@ -11,7 +11,9 @@ import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
+import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.PlayerAction;
+import com.github.ness.utility.ReflectionUtility;
 import com.github.ness.utility.Utility;
 
 public class Fly extends AbstractCheck<PlayerMoveEvent> {
@@ -46,15 +48,24 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		NessPlayer np = this.manager.getPlayer(e.getPlayer());
 		Player p = e.getPlayer();
 		double y = np.getMovementValues().yDiff;
+		if (np.isDevMode()) {
+			p.sendMessage(ReflectionUtility.getBlockName(p, ImmutableLoc.of(p.getLocation().clone().add(0, -1, 0))));
+		}
 		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || Utility.isOnGround(e.getTo())
 				|| Utility.hasflybypass(p) || Utility.hasBlock(p, "slime") || p.getAllowFlight() || Utility.isInWater(p)
 				|| Utility.specificBlockNear(e.getTo().clone(), "lily")
 				|| Utility.specificBlockNear(e.getTo().clone(), "sea")
 				|| Utility.specificBlockNear(e.getTo().clone(), "slabs")
-				|| Utility.specificBlockNear(e.getTo().clone(), "stairs")) {
+				|| Utility.specificBlockNear(e.getTo().clone(), "stairs")
+				|| Utility.specificBlockNear(e.getTo().clone(), "water")
+				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(p.getLocation().clone().add(0, -0.5, 0)))
+						.contains("scaffolding")
+				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(p.getLocation().clone().add(0, 0.5, 0)))
+						.contains("scaffolding")) {
 			np.flyYSum = 0;
+			return;
 		}
-		if(np.nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
+		if (np.nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
 			y -= Math.abs(np.velocity.getY());
 		}
 		if (y > 0) {
@@ -89,7 +100,11 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			return;
 		}
 		if (Utility.getMaterialName(e.getTo().clone()).contains("lily")
-				|| Utility.getMaterialName(e.getTo().clone()).contains("carpet")) {
+				|| Utility.getMaterialName(e.getTo().clone()).contains("carpet")
+				|| ReflectionUtility.getBlockName(player, ImmutableLoc.of(player.getLocation().clone().add(0, -0.5, 0)))
+						.contains("scaffolding")
+				|| ReflectionUtility.getBlockName(player, ImmutableLoc.of(player.getLocation().clone().add(0, 0.5, 0)))
+						.contains("scaffolding")) {
 			return;
 		}
 		if (player.getNearbyEntities(2, 2, 2).isEmpty() && !Utility.hasflybypass(player)
@@ -97,7 +112,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			if (player.isOnline() && !Utility.hasBlock(player, "slime") && !player.isInsideVehicle()) {
 				if (player.isOnGround() && !Utility.groundAround(e.getTo())) {
 					punish(e, "FalseGround");
-				} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY()) && !Utility.specificBlockNear(e.getTo().clone(), "web")) {
+				} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY())
+						&& !Utility.specificBlockNear(e.getTo().clone(), "web")) {
 					punish(e, "FalseGround1");
 				}
 			}
@@ -123,7 +139,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		float pingresult = Utility.getPing(p) / 100;
 		float toAdd = pingresult / 4;
 		max += toAdd;
-		if(np.nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
+		if (np.nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
 			y -= Math.abs(np.velocity.getY());
 		}
 		if (Math.abs(yresult) > max && !manager.getPlayer(e.getPlayer()).isTeleported()) {
@@ -196,16 +212,17 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Player player = event.getPlayer();
 		if (player.isDead()) {
 			NessPlayer np = this.manager.getPlayer(player);
-			if((np.getMovementValues().XZDiff > 0.3 || np.getMovementValues().yDiff > 0.16) && !np.isTeleported()) {
+			if ((np.getMovementValues().XZDiff > 0.3 || np.getMovementValues().yDiff > 0.16) && !np.isTeleported()) {
 				punish(event, "GhostMode");
 			}
 		}
 	}
-	
+
 	public void Check5(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		if (player.getFallDistance() < 7 && player.getVelocity().getY() < -2.0D) {
-			punish(event, "InvalidMove" + "FallDist: " + (float) player.getFallDistance() + " Velocity: " + (float) player.getVelocity().getY());
+			punish(event, "InvalidMove" + "FallDist: " + (float) player.getFallDistance() + " Velocity: "
+					+ (float) player.getVelocity().getY());
 		}
 	}
 

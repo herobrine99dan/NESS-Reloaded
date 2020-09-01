@@ -18,7 +18,7 @@ public class FastLadder extends AbstractCheck<PlayerMoveEvent> {
 	public FastLadder(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
 		this.maxDist = this.manager.getNess().getNessConfig().getCheck(this.getClass())
-				.getDouble("maxdist", 0.155D);
+				.getDouble("maxdist", 0.201D);
 	}
 
 	@Override

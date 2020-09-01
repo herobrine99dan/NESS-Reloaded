@@ -55,7 +55,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		float toAdd = pingresult / 7;
 		maxDist += toAdd;
 		final double yVelocity = Math.abs(p.getVelocity().getY()) * 0.30;
-		if ((checkSneak(p, dist, maxDist, yVelocity) || checkWater(p, dist, maxDist, yVelocity) || checkWeb(p, dist, maxDist, yVelocity)) && !np.isTeleported()) {
+		if ((checkSneak(p, dist, maxDist, yVelocity) || checkWeb(p, dist, maxDist, yVelocity)) && !np.isTeleported()) {
 			this.punish(event, "MaxDistance" + maxDist);
 		}
 	}
@@ -75,20 +75,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (p.isSneaking()) {
 			maxDist *= 0.75;
 			maxDist += yVelocity * 0.30;
-			if ((dist - maxDist) > 0.1) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean checkWater(Player p, double dist, double maxDist, double yVelocity) {
-		Location to = p.getLocation().clone();
-		if (to.getBlock().isLiquid() && to.clone().add(0, -0.1, 0).getBlock().isLiquid() && to.clone().add(0, 0.01, 0).getBlock().isLiquid()) {
-			maxDist *= getMaxWaterSpeed(p);
-			maxDist += yVelocity * 0.34;
-			//if (p.isSprinting())
-			//	maxDist += 0.1f;
 			if ((dist - maxDist) > 0.1) {
 				return true;
 			}

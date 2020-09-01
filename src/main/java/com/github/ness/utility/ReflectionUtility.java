@@ -10,6 +10,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import com.github.ness.data.ImmutableLoc;
+
 public class ReflectionUtility {
 
 	public static String cbVer() {
@@ -24,14 +26,24 @@ public class ReflectionUtility {
 		String pkg = Bukkit.getServer().getClass().getPackage().getName();
 		return pkg.substring(pkg.lastIndexOf(".") + 1);
 	}
-	
+
+	//TODO To Optimize this
+	public static String getBlockName(Player p, ImmutableLoc loc) {
+		Object entityPlayer = ReflectionUtility.getHandle(p);
+		Object world = ReflectionUtility.callMethod(entityPlayer, "getWorld");
+		Object position = ReflectionUtility.callConstructor(ReflectionUtility.getNMSClass("BlockPosition"), loc.getX(), loc.getY(), loc.getZ());
+		Object type = ReflectionUtility.callMethod(world, "getType", position);
+		String info = type.toString().replace("{", "").replaceFirst("Block", "").replace("minecraft", "");
+		return info.substring(1, info.indexOf("}"));
+	}
+
 	public static Color getColorByName(String name) {
-	    try {
-	        return (Color)Color.class.getField(name.toUpperCase()).get(null);
-	    } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-	        e.printStackTrace();
-	        return null;
-	    }
+		try {
+			return (Color) Color.class.getField(name.toUpperCase()).get(null);
+		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public static Class<?> wrapperToPrimitive(Class<?> clazz) {
