@@ -104,7 +104,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| ReflectionUtility.getBlockName(player, ImmutableLoc.of(player.getLocation().clone().add(0, -0.5, 0)))
 						.contains("scaffolding")
 				|| ReflectionUtility.getBlockName(player, ImmutableLoc.of(player.getLocation().clone().add(0, 0.5, 0)))
-						.contains("scaffolding")) {
+						.contains("scaffolding")
+				|| player.isDead()) { // TODO Fix Better this false flag
 			return;
 		}
 		if (player.getNearbyEntities(2, 2, 2).isEmpty() && !Utility.hasflybypass(player)
@@ -159,12 +160,15 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		final double yDiff = event.getTo().getY() - event.getFrom().getY();
 		if (Utility.getMaterialName(event.getTo().clone().add(0, -0.3, 0)).contains("slab")
 				|| event.getTo().getBlock().isLiquid()
-				|| event.getTo().clone().add(0, 1.8, 0).getBlock().getType().isSolid()
-				|| event.getTo().clone().add(0.3, 1.8, 0.3).getBlock().getType().isSolid()
-				|| event.getTo().clone().add(-0.3, 1.8, -0.3).getBlock().getType().isSolid()
-				|| event.getTo().clone().add(0, 2, 0).getBlock().getType().isSolid()
-				|| event.getTo().clone().add(0.3, 2, 0.3).getBlock().getType().isSolid()
-				|| event.getTo().clone().add(-0.3, 2, -0.3).getBlock().getType().isSolid()
+				|| event.getTo().clone().add(0, 1.9, 0).getBlock().getType().isSolid()
+				|| event.getTo().clone().add(0.3, 1.9, 0).getBlock().getType().isSolid()
+				|| event.getTo().clone().add(0, 1.9, 0.3).getBlock().getType().isSolid()
+				|| event.getTo().clone().add(-0.3, 1.9, 0).getBlock().getType().isSolid()
+				|| event.getTo().clone().add(0, 1.9, -0.3).getBlock().getType().isSolid()
+				|| event.getTo().clone().add(0.3, 1.9, 0.3).getBlock().getType().isSolid()
+				|| event.getTo().clone().add(-0.3, 1.9, -0.3).getBlock().getType().isSolid()
+				|| event.getTo().clone().add(0.3, 1.9, -0.3).getBlock().getType().isSolid()
+				|| event.getTo().clone().add(-0.3, 1.9, 0.3).getBlock().getType().isSolid()
 				|| Utility.specificBlockNear(event.getTo().clone(), "liquid") || Utility.hasflybypass(player)
 				|| Utility.specificBlockNear(player.getLocation().clone(), "snow")
 				|| Utility.specificBlockNear(player.getLocation().clone(), "chest")

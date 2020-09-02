@@ -109,9 +109,9 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 	public void Check3(ReceivedPacketEvent e) {
 		NessPlayer np = e.getNessPlayer();
 		final double yaw = Math.abs(np.getMovementValues().yawDiff);
-		if ((Math.round(Math.abs(yaw)) == Math.abs(yaw) && yaw < 340 && yaw > 0)) {
+		if (Math.round(Math.abs(yaw)) == Math.abs(yaw) && yaw < 340 && yaw > 0) {
 			np.AimbotPatternCounter = np.AimbotPatternCounter + 1;
-			if (np.AimbotPatternCounter > 3) {
+			if (np.AimbotPatternCounter > 4) {
 				np.setViolation(new Violation("Aimbot", "Pattern3"), e);
 				np.AimbotPatternCounter = 0;
 			}
