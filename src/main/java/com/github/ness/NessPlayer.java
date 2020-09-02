@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,7 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -87,6 +87,7 @@ public class NessPlayer implements AutoCloseable {
 	public int airTicks;
 	public double lastSpeedDist;
 	public ImmutableLoc velocity;
+	public Set<Integer> attackedEntities;
 
 	// Used in OldMovementChecks
 
@@ -137,6 +138,7 @@ public class NessPlayer implements AutoCloseable {
 		this.normalPacketsCounter = 0;
 		this.sensitivity = 0;
 		this.devMode = devMode;
+		this.attackedEntities = new HashSet<Integer>();
 		this.movementValues = new MovementValues(player,
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));

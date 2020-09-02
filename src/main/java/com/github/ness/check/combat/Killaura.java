@@ -1,10 +1,13 @@
-package com.github.ness.check.packet;
+package com.github.ness.check.combat;
+
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
@@ -23,13 +26,18 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	double maxReach;
 	
 	public Killaura(CheckManager manager) {
-		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
+		super(manager, CheckInfo.eventWithAsyncPeriodic(EntityDamageByEntityEvent.class, 50, TimeUnit.MILLISECONDS));
 		this.maxYaw = this.manager.getNess().getNessConfig().getCheck(this.getClass())
 				.getDouble("maxyaw", 357);
 		this.minAngle = this.manager.getNess().getNessConfig().getCheck(this.getClass())
 				.getDouble("minangle", -0.2);
 		this.maxReach = this.manager.getNess().getNessConfig().getCheck(this.getClass())
 				.getDouble("maxreach", 3.4);
+	}
+	
+	@Override
+	public void checkAsyncPeriodic(NessPlayer nessPlayer) {
+		nessPlayer.attackedEntities.clear();
 	}
 
 	@Override
@@ -40,6 +48,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		Check3(e);
 		Check4(e);
 		Check5(e);
+		Check6(e);
 	}
 
 	public void Check(EntityDamageByEntityEvent e) {
@@ -120,7 +129,19 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check5(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			if (e.getEntity().getEntityId() == e.getDamager().getEntityId()) {
-				punish(e, (Player) e.getEntity(), "SelfHit");
+				punish(e, (Player) e.getDamager(), "SelfHit");
+			}
+		}
+	}
+	
+	public void Check6(EntityDamageByEntityEvent e) {
+		if (e.getDamager() instanceof Player) {
+			if (e.getEntity() instanceof LivingEntity) {
+				NessPlayer nessPlayer = this.getNessPlayer((Player) e.getDamager());
+				nessPlayer.attackedEntities.add(e.getEntity().getEntityId());
+				if(nessPlayer.attackedEntities.size() > 1) {
+					punish(e, (Player) e.getDamager(), "MultiAura");
+				}
 			}
 		}
 	}
