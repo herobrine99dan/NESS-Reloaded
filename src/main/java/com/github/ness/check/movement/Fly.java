@@ -86,17 +86,12 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	 */
 	public void Check1(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
-		if (Bukkit.getVersion().contains("1.8")) {
+		if (Bukkit.getVersion().contains("1.8") || Utility.getMaterialName(e.getTo().clone().add(0, -0.5, 0)).contains("lily")
+				|| Utility.getMaterialName(e.getTo().clone().add(0, -0.5, 0)).contains("carpet") || Utility.specificBlockNear(e.getTo(), "carpet") || Utility.specificBlockNear(e.getTo(), "lily") || Utility.specificBlockNear(e.getTo(), "snow")) {
 			return;
 		}
-		if (Utility.getMaterialName(e.getTo().clone().add(0, -0.5, 0)).contains("lily")
-				|| Utility.getMaterialName(e.getTo().clone().add(0, -0.5, 0)).contains("carpet")) {
-			return;
-		}
-		if (Utility.specificBlockNear(e.getTo(), "lily") || Utility.specificBlockNear(e.getTo(), "snow")) {
-			return;
-		}
-		if (Utility.specificBlockNear(e.getTo(), "carpet")) {
+		NessPlayer nessPlayer = this.getNessPlayer(player);
+		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1500 && nessPlayer.velocity.getY() > 0.34) {
 			return;
 		}
 		if (Utility.getMaterialName(e.getTo().clone()).contains("lily")
@@ -104,12 +99,12 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| ReflectionUtility.getBlockName(player, ImmutableLoc.of(player.getLocation().clone().add(0, -0.5, 0)))
 						.contains("scaffolding")
 				|| ReflectionUtility.getBlockName(player, ImmutableLoc.of(player.getLocation().clone().add(0, 0.5, 0)))
-						.contains("scaffolding")
+						.contains("scaffolding") || Utility.getMaterialName(e.getTo().clone()).contains("ladder")
 				|| player.isDead()) { // TODO Fix Better this false flag
 			return;
 		}
 		if (player.getNearbyEntities(2, 2, 2).isEmpty() && !Utility.hasflybypass(player)
-				&& !this.manager.getPlayer(player).isTeleported()) {
+				&& !nessPlayer.isTeleported()) {
 			if (player.isOnline() && !Utility.hasBlock(player, "slime") && !player.isInsideVehicle()) {
 				if (player.isOnGround() && !Utility.groundAround(e.getTo())) {
 					punish(e, "FalseGround");
@@ -140,7 +135,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		float pingresult = Utility.getPing(p) / 100;
 		float toAdd = pingresult / 4;
 		max += toAdd;
-		if (np.nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
+		if (np.nanoTimeDifference(PlayerAction.VELOCITY) < 3000) {
 			y -= Math.abs(np.velocity.getY());
 		}
 		if (Math.abs(yresult) > max && !manager.getPlayer(e.getPlayer()).isTeleported()) {

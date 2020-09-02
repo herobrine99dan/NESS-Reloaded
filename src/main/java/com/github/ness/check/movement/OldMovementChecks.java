@@ -22,6 +22,7 @@ import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.MSG;
 import com.github.ness.utility.PlayerManager;
+import com.github.ness.utility.ReflectionUtility;
 import com.github.ness.utility.Utility;
 
 public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
@@ -56,9 +57,10 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		Double dist = from.distance(to);
 		Double hozDist = dist - (to.getY() - from.getY());
 		Double fallDist = (double) player.getFallDistance();
-		if(nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1000) {
+		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1000) {
 			hozDist -= Math.abs(nessPlayer.velocity.getX()) + Math.abs(nessPlayer.velocity.getZ());
-			dist -= Math.abs(nessPlayer.velocity.getX()) + Math.abs(nessPlayer.velocity.getY()) + Math.abs(nessPlayer.velocity.getZ());
+			dist -= Math.abs(nessPlayer.velocity.getX()) + Math.abs(nessPlayer.velocity.getY())
+					+ Math.abs(nessPlayer.velocity.getZ());
 		}
 		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
 				|| nessPlayer.isTeleported()) {
@@ -151,7 +153,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		if (player.isBlocking())
 			maxSpd = .1729;
 		if (player.isBlocking()) {
-			if (player.getLocation().getY() % .5 == 0.0) {
+			if (event.getTo().getY() % .5 == 0.0) {
 				maxSpd = .2;
 			} else {
 				maxSpd = .3;
@@ -169,7 +171,11 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 		if (player.isInsideVehicle() && player.getVehicle().getType() == EntityType.BOAT)
-			maxSpd = 2.787;
+			maxSpd = 2.8;
+		if (ReflectionUtility.getBlockName(player, ImmutableLoc.of(event.getTo())).contains("stair")
+				|| ReflectionUtility.getBlockName(player, ImmutableLoc.of(event.getFrom())).contains("stair")) {
+			maxSpd += 0.15;
+		}
 		if (hozDist > maxSpd && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED)
 				&& PlayerManager.timeSince("wasFlight", player) >= 2000
 				&& PlayerManager.timeSince("isHit", player) >= 2000
