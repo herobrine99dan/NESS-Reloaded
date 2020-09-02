@@ -135,7 +135,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 				NessPlayer nessPlayer = this.getNessPlayer((Player) e.getDamager());
 				nessPlayer.attackedEntities.add(e.getEntity().getEntityId());
 				if(nessPlayer.attackedEntities.size() > 1) {
-					punish(e, (Player) e.getDamager(), "MultiAura");
+					punish(e, (Player) e.getDamager(), "MultiAura Entities: " + nessPlayer.attackedEntities.size());
 				}
 			}
 		}

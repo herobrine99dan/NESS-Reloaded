@@ -29,9 +29,10 @@ public class CoreListener implements Listener {
 		manager.getPlayer(event.getPlayer()).actionTime.put(PlayerAction.JOIN, System.nanoTime() / 1000_000L);
 	}
 	
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onTick(ReceivedPacketEvent event) {
-		if(event.getPacket().getName().toLowerCase().contains("flying")) {
+		final String packetName = event.getPacket().getName().toLowerCase();
+		if(packetName.contains("flying") || packetName.contains("position") || packetName.contains("look")) {
 			event.getNessPlayer().onClientTick();
 		}
 	}

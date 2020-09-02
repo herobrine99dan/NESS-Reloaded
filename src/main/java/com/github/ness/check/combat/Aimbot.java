@@ -109,7 +109,6 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 	public void Check3(ReceivedPacketEvent e) {
 		NessPlayer np = e.getNessPlayer();
 		final double yaw = Math.abs(np.getMovementValues().yawDiff);
-		final double pitch = Math.abs(np.getMovementValues().pitchDiff);
 		if ((Math.round(Math.abs(yaw)) == Math.abs(yaw) && yaw < 340 && yaw > 0)) {
 			np.AimbotPatternCounter = np.AimbotPatternCounter + 1;
 			if (np.AimbotPatternCounter > 3) {
