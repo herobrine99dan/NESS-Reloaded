@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
+import com.github.ness.packets.ReceivedPacketEvent;
 
 public class CoreListener implements Listener {
 	private final CheckManager manager;
@@ -26,6 +27,13 @@ public class CoreListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onJoin(PlayerJoinEvent event) {
 		manager.getPlayer(event.getPlayer()).actionTime.put(PlayerAction.JOIN, System.nanoTime() / 1000_000L);
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onTick(ReceivedPacketEvent event) {
+		if(event.getPacket().getName().toLowerCase().contains("flying")) {
+			event.getNessPlayer().onClientTick();
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)

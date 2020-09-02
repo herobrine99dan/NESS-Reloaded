@@ -10,6 +10,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import com.github.ness.NESSAnticheat;
 import com.github.ness.data.ImmutableLoc;
 
 public class ReflectionUtility {
@@ -29,12 +30,15 @@ public class ReflectionUtility {
 
 	//TODO To Optimize this
 	public static String getBlockName(Player p, ImmutableLoc loc) {
-		Object entityPlayer = ReflectionUtility.getHandle(p);
-		Object world = ReflectionUtility.callMethod(entityPlayer, "getWorld");
-		Object position = ReflectionUtility.callConstructor(ReflectionUtility.getNMSClass("BlockPosition"), loc.getX(), loc.getY(), loc.getZ());
-		Object type = ReflectionUtility.callMethod(world, "getType", position);
-		String info = type.toString().replace("{", "").replaceFirst("Block", "").replace("minecraft", "");
-		return info.substring(1, info.indexOf("}"));
+		if(NESSAnticheat.getInstance().getVersion() > 1132) {
+			Object entityPlayer = ReflectionUtility.getHandle(p);
+			Object world = ReflectionUtility.callMethod(entityPlayer, "getWorld");
+			Object position = ReflectionUtility.callConstructor(ReflectionUtility.getNMSClass("BlockPosition"), loc.getX(), loc.getY(), loc.getZ());
+			Object type = ReflectionUtility.callMethod(world, "getType", position);
+			String info = type.toString().replace("{", "").replaceFirst("Block", "").replace("minecraft", "");
+			return info.substring(1, info.indexOf("}"));
+		}
+		return loc.toBukkitLocation().getBlock().getType().name().toLowerCase();
 	}
 
 	public static Color getColorByName(String name) {

@@ -26,18 +26,13 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	double maxReach;
 	
 	public Killaura(CheckManager manager) {
-		super(manager, CheckInfo.eventWithAsyncPeriodic(EntityDamageByEntityEvent.class, 50, TimeUnit.MILLISECONDS));
+		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
 		this.maxYaw = this.manager.getNess().getNessConfig().getCheck(this.getClass())
 				.getDouble("maxyaw", 357);
 		this.minAngle = this.manager.getNess().getNessConfig().getCheck(this.getClass())
 				.getDouble("minangle", -0.2);
 		this.maxReach = this.manager.getNess().getNessConfig().getCheck(this.getClass())
 				.getDouble("maxreach", 3.4);
-	}
-	
-	@Override
-	public void checkAsyncPeriodic(NessPlayer nessPlayer) {
-		nessPlayer.attackedEntities.clear();
 	}
 
 	@Override

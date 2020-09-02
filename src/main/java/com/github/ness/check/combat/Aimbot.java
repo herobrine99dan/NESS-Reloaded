@@ -11,7 +11,7 @@ import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.GCDUtils;
 
 public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
-	
+
 	public Aimbot(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(ReceivedPacketEvent.class, 1, TimeUnit.SECONDS));
 	}
@@ -108,10 +108,11 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 
 	public void Check3(ReceivedPacketEvent e) {
 		NessPlayer np = e.getNessPlayer();
-		double yaw = Math.abs(np.getMovementValues().yawDiff);
+		final double yaw = Math.abs(np.getMovementValues().yawDiff);
+		final double pitch = Math.abs(np.getMovementValues().pitchDiff);
 		if ((Math.round(Math.abs(yaw)) == Math.abs(yaw) && yaw < 340 && yaw > 0)) {
 			np.AimbotPatternCounter = np.AimbotPatternCounter + 1;
-			if (np.AimbotPatternCounter > 2) {
+			if (np.AimbotPatternCounter > 3) {
 				np.setViolation(new Violation("Aimbot", "Pattern3"), e);
 				np.AimbotPatternCounter = 0;
 			}

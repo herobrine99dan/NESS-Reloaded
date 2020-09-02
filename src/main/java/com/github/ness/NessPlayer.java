@@ -147,6 +147,10 @@ public class NessPlayer implements AutoCloseable {
 	public long nanoTimeDifference(PlayerAction action) {
 		return (System.nanoTime() / 1000_000L) - this.actionTime.getOrDefault(action, (long) 0);
 	}
+	
+	public void onClientTick() {
+		this.attackedEntities.clear();
+	}
 
 	public void updateMovementValue(MovementValues values) {
 		if(!Utility.isMathematicallyOnGround(values.getTo().getY())) {
