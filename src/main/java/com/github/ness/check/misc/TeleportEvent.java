@@ -37,6 +37,7 @@ public class TeleportEvent extends AbstractCheck<PlayerTeleportEvent> {
 		if (!nessPlayer.hasSetback) {
 			nessPlayer.setTeleported(true);
 		}
+		nessPlayer.hasSetback = false;
 	}
 
 	@Override
