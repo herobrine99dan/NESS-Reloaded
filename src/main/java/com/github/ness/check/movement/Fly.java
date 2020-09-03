@@ -7,6 +7,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.CheckManager;
+import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
@@ -49,19 +50,22 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		double y = np.getMovementValues().yDiff;
 		if (np.isDevMode()) {
-			p.sendMessage(ReflectionUtility.getBlockName(p, ImmutableLoc.of(p.getLocation().clone().add(0, -1, 0))));
+			// p.sendMessage(ReflectionUtility.getBlockName(p,
+			// ImmutableLoc.of(p.getLocation().clone().add(0, -1, 0))));
 		}
 		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || Utility.isOnGround(e.getTo())
 				|| Utility.hasflybypass(p) || Utility.hasBlock(p, "slime") || p.getAllowFlight() || Utility.isInWater(p)
 				|| Utility.specificBlockNear(e.getTo().clone(), "lily")
 				|| Utility.specificBlockNear(e.getTo().clone(), "sea")
-				|| Utility.specificBlockNear(e.getTo().clone(), "slabs")
-				|| Utility.specificBlockNear(e.getTo().clone(), "stairs")
+				|| Utility.specificBlockNear(e.getTo().clone(), "slab")
+				|| Utility.specificBlockNear(e.getTo().clone(), "stair")
 				|| Utility.specificBlockNear(e.getTo().clone(), "water")
 				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(p.getLocation().clone().add(0, -0.5, 0)))
 						.contains("scaffolding")
 				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(p.getLocation().clone().add(0, 0.5, 0)))
-						.contains("scaffolding")) {
+						.contains("scaffolding")
+				|| Utility.getMaterialName(e.getTo()).contains("ladder")
+				|| Utility.specificBlockNear(e.getTo(), "ladder")) {
 			np.flyYSum = 0;
 			return;
 		}
@@ -86,8 +90,11 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	 */
 	public void Check1(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
-		if (Bukkit.getVersion().contains("1.8") || Utility.getMaterialName(e.getTo().clone().add(0, -0.5, 0)).contains("lily")
-				|| Utility.getMaterialName(e.getTo().clone().add(0, -0.5, 0)).contains("carpet") || Utility.specificBlockNear(e.getTo(), "carpet") || Utility.specificBlockNear(e.getTo(), "lily") || Utility.specificBlockNear(e.getTo(), "snow")) {
+		if (Bukkit.getVersion().contains("1.8")
+				|| Utility.getMaterialName(e.getTo().clone().add(0, -0.5, 0)).contains("lily")
+				|| Utility.getMaterialName(e.getTo().clone().add(0, -0.5, 0)).contains("carpet")
+				|| Utility.specificBlockNear(e.getTo(), "carpet") || Utility.specificBlockNear(e.getTo(), "lily")
+				|| Utility.specificBlockNear(e.getTo(), "snow") || NESSAnticheat.getInstance().getVersion() > 1152) {
 			return;
 		}
 		NessPlayer nessPlayer = this.getNessPlayer(player);
@@ -99,8 +106,10 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| ReflectionUtility.getBlockName(player, ImmutableLoc.of(player.getLocation().clone().add(0, -0.5, 0)))
 						.contains("scaffolding")
 				|| ReflectionUtility.getBlockName(player, ImmutableLoc.of(player.getLocation().clone().add(0, 0.5, 0)))
-						.contains("scaffolding") || Utility.getMaterialName(e.getTo().clone()).contains("ladder")
-				|| player.isDead()) { // TODO Fix Better this false flag
+						.contains("scaffolding")
+				|| Utility.getMaterialName(e.getTo().clone()).contains("ladder") || player.isDead()) { // TODO Fix
+																										// Better this
+																										// false flag
 			return;
 		}
 		if (player.getNearbyEntities(2, 2, 2).isEmpty() && !Utility.hasflybypass(player)

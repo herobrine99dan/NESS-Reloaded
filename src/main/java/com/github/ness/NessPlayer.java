@@ -68,20 +68,20 @@ public class NessPlayer implements AutoCloseable {
 	public int noGround; // Used in NoGround Check
 	public long pingspooftimer; // For PingSpoof
 	public long oldpingspooftimer; // For PingSpoof
-	public float lastYaw; //For Aimbot
-	public double distanceFromGround; //Updated from OldMovementsCheck
-	public double flyYSum; //The sum beetween positive y values
+	public float lastYaw; // For Aimbot
+	public double distanceFromGround; // Updated from OldMovementsCheck
+	public double flyYSum; // The sum beetween positive y values
 	@Getter
 	private volatile MovementValues movementValues;
-	public double sensitivity; //The Player Sensitivity
-	public float lastPacketsPerTicks; //Used in BadPackets
+	public double sensitivity; // The Player Sensitivity
+	public float lastPacketsPerTicks; // Used in BadPackets
 	@Getter
 	@Setter
 	private boolean debugMode;
 	public Map<PlayerAction, Long> actionTime;
 	@Getter
 	@Setter
-	private boolean mouseRecord; //Is the player recording?
+	private boolean mouseRecord; // Is the player recording?
 	public List<Point> mouseRecordValues;
 	public ImmutableLoc safeLocation;
 	public int airTicks;
@@ -147,13 +147,13 @@ public class NessPlayer implements AutoCloseable {
 	public long nanoTimeDifference(PlayerAction action) {
 		return (System.nanoTime() / 1000_000L) - this.actionTime.getOrDefault(action, (long) 0);
 	}
-	
+
 	public void onClientTick() {
 		this.attackedEntities.clear();
 	}
 
 	public void updateMovementValue(MovementValues values) {
-		if(!Utility.isMathematicallyOnGround(values.getTo().getY())) {
+		if (!Utility.isMathematicallyOnGround(values.getTo().getY())) {
 			airTicks++;
 		} else {
 			airTicks = 0;
@@ -209,6 +209,7 @@ public class NessPlayer implements AutoCloseable {
 						|| (violation.getCheck().equals("Speed")
 								&& violation.getDetails().startsWith("InvalidVelocity"))) {
 					this.dragDown();
+
 				} else {
 					e.setCancelled(true);
 				}
@@ -233,8 +234,10 @@ public class NessPlayer implements AutoCloseable {
 	public void dragDown() {
 		new BukkitRunnable() {
 			@Override
-			public void run() {				
-				NessPlayer.this.player.teleport(safeLocation.toBukkitLocation(), TeleportCause.PLUGIN);
+			public void run() {
+				if (player.isOnline()) {
+					player.teleport(safeLocation.toBukkitLocation(), TeleportCause.PLUGIN);
+				}
 			}
 		}.runTask(NESSAnticheat.getInstance());
 	}

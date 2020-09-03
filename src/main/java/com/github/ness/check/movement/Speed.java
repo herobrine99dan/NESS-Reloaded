@@ -55,31 +55,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		float toAdd = pingresult / 7;
 		maxDist += toAdd;
 		final double yVelocity = Math.abs(p.getVelocity().getY()) * 0.30;
-		if ((checkSneak(p, dist, maxDist, yVelocity) || checkWeb(p, dist, maxDist, yVelocity)) && !np.isTeleported()) {
-			this.punish(event, "MaxDistance" + maxDist);
-		}
-	}
-	
-	public boolean checkWeb(Player p, double dist, double maxDist, double yVelocity) {
-		if (Utility.getMaterialName(p.getLocation().clone().add(0, 0.2, 0)).contains("web")) {
-			maxDist *= 0.85;
-			maxDist += yVelocity * 0.30;
-			if ((dist - maxDist) > 0.1) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean checkSneak(Player p, double dist, double maxDist, double yVelocity) {
-		if (p.isSneaking()) {
-			maxDist *= 0.75;
-			maxDist += yVelocity * 0.30;
-			if ((dist - maxDist) > 0.1) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private void punish(PlayerMoveEvent e, String module) {
@@ -94,6 +69,6 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (NESSAnticheat.getInstance().getMinecraftVersion() > 1122) {
 			return p.getWalkSpeed();
 		}
-		return 0.14;
+		return 0.13;
 	}
 }

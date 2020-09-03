@@ -63,6 +63,7 @@ enabled-checks:
   - 'MorePackets'
   - 'NoSlowDownBow'
   - 'NoSlowDownFood'
+  - 'NoWeb'
   - 'NameExploit'
   - 'OldMovementChecks'
   - 'Scaffold'

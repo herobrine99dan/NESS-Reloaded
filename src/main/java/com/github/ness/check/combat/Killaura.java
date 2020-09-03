@@ -95,6 +95,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 				punish(event, player, "PerfectAngle");
 			} else if (player.getLocation().getYaw() == Math.round(player.getLocation().getYaw())) {
 				punish(event, player, "PerfectAngle1");
+			} else if (player.isDead()) {
+				punish(event, player, "Impossible");
 			}
 		}
 	}
