@@ -1,7 +1,5 @@
 package com.github.ness.check.combat;
 
-import java.util.concurrent.TimeUnit;
-
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -24,15 +22,12 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	double maxYaw;
 	double minAngle;
 	double maxReach;
-	
+
 	public Killaura(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
-		this.maxYaw = this.manager.getNess().getNessConfig().getCheck(this.getClass())
-				.getDouble("maxyaw", 357);
-		this.minAngle = this.manager.getNess().getNessConfig().getCheck(this.getClass())
-				.getDouble("minangle", -0.2);
-		this.maxReach = this.manager.getNess().getNessConfig().getCheck(this.getClass())
-				.getDouble("maxreach", 3.4);
+		this.maxYaw = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getDouble("maxyaw", 357);
+		this.minAngle = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getDouble("minangle", -0.2);
+		this.maxReach = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getDouble("maxreach", 3.4);
 	}
 
 	@Override
@@ -58,8 +53,8 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 				maxReach = 5.5D;
 			}
 			if (!player.isSprinting() || isLookingAt(player, entity.getLocation()) < 0.6
-					|| Utility.specificBlockNear(e.getDamager().getLocation(), "water")
-					|| Utility.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
+					|| Utility.specificBlockNear(e.getDamager().getLocation(), "water") || Utility
+							.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
 				maxReach += 0.4D;
 			}
 			maxReach += (Utility.getPing(player) / 100) / 9;
@@ -130,17 +125,43 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			}
 		}
 	}
-	
+
 	public void Check6(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			if (e.getEntity() instanceof LivingEntity) {
 				NessPlayer nessPlayer = this.getNessPlayer((Player) e.getDamager());
 				nessPlayer.attackedEntities.add(e.getEntity().getEntityId());
-				if(nessPlayer.attackedEntities.size() > 1) {
+				if (nessPlayer.attackedEntities.size() > 1) {
 					punish(e, (Player) e.getDamager(), "MultiAura Entities: " + nessPlayer.attackedEntities.size());
 				}
 			}
 		}
+	}
+
+	public void Check7(EntityDamageByEntityEvent e) {
+		if (e.getDamager() instanceof Player) {
+			if (e.getEntity() instanceof LivingEntity) {
+				NessPlayer nessPlayer = this.getNessPlayer((Player) e.getDamager());
+				if (!hasInHitBox((LivingEntity) e.getEntity())) {
+					if (nessPlayer.isDevMode()) {
+						nessPlayer.getPlayer().sendMessage("Hitbox Cheats!");
+					}
+				}
+			}
+		}
+	}
+
+	public boolean hasInHitBox(LivingEntity livingEntity) {
+		boolean bl = false;
+		Vector vector = livingEntity.getLocation().toVector().subtract(livingEntity.getLocation().toVector());
+		Vector vector2 = livingEntity.getLocation().toVector().subtract(livingEntity.getLocation().toVector());
+		if ((livingEntity.getLocation().getDirection().normalize().crossProduct(vector).lengthSquared() < 1.1
+				|| livingEntity.getLocation().getDirection().normalize().crossProduct(vector2).lengthSquared() < 1.1)
+				&& (vector.normalize().dot(livingEntity.getLocation().getDirection().normalize()) >= 0.0
+						|| vector2.normalize().dot(livingEntity.getLocation().getDirection().normalize()) >= 0.0)) {
+			bl = true;
+		}
+		return bl;
 	}
 
 	private double isLookingAt(Player player, Location target) {
@@ -150,7 +171,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
 		return dot;// dot > 0.99D
 	}
-	
+
 	private static Vector getDirection(Location loc) {
 		Vector vector = new Vector();
 		double rotX = loc.getYaw();

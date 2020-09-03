@@ -26,13 +26,12 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 		if (!e.getPacket().getName().toLowerCase().contains("look")) {
 			return;
 		}
-		Check(e);
-		// Check1(e);
+		GCDCheck(e);
 		Check2(e);
 		Check3(e);
 	}
 
-	public void Check(ReceivedPacketEvent event) {
+	public void GCDCheck(ReceivedPacketEvent event) {
 		// float yaw = to.getYaw() - from.getYaw();
 		NessPlayer player = event.getNessPlayer();
 		float pitch = (float) Math.abs(player.getMovementValues().pitchDiff);
@@ -53,9 +52,11 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 			}
 			double result = Math.abs(gcd - player.lastGCD);
 			if (result < 0.01) {
+				
 				final double sensitivity = GCDUtils.getSensitivity(gcd);
 				if (player.isDevMode()) {
 					player.getPlayer().sendMessage("Setting Sensitivity to: " + sensitivity);
+					player.getPlayer().sendMessage("Pitch: " + pitch / gcd);
 				}
 				player.sensitivity = sensitivity;
 			}

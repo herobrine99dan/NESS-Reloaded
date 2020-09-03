@@ -33,7 +33,10 @@ public class TeleportEvent extends AbstractCheck<PlayerTeleportEvent> {
 			}
 		}
 		e.setTo(result);
-		this.manager.getPlayer(e.getPlayer()).setTeleported(true);
+		NessPlayer nessPlayer = this.manager.getPlayer(e.getPlayer());
+		if (!nessPlayer.hasSetback) {
+			nessPlayer.setTeleported(true);
+		}
 	}
 
 	@Override

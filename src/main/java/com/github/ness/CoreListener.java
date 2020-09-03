@@ -29,7 +29,7 @@ public class CoreListener implements Listener {
 		manager.getPlayer(event.getPlayer()).actionTime.put(PlayerAction.JOIN, System.nanoTime() / 1000_000L);
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onTick(ReceivedPacketEvent event) {
 		final String packetName = event.getPacket().getName().toLowerCase();
 		if(packetName.contains("flying") || packetName.contains("position") || packetName.contains("look")) {
@@ -41,7 +41,7 @@ public class CoreListener implements Listener {
 	public void onVelocity(PlayerVelocityEvent event) {
 		NessPlayer nessPlayer = this.manager.getPlayer(event.getPlayer());
 		nessPlayer.velocity = ImmutableLoc.of(event.getVelocity().toLocation(event.getPlayer().getWorld()));
-		nessPlayer.actionTime.put(PlayerAction.VELOCITY, System.nanoTime() / 1000_000L);
+		nessPlayer.actionTime.put(PlayerAction.VELOCITY, System.nanoTime());
 		if(nessPlayer.isDevMode()) {
 			event.getPlayer().sendMessage("Velocity: " + nessPlayer.velocity);
 		}

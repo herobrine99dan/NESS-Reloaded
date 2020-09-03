@@ -64,11 +64,11 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 								Math.round(perecentageDifference) + " packets: " + movementsPerTick), e);
 					}
 				} else if (movementsPerTick > 0.084 && movementsPerTick < 0.9) {
-					double result = np.lastPacketsPerTicks - movementsPerTick;
+					double result = Math.abs(np.lastPacketsPerTicks - movementsPerTick);
 					if (np.isDevMode()) {
 						np.getPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
 					}
-					if (result == 0) {
+					if (result < 0.003) {
 						np.setViolation(new Violation("BadPackets",
 								"[EXPERIMENTAL] Packets: " + movementsPerTick + " Result: " + result), null);
 					}

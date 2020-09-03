@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -88,6 +89,8 @@ public class NessPlayer implements AutoCloseable {
 	public double lastSpeedDist;
 	public ImmutableLoc velocity;
 	public Set<Integer> attackedEntities;
+	int setBackTicks;
+	public boolean hasSetback;
 
 	// Used in OldMovementChecks
 
@@ -131,6 +134,7 @@ public class NessPlayer implements AutoCloseable {
 		this.lastPacketTime = 0;
 		this.blockPlace = 0;
 		this.CPS = 0;
+		this.setBackTicks = 0;
 		this.mouseRecordValues = new ArrayList<Point>();
 		this.actionTime = Collections.synchronizedMap(new HashMap<>());
 		this.pitchDiff = new ArrayList<Float>();
@@ -145,7 +149,7 @@ public class NessPlayer implements AutoCloseable {
 	}
 
 	public long nanoTimeDifference(PlayerAction action) {
-		return (System.nanoTime() / 1000_000L) - this.actionTime.getOrDefault(action, (long) 0);
+		return (System.nanoTime() - this.actionTime.getOrDefault(action, (long) 0)) / 1000_000L;
 	}
 
 	public void onClientTick() {
@@ -185,12 +189,6 @@ public class NessPlayer implements AutoCloseable {
 		if (this.getPlayer().hasPermission("ness.bypass.*")) {
 			return;
 		}
-		if (violation.getCheck().equals("Speed") || violation.getCheck().equals("Fly")
-				|| violation.getCheck().equals("Strafe")) {
-			if (this.isTeleported()) {
-				return;
-			}
-		}
 		// Violation event
 		PlayerViolationEvent event = new PlayerViolationEvent(this.getPlayer(), this, violation,
 				checkViolationCounts.getOrDefault(violation.getCheck(), 0));
@@ -205,11 +203,8 @@ public class NessPlayer implements AutoCloseable {
 				&& cancelsec.getBoolean("enable", false);
 		if (cancel) {
 			if (e != null) {
-				if (violation.getCheck().equals("Fly") || violation.getCheck().equals("Nofall")
-						|| (violation.getCheck().equals("Speed")
-								&& violation.getDetails().startsWith("InvalidVelocity"))) {
+				if (violation.getCheck().equals("Fly") || violation.getCheck().equals("NoFall")) {
 					this.dragDown();
-
 				} else {
 					e.setCancelled(true);
 				}
@@ -236,7 +231,18 @@ public class NessPlayer implements AutoCloseable {
 			@Override
 			public void run() {
 				if (player.isOnline()) {
-					player.teleport(safeLocation.toBukkitLocation(), TeleportCause.PLUGIN);
+					setBackTicks++;
+					if (setBackTicks < 3) {
+						final Location block = player.getLocation().clone().add(0, player.getVelocity().getY(), 0);
+						if (!block.getBlock().getType().isSolid()) {
+							hasSetback = true;
+							player.teleport(block, TeleportCause.PLUGIN);
+						}
+					} else {
+						setBackTicks = -10;
+						this.cancel();
+						return;
+					}
 				}
 			}
 		}.runTask(NESSAnticheat.getInstance());

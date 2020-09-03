@@ -334,8 +334,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 					this.punish(event, "Fly", "InvalidDistance6(OnMove)");
 				// Block rightBelow = player.getLocation().subtract(0, .1, 0).getBlock();
 			}
-			if (below.isSolid() && groundAround) {
-				nessPlayer.safeLocation = ImmutableLoc.of(event.getFrom());
+			if (below.isSolid() && Utility.isMathematicallyOnGround(event.getTo().getY())) {
+				nessPlayer.safeLocation = ImmutableLoc.of(event.getTo());
 			}
 		}
 	}

@@ -46,15 +46,11 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 	 * Check for Invalid Upper Motion
 	 */
 	public void Check(PlayerMoveEvent e) {
-		NessPlayer np = this.manager.getPlayer(e.getPlayer());
+		NessPlayer nessPlayer = this.manager.getPlayer(e.getPlayer());
 		Player p = e.getPlayer();
-		double y = np.getMovementValues().yDiff;
-		if (np.isDevMode()) {
-			// p.sendMessage(ReflectionUtility.getBlockName(p,
-			// ImmutableLoc.of(p.getLocation().clone().add(0, -1, 0))));
-		}
-		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || Utility.isOnGround(e.getTo())
-				|| Utility.hasflybypass(p) || Utility.hasBlock(p, "slime") || p.getAllowFlight() || Utility.isInWater(p)
+		double y = nessPlayer.getMovementValues().yDiff;
+		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || Utility.hasflybypass(p)
+				|| Utility.hasBlock(p, "slime") || p.getAllowFlight() || Utility.isInWater(p)
 				|| Utility.specificBlockNear(e.getTo().clone(), "lily")
 				|| Utility.specificBlockNear(e.getTo().clone(), "sea")
 				|| Utility.specificBlockNear(e.getTo().clone(), "slab")
@@ -65,20 +61,20 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(p.getLocation().clone().add(0, 0.5, 0)))
 						.contains("scaffolding")
 				|| Utility.getMaterialName(e.getTo()).contains("ladder")
-				|| Utility.specificBlockNear(e.getTo(), "ladder")) {
-			np.flyYSum = 0;
+				|| Utility.specificBlockNear(e.getTo(), "ladder") || nessPlayer.isTeleported()) {
+			nessPlayer.flyYSum = 0;
 			return;
 		}
-		if (np.nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
-			y -= Math.abs(np.velocity.getY());
+		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
+			y -= Math.abs(nessPlayer.velocity.getY());
 		}
 		if (y > 0) {
-			np.flyYSum += y;
+			nessPlayer.flyYSum += y;
 			double max = 1.30;
 			double jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
 			max += jumpBoost * (max / 2);
-			if (np.flyYSum > max && p.getVelocity().getY() < 0) {
-				punish(e, " HighJump ySum: " + np.flyYSum);
+			if (nessPlayer.flyYSum > max && p.getVelocity().getY() < 0) {
+				punish(e, " HighJump ySum: " + nessPlayer.flyYSum);
 			}
 		}
 	}
@@ -105,24 +101,15 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.getMaterialName(e.getTo().clone()).contains("carpet")
 				|| ReflectionUtility.getBlockName(player, ImmutableLoc.of(player.getLocation().clone().add(0, -0.5, 0)))
 						.contains("scaffolding")
-				|| ReflectionUtility.getBlockName(player, ImmutableLoc.of(player.getLocation().clone().add(0, 0.5, 0)))
-						.contains("scaffolding")
-				|| Utility.getMaterialName(e.getTo().clone()).contains("ladder") || player.isDead()) { // TODO Fix
-																										// Better this
-																										// false flag
+				|| Utility.getMaterialName(e.getTo().clone()).contains("ladder")) {
 			return;
 		}
-		if (player.getNearbyEntities(2, 2, 2).isEmpty() && !Utility.hasflybypass(player)
-				&& !nessPlayer.isTeleported()) {
-			if (player.isOnline() && !Utility.hasBlock(player, "slime") && !player.isInsideVehicle()) {
-				if (player.isOnGround() && !Utility.groundAround(e.getTo())) {
-					punish(e, "FalseGround");
-				} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY())
-						&& !Utility.specificBlockNear(e.getTo().clone(), "web")) {
-					punish(e, "FalseGround1");
-				}
+		if (!nessPlayer.isTeleported() && player.getNearbyEntities(2, 2, 2).isEmpty() && !Utility.hasflybypass(player) && player.isOnline() && !Utility.hasBlock(player, "slime") && !player.isInsideVehicle() && !Utility.specificBlockNear(e.getTo().clone(), "web")) {
+			if (player.isOnGround() && !Utility.groundAround(e.getTo())) {
+				punish(e, "FalseGround");
+			} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY())) {
+				punish(e, "FalseGround1");
 			}
-
 		}
 	}
 
@@ -142,7 +129,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		}
 		double max = maxInvalidVelocity;
 		float pingresult = Utility.getPing(p) / 100;
-		float toAdd = pingresult / 4;
+		float toAdd = pingresult / 6;
 		max += toAdd;
 		if (np.nanoTimeDifference(PlayerAction.VELOCITY) < 3000) {
 			y -= Math.abs(np.velocity.getY());
