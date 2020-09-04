@@ -136,6 +136,11 @@ checks:
   liquidinteraction:
     whitelisted-materials:
       - 'WATER_LILY'
+  antibot:
+    maxplayers: 15
+    message: 'Bot Attack Detected! By NESS Reloaded'
+  antibotwhitelist:
+    minimumseconds: 10
   autoclicker:
     maxCPS: 18
   badpackets:
@@ -157,6 +162,8 @@ checks:
     maxreach: 3.4
   morepackets:
     maxpackets: 65
+  playeresp:
+    minangle: -0.05
 
 # If you change this, you will receive warnings in console
 config-version: 1

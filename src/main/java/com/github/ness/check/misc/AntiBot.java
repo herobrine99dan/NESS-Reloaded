@@ -11,15 +11,15 @@ import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
 
 public class AntiBot extends AbstractCheck<AsyncPlayerPreLoginEvent> {
-	int maxPlayers = 25;
+	int maxPlayers;
 	int playerCounter = 0;
 	String message;
 	public static ArrayList<String> whitelistbypass = new ArrayList<String>();
 
 	public AntiBot(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(AsyncPlayerPreLoginEvent.class, 1, TimeUnit.SECONDS));
-		message = "Bot Attack Detected! By NESS Reloaded";
-		maxPlayers = 10;
+		message = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getString("message", "BotAttack Detected! By NESS Reloaded");
+		maxPlayers = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getInt("maxplayers", 15);
 	}
 
 	@Override

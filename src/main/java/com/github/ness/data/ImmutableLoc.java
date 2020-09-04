@@ -20,6 +20,8 @@ public class ImmutableLoc {
 	private final float yaw;
 	@Getter
 	private final double pitch;
+	@Getter
+	private ImmutableLoc directionVector;
 
 	public ImmutableLoc(String world, double x, double y, double z, float yaw, double pitch) {
 		this.world = world;
@@ -28,8 +30,9 @@ public class ImmutableLoc {
 		this.z = z;
 		this.pitch = pitch;
 		this.yaw = yaw;
+		makeDirection();
 	}
-	
+
 	/**
 	 * Creates an immutable location from a bukkit location
 	 * 
@@ -40,19 +43,31 @@ public class ImmutableLoc {
 		return new ImmutableLoc(location.getWorld().getName(), location.getX(), location.getY(), location.getZ(),
 				location.getYaw(), location.getPitch());
 	}
-	
+
+	private void makeDirection() {
+		double rotX = yaw;
+		double rotY = 3;
+		double y = -Math.sin(Math.toRadians(rotY));
+		double xz = Math.cos(Math.toRadians(rotY));
+		double x = -xz * Math.sin(Math.toRadians(rotX));
+		double z = xz * Math.cos(Math.toRadians(rotX));
+		ImmutableLoc vector = new ImmutableLoc(this.world, x, y, z, 0, 0);
+		this.directionVector = vector;
+	}
+
 	/**
-	 * Creates an immutable location from a bukkit location, with an overridden world
+	 * Creates an immutable location from a bukkit location, with an overridden
+	 * world
 	 * 
-	 * @param location the bukkit location
+	 * @param location  the bukkit location
 	 * @param worldName the world
 	 * @return the immutable location
 	 */
 	public static ImmutableLoc of(Location location, String world) {
-		return new ImmutableLoc(world, location.getX(), location.getY(), location.getZ(),
-				location.getYaw(), location.getPitch());
+		return new ImmutableLoc(world, location.getX(), location.getY(), location.getZ(), location.getYaw(),
+				location.getPitch());
 	}
-	
+
 	/**
 	 * Converts back to a bukkit location
 	 * 

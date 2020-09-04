@@ -89,7 +89,7 @@ public class NessPlayer implements AutoCloseable {
 	public double lastSpeedDist;
 	public ImmutableLoc velocity;
 	public Set<Integer> attackedEntities;
-	int setBackTicks;
+	long setBackTicks;
 	public boolean hasSetback;
 
 	// Used in OldMovementChecks
@@ -231,18 +231,16 @@ public class NessPlayer implements AutoCloseable {
 			@Override
 			public void run() {
 				if (player.isOnline()) {
-					setBackTicks++;
-					if (setBackTicks < 3) {
+					final long current = System.nanoTime() / 1000_000L;
+					if ((current - setBackTicks) > 40) {
 						final Location block = player.getLocation().clone().add(0, player.getVelocity().getY(), 0);
 						if (!block.getBlock().getType().isSolid()) {
 							hasSetback = true;
 							player.teleport(block, TeleportCause.PLUGIN);
 						}
-					} else {
-						setBackTicks = -10;
-						this.cancel();
-						return;
 					}
+					setBackTicks = current;
+					setBackTicks++;
 				}
 			}
 		}.runTask(NESSAnticheat.getInstance());

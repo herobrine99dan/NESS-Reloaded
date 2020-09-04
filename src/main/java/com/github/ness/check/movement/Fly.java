@@ -168,10 +168,10 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.specificBlockNear(player.getLocation().clone(), "bed")
 				|| Utility.specificBlockNear(player.getLocation().clone(), "detector")
 				|| Utility.specificBlockNear(player.getLocation().clone(), "stair")
-				|| Utility.getMaterialName(to.add(0, -1, 0)).contains("chest")
-				|| Utility.getMaterialName(from.add(0, -1, 0)).contains("chest")
-				|| Utility.getMaterialName(to.add(0, 1.8, 0)).contains("chorus")
-				|| Utility.getMaterialName(from.add(0, 1.6, 0)).contains("chorus")
+				|| Utility.getMaterialName(to.clone().add(0, -1, 0)).contains("chest")
+				|| Utility.getMaterialName(from.clone().add(0, -1, 0)).contains("chest")
+				|| Utility.getMaterialName(to.clone().add(0, 1.8, 0)).contains("chorus")
+				|| Utility.getMaterialName(from.clone().add(0, 1.6, 0)).contains("chorus")
 				|| Utility.getMaterialName(to).toLowerCase().contains("ladder")
 				|| Utility.getMaterialName(from).toLowerCase().contains("ladder")
 				|| Utility.getMaterialName(to).toLowerCase().contains("vine")
@@ -186,8 +186,10 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")
 				|| Utility.getMaterialName(to.clone().add(0, 0.5, 0)).toLowerCase().contains("bed")
 				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("bed")
-				|| Utility.getMaterialName(to.add(0, -1, 0)).contains("detector")
-				|| Utility.getMaterialName(from.add(0, -1, 0)).contains("detector")
+				|| Utility.getMaterialName(to.clone().add(0, -1, 0)).contains("detector")
+				|| Utility.getMaterialName(to.clone().add(0, -0.5, 0)).contains("slime")
+				|| Utility.getMaterialName(from.clone().add(0, -1, 0)).contains("detector")
+				|| Utility.hasBlock(player, "slime")
 				|| Utility.specificBlockNear(to.clone(), "ice") || Utility.hasflybypass(player)) {
 			return;
 		}

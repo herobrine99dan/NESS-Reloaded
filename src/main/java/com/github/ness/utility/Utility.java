@@ -2,7 +2,6 @@ package com.github.ness.utility;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -14,6 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
+
+import com.github.ness.data.ImmutableLoc;
 
 public class Utility {
 
@@ -26,6 +28,13 @@ public class Utility {
 	 */
 	public static double round(double value, int precision) {
 		return (double) Math.round(value * precision) / precision;
+	}
+	
+	public static double getAngle(Player player, Location target, ImmutableLoc direction) {
+		Location eye = player.getEyeLocation();
+		Vector toEntity = target.toVector().subtract(eye.toVector());
+		double dot = toEntity.normalize().dot(direction.toBukkitLocation().toVector());
+		return dot;// dot > 0.99D
 	}
 
 	/**

@@ -8,10 +8,11 @@ import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
 
 public class AntiBotWhitelist extends AbstractCheck<PlayerJoinEvent> {
-	int maxSeconds = 5;
+	int neededSeconds = 10;
 
 	public AntiBotWhitelist(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(PlayerJoinEvent.class));
+		this.neededSeconds = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getInt("minimumseconds", 10);
 	}
 
 	@Override
@@ -29,6 +30,6 @@ public class AntiBotWhitelist extends AbstractCheck<PlayerJoinEvent> {
 					}
 				}
 			}
-		}.runTaskLater(manager.getNess(), maxSeconds * 20L);
+		}.runTaskLater(manager.getNess(), neededSeconds * 20L);
 	}
 }
