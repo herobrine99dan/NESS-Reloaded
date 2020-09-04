@@ -58,41 +58,63 @@ public class CheckManager implements AutoCloseable {
 	private Set<AbstractCheck<?>> getAllChecks() {
 		Set<AbstractCheck<?>> checks = new HashSet<>();
 
-		checkLoadLoop:
+		configuredCheckLoadLoop:
 		for (String checkName : ness.getNessConfig().getEnabledChecks()) {
 			if (checkName.equals("AbstractCheck") || checkName.equals("CheckInfo")) {
 				logger.warn("Check {} from the config does not exist", checkName);
 				continue;
 			}
-			Class<?> clazz;
 			for (ChecksPackage checkPackage : ChecksPackage.values()) {
-				String clazzName = "com.github.ness.check" + checkPackage.prefix() + '.' + checkName;
-				try {
-					clazz = Class.forName(clazzName);
-					if (!AbstractCheck.class.isAssignableFrom(clazz)) {
-						// This is our fault
-						logger.warn("Check exists as {} but does not extend AbstractCheck", clazzName);
-						continue;
-					}
-					Constructor<?> constructor = clazz.getDeclaredConstructor(CheckManager.class);
-					checks.add((AbstractCheck<?>) constructor.newInstance(this));
-					continue checkLoadLoop;
-
-				} catch (ClassNotFoundException ignored) {
-					// expected when the check is actually in another package
-
-				} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-						| IllegalArgumentException | InvocationTargetException ex) {
-
-					// ReflectiveOperationException or other RuntimeException
-					// This is likely our fault
-					logger.warn("Could not instantiate check {}", clazzName, ex);
-					continue checkLoadLoop;
+				AbstractCheck<?> check = loadCheck(checkPackage.prefix(), checkName);
+				if (check != null) {
+					checks.add(check);
+					continue configuredCheckLoadLoop;
 				}
 			}
 			logger.warn("Check {} does not exist in any package", checkName);
 		}
+		for (String requiredCheck : ChecksPackage.REQUIRED_CHECKS) {
+			AbstractCheck<?> check = loadCheck(".required", requiredCheck);
+			if (check == null) {
+				logger.error("Required check {} could not be instantiated", requiredCheck);
+				continue;
+			}
+			checks.add(check);
+		}
 		return checks;
+	}
+	
+	/**
+	 * Loads check or returns {@code null} if reflective instantiation failed
+	 * 
+	 * @param packagePrefix the package prefix in which the check is
+	 * @param checkName the check name
+	 * @return the instantiated check
+	 */
+	private AbstractCheck<?> loadCheck(String packagePrefix, String checkName) {
+		String clazzName = "com.github.ness.check" + packagePrefix + '.' + checkName;
+		try {
+			Class<?> clazz = Class.forName(clazzName);
+			if (!AbstractCheck.class.isAssignableFrom(clazz)) {
+				// This is our fault
+				logger.warn("Check exists as {} but does not extend AbstractCheck", clazzName);
+				return null;
+			}
+			Constructor<?> constructor = clazz.getDeclaredConstructor(CheckManager.class);
+			return (AbstractCheck<?>) constructor.newInstance(this);
+
+		} catch (ClassNotFoundException ignored) {
+			// expected when the check is actually in another package
+			logger.trace("Check {} not found in package {}. Other packages will be attempted", checkName, packagePrefix);
+
+		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException ex) {
+
+			// ReflectiveOperationException or other RuntimeException
+			// This is likely our fault
+			logger.warn("Could not instantiate check {}", clazzName, ex);
+		}
+		return null;
 	}
 
 	CompletableFuture<?> reloadChecks() {

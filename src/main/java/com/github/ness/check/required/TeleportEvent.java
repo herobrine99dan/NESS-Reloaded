@@ -1,4 +1,4 @@
-package com.github.ness.check.movement;
+package com.github.ness.check.required;
 
 import java.util.concurrent.TimeUnit;
 
