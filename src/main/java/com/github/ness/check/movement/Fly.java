@@ -131,7 +131,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		float pingresult = Utility.getPing(p) / 100;
 		float toAdd = pingresult / 6;
 		max += toAdd;
-		if (np.nanoTimeDifference(PlayerAction.VELOCITY) < 3000) {
+		if (np.nanoTimeDifference(PlayerAction.VELOCITY) < 2500) {
 			y -= Math.abs(np.velocity.getY());
 		}
 		if (Math.abs(yresult) > max && !manager.getPlayer(e.getPlayer()).isTeleported()) {
@@ -148,7 +148,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Player player = event.getPlayer();
 		Location to = event.getTo().clone();
 		Location from = event.getFrom().clone();
-		final double yDiff = event.getTo().getY() - event.getFrom().getY();
+		double yDiff = event.getTo().getY() - event.getFrom().getY();
 		if (Utility.getMaterialName(event.getTo().clone().add(0, -0.3, 0)).contains("slab")
 				|| event.getTo().getBlock().isLiquid()
 				|| event.getTo().clone().add(0, 1.9, 0).getBlock().getType().isSolid()
@@ -192,6 +192,10 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.hasBlock(player, "slime")
 				|| Utility.specificBlockNear(to.clone(), "ice") || Utility.hasflybypass(player)) {
 			return;
+		}
+		NessPlayer nessPlayer = this.manager.getPlayer(player);
+		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1000) {
+			yDiff -= Math.abs(nessPlayer.velocity.getY());
 		}
 		// !player.getNearbyEntities(4, 4, 4).isEmpty()
 		if (yDiff > 0 && !player.isInsideVehicle()) {

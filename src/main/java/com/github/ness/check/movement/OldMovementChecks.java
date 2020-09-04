@@ -57,11 +57,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		Double dist = from.distance(to);
 		Double hozDist = dist - (to.getY() - from.getY());
 		Double fallDist = (double) player.getFallDistance();
-		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1000) {
-			hozDist -= Math.abs(nessPlayer.velocity.getX()) + Math.abs(nessPlayer.velocity.getZ());
-			dist -= Math.abs(nessPlayer.velocity.getX()) + Math.abs(nessPlayer.velocity.getY())
-					+ Math.abs(nessPlayer.velocity.getZ());
-		}
 		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
 				|| nessPlayer.isTeleported()) {
 			return;
@@ -69,6 +64,12 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		if (to.getY() < from.getY())
 			hozDist = dist - (from.getY() - to.getY());
 		Double vertDist = Math.abs(dist - hozDist);
+		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1300) {
+			hozDist -= Math.abs(nessPlayer.velocity.getX()) + Math.abs(nessPlayer.velocity.getZ());
+			dist -= Math.abs(nessPlayer.velocity.getX()) + Math.abs(nessPlayer.velocity.getY())
+					+ Math.abs(nessPlayer.velocity.getZ());
+			vertDist -= Math.abs(nessPlayer.velocity.getY());
+		}
 		double dTG = 0; // Distance to ground
 		boolean groundAround = Utility.groundAround(player.getLocation()), waterAround = false;
 		int radius = 2;
