@@ -9,6 +9,12 @@ enum ChecksPackage {
 	WORLD(".world"),
 	MISC(".misc");
 	
+	/**
+	 * Class names of checks in the required checks package. <br>
+	 * Do not mutate the array
+	 */
+	static final String[] REQUIRED_CHECKS = {"TeleportEvent"};
+	
 	private final String prefix;
 	
 	ChecksPackage(String prefix) {
