@@ -52,7 +52,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			if (player.getGameMode().equals(GameMode.CREATIVE)) {
 				maxReach = 5.5D;
 			}
-			if (!player.isSprinting() || isLookingAt(player, entity.getLocation()) < 0.6
+			if (!player.isSprinting()
 					|| Utility.specificBlockNear(e.getDamager().getLocation(), "water") || Utility
 							.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
 				maxReach += 0.4D;
@@ -98,15 +98,6 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
 	public void Check3(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
-			Player damager = (Player) e.getDamager();
-			if (isLookingAt(damager, e.getEntity().getLocation()) < minAngle) {
-				punish(e, damager, "Angles/Hitbox " + isLookingAt(damager, e.getEntity().getLocation()));
-			}
-		}
-	}
-
-	public void Check4(EntityDamageByEntityEvent e) {
-		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
 			if (!p.hasLineOfSight(e.getEntity())) {
 				Block b = p.getTargetBlock(null, 5);
@@ -118,7 +109,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		}
 	}
 
-	public void Check5(EntityDamageByEntityEvent e) {
+	public void Check4(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			if (e.getEntity().getEntityId() == e.getDamager().getEntityId()) {
 				punish(e, (Player) e.getDamager(), "SelfHit");
@@ -126,7 +117,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		}
 	}
 
-	public void Check6(EntityDamageByEntityEvent e) {
+	public void Check5(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			if (e.getEntity() instanceof LivingEntity) {
 				NessPlayer nessPlayer = this.getNessPlayer((Player) e.getDamager());
@@ -137,50 +128,17 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			}
 		}
 	}
-
-	public void Check7(EntityDamageByEntityEvent e) {
+	
+	public void Check6(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			if (e.getEntity() instanceof LivingEntity) {
 				NessPlayer nessPlayer = this.getNessPlayer((Player) e.getDamager());
-				if (!hasInHitBox((LivingEntity) e.getEntity())) {
-					if (nessPlayer.isDevMode()) {
-						nessPlayer.getPlayer().sendMessage("Hitbox Cheats!");
-					}
+				double angle = Utility.getAngle((Player) e.getDamager(), e.getEntity().getLocation(), nessPlayer.getMovementValues().getTo().getDirectionVector());
+				if(angle < -0.15) {
+					punish(e, (Player) e.getDamager(), "HitBox");
 				}
 			}
 		}
-	}
-
-	public boolean hasInHitBox(LivingEntity livingEntity) {
-		boolean bl = false;
-		Vector vector = livingEntity.getLocation().toVector().subtract(livingEntity.getLocation().toVector());
-		Vector vector2 = livingEntity.getLocation().toVector().subtract(livingEntity.getLocation().toVector());
-		if ((livingEntity.getLocation().getDirection().normalize().crossProduct(vector).lengthSquared() < 1.1
-				|| livingEntity.getLocation().getDirection().normalize().crossProduct(vector2).lengthSquared() < 1.1)
-				&& (vector.normalize().dot(livingEntity.getLocation().getDirection().normalize()) >= 0.0
-						|| vector2.normalize().dot(livingEntity.getLocation().getDirection().normalize()) >= 0.0)) {
-			bl = true;
-		}
-		return bl;
-	}
-
-	private double isLookingAt(Player player, Location target) {
-		Location eye = player.getEyeLocation();
-		Vector toEntity = target.toVector().subtract(eye.toVector());
-		double dot = toEntity.normalize().dot(getDirection(eye));
-
-		return dot;// dot > 0.99D
-	}
-
-	private static Vector getDirection(Location loc) {
-		Vector vector = new Vector();
-		double rotX = loc.getYaw();
-		double rotY = loc.getPitch();
-		vector.setY(-Math.sin(Math.toRadians(rotY)));
-		double xz = Math.cos(Math.toRadians(rotY));
-		vector.setX(-xz * Math.sin(Math.toRadians(rotX)));
-		vector.setZ(xz * Math.cos(Math.toRadians(rotX)));
-		return vector;
 	}
 
 	private void punish(EntityDamageByEntityEvent e, Player p, String module) {

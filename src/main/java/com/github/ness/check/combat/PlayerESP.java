@@ -12,7 +12,7 @@ import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
-import com.github.ness.data.ImmutableLoc;
+import com.github.ness.data.ImmutableVector;
 import com.github.ness.utility.Utility;
 
 public class PlayerESP extends AbstractCheck<PlayerInteractEvent> {
@@ -29,7 +29,7 @@ public class PlayerESP extends AbstractCheck<PlayerInteractEvent> {
 		(new BukkitRunnable() {
 			public void run() {
 				for (Player cheater : Bukkit.getOnlinePlayers()) {
-					ImmutableLoc direction = player.getMovementValues().getTo().getDirectionVector();
+					ImmutableVector direction = player.getMovementValues().getTo().getDirectionVector();
 					for (Player tohide : Bukkit.getOnlinePlayers()) {
 						if ((Utility.getAngle(cheater, tohide.getLocation(), direction) < minangle)
 								&& cheater.getLocation().distance(tohide.getLocation()) > 9) {

@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import com.github.ness.utility.MathUtils;
+
 import lombok.Getter;
 
 public class ImmutableLoc {
@@ -21,7 +23,7 @@ public class ImmutableLoc {
 	@Getter
 	private final double pitch;
 	@Getter
-	private ImmutableLoc directionVector;
+	private ImmutableVector directionVector;
 
 	public ImmutableLoc(String world, double x, double y, double z, float yaw, double pitch) {
 		this.world = world;
@@ -47,11 +49,11 @@ public class ImmutableLoc {
 	private void makeDirection() {
 		double rotX = yaw;
 		double rotY = 3;
-		double y = -Math.sin(Math.toRadians(rotY));
-		double xz = Math.cos(Math.toRadians(rotY));
-		double x = -xz * Math.sin(Math.toRadians(rotX));
-		double z = xz * Math.cos(Math.toRadians(rotX));
-		ImmutableLoc vector = new ImmutableLoc(this.world, x, y, z, 0, 0);
+		double y = -MathUtils.sin(Math.toRadians(rotY));
+		double xz = MathUtils.cos(Math.toRadians(rotY));
+		double x = -xz * MathUtils.sin(Math.toRadians(rotX));
+		double z = xz * MathUtils.cos(Math.toRadians(rotX));
+		ImmutableVector vector = new ImmutableVector(x, y, z);
 		this.directionVector = vector;
 	}
 

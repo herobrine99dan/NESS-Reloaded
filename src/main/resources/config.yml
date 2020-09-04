@@ -67,7 +67,6 @@ enabled-checks:
   - 'NameExploit'
   - 'OldMovementChecks'
   - 'Scaffold'
-  - 'Speed'
   - 'PingSpoof'
 
 #

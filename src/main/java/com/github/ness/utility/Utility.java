@@ -15,7 +15,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import com.github.ness.data.ImmutableLoc;
+import com.github.ness.data.ImmutableVector;
 
 public class Utility {
 
@@ -30,10 +30,10 @@ public class Utility {
 		return (double) Math.round(value * precision) / precision;
 	}
 	
-	public static double getAngle(Player player, Location target, ImmutableLoc direction) {
+	public static double getAngle(Player player, Location target, ImmutableVector direction) {
 		Location eye = player.getEyeLocation();
 		Vector toEntity = target.toVector().subtract(eye.toVector());
-		double dot = toEntity.normalize().dot(direction.toBukkitLocation().toVector());
+		double dot = toEntity.normalize().dot(direction.toBukkitVector());
 		return dot;// dot > 0.99D
 	}
 
