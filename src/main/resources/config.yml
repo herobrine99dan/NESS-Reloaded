@@ -134,30 +134,118 @@ checks:
   liquidinteraction:
     whitelisted-materials:
       - 'WATER_LILY'
+#
+# AntiBot
+#
+# Blocks Bot Attacks which sends a lot of players
+#
+# Performance impact: Minimal (Use Async Events)
+# Effectiveness: High
+#
   antibot:
     maxplayers: 15
     message: 'Bot Attack Detected! By NESS Reloaded'
+#
+# AntiBotWhitelist
+#
+# Add A Player to the NESS Reloaded Whitelist, so during a bot attack, this player will not be kicked
+#
+#
   antibotwhitelist:
     minimumseconds: 10
+#
+# AutoClicker
+#
+# A Simple Max CPS Check
+#
+# Performance impact: Minimal
+# Effectiveness: Medium
+#
   autoclicker:
     maxCPS: 18
+#
+# BadPackets
+#
+# Check if a player sends too many position packets
+#
+# Performance impact: low
+# Effectiveness: High
+#
   badpackets:
     maxpackets: 1.12
+#
+# ElytraCheats
+#
+# Check if a player fly too quickly with elytra
+#
+# Performance impact: low
+# Effectiveness: High
+#
   elytracheats:
     maxxzdiff: 1.5
     maxydiff: 1
+#
+# FastLadder
+#
+# Check if a player is climing a ladder/vine too fast
+#
+# Performance impact: low
+# Effectiveness: High
+#
   fastladder:
     maxdist: 0.155
+#
+# FastLadder
+#
+# Check if a player place too many blocks in a seconds
+#
+# Performance impact: low
+# Effectiveness: Medium
+#
   fastplace:
     maxblockplaced: 14
+#
+# Fly
+#
+# Check if a player is floating / walking/ flying in air
+#
+# Performance impact: low
+# Effectiveness: High
+#
   fly:
     maxinvalidvelocity: 0.9
+#
+# InventoryHack
+#
+# Check if a player click an inventory item while he walks
+#
+# Performance impact: low
+# Effectiveness: Very High
+#
   inventoryhack:
     maxdist: 0.1
+#
+# Killaura
+#
+# Check if a player is using ForceField / ClickAura / Killaura
+# This Check detect only some old clients 
+#
+# Performance impact: low
+# Effectiveness: Medium
+#
   killaura:
     maxyaw: 357
     minangle: -0.2
-    maxreach: 3.4
+    maxreach: 3.3
+#
+# MorePackets
+#
+# Check if a player sends too many packets.
+# This blocks some Regen, Nuker and some ServerCrasher exploits
+#
+# Performance impact: low
+# Effectiveness: High
+#
   morepackets:
     maxpackets: 65
   playeresp:
