@@ -26,7 +26,7 @@ public class FastSneak extends AbstractCheck<PlayerMoveEvent> {
 		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1300) {
 			dist -= Math.abs(nessPlayer.velocity.getX()) + Math.abs(nessPlayer.velocity.getZ());
 		}
-		double walkSpeed = p.getWalkSpeed() * 0.8;
+		double walkSpeed = p.getWalkSpeed() * 0.85;
 		dist -= (dist / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);
 		walkSpeed += Math.abs(p.getVelocity().getY()) * 0.4;
 		if (dist > walkSpeed && p.isSneaking() && !Utility.hasflybypass(p)) {

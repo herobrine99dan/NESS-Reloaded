@@ -23,17 +23,9 @@ import com.github.ness.packets.ReceivedPacketEvent;
 
 public class CoreListener implements Listener {
 	private final CheckManager manager;
-	private ScheduledFuture<?> scheduler;
 
 	CoreListener(CheckManager manager) {
 		this.manager = manager;
-		final Runnable runnable = new Runnable() {
-			public void run() {
-				manager.forEachPlayer(player -> player.setTeleported(false));
-			}
-		};
-		this.scheduler = this.manager.getNess().getExecutor().scheduleWithFixedDelay(runnable, 0, 1,
-				TimeUnit.SECONDS);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -47,30 +39,6 @@ public class CoreListener implements Listener {
 		if (packetName.contains("flying") || packetName.contains("position") || packetName.contains("look")) {
 			event.getNessPlayer().onClientTick();
 		}
-	}
-
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void checkEvent(PlayerTeleportEvent e) {
-		Location result = e.getTo().clone();
-		if (e.getTo().getPitch() == Math.round(e.getTo().getPitch())) {
-			if (e.getTo().getPitch() > 89) {
-				result.setPitch(e.getTo().getPitch() - 0.01f);
-			} else {
-				result.setPitch(e.getTo().getPitch() + 0.01f);
-			}
-		} else if (e.getTo().getYaw() == Math.round(e.getTo().getYaw())) {
-			if (e.getTo().getYaw() > 360) {
-				result.setYaw(e.getTo().getYaw() - 0.01f);
-			} else {
-				result.setYaw(e.getTo().getYaw() + 0.01f);
-			}
-		}
-		e.setTo(result);
-		NessPlayer nessPlayer = this.manager.getPlayer(e.getPlayer());
-		if (!nessPlayer.hasSetback) {
-			nessPlayer.setTeleported(true);
-		}
-		nessPlayer.hasSetback = false;
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
