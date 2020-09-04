@@ -1,5 +1,8 @@
 package com.github.ness;
 
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -10,6 +13,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
 import com.github.ness.data.ImmutableLoc;
@@ -19,41 +23,74 @@ import com.github.ness.packets.ReceivedPacketEvent;
 
 public class CoreListener implements Listener {
 	private final CheckManager manager;
-	
+	private ScheduledFuture<?> scheduler;
+
 	CoreListener(CheckManager manager) {
 		this.manager = manager;
+		final Runnable runnable = new Runnable() {
+			public void run() {
+				manager.forEachPlayer(player -> player.setTeleported(false));
+			}
+		};
+		this.scheduler = this.manager.getNess().getExecutor().scheduleWithFixedDelay(runnable, 0, 1,
+				TimeUnit.SECONDS);
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onJoin(PlayerJoinEvent event) {
 		manager.getPlayer(event.getPlayer()).actionTime.put(PlayerAction.JOIN, System.nanoTime() / 1000_000L);
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onTick(ReceivedPacketEvent event) {
 		final String packetName = event.getPacket().getName().toLowerCase();
-		if(packetName.contains("flying") || packetName.contains("position") || packetName.contains("look")) {
+		if (packetName.contains("flying") || packetName.contains("position") || packetName.contains("look")) {
 			event.getNessPlayer().onClientTick();
 		}
 	}
-	
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void checkEvent(PlayerTeleportEvent e) {
+		Location result = e.getTo().clone();
+		if (e.getTo().getPitch() == Math.round(e.getTo().getPitch())) {
+			if (e.getTo().getPitch() > 89) {
+				result.setPitch(e.getTo().getPitch() - 0.01f);
+			} else {
+				result.setPitch(e.getTo().getPitch() + 0.01f);
+			}
+		} else if (e.getTo().getYaw() == Math.round(e.getTo().getYaw())) {
+			if (e.getTo().getYaw() > 360) {
+				result.setYaw(e.getTo().getYaw() - 0.01f);
+			} else {
+				result.setYaw(e.getTo().getYaw() + 0.01f);
+			}
+		}
+		e.setTo(result);
+		NessPlayer nessPlayer = this.manager.getPlayer(e.getPlayer());
+		if (!nessPlayer.hasSetback) {
+			nessPlayer.setTeleported(true);
+		}
+		nessPlayer.hasSetback = false;
+	}
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onVelocity(PlayerVelocityEvent event) {
 		NessPlayer nessPlayer = this.manager.getPlayer(event.getPlayer());
 		nessPlayer.velocity = ImmutableLoc.of(event.getVelocity().toLocation(event.getPlayer().getWorld()));
 		nessPlayer.actionTime.put(PlayerAction.VELOCITY, System.nanoTime());
-		if(nessPlayer.isDevMode()) {
+		if (nessPlayer.isDevMode()) {
 			event.getPlayer().sendMessage("Velocity: " + nessPlayer.velocity);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onDamage(EntityDamageByEntityEvent event) {
-		if(event.getEntity() instanceof Player) {
-			manager.getPlayer((Player) event.getEntity()).actionTime.put(PlayerAction.DAMAGE, System.nanoTime() / 1000_000L);
+		if (event.getEntity() instanceof Player) {
+			manager.getPlayer((Player) event.getEntity()).actionTime.put(PlayerAction.DAMAGE,
+					System.nanoTime() / 1000_000L);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onMove(PlayerMoveEvent event) {
 		Location destination = event.getTo();
@@ -71,7 +108,7 @@ public class CoreListener implements Listener {
 				ImmutableLoc.of(source, sourceWorld));
 		manager.getPlayer(player).updateMovementValue(values);
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onQuit(PlayerQuitEvent evt) {
 		Player player = evt.getPlayer();
@@ -82,5 +119,5 @@ public class CoreListener implements Listener {
 			}
 		}, tenSecondsLater);
 	}
-	
+
 }
