@@ -183,10 +183,8 @@ public class NessPlayer implements AutoCloseable {
 	 */
 	public void setViolation(Violation violation, Cancellable e) {
 		// Bypass permissions
-		if (this.getPlayer().hasPermission("ness.bypass." + violation.getCheck().toLowerCase())) {
-			return;
-		}
-		if (this.getPlayer().hasPermission("ness.bypass.*")) {
+		if (this.getPlayer().hasPermission("ness.bypass." + violation.getCheck().toLowerCase())
+				|| this.getPlayer().hasPermission("ness.bypass.*") || this.getPlayer().isOp()) {
 			return;
 		}
 		// Violation event

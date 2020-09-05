@@ -1,19 +1,19 @@
 package com.github.ness.check.misc;
 
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.github.ness.CheckManager;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
 
-public class TestCheck extends AbstractCheck<PlayerMoveEvent> {
+public class TestCheck extends AbstractCheck<EntityDamageByEntityEvent> {
 
 	public TestCheck(CheckManager manager) {
-		super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
+		super(manager, CheckInfo.eventOnly(EntityDamageByEntityEvent.class));
 	}
 
 	@Override
-	protected void checkEvent(PlayerMoveEvent event) {
+	protected void checkEvent(EntityDamageByEntityEvent event) {
 	}
 
 }

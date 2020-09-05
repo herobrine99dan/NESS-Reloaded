@@ -83,6 +83,10 @@ public class MovementValues {
 		this.from = from;
 		xzDiffMultiplier = (xDiff * xDiff) + (zDiff * zDiff);
 	}
+	
+	public ImmutableVector getDirection() {
+		return this.getTo().getDirectionVector();
+	}
 
 	public CompletableFuture<Double> calculateAsyncWithCancellation(ImmutableLoc to, ImmutableLoc from)
 			throws InterruptedException {

@@ -61,6 +61,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(p.getLocation().clone().add(0, 0.5, 0)))
 						.contains("scaffolding")
 				|| Utility.getMaterialName(e.getTo()).contains("ladder")
+				|| Utility.getMaterialName(e.getTo()).contains("snow") || Utility.specificBlockNear(e.getTo(), "snow")
 				|| Utility.specificBlockNear(e.getTo(), "ladder") || nessPlayer.isTeleported()) {
 			nessPlayer.flyYSum = 0;
 			return;
@@ -104,7 +105,9 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.getMaterialName(e.getTo().clone()).contains("ladder")) {
 			return;
 		}
-		if (!nessPlayer.isTeleported() && player.getNearbyEntities(2, 2, 2).isEmpty() && !Utility.hasflybypass(player) && player.isOnline() && !Utility.hasBlock(player, "slime") && !player.isInsideVehicle() && !Utility.specificBlockNear(e.getTo().clone(), "web")) {
+		if (!nessPlayer.isTeleported() && player.getNearbyEntities(2, 2, 2).isEmpty() && !Utility.hasflybypass(player)
+				&& player.isOnline() && !Utility.hasBlock(player, "slime") && !player.isInsideVehicle()
+				&& !Utility.specificBlockNear(e.getTo().clone(), "web")) {
 			if (player.isOnGround() && !Utility.groundAround(e.getTo())) {
 				punish(e, "FalseGround");
 			} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY())) {
@@ -189,12 +192,12 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.getMaterialName(to.clone().add(0, -1, 0)).contains("detector")
 				|| Utility.getMaterialName(to.clone().add(0, -0.5, 0)).contains("slime")
 				|| Utility.getMaterialName(from.clone().add(0, -1, 0)).contains("detector")
-				|| Utility.hasBlock(player, "slime")
-				|| Utility.specificBlockNear(to.clone(), "ice") || Utility.hasflybypass(player)) {
+				|| Utility.hasBlock(player, "slime") || Utility.specificBlockNear(to.clone(), "ice")
+				|| Utility.hasflybypass(player)) {
 			return;
 		}
 		NessPlayer nessPlayer = this.manager.getPlayer(player);
-		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1000) {
+		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1300) {
 			yDiff -= Math.abs(nessPlayer.velocity.getY());
 		}
 		// !player.getNearbyEntities(4, 4, 4).isEmpty()
@@ -202,7 +205,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			if (player.getVelocity().getY() == 0.42f && !Utility.isMathematicallyOnGround(event.getTo().getY())
 					&& Utility.isMathematicallyOnGround(event.getFrom().getY())) {
 				double yResult = Math.abs(yDiff - player.getVelocity().getY());
-				if (yResult != 0.0 && this.manager.getPlayer(player).nanoTimeDifference(PlayerAction.DAMAGE) > 1000) {
+				if (yResult != 0.0 && this.manager.getPlayer(player).nanoTimeDifference(PlayerAction.DAMAGE) > 1700) {
 					punish(event, "InvalidJumpMotion yResult: " + yResult + "  yDiff: " + yDiff);
 				}
 			}

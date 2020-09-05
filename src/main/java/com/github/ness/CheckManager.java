@@ -8,16 +8,15 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.ness.check.AbstractCheck;
-
-import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
 
 import lombok.Getter;
 
@@ -29,7 +28,7 @@ public class CheckManager implements AutoCloseable {
 
 	private volatile Set<AbstractCheck<?>> checks;
 
-	private static final Logger logger = LogManager.getLogger(CheckManager.class);
+	private static final Logger logger = Logger.getLogger(CheckManager.class.getSimpleName());
 
 	@Getter
 	private final NESSAnticheat ness;
@@ -42,7 +41,7 @@ public class CheckManager implements AutoCloseable {
 	CompletableFuture<?> loadChecks() {
 		return CompletableFuture.supplyAsync(this::getAllChecks, ness.getExecutor()).whenCompleteAsync((checks, ex) -> {
 			if (ex != null) {
-				logger.error("Unable to instantiate new checks", ex);
+				logger.log(Level.SEVERE, "Unable to instantiate new checks", ex);
 				return;
 			}
 			processChecks(checks);
@@ -50,7 +49,7 @@ public class CheckManager implements AutoCloseable {
 	}
 	
 	private void processChecks(Set<AbstractCheck<?>> checks) {
-		logger.debug("Initiating all checks");
+		logger.fine("Initiating all checks");
 		checks.forEach(AbstractCheck::initiate);
 		this.checks = checks;
 	}
@@ -61,7 +60,7 @@ public class CheckManager implements AutoCloseable {
 		configuredCheckLoadLoop:
 		for (String checkName : ness.getNessConfig().getEnabledChecks()) {
 			if (checkName.equals("AbstractCheck") || checkName.equals("CheckInfo")) {
-				logger.warn("Check {} from the config does not exist", checkName);
+				logger.log(Level.WARNING, "Check {} from the config does not exist", checkName);
 				continue;
 			}
 			for (ChecksPackage checkPackage : ChecksPackage.values()) {
@@ -71,12 +70,12 @@ public class CheckManager implements AutoCloseable {
 					continue configuredCheckLoadLoop;
 				}
 			}
-			logger.warn("Check {} does not exist in any package", checkName);
+			logger.log(Level.WARNING, "Check {} does not exist in any package", checkName);
 		}
 		for (String requiredCheck : ChecksPackage.REQUIRED_CHECKS) {
 			AbstractCheck<?> check = loadCheck(".required", requiredCheck);
 			if (check == null) {
-				logger.error("Required check {} could not be instantiated", requiredCheck);
+				logger.log(Level.SEVERE,"Required check {} could not be instantiated", requiredCheck);
 				continue;
 			}
 			checks.add(check);
@@ -97,7 +96,7 @@ public class CheckManager implements AutoCloseable {
 			Class<?> clazz = Class.forName(clazzName);
 			if (!AbstractCheck.class.isAssignableFrom(clazz)) {
 				// This is our fault
-				logger.warn("Check exists as {} but does not extend AbstractCheck", clazzName);
+				logger.log(Level.WARNING, "Check exists as {} but does not extend AbstractCheck", clazzName);
 				return null;
 			}
 			Constructor<?> constructor = clazz.getDeclaredConstructor(CheckManager.class);
@@ -105,27 +104,28 @@ public class CheckManager implements AutoCloseable {
 
 		} catch (ClassNotFoundException ignored) {
 			// expected when the check is actually in another package
-			logger.trace("Check {} not found in package {}. Other packages will be attempted", checkName, packagePrefix);
+			logger.log(Level.FINEST, "Check {} not found in package {}. Other packages will be attempted", new Object[] {checkName, packagePrefix});
+			//logger.trace("Check {} not found in package {}. Other packages will be attempted", checkName, packagePrefix);
 
 		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException ex) {
 
 			// ReflectiveOperationException or other RuntimeException
 			// This is likely our fault
-			logger.warn("Could not instantiate check {}", clazzName, ex);
+			logger.log(Level.WARNING, "Could not instantiate check {}", new Object[] {clazzName, ex});
 		}
 		return null;
 	}
 
 	CompletableFuture<?> reloadChecks() {
-		logger.debug("Reloading all checks");
+		logger.fine("Reloading all checks");
 		checks.forEach(AbstractCheck::close);
 		return loadChecks();
 	}
 
 	@Override
 	public void close() {
-		logger.debug("Closing all checks");
+		logger.fine("Closing all checks");
 		Set<AbstractCheck<?>> checks = this.checks;
 		checks.forEach(AbstractCheck::close);
 		checks.clear();
@@ -140,7 +140,7 @@ public class CheckManager implements AutoCloseable {
 	 */
 	public NessPlayer getPlayer(Player player) {
 		return playerCache.get(player.getUniqueId(), (u) -> {
-			logger.debug("Adding player {}", player);
+			logger.log(Level.FINE, "Adding player {}", player);
 			return new NessPlayer(player, ness.getNessConfig().isDevMode());
 		});
 	}
@@ -152,7 +152,7 @@ public class CheckManager implements AutoCloseable {
 	 * @param player the player to remove
 	 */
 	void removePlayer(Player player) {
-		logger.debug("Forcibly removing player {}", player);
+		logger.log(Level.FINE, "Forcibly removing player {}", player);
 		playerCache.invalidate(player.getUniqueId());
 	}
 

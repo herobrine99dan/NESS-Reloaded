@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.IntBinaryOperator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -35,7 +35,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
 	private final int totalRetentionSecs;
 
-	private static final Logger logger = LogManager.getLogger(AutoClick.class);
+	private static final Logger logger = Logger.getLogger(AutoClick.class.getSimpleName());
 
 	public AutoClick(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerInteractEvent.class, 2, TimeUnit.SECONDS));
@@ -65,8 +65,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		} else {
 			parseDeviationRequirements(superDeviationRequirementList, superDeviationRequirements);
 		}
-
-		logger.trace("Configuration: {}", this);
+		logger.log(Level.FINEST, "Configuration: {}", this);
 	}
 
 	@Override
@@ -88,10 +87,10 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 				try {
 					whenParsed.applyAsInt(Integer.parseInt(info[0]), Integer.parseInt(info[1]));
 				} catch (NumberFormatException ignored) {
-					logger.debug("Cannot format {}:{} to integers", info[0], info[1]);
+					logger.log(Level.FINE, "Cannot format {}:{} to integers", new Object[] { info[0], info[1] });
 				}
 			} else {
-				logger.debug("Cannot format illegal entry length of {}", (Object) info);
+				logger.log(Level.FINE, "Cannot format illegal entry length of {}", (Object) info);
 			}
 		}
 	}
@@ -172,7 +171,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 			int cps = copy1.size() / hardLimitEntry.retentionSecs;
 
 			int maxCps = hardLimitEntry.maxCps;
-			logger.debug("Clicks Per Second: {}. Limit: {}", cps, maxCps);
+			logger.log(Level.FINE, "Clicks Per Second: {}. Limit: {}", new Object[] { cps, maxCps });
 			if (cps > maxCps) {
 				player.setViolation(new Violation("AutoClick", Integer.toString(cps)), null);
 				return;
@@ -198,7 +197,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 			periods.add(end - start);
 			start = end;
 		}
-		logger.debug("Click periods: {}", periods);
+		logger.log(Level.FINE, "Click periods: {}", periods);
 
 		/*
 		 * Sublist of the total list of periods
@@ -214,31 +213,30 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 				for (int m = n; m < periods.size() && subPeriods.size() < deviationRequirement.sampleCount; m++) {
 					subPeriods.add(periods.get(m));
 				}
-				logger.trace("SubPeriods for iteration {} and deviation requirement {} are {}",
-						n, deviationRequirement, subPeriods);
+				logger.log(Level.FINEST, "SubPeriods for iteration {} and deviation requirement {} are {}",
+						new Object[] { n, deviationRequirement, subPeriods });
 				if (subPeriods.size() == deviationRequirement.sampleCount) {
 					int stdDevPercent = getStdDevPercent(subPeriods);
 					if (stdDevPercent < deviationRequirement.deviationPercentage) {
 						player.setViolation(new Violation("AutoClick", "StdDevPercent: " + stdDevPercent), null);
 						return;
 					}
-					List<Long> deviations = standardDeviationMap.computeIfAbsent(deviationRequirement, (d) -> new ArrayList<>());
+					List<Long> deviations = standardDeviationMap.computeIfAbsent(deviationRequirement,
+							(d) -> new ArrayList<>());
 					deviations.add((long) stdDevPercent);
 				}
 				subPeriods.clear();
 			}
 		}
 		for (List<Long> standardDeviations : standardDeviationMap.values()) {
-			logger.trace("StandardDeviations are {}", standardDeviations);
+			logger.log(Level.FINEST, "StandardDeviations are {}", standardDeviations);
 			for (DeviationEntry superDeviationRequirement : superDeviationRequirements) {
 				if (standardDeviations.size() < superDeviationRequirement.sampleCount) {
 					continue;
 				}
 				int superStdDevPercent = getStdDevPercent(standardDeviations);
 				if (superStdDevPercent < superDeviationRequirement.deviationPercentage) {
-					player.setViolation(
-							new Violation("AutoClick", "SuperStdDevPercent: " + superStdDevPercent),
-							null);
+					player.setViolation(new Violation("AutoClick", "SuperStdDevPercent: " + superStdDevPercent), null);
 					return;
 				}
 			}
@@ -255,14 +253,14 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 	 */
 	public static int getStdDevPercent(List<Long> periods) {
 		long average = calculateAverage(periods);
-		logger.trace("Calculated average is {}", average);
+		logger.log(Level.FINEST, "Calculated average is {}", average);
 
 		double standardDeviation = 0;
 		for (long period : periods) {
 			standardDeviation += Math.pow(period - average, 2);
 		}
 		standardDeviation = Math.sqrt(standardDeviation / periods.size());
-		logger.trace("Standard deviation is calculated to be {}", standardDeviation);
+		logger.log(Level.FINEST, "Standard deviation is calculated to be {}", standardDeviation);
 		return (int) (100 * standardDeviation / average);
 	}
 
@@ -287,7 +285,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		Action action = evt.getAction();
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
 			Player player = evt.getPlayer();
-			logger.trace("Added click from {}", player);
+			logger.log(Level.FINEST, "Added click from {}", player);
 			manager.getPlayer(player).getClickHistory().add(monotonicMillis());
 		}
 	}

@@ -1,9 +1,8 @@
 package com.github.ness;
 
 import java.util.Map;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,7 +11,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+
 import com.github.ness.gui.ViolationGUI;
+
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -20,7 +21,7 @@ public class NessCommands implements CommandExecutor {
 
 	private final NESSAnticheat ness;
 
-	private static final Logger logger = LogManager.getLogger(NessCommands.class);
+	private static final Logger logger = Logger.getLogger(NessCommands.class.getSimpleName());
 
 	private String getPermission(String arg) {
 		if (arg == null) {
@@ -58,7 +59,7 @@ public class NessCommands implements CommandExecutor {
 					ness.getNessConfig().reloadConfiguration(ness);
 					ness.getCheckManager().reloadChecks().whenComplete((ignore, ex) -> {
 						if (ex != null) {
-							logger.warn("Error while reloading", ex);
+							logger.log(Level.WARNING, "Error while reloading", ex);
 							sendMessage(sender, "&cError reloading NESS, check your server console for details.");
 							return;
 						}

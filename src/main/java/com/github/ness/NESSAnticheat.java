@@ -5,9 +5,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,8 +31,7 @@ public class NESSAnticheat extends JavaPlugin {
 	private int minecraftVersion;
 	@Getter
 	private MouseRecord mouseRecord;
-
-	private static final Logger logger = LogManager.getLogger(NESSAnticheat.class);
+	private static final Logger logger = Logger.getLogger(NESSAnticheat.class.getSimpleName());
 
 	@Override
 	public void onEnable() {
@@ -49,7 +48,7 @@ public class NESSAnticheat extends JavaPlugin {
 			getLogger().warning(
 					"Your messages.yml is outdated! Until you regenerate it, NESS will use default values for some messages.");
 		}
-		logger.debug("Configuration loaded. Initiating checks...");
+		logger.fine("Configuration loaded. Initiating checks...");
 		if(this.getVersion()> 1152 && this.getVersion() < 1162) {
 			getLogger().warning("Please use 1.16.2 Spigot Version since 1.16/1.16.1 has a lot of false flags");
 		}
@@ -65,11 +64,13 @@ public class NESSAnticheat extends JavaPlugin {
 		violationManager = new ViolationManager(this);
 		violationManager.addDefaultActions();
 		violationManager.initiatePeriodicTask();
-		getServer().getPluginManager().registerEvents(new PacketListener(), this);
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);
 
 		getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(this), this, ServicePriority.Low);
 		minecraftVersion = this.getVersion();
+		if(this.getVersion() > 1710 && !Bukkit.getName().toLowerCase().contains("glowstone")) {
+			getServer().getPluginManager().registerEvents(new PacketListener(), this);
+		}
 		if (this.getNessConfig().getViolationHandling().getConfigurationSection("notify-staff").getBoolean("bungeecord",
 				false)) {
 			this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -96,7 +97,7 @@ public class NESSAnticheat extends JavaPlugin {
 				executor.shutdown();
 				executor.awaitTermination(10L, TimeUnit.SECONDS);
 			} catch (InterruptedException ex) {
-				logger.warn("Failed to complete thread pool termination", ex);
+				logger.log(Level.WARNING, "Failed to complete thread pool termination", ex);
 			}
 		}
 	}

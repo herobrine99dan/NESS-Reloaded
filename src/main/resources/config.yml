@@ -236,7 +236,7 @@ checks:
   killaura:
     maxyaw: 357
     minangle: -0.2
-    maxreach: 3.3
+    maxreach: 3.6
 #
 # MorePackets
 #

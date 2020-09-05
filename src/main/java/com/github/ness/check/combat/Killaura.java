@@ -10,14 +10,13 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
-import com.github.ness.packets.ReceivedPacketEvent;
+import com.github.ness.utility.MathUtils;
 import com.github.ness.utility.Utility;
 
 public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
@@ -32,7 +31,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		this.minAngle = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getDouble("minangle", -0.2);
 		this.maxReach = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getDouble("maxreach", 3.4);
 	}
-	
+
 	@Override
 	protected void checkAsyncPeriodic(NessPlayer player) {
 		player.attackedEntities.clear();
@@ -54,20 +53,24 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Player player = (Player) e.getDamager();
 			Entity entity = e.getEntity();
 			NessPlayer np = this.manager.getPlayer(player);
-			double range = Math.hypot(np.getMovementValues().getTo().getX() - entity.getLocation().getX(),
-					np.getMovementValues().getTo().getZ() - entity.getLocation().getZ());
+			double range = 0;
+			if (entity instanceof Player) {
+				NessPlayer damaged = this.getNessPlayer((Player) entity);
+				range = Math.hypot(np.getMovementValues().getTo().getX() - damaged.getMovementValues().getTo().getX(),
+						np.getMovementValues().getTo().getZ() - damaged.getMovementValues().getTo().getZ());
+			} else {
+				range = Math.hypot(np.getMovementValues().getTo().getX() - entity.getLocation().getX(),
+						np.getMovementValues().getTo().getZ() - entity.getLocation().getZ());
+			}
 			double maxReach = this.maxReach;
 			if (player.getGameMode().equals(GameMode.CREATIVE)) {
 				maxReach = 5.5D;
 			}
-			if (!player.isSprinting() || Utility.specificBlockNear(e.getDamager().getLocation(), "water") || Utility
+			if (Utility.specificBlockNear(e.getDamager().getLocation(), "water") || MathUtils
 					.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
-				maxReach += 0.4D;
+				maxReach += 0.3D;
 			}
-			maxReach += (Utility.getPing(player) / 100) / 9;
-			maxReach += (Math.abs(np.getMovementValues().yDiff) + Math.abs(entity.getVelocity().getY())) * 0.3;
-			maxReach += Math.abs(np.getMovementValues().xDiff * 0.7) + Math.abs(np.getMovementValues().zDiff * 0.7);
-			maxReach += Math.abs(entity.getVelocity().getX()) + Math.abs(entity.getVelocity().getZ());
+			maxReach += (Utility.getPing(player) / 100) / 5;
 			if ((range > maxReach && range < 6.5D)
 					|| Utility.getDistance3D(player.getLocation(), entity.getLocation()) > 5) {
 				this.punish(e, player, "Reach: " + range);

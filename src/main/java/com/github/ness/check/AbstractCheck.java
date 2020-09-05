@@ -1,9 +1,9 @@
 package com.github.ness.check;
 
 import java.util.concurrent.ScheduledFuture;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -32,7 +32,7 @@ public abstract class AbstractCheck<E extends Event> {
 	private State state;
 	private final Object stateLock = new Object();
 	
-	private static final Logger logger = LogManager.getLogger(AbstractCheck.class);
+	private static final Logger logger = Logger.getLogger(AbstractCheck.class.getSimpleName());
 	
 	/**
 	 * Creates the check. Subclasses should require CheckManager as a parameter in their constructors
@@ -86,7 +86,7 @@ public abstract class AbstractCheck<E extends Event> {
 					checkEvent((E) event);
 				}
 			} catch (Throwable ex) {
-				logger.warn("NESS made a mistake in listening to an event. Please report this error on Github.", ex);
+				logger.log(Level.WARNING, "NESS made a mistake in listening to an event. Please report this error on Github.", ex);
 			}
 		}
 		

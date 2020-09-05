@@ -280,16 +280,6 @@ public class Utility {
 		final Material m = player.getLocation().getBlock().getType();
 		return m.name().toLowerCase().contains("water");
 	}
-
-	public static float yawTo180F(float flub) {
-		if ((flub %= 360.0f) >= 180.0f) {
-			flub -= 360.0f;
-		}
-		if (flub < -180.0f) {
-			flub += 360.0f;
-		}
-		return flub;
-	}
 	
 	public static boolean hasKbBypass(Player player) {
 		if (player.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
