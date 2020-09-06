@@ -65,7 +65,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		} else {
 			parseDeviationRequirements(superDeviationRequirementList, superDeviationRequirements);
 		}
-		logger.log(Level.FINEST, "Configuration: {}", this);
+		logger.log(Level.FINEST, "Configuration: {0}", this);
 	}
 
 	@Override
@@ -87,10 +87,10 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 				try {
 					whenParsed.applyAsInt(Integer.parseInt(info[0]), Integer.parseInt(info[1]));
 				} catch (NumberFormatException ignored) {
-					logger.log(Level.FINE, "Cannot format {}:{} to integers", new Object[] { info[0], info[1] });
+					logger.log(Level.FINE, "Cannot format {0}:{1} to integers", new Object[] { info[0], info[1] });
 				}
 			} else {
-				logger.log(Level.FINE, "Cannot format illegal entry length of {}", (Object) info);
+				logger.log(Level.FINE, "Cannot format illegal entry length of {0}", (Object) info);
 			}
 		}
 	}
@@ -171,7 +171,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 			int cps = copy1.size() / hardLimitEntry.retentionSecs;
 
 			int maxCps = hardLimitEntry.maxCps;
-			logger.log(Level.FINE, "Clicks Per Second: {}. Limit: {}", new Object[] { cps, maxCps });
+			logger.log(Level.FINE, "Clicks Per Second: {0}. Limit: {1}", new Object[] { cps, maxCps });
 			if (cps > maxCps) {
 				player.setViolation(new Violation("AutoClick", Integer.toString(cps)), null);
 				return;
@@ -197,7 +197,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 			periods.add(end - start);
 			start = end;
 		}
-		logger.log(Level.FINE, "Click periods: {}", periods);
+		logger.log(Level.FINE, "Click periods: {0}", periods);
 
 		/*
 		 * Sublist of the total list of periods
@@ -213,7 +213,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 				for (int m = n; m < periods.size() && subPeriods.size() < deviationRequirement.sampleCount; m++) {
 					subPeriods.add(periods.get(m));
 				}
-				logger.log(Level.FINEST, "SubPeriods for iteration {} and deviation requirement {} are {}",
+				logger.log(Level.FINEST, "SubPeriods for iteration {0} and deviation requirement {1} are {2}",
 						new Object[] { n, deviationRequirement, subPeriods });
 				if (subPeriods.size() == deviationRequirement.sampleCount) {
 					int stdDevPercent = getStdDevPercent(subPeriods);
@@ -229,7 +229,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 			}
 		}
 		for (List<Long> standardDeviations : standardDeviationMap.values()) {
-			logger.log(Level.FINEST, "StandardDeviations are {}", standardDeviations);
+			logger.log(Level.FINEST, "StandardDeviations are {0}", standardDeviations);
 			for (DeviationEntry superDeviationRequirement : superDeviationRequirements) {
 				if (standardDeviations.size() < superDeviationRequirement.sampleCount) {
 					continue;
@@ -253,14 +253,14 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 	 */
 	public static int getStdDevPercent(List<Long> periods) {
 		long average = calculateAverage(periods);
-		logger.log(Level.FINEST, "Calculated average is {}", average);
+		logger.log(Level.FINEST, "Calculated average is {0}", average);
 
 		double standardDeviation = 0;
 		for (long period : periods) {
 			standardDeviation += Math.pow(period - average, 2);
 		}
 		standardDeviation = Math.sqrt(standardDeviation / periods.size());
-		logger.log(Level.FINEST, "Standard deviation is calculated to be {}", standardDeviation);
+		logger.log(Level.FINEST, "Standard deviation is calculated to be {0}", standardDeviation);
 		return (int) (100 * standardDeviation / average);
 	}
 
@@ -285,7 +285,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		Action action = evt.getAction();
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
 			Player player = evt.getPlayer();
-			logger.log(Level.FINEST, "Added click from {}", player);
+			logger.log(Level.FINEST, "Added click from {0}", player);
 			manager.getPlayer(player).getClickHistory().add(monotonicMillis());
 		}
 	}

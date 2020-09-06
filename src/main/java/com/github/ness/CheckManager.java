@@ -18,6 +18,7 @@ import org.bukkit.event.HandlerList;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.utility.Utility;
 
 import lombok.Getter;
 
@@ -61,7 +62,7 @@ public class CheckManager implements AutoCloseable {
 		configuredCheckLoadLoop:
 		for (String checkName : ness.getNessConfig().getEnabledChecks()) {
 			if (checkName.equals("AbstractCheck") || checkName.equals("CheckInfo")) {
-				logger.log(Level.WARNING, "Check {} from the config does not exist", checkName);
+				logger.log(Level.WARNING, "Check {0} from the config does not exist", checkName);
 				continue;
 			}
 			for (ChecksPackage checkPackage : ChecksPackage.values()) {
@@ -71,12 +72,12 @@ public class CheckManager implements AutoCloseable {
 					continue configuredCheckLoadLoop;
 				}
 			}
-			logger.log(Level.WARNING, "Check {} does not exist in any package", checkName);
+			logger.log(Level.WARNING, "Check {0} does not exist in any package", checkName);
 		}
 		for (String requiredCheck : ChecksPackage.REQUIRED_CHECKS) {
 			AbstractCheck<?> check = loadCheck(".required", requiredCheck);
 			if (check == null) {
-				logger.log(Level.SEVERE,"Required check {} could not be instantiated", requiredCheck);
+				logger.log(Level.SEVERE,"Required check {0} could not be instantiated", requiredCheck);
 				continue;
 			}
 			checks.add(check);
@@ -97,7 +98,7 @@ public class CheckManager implements AutoCloseable {
 			Class<?> clazz = Class.forName(clazzName);
 			if (!AbstractCheck.class.isAssignableFrom(clazz)) {
 				// This is our fault
-				logger.log(Level.WARNING, "Check exists as {} but does not extend AbstractCheck", clazzName);
+				logger.log(Level.WARNING, "Check exists as {0} but does not extend AbstractCheck", clazzName);
 				return null;
 			}
 			Constructor<?> constructor = clazz.getDeclaredConstructor(CheckManager.class);
@@ -105,7 +106,7 @@ public class CheckManager implements AutoCloseable {
 
 		} catch (ClassNotFoundException ignored) {
 			// expected when the check is actually in another package
-			logger.log(Level.FINEST, "Check {} not found in package {}. Other packages will be attempted", new Object[] {checkName, packagePrefix});
+			logger.log(Level.FINEST, "Check {0} not found in package {1}. Other packages will be attempted", new Object[] {checkName, packagePrefix});
 			//logger.trace("Check {} not found in package {}. Other packages will be attempted", checkName, packagePrefix);
 
 		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
@@ -113,7 +114,7 @@ public class CheckManager implements AutoCloseable {
 
 			// ReflectiveOperationException or other RuntimeException
 			// This is likely our fault
-			logger.log(Level.WARNING, "Could not instantiate check {}", new Object[] {clazzName, ex});
+			logger.log(Level.WARNING, "Could not instantiate check {0} {1}", new Object[] {clazzName, Utility.getStackTrace(ex)});
 		}
 		return null;
 	}
@@ -141,7 +142,7 @@ public class CheckManager implements AutoCloseable {
 	 */
 	public NessPlayer getPlayer(Player player) {
 		return playerCache.get(player.getUniqueId(), (u) -> {
-			logger.log(Level.FINE, "Adding player {}", player);
+			logger.log(Level.FINE, "Adding player {0}", player);
 			return new NessPlayer(player, ness.getNessConfig().isDevMode());
 		});
 	}
@@ -153,7 +154,7 @@ public class CheckManager implements AutoCloseable {
 	 * @param player the player to remove
 	 */
 	void removePlayer(Player player) {
-		logger.log(Level.FINE, "Forcibly removing player {}", player);
+		logger.log(Level.FINE, "Forcibly removing player {0}", player);
 		playerCache.invalidate(player.getUniqueId());
 	}
 

@@ -1,5 +1,7 @@
 package com.github.ness.utility;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,12 +31,19 @@ public class Utility {
 	public static double round(double value, int precision) {
 		return (double) Math.round(value * precision) / precision;
 	}
-	
+
 	public static double getAngle(Player player, Location target, ImmutableVector direction) {
 		Location eye = player.getEyeLocation();
 		Vector toEntity = target.toVector().subtract(eye.toVector());
 		double dot = toEntity.normalize().dot(direction.toBukkitVector());
 		return dot;// dot > 0.99D
+	}
+
+	public static String getStackTrace(Throwable throwable) {
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw, true);
+		throwable.printStackTrace(pw);
+		return sw.getBuffer().toString();
 	}
 
 	/**
@@ -280,7 +289,7 @@ public class Utility {
 		final Material m = player.getLocation().getBlock().getType();
 		return m.name().toLowerCase().contains("water");
 	}
-	
+
 	public static boolean hasKbBypass(Player player) {
 		if (player.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
 			return true;
