@@ -35,7 +35,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
 	private final int totalRetentionSecs;
 
-	private static final Logger logger = Logger.getLogger(AutoClick.class.getSimpleName());
+	private static final Logger logger = Logger.getLogger(AutoClick.class.getName());
 
 	public AutoClick(CheckManager manager) {
 		super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerInteractEvent.class, 2, TimeUnit.SECONDS));

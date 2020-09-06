@@ -15,7 +15,7 @@ import com.github.ness.check.combat.AutoClick;
 
 public class AutoClickTest {
 
-	private static final Logger logger = Logger.getLogger(AutoClickTest.class.getSimpleName());
+	private static final Logger logger = Logger.getLogger(AutoClickTest.class.getName());
 	
 	@RepeatedTest(5)
 	public void testStandardDeviationOfSameValues() {

@@ -1,6 +1,7 @@
 package com.github.ness;
 
 import java.lang.reflect.Constructor;
+
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.HashSet;
@@ -28,7 +29,7 @@ public class CheckManager implements AutoCloseable {
 
 	private volatile Set<AbstractCheck<?>> checks;
 
-	private static final Logger logger = Logger.getLogger(CheckManager.class.getSimpleName());
+	private static final Logger logger = Logger.getLogger(CheckManager.class.getName());
 
 	@Getter
 	private final NESSAnticheat ness;

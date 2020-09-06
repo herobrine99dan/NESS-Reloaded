@@ -32,7 +32,7 @@ public abstract class AbstractCheck<E extends Event> {
 	private State state;
 	private final Object stateLock = new Object();
 	
-	private static final Logger logger = Logger.getLogger(AbstractCheck.class.getSimpleName());
+	private static final Logger logger = Logger.getLogger(AbstractCheck.class.getName());
 	
 	/**
 	 * Creates the check. Subclasses should require CheckManager as a parameter in their constructors

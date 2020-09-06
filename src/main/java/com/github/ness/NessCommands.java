@@ -21,7 +21,7 @@ public class NessCommands implements CommandExecutor {
 
 	private final NESSAnticheat ness;
 
-	private static final Logger logger = Logger.getLogger(NessCommands.class.getSimpleName());
+	private static final Logger logger = Logger.getLogger(NessCommands.class.getName());
 
 	private String getPermission(String arg) {
 		if (arg == null) {

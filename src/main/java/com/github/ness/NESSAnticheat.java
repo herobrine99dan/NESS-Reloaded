@@ -31,7 +31,7 @@ public class NESSAnticheat extends JavaPlugin {
 	private int minecraftVersion;
 	@Getter
 	private MouseRecord mouseRecord;
-	private static final Logger logger = Logger.getLogger(NESSAnticheat.class.getSimpleName());
+	private static final Logger logger = Logger.getLogger(NESSAnticheat.class.getName());
 
 	@Override
 	public void onEnable() {
