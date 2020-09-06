@@ -64,6 +64,7 @@ enabled-checks:
   - 'NoSlowDownBow'
   - 'NoSlowDownFood'
   - 'NoWeb'
+  - 'Speed'
   - 'NameExploit'
   - 'OldMovementChecks'
   - 'Scaffold'
