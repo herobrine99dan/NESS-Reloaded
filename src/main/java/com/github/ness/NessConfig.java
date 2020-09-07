@@ -15,7 +15,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Getter public class NessConfig {
+@Getter
+public class NessConfig {
 
 	private static final int CONFIG_VERSION = 1;
 	private static final int MESSAGES_VERSION = 1;

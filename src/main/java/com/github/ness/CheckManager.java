@@ -18,9 +18,6 @@ import org.bukkit.event.HandlerList;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.ness.check.AbstractCheck;
-import com.github.ness.utility.Utility;
-
-import lombok.Getter;
 
 public class CheckManager implements AutoCloseable {
 
@@ -32,12 +29,15 @@ public class CheckManager implements AutoCloseable {
 
 	private static final Logger logger = Logger.getLogger(CheckManager.class.getName());
 
-	@Getter
 	private final NESSAnticheat ness;
 
 	CheckManager(NESSAnticheat ness) {
 		this.ness = ness;
 		coreListener = new CoreListener(this);
+	}
+	
+	public NESSAnticheat getNess() {
+		return ness;
 	}
 
 	CompletableFuture<?> loadChecks() {
@@ -106,16 +106,16 @@ public class CheckManager implements AutoCloseable {
 
 		} catch (ClassNotFoundException ignored) {
 			// expected when the check is actually in another package
-			logger.log(Level.FINEST, "Check {0} not found in package {1}. Other packages will be attempted", new Object[] {checkName, packagePrefix});
-			//logger.trace("Check {} not found in package {}. Other packages will be attempted", checkName, packagePrefix);
+			logger.log(Level.FINEST, "Check {0} not found in package {1}. Other packages will be attempted",
+					new Object[] {checkName, packagePrefix});
 
 		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException ex) {
 
 			// ReflectiveOperationException or other RuntimeException
 			// This is likely our fault
-			logger.log(Level.WARNING, "Could not instantiate check {0}",clazzName);
-			logger.log(Level.WARNING, "Exception: ", ex);
+			logger.log(Level.WARNING, "Could not instantiate check {0}", clazzName);
+			logger.log(Level.WARNING, "Reason: ", ex);
 		}
 		return null;
 	}

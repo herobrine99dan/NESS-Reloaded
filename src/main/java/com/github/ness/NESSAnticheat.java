@@ -36,7 +36,7 @@ public class NESSAnticheat extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		main = this;
-		logger.info("NESS uses log4j2 for logging");
+
 		mouseRecord = new MouseRecord(this);
 		nessConfig = new NessConfig("config.yml", "messages.yml");
 		nessConfig.reloadConfiguration(this);
@@ -97,8 +97,7 @@ public class NESSAnticheat extends JavaPlugin {
 				executor.shutdown();
 				executor.awaitTermination(10L, TimeUnit.SECONDS);
 			} catch (InterruptedException ex) {
-				logger.log(Level.WARNING, "Failed to complete thread pool termination");
-				logger.log(Level.WARNING, "Exception ", ex);
+				logger.log(Level.WARNING, "Failed to complete thread pool termination", ex);
 			}
 		}
 	}

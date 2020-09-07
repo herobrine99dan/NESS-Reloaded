@@ -87,10 +87,10 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 				try {
 					whenParsed.applyAsInt(Integer.parseInt(info[0]), Integer.parseInt(info[1]));
 				} catch (NumberFormatException ignored) {
-					logger.log(Level.FINE, "Cannot format {0}:{1} to integers", new Object[] { info[0], info[1] });
+					logger.log(Level.FINE, "Cannot format {0}:{1} to integers", new Object[] {info[0], info[1]});
 				}
 			} else {
-				logger.log(Level.FINE, "Cannot format illegal entry length of {0}", (Object) info);
+				logger.log(Level.FINE, "Cannot format illegal entry length of {0}", info.length);
 			}
 		}
 	}
@@ -171,7 +171,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 			int cps = copy1.size() / hardLimitEntry.retentionSecs;
 
 			int maxCps = hardLimitEntry.maxCps;
-			logger.log(Level.FINE, "Clicks Per Second: {0}. Limit: {1}", new Object[] { cps, maxCps });
+			logger.log(Level.FINE, "Clicks Per Second: {0}. Limit: {1}", new Object[] {cps, maxCps});
 			if (cps > maxCps) {
 				player.setViolation(new Violation("AutoClick", Integer.toString(cps)), null);
 				return;
@@ -214,7 +214,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 					subPeriods.add(periods.get(m));
 				}
 				logger.log(Level.FINEST, "SubPeriods for iteration {0} and deviation requirement {1} are {2}",
-						new Object[] { n, deviationRequirement, subPeriods });
+						new Object[] {n, deviationRequirement, subPeriods});
 				if (subPeriods.size() == deviationRequirement.sampleCount) {
 					int stdDevPercent = getStdDevPercent(subPeriods);
 					if (stdDevPercent < deviationRequirement.deviationPercentage) {
