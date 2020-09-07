@@ -59,8 +59,7 @@ public class NessCommands implements CommandExecutor {
 					ness.getNessConfig().reloadConfiguration(ness);
 					ness.getCheckManager().reloadChecks().whenComplete((ignore, ex) -> {
 						if (ex != null) {
-							logger.log(Level.WARNING, "Error while reloading");
-							logger.log(Level.WARNING, "Exception ", ex);
+							logger.log(Level.WARNING, "Error while reloading", ex);
 							sendMessage(sender, "&cError reloading NESS, check your server console for details.");
 							return;
 						}
