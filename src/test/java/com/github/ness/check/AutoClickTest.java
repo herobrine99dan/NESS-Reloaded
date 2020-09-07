@@ -4,23 +4,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.ness.check.combat.AutoClick;
 
 public class AutoClickTest {
 
-	private static final Logger logger = Logger.getLogger(AutoClickTest.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(AutoClickTest.class);
 	
 	@RepeatedTest(5)
 	public void testStandardDeviationOfSameValues() {
 		long longToTest = ThreadLocalRandom.current().nextLong(Integer.MIN_VALUE, Integer.MAX_VALUE);
-		logger.log(Level.INFO, "Testing standard deviation using same value of {}", longToTest);
+		logger.debug("Testing standard deviation using same value of {}", longToTest);
 		List<Long> listOfSameValues = new ArrayList<>();
 		int max = 1 + ThreadLocalRandom.current().nextInt(31);
 		for (int n = 0; n < max; n++) {
