@@ -72,7 +72,7 @@ public class NessPlayer implements AutoCloseable {
 	public float lastYaw; // For Aimbot
 	public double distanceFromGround; // Updated from OldMovementsCheck
 	public double flyYSum; // The sum beetween positive y values
-	public double lastDeltaXZ; // Used for Speed Prediction Check
+	public double lastDeltaXZSpeed, preVLSpeed; // Used for Speed Prediction Check
 	@Getter
 	private volatile MovementValues movementValues;
 	public double sensitivity; // The Player Sensitivity
@@ -92,6 +92,9 @@ public class NessPlayer implements AutoCloseable {
 	public Set<Integer> attackedEntities;
 	long setBackTicks;
 	public boolean hasSetback;
+	@Getter
+	@Setter
+	private boolean usingOptifine;
 
 	// Used in OldMovementChecks
 
@@ -164,7 +167,6 @@ public class NessPlayer implements AutoCloseable {
 			airTicks = 0;
 		}
 		this.movementValues = values;
-
 	}
 
 	/**

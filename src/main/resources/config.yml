@@ -66,6 +66,7 @@ enabled-checks:
   - 'NoWeb'
   - 'NameExploit'
   - 'OldMovementChecks'
+  - 'SpeedPrediction'
   - 'Scaffold'
   - 'PingSpoof'
 

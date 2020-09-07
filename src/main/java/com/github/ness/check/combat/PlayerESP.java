@@ -31,8 +31,9 @@ public class PlayerESP extends AbstractCheck<PlayerInteractEvent> {
 				for (Player cheater : Bukkit.getOnlinePlayers()) {
 					ImmutableVector direction = player.getMovementValues().getTo().getDirectionVector();
 					for (Player tohide : Bukkit.getOnlinePlayers()) {
-						if ((Utility.getAngle(cheater, tohide.getLocation(), direction) < minangle)
-								&& cheater.getLocation().distance(tohide.getLocation()) > 9) {
+						if ((Utility.getAngle(cheater, tohide.getLocation(), direction) < minangle
+								|| !cheater.hasLineOfSight(tohide))
+								&& cheater.getLocation().distance(tohide.getLocation()) > 10) {
 							cheater.hidePlayer(NESSAnticheat.getInstance(), tohide);
 						} else {
 							cheater.showPlayer(NESSAnticheat.getInstance(), tohide);

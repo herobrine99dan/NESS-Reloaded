@@ -114,7 +114,8 @@ public class CheckManager implements AutoCloseable {
 
 			// ReflectiveOperationException or other RuntimeException
 			// This is likely our fault
-			logger.log(Level.WARNING, "Could not instantiate check {0} {1}", new Object[] {clazzName, Utility.getStackTrace(ex)});
+			logger.log(Level.WARNING, "Could not instantiate check {0}",clazzName);
+			logger.log(Level.WARNING, "Exception: ", ex);
 		}
 		return null;
 	}

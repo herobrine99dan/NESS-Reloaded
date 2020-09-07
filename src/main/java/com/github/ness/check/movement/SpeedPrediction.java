@@ -29,15 +29,19 @@ public class SpeedPrediction extends AbstractCheck<PlayerMoveEvent> {
 		if (nessPlayer.airTicks >= 3 && !Utility.hasflybypass(player) && !Utility.isInWater(player)
 				&& !Utility.specificBlockNear(e.getTo().clone(), "water")
 				&& nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) > 1500 && !nessPlayer.isTeleported()) {
-			double prediction = nessPlayer.lastDeltaXZ * 0.91F;
+			double prediction = nessPlayer.lastDeltaXZSpeed;
+			prediction *= 0.91F;
 			double diff = deltaXZ - prediction;
-			if (nessPlayer.isDevMode()) {
-				player.sendMessage("Diff: " + diff);
-			}
-			if (diff > 0.027) {
-				nessPlayer.setViolation(new Violation("Speed", "Invalid Friction."), e);
+			
+			if (diff > 0.027 && nessPlayer.preVLSpeed++ > 0) {
+				nessPlayer.setViolation(new Violation("Speed", "Invalid Friction " + (float) diff), e);
+			} else {
+				nessPlayer.preVLSpeed -= 1;
+				if(nessPlayer.preVLSpeed < 0) {
+					nessPlayer.preVLSpeed = 0;
+				}
 			}
 		}
-		nessPlayer.lastDeltaXZ = deltaXZ;
+		nessPlayer.lastDeltaXZSpeed = deltaXZ;
 	}
 }

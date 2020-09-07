@@ -34,6 +34,7 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 		Check2(e);
 		Check3(e);
 		Check4(e);
+		Check5(e);
 	}
 
 	public void punish(PlayerMoveEvent e, String module) {
@@ -205,7 +206,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 			if (player.getVelocity().getY() == 0.42f && !Utility.isMathematicallyOnGround(event.getTo().getY())
 					&& Utility.isMathematicallyOnGround(event.getFrom().getY())) {
 				double yResult = Math.abs(yDiff - player.getVelocity().getY());
-				if (yResult != 0.0 && this.manager.getPlayer(player).nanoTimeDifference(PlayerAction.DAMAGE) > 1700) {
+				if (yResult != 0.0 && nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) > 1700
+						&& nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) > 1700) {
 					punish(event, "InvalidJumpMotion yResult: " + yResult + "  yDiff: " + yDiff);
 				}
 			}

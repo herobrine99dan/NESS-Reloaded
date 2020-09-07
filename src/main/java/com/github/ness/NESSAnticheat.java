@@ -49,7 +49,7 @@ public class NESSAnticheat extends JavaPlugin {
 					"Your messages.yml is outdated! Until you regenerate it, NESS will use default values for some messages.");
 		}
 		logger.fine("Configuration loaded. Initiating checks...");
-		if(this.getVersion()> 1152 && this.getVersion() < 1162) {
+		if (this.getVersion() > 1152 && this.getVersion() < 1162) {
 			getLogger().warning("Please use 1.16.2 Spigot Version since 1.16/1.16.1 has a lot of false flags");
 		}
 		executor = Executors.newSingleThreadScheduledExecutor();
@@ -68,7 +68,7 @@ public class NESSAnticheat extends JavaPlugin {
 
 		getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(this), this, ServicePriority.Low);
 		minecraftVersion = this.getVersion();
-		if(this.getVersion() > 1710 && !Bukkit.getName().toLowerCase().contains("glowstone")) {
+		if (!Bukkit.getName().toLowerCase().contains("glowstone")) {
 			getServer().getPluginManager().registerEvents(new PacketListener(), this);
 		}
 		if (this.getNessConfig().getViolationHandling().getConfigurationSection("notify-staff").getBoolean("bungeecord",
@@ -97,7 +97,8 @@ public class NESSAnticheat extends JavaPlugin {
 				executor.shutdown();
 				executor.awaitTermination(10L, TimeUnit.SECONDS);
 			} catch (InterruptedException ex) {
-				logger.log(Level.WARNING, "Failed to complete thread pool termination", ex);
+				logger.log(Level.WARNING, "Failed to complete thread pool termination");
+				logger.log(Level.WARNING, "Exception ", ex);
 			}
 		}
 	}

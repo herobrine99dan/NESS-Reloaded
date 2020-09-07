@@ -27,6 +27,10 @@ public class MathUtils {
 	public static double calculatePercentage(double obtained, double total) {
 		return obtained * 100.0D / total;
 	}
+	
+	public static double gcd(double limit, double a, double b) {
+        return b <= limit ? a : MathUtils.gcd(limit, b, a % b);
+    }
 
 	public static float yawTo180F(float flub) {
 		if ((flub %= 360.0f) >= 180.0f) {
