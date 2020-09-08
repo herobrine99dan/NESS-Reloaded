@@ -37,7 +37,7 @@ public class NoSlowDownBow extends AbstractCheck<EntityShootBowEvent> {
 			 */
 			distance -= o.getVelocity().getX();
 			distance -= o.getVelocity().getZ();
-			if (distance > 0.23 || o.isSprinting()) {
+			if (distance > 0.25 || o.isSprinting()) {
 				p.setViolation(new Violation("NoSlowDown", ""), e);
 			}
 		}

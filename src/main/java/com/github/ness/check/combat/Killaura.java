@@ -145,7 +145,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 				NessPlayer nessPlayer = this.getNessPlayer((Player) e.getDamager());
 				double angle = Utility.getAngle((Player) e.getDamager(), e.getEntity().getLocation(),
 						nessPlayer.getMovementValues().getTo().getDirectionVector());
-				if (angle < -0.3) {
+				if (angle < -0.35) {
 					punish(e, (Player) e.getDamager(), "HitBox");
 				}
 			}

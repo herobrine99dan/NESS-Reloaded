@@ -6,7 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -16,6 +17,7 @@ import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.ReceivedPacketEvent;
+import com.github.ness.utility.Utility;
 
 public class CoreListener implements Listener {
 	private final CheckManager manager;
@@ -26,7 +28,7 @@ public class CoreListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onJoin(PlayerJoinEvent event) {
-		manager.getPlayer(event.getPlayer()).actionTime.put(PlayerAction.JOIN, System.nanoTime() / 1000_000L);
+		manager.getPlayer(event.getPlayer()).actionTime.put(PlayerAction.JOIN, System.nanoTime());
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -34,6 +36,13 @@ public class CoreListener implements Listener {
 		final String packetName = event.getPacket().getName().toLowerCase();
 		if (packetName.contains("flying") || packetName.contains("position") || packetName.contains("look")) {
 			event.getNessPlayer().onClientTick();
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
+	public void onPlace(BlockBreakEvent event) {
+		if(Utility.getMaterialName(event.getBlock().getLocation()).contains("web")) {
+			manager.getPlayer(event.getPlayer()).actionTime.put(PlayerAction.WEBBREAKED, System.nanoTime());
 		}
 	}
 
@@ -48,10 +57,10 @@ public class CoreListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onDamage(EntityDamageByEntityEvent event) {
+	public void onDamage(EntityDamageEvent event) {
 		if (event.getEntity() instanceof Player) {
 			manager.getPlayer((Player) event.getEntity()).actionTime.put(PlayerAction.DAMAGE,
-					System.nanoTime() / 1000_000L);
+					System.nanoTime());
 		}
 	}
 
