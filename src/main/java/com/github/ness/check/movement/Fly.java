@@ -63,7 +63,8 @@ public class Fly extends AbstractCheck<PlayerMoveEvent> {
 						.contains("scaffolding")
 				|| Utility.getMaterialName(e.getTo()).contains("ladder")
 				|| Utility.getMaterialName(e.getTo()).contains("snow") || Utility.specificBlockNear(e.getTo(), "snow")
-				|| Utility.specificBlockNear(e.getTo(), "ladder") || nessPlayer.isTeleported()) {
+				|| Utility.specificBlockNear(e.getTo(), "ladder") || Utility.specificBlockNear(e.getTo(), "vine")
+				|| nessPlayer.isTeleported()) {
 			nessPlayer.flyYSum = 0;
 			return;
 		}
