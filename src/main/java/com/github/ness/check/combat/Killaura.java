@@ -129,7 +129,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
 	public void Check5(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
-			if (e.getEntity() instanceof LivingEntity) {
+			if (e.getEntity() instanceof LivingEntity && Bukkit.getVersion().contains("1.8")) {
 				NessPlayer nessPlayer = this.getNessPlayer((Player) e.getDamager());
 				nessPlayer.attackedEntities.add(e.getEntity().getEntityId());
 				if (nessPlayer.attackedEntities.size() > 2) {

@@ -173,13 +173,12 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		}
 		if (player.isInsideVehicle() && player.getVehicle().getType() == EntityType.BOAT)
 			maxSpd = 2.8;
-		if (ReflectionUtility.getBlockName(player, ImmutableLoc.of(event.getTo())).contains("stair")
-				|| ReflectionUtility.getBlockName(player, ImmutableLoc.of(event.getFrom())).contains("stair")) {
-			maxSpd += 0.15;
+		if (Utility.specificBlockNear(to.clone(), "stair")) {
+			maxSpd += 0.3;
 		}
 		if (hozDist > maxSpd && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED)
 				&& PlayerManager.timeSince("wasFlight", player) >= 2000
-				&& PlayerManager.timeSince("isHit", player) >= 2000
+				&& nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) >= 2000
 				&& PlayerManager.timeSince("teleported", player) >= 100) {
 			if (groundAround) {
 				if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000) {
@@ -208,7 +207,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			punish(event, "IllegalMovement", "(OnMove)");
 		} // Changing isOnGround method, check in server side
 		if (!(player.isSneaking() && below.name().toLowerCase().contains("ladder")) && !player.isFlying()
-				&& !player.isOnGround() && to.getY() % 1.0 == 0 && PlayerManager.timeSince("lastJoin", player) >= 1000
+				&& !player.isOnGround() && to.getY() % 1.0 == 0 && nessPlayer.nanoTimeDifference(PlayerAction.JOIN) >= 1000
 				&& PlayerManager.timeSince("teleported", player) >= 5000
 				&& !below.toString().toLowerCase().contains("stairs")
 				&& !below.toString().toLowerCase().contains("slime")) {
@@ -230,7 +229,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			}
 			if (!groundAround && !player.isFlying()) {
 				if (dist > maxSpd && !player.hasPotionEffect(PotionEffectType.JUMP) && !player.isFlying()
-						&& PlayerManager.timeSince("isHit", player) >= 2000
+						&& nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) >= 2000
 						&& !bottom.name().toLowerCase().contains("slime")) {
 					punish(event, "Fly", "NoGround(OnMove)");
 				}
@@ -238,7 +237,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						&& PlayerManager.timeSince("wasFlight", player) >= 3000
 						&& PlayerManager.timeSince("sincePlace", player) >= 1000
 						&& bottom.name().toLowerCase().contains("slime") && !cactus
-						&& PlayerManager.timeSince("isHit", player) >= 500) {
+						&& nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) >= 500) {
 					punish(event, "Fly", "InvalidDistance5(OnMove)");
 				}
 			} else {
@@ -262,7 +261,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().toLowerCase().contains("water")
 					&& !player.getLocation().getBlock().isLiquid()) {
 				if (hozDist < .2 || !groundAround) {
-					if (groundAround && hozDist > .05 && PlayerManager.timeSince("isHit", player) >= 1000
+					if (groundAround && hozDist > .05 && nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) >= 1000
 							&& !Utility.specificBlockNear(to.clone(), "water")) {
 						if (!player.isInsideVehicle()
 								|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE
@@ -299,7 +298,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				} else if (!bottom.name().toLowerCase().contains("slime")) {
 					if (!player.isInsideVehicle()
 							|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE
-									&& PlayerManager.timeSince("isHit", player) >= 1000)
+									&& nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) >= 1000)
 						punish(event, "Speed", "BunnyHop (OnMove)");
 				}
 			}
@@ -308,7 +307,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				for (Double amo : new Double[] { .3959395, .8152412, .4751395, .5317675 }) {
 					if (Math.abs(fallDist - amo) < .01 && !web) {
 						if (groundAround && below.isSolid() && PlayerManager.timeSince("sincePlace", player) >= 1000
-								&& PlayerManager.timeSince("isHit", player) >= 1000)
+								&& nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) >= 1000)
 							punish(event, "Speed", "BunnyHop (OnMove)");
 					}
 				}

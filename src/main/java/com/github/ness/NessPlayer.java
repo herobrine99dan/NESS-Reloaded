@@ -71,7 +71,6 @@ public class NessPlayer implements AutoCloseable {
 	public float lastYaw; // For Aimbot
 	public double distanceFromGround; // Updated from OldMovementsCheck
 	public double flyYSum; // The sum beetween positive y values
-	public double lastDeltaXZSpeed, preVLSpeed; // Used for Speed Prediction Check
 	@Getter
 	private volatile MovementValues movementValues;
 	public double sensitivity; // The Player Sensitivity
