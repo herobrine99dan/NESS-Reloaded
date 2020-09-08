@@ -54,7 +54,12 @@ enabled-checks:
   - 'FastLadder'
   - 'FastPlace'
   - 'ChestESP'
-  - 'Fly'
+  - 'FlyGhostMode'
+  - 'FlyInvalidMove'
+  - 'FlyHighJump'
+  - 'FlyInvalidJumpMotion'
+  - 'FlyInvalidGravity'
+  - 'FlyFalseGround'
   - 'GhostHand'
   - 'LiquidInteraction'
   - 'NameExploit'
@@ -67,8 +72,8 @@ enabled-checks:
   - 'NameExploit'
   - 'OldMovementChecks'
   - 'SpeedAir'
-  - 'Scaffold'
-  - 'PingSpoof'
+  - 'ScaffoldFalseTarget'
+  - 'ScaffoldAngle'
 
 #
 # Check name

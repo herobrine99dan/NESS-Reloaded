@@ -5,6 +5,7 @@ enum ChecksPackage {
 	MAIN(""),
 	COMBAT(".combat"),
 	MOVEMENT(".movement"),
+	FLYCHEAT(".movement.fly"),
 	PACKET(".packet"),
 	WORLD(".world"),
 	MISC(".misc");

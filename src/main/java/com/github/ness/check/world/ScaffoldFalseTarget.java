@@ -12,9 +12,9 @@ import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.utility.Utility;
 
-public class Scaffold extends AbstractCheck<BlockPlaceEvent> {
+public class ScaffoldFalseTarget extends AbstractCheck<BlockPlaceEvent> {
 
-	public Scaffold(CheckManager manager) {
+	public ScaffoldFalseTarget(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(BlockPlaceEvent.class));
 		// TODO Auto-generated constructor stub
 	}
@@ -22,25 +22,9 @@ public class Scaffold extends AbstractCheck<BlockPlaceEvent> {
 	@Override
 	protected void checkEvent(BlockPlaceEvent e) {
 		Check1(e);
-		Check2(e);
 	}
 
 	public void Check1(BlockPlaceEvent event) {
-		Player player = event.getPlayer();
-		final double MAX_ANGLE = Math.toRadians(90);
-		BlockFace placedFace = event.getBlock().getFace(event.getBlockAgainst());
-		if(placedFace == null) {
-			return;
-		}
-		final Vector placedVector = new Vector(placedFace.getModX(), placedFace.getModY(), placedFace.getModZ());
-		float placedAngle = player.getLocation().getDirection().angle(placedVector);
-
-		if (placedAngle > MAX_ANGLE) {
-			manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold", "HighAngle"), event);
-		}
-	}
-
-	public void Check2(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		Block target = player.getTargetBlock(null, 5);
 		if(target == null) {
