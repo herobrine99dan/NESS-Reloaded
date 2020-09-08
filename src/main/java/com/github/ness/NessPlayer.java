@@ -61,7 +61,6 @@ public class NessPlayer implements AutoCloseable {
 	public int blockPlace; // For FastPlace Check
 	public int normalPacketsCounter; // For MorePackets
 	public int CPS; // For AutoClicker
-	public int AimbotPatternCounter; // For Aimbot
 	public long lastPacketTime; // Used in BadPackets
 	public long movementPackets; // Used in BadPackets
 	public double lastStrafeDist; // Used in Strafe
@@ -92,10 +91,6 @@ public class NessPlayer implements AutoCloseable {
 	public Set<Integer> attackedEntities;
 	long setBackTicks;
 	public boolean hasSetback;
-	@Getter
-	@Setter
-	private boolean usingOptifine;
-
 	// Used in OldMovementChecks
 
 	private long lastWasOnGround = System.nanoTime() - Duration.ofHours(1L).toNanos();
@@ -142,7 +137,6 @@ public class NessPlayer implements AutoCloseable {
 		this.mouseRecordValues = new ArrayList<Point>();
 		this.actionTime = Collections.synchronizedMap(new HashMap<>());
 		this.pitchDiff = new ArrayList<Float>();
-		this.AimbotPatternCounter = 0;
 		this.normalPacketsCounter = 0;
 		this.sensitivity = 0;
 		this.devMode = devMode;

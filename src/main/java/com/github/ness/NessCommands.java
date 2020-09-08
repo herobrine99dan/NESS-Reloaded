@@ -25,7 +25,7 @@ public class NessCommands implements CommandExecutor {
 
 	private String getPermission(String arg) {
 		if (arg == null) {
-			return "ness.command.usage";
+			return "ness.command.version";
 		}
 		switch (arg) {
 		case "reload":
@@ -37,13 +37,15 @@ public class NessCommands implements CommandExecutor {
 		case "clear":
 			return "ness.command.clear";
 		case "debug":
-			return "ness.command.clear";
+			return "ness.command.debug";
 		case "gui":
 			return "ness.command.gui";
 		case "debugvelocity":
 			return "ness.command.debugvelocity";
+		case "mouserecord":
+			return "ness.command.mouserecord";
 		default:
-			return "ness.command.usage";
+			return "ness.command.version";
 		}
 	}
 
@@ -107,14 +109,14 @@ public class NessCommands implements CommandExecutor {
 				case "debugvelocity":
 					if (sender instanceof Player) {
 						Player p = (Player) sender;
-						if(args.length > 1) {
+						if (args.length > 1) {
 							p.setVelocity(p.getLocation().getDirection().multiply(Double.valueOf(args[1])));
 							p.sendMessage("Done!");
 						}
 					} else {
 						this.sendMessage(sender, "&7Sorry but to use this command you have to be a Player");
 					}
-					break;	
+					break;
 				case "mouserecord":
 					if (sender instanceof Player) {
 						NessPlayer np = ness.getCheckManager().getPlayer((Player) sender);

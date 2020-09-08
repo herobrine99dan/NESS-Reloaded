@@ -18,7 +18,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class MouseRecord implements Listener {
 
-	private final static int SIZE = 60;
+	private final static int SIZE = 100;
 	NESSAnticheat ness;
 
 	public MouseRecord(NESSAnticheat nessAnticheat) {
@@ -36,7 +36,7 @@ public class MouseRecord implements Listener {
 		if (np.isMouseRecord()) {
 			if (np.mouseRecordValues.size() < SIZE) {
 				np.mouseRecordValues
-						.add(new Point(Math.round(Math.abs(to.getYaw())), Math.round(Math.abs(to.getPitch()))));
+						.add(new Point((int) Math.round(Math.abs(np.getMovementValues().yawDiff)), (int) Math.round(Math.abs(np.getMovementValues().pitchDiff))));
 			} else if (np.mouseRecordValues.size() == SIZE) {
 				np.getPlayer().sendMessage("Rendering!");
 				render(np);
@@ -47,10 +47,13 @@ public class MouseRecord implements Listener {
 	}
 
 	public void render(NessPlayer np) {
-		BufferedImage img = new BufferedImage(400, 320, BufferedImage.TYPE_INT_RGB);
+		BufferedImage img = new BufferedImage(1000, 920, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = img.createGraphics();
 		g.setBackground(Color.BLACK);
 		g.setColor(Color.WHITE);
+		for (Point p : np.mouseRecordValues) {
+			p.setLocation(p.x * 15, p.y * 15);
+		}
 		Point lastValue = new Point(0, 0);
 		for (Point p : np.mouseRecordValues) {
 			g.drawLine((int) lastValue.getX(), (int) lastValue.getY(), (int) p.getX(), (int) p.getY());
@@ -63,8 +66,9 @@ public class MouseRecord implements Listener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(getAverage(np.mouseRecordValues));
-		System.out.println(np.mouseRecordValues);
+		if(np.isDevMode()) {
+			System.out.println(getAverage(np.mouseRecordValues));
+		}
 	}
 
 	private double getAverage(List<Point> list) {

@@ -18,7 +18,7 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 
 	@Override
 	protected void checkAsyncPeriodic(NessPlayer player) {
-		player.AimbotPatternCounter = 0;
+		
 	}
 
 	@Override
@@ -28,7 +28,6 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 		}
 		GCDCheck(e);
 		Check2(e);
-		Check3(e);
 	}
 
 	public void GCDCheck(ReceivedPacketEvent event) {
@@ -51,20 +50,26 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 				player.lastGCD = gcd;
 			}
 			double result = Math.abs(gcd - player.lastGCD);
+			double sum = 0;
+			for(double d : player.pitchDiff) {
+				sum += Math.atan(d);
+			}
+			sum /= player.pitchDiff.size();
+			if(player.isDevMode()){
+				player.getPlayer().sendMessage("Sum: " + sum);
+			}
 			if (result < 0.01) {
-				
+
 				final double sensitivity = GCDUtils.getSensitivity(gcd);
 				if (player.isDevMode()) {
 					player.getPlayer().sendMessage("Setting Sensitivity to: " + sensitivity);
-					player.getPlayer().sendMessage("Pitch: " + pitch / gcd);
 				}
 				player.sensitivity = sensitivity;
 			}
-			if (result > 0.001 || gcd < 0.0001) {
+			if ((result > 0.001 || gcd < 0.0001)) {
 				// TODO Trying to fix Cinematic Mode
 				player.setViolation(new Violation("Aimbot", "GCDCheck" + " GCD: " + (float) gcd), null);
 			}
-			// formatter.format(result));
 			player.pitchDiff.clear();
 			player.lastGCD = gcd;
 		}
@@ -105,17 +110,5 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 			return true;
 		}
 		return false;
-	}
-
-	public void Check3(ReceivedPacketEvent e) {
-		NessPlayer np = e.getNessPlayer();
-		final double yaw = Math.abs(np.getMovementValues().yawDiff);
-		if (Math.round(Math.abs(yaw)) == Math.abs(yaw) && yaw < 340 && yaw > 0) {
-			np.AimbotPatternCounter = np.AimbotPatternCounter + 1;
-			if (np.AimbotPatternCounter > 4) {
-				np.setViolation(new Violation("Aimbot", "Pattern3"), e);
-				np.AimbotPatternCounter = 0;
-			}
-		}
 	}
 }
