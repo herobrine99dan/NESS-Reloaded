@@ -174,7 +174,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		if (player.isInsideVehicle() && player.getVehicle().getType() == EntityType.BOAT)
 			maxSpd = 2.8;
 		if (Utility.specificBlockNear(to.clone(), "stair")) {
-			maxSpd += 0.3;
+			maxSpd += 0.4;
 		}
 		if (hozDist > maxSpd && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED)
 				&& PlayerManager.timeSince("wasFlight", player) >= 2000

@@ -74,6 +74,7 @@ enabled-checks:
   - 'ImpossibleBreak'
 #  - 'SpeedAir'
   - 'ScaffoldFalseTarget'
+  - 'ScaffoldIllegalTarget'
   - 'ScaffoldAngle'
 
 #
@@ -254,7 +255,7 @@ checks:
 # Effectiveness: High
 #
   morepackets:
-    maxpackets: 65
+    maxpackets: 68
   playeresp:
     minangle: -0.05
 

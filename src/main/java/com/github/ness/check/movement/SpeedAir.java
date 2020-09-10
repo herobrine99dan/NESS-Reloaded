@@ -44,6 +44,10 @@ public class SpeedAir extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.specificBlockNear(player.getLocation().clone(), "ice") || nessPlayer.getTimeSinceLastWasOnIce() < 1500) {
 			max *= 1.4;
 		}
+		if (Utility.getMaterialName(player.getLocation().clone().add(0, -0.6, 0)).contains("slime")
+				|| Utility.specificBlockNear(player.getLocation().clone(), "slime")) {
+			max *= 1.2;
+		}
 		return max;
 	}
 

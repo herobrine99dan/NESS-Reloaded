@@ -32,6 +32,7 @@ public class FlyHighJump extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.specificBlockNear(e.getTo().clone(), "slab")
 				|| Utility.specificBlockNear(e.getTo().clone(), "stair")
 				|| Utility.specificBlockNear(e.getTo().clone(), "water")
+				|| Utility.specificBlockNear(e.getTo().clone(), "lava")
 				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(p.getLocation().clone().add(0, -0.5, 0)))
 						.contains("scaffolding")
 				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(p.getLocation().clone().add(0, 0.5, 0)))

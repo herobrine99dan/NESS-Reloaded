@@ -233,6 +233,8 @@ public class NessPlayer implements AutoCloseable {
 						if (!block.getBlock().getType().isSolid()) {
 							hasSetback = true;
 							player.teleport(block, TeleportCause.PLUGIN);
+						} else if(!block.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
+							player.teleport(block.add(0, 0.4, 0), TeleportCause.PLUGIN);
 						}
 					}
 					setBackTicks = current;

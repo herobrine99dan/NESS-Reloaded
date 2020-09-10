@@ -68,7 +68,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			}
 			if (Utility.specificBlockNear(e.getDamager().getLocation(), "water") || MathUtils
 					.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
-				maxReach += 0.3D;
+				maxReach += 0.4D;
 			}
 			maxReach += (Utility.getPing(player) / 100) / 15;
 			if ((range > maxReach && range < 6.5D)
