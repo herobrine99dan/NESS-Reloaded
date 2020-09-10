@@ -34,13 +34,7 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 		// float yaw = to.getYaw() - from.getYaw();
 		NessPlayer player = event.getNessPlayer();
 		float pitch = (float) Math.abs(player.getMovementValues().pitchDiff);
-		if (Math.abs(pitch) >= 10 || Math.abs(pitch) < 0.05) {
-			return;
-		}
-		if (pitch == 0.0) {
-			return;
-		}
-		if (Math.abs(player.getMovementValues().getTo().getPitch()) == 90) {
+		if (Math.abs(pitch) >= 10 || Math.abs(pitch) < 0.05 || pitch == 0.0 || !player.isTeleported() || Math.abs(player.getMovementValues().getTo().getPitch()) == 90) {
 			return;
 		}
 		player.pitchDiff.add(pitch);

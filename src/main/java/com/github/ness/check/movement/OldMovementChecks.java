@@ -207,7 +207,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			punish(event, "IllegalMovement", "(OnMove)");
 		} // Changing isOnGround method, check in server side
 		if (!(player.isSneaking() && below.name().toLowerCase().contains("ladder")) && !player.isFlying()
-				&& !player.isOnGround() && to.getY() % 1.0 == 0 && nessPlayer.nanoTimeDifference(PlayerAction.JOIN) >= 1000
+				&& !player.isOnGround() && to.getY() % 1.0 == 0
+				&& nessPlayer.nanoTimeDifference(PlayerAction.JOIN) >= 1000
 				&& PlayerManager.timeSince("teleported", player) >= 5000
 				&& !below.toString().toLowerCase().contains("stairs")
 				&& !below.toString().toLowerCase().contains("slime")) {
@@ -232,13 +233,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						&& nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) >= 2000
 						&& !bottom.name().toLowerCase().contains("slime")) {
 					punish(event, "Fly", "NoGround(OnMove)");
-				}
-				if (hozDist == 0 && !player.hasPotionEffect(PotionEffectType.JUMP)
-						&& PlayerManager.timeSince("wasFlight", player) >= 3000
-						&& PlayerManager.timeSince("sincePlace", player) >= 1000
-						&& bottom.name().toLowerCase().contains("slime") && !cactus
-						&& nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) >= 500) {
-					punish(event, "Fly", "InvalidDistance5(OnMove)");
 				}
 			} else {
 				step: if (to.getY() - from.getY() > .6 && !player.isFlying() && groundAround
