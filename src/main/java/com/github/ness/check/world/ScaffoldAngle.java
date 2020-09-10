@@ -11,6 +11,7 @@ import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
 
 public class ScaffoldAngle extends AbstractCheck<BlockPlaceEvent> {
+	private static final double MAX_ANGLE = Math.toRadians(90);
 
 	public ScaffoldAngle(CheckManager manager) {
 		super(manager, CheckInfo.eventOnly(BlockPlaceEvent.class));
@@ -20,7 +21,6 @@ public class ScaffoldAngle extends AbstractCheck<BlockPlaceEvent> {
 	@Override
 	protected void checkEvent(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
-		final double MAX_ANGLE = Math.toRadians(90);
 		BlockFace placedFace = event.getBlock().getFace(event.getBlockAgainst());
 		if(placedFace == null) {
 			return;

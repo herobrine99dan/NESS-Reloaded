@@ -3,6 +3,7 @@ package com.github.ness.data;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.util.NumberConversions;
 
 import com.github.ness.utility.MathUtils;
 
@@ -68,6 +69,19 @@ public class ImmutableLoc {
 	public static ImmutableLoc of(Location location, String world) {
 		return new ImmutableLoc(world, location.getX(), location.getY(), location.getZ(), location.getYaw(),
 				location.getPitch());
+	}
+
+	public double distance(ImmutableLoc o) {
+		return Math.sqrt(distanceSquared(o));
+	}
+
+	public double distanceSquared(ImmutableLoc o) {
+		if (o == null)
+			throw new IllegalArgumentException("Cannot measure distance to a null location");
+		if (o.getWorld() == null || getWorld() == null)
+			throw new IllegalArgumentException("Cannot measure distance to a null world");
+		return NumberConversions.square(this.x - o.x) + NumberConversions.square(this.y - o.y)
+				+ NumberConversions.square(this.z - o.z);
 	}
 
 	/**

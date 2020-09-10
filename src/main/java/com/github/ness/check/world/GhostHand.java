@@ -39,43 +39,31 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent> {
 		Player player = event.getPlayer();
 		final Location loc = player.getLocation();
 		Block targetBlock = player.getTargetBlock((Set<Material>) null, 7);
-		if (event.getAction() != Action.LEFT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_BLOCK)
-			return;
-		if (!targetBlock.getType().isSolid())
-			return;
-		if (targetBlock.equals(event.getClickedBlock())) {
-			return;
-		}
 		NessPlayer p = manager.getPlayer(event.getPlayer());
-		if (p.getMovementValues().XZDiff > 0.15) {
-			return;
-		}
-		if (targetBlock.getLocation().getBlock().getType().name().toLowerCase().contains("slab")) {
-			return;
-		}
-		if(Utility.getMaterialName(targetBlock.getLocation()).contains("sea")) {
-			return;
-		}
 		if (targetBlock.getLocation().add(0, 1, 0).getBlock().getType().name().toLowerCase().contains("slab")) {
 			return;
 		}
-		if(event.getClickedBlock() == null || event.getBlockFace() == null) {
+		if (event.getClickedBlock() == null || event.getBlockFace() == null) {
 			return;
 		}
-		Location block = event.getClickedBlock().getLocation().add(event.getBlockFace().getModX(),
-				event.getBlockFace().getModY(), event.getBlockFace().getModZ());
-		Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
+		if ((event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK)
+				&& targetBlock.getType().isSolid() && targetBlock.getType().isOccluding()
+				&& p.getMovementValues().XZDiff < 0.15 && !targetBlock.equals(event.getClickedBlock())) {
+			Location block = event.getClickedBlock().getLocation().add(event.getBlockFace().getModX(),
+					event.getBlockFace().getModY(), event.getBlockFace().getModZ());
+			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
 
-			Location loc1 = player.getLocation();
-			float grade = Math.abs(loc.getYaw() - loc1.getYaw()) + Math.abs(loc.getPitch() - loc1.getPitch());
+				Location loc1 = player.getLocation();
+				float grade = Math.abs(loc.getYaw() - loc1.getYaw()) + Math.abs(loc.getPitch() - loc1.getPitch());
 
-			if (!(grade == 0)) {
-				return;
-			}
-			if (block.getBlock().getType().isSolid() || !targetBlock.equals(event.getClickedBlock())) {
-				p.setViolation(new Violation("GhostHand", ""), event);
-			}
-		}, 2L);
+				if (!(grade == 0)) {
+					return;
+				}
+				if (block.getBlock().getType().isSolid() || !targetBlock.equals(event.getClickedBlock())) {
+					p.setViolation(new Violation("GhostHand", ""), event);
+				}
+			}, 2L);
+		}
 	}
 
 }

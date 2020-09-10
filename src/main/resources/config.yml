@@ -71,6 +71,7 @@ enabled-checks:
   - 'NoWeb'
   - 'NameExploit'
   - 'OldMovementChecks'
+  - 'ImpossibleBreak'
 #  - 'SpeedAir'
   - 'ScaffoldFalseTarget'
   - 'ScaffoldAngle'

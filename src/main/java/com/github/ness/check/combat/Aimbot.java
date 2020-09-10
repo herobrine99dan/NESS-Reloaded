@@ -23,7 +23,7 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 
 	@Override
 	protected void checkEvent(ReceivedPacketEvent e) {
-		if (!e.getPacket().getName().toLowerCase().contains("look")) {
+		if (!e.getPacket().getName().toLowerCase().contains("look") || e.getNessPlayer().isTeleported()) {
 			return;
 		}
 		GCDCheck(e);
@@ -50,14 +50,6 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 				player.lastGCD = gcd;
 			}
 			double result = Math.abs(gcd - player.lastGCD);
-			double sum = 0;
-			for(double d : player.pitchDiff) {
-				sum += Math.atan(d);
-			}
-			sum /= player.pitchDiff.size();
-			if(player.isDevMode()){
-				player.getPlayer().sendMessage("Sum: " + sum);
-			}
 			if (result < 0.01) {
 
 				final double sensitivity = GCDUtils.getSensitivity(gcd);

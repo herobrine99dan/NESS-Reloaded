@@ -33,7 +33,7 @@ public class PlayerESP extends AbstractCheck<PlayerInteractEvent> {
 					for (Player tohide : Bukkit.getOnlinePlayers()) {
 						if ((Utility.getAngle(cheater, tohide.getLocation(), direction) < minangle
 								|| !cheater.hasLineOfSight(tohide))
-								&& cheater.getLocation().distance(tohide.getLocation()) > 10) {
+								&& cheater.getLocation().distance(tohide.getLocation()) > 13) {
 							cheater.hidePlayer(NESSAnticheat.getInstance(), tohide);
 						} else {
 							cheater.showPlayer(NESSAnticheat.getInstance(), tohide);

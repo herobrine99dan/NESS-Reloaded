@@ -34,7 +34,7 @@ public class ScaffoldFalseTarget extends AbstractCheck<BlockPlaceEvent> {
 			if (!event.getBlock().getLocation().equals(target.getLocation()) && !event.isCancelled()
 					&& target.getType().isSolid() && !target.getType().name().toLowerCase().contains("sign")
 					&& !target.getType().toString().toLowerCase().contains("fence")
-					&& player.getLocation().getY() > event.getBlock().getLocation().getY()) {
+					&& player.getLocation().getY() > event.getBlock().getLocation().getY() && target.getType().isOccluding()) {
 				manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold", "Impossible1"), event);
 			}
 		}

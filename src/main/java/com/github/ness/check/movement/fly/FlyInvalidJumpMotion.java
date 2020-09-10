@@ -37,6 +37,7 @@ public class FlyInvalidJumpMotion extends AbstractCheck<PlayerMoveEvent> {
 				|| event.getTo().clone().add(-0.3, 1.9, 0.3).getBlock().getType().isSolid()
 				|| Utility.specificBlockNear(event.getTo().clone(), "liquid") || Utility.hasflybypass(player)
 				|| Utility.specificBlockNear(player.getLocation().clone(), "snow")
+				|| Utility.groundAround(to.clone().add(0, 1.8, 0))
 				|| Utility.specificBlockNear(player.getLocation().clone(), "chest")
 				|| Utility.specificBlockNear(player.getLocation().clone(), "ladder")
 				|| Utility.specificBlockNear(player.getLocation().clone(), "pot")

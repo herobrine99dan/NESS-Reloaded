@@ -26,16 +26,16 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 	 */
 	@Override
 	protected void checkEvent(ReceivedPacketEvent e) {
-		NessPlayer np = e.getNessPlayer();
+		NessPlayer nessPlayer = e.getNessPlayer();
 		if (!e.getPacket().getName().toLowerCase().contains("position")) {
 			return;
 		}
 
-		if (np.lastPacketTime != -1) {
-			final long difference = System.currentTimeMillis() - np.lastPacketTime;
+		if (nessPlayer.lastPacketTime != -1) {
+			final long difference = System.currentTimeMillis() - nessPlayer.lastPacketTime;
 
 			if (difference >= 1000) {
-				final int ping = Utility.getPing(np.getPlayer());
+				final int ping = Utility.getPing(nessPlayer.getPlayer());
 				double maxPackets = MAX_PACKETS_PER_TICK;
 				if (ping > 100 && ping < 300) {
 					float pingresult = ping / 100;
@@ -50,7 +50,7 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 				 * I have tested the value this gives and the normal client sends about 1 packet
 				 * per tick.
 				 */
-				final double movementsPerTick = ((double) np.movementPackets / ((double) difference / 1000.0)) / 20.0;
+				final double movementsPerTick = ((double) nessPlayer.movementPackets / ((double) difference / 1000.0)) / 20.0;
 				if (movementsPerTick > maxPackets) {
 					// The player is sending more packets than allowed.
 					final double perecentageDifference = ((movementsPerTick - maxPackets) / maxPackets) * 100.0;
@@ -59,31 +59,31 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 					 * If the percentage difference is over 7% of what is allowed, the player is
 					 * likely to be cheating.
 					 */
-					if (perecentageDifference > 7.0) {
-						np.setViolation(new Violation("BadPackets",
+					if (perecentageDifference > 7.0 && !nessPlayer.isTeleported()) {
+						nessPlayer.setViolation(new Violation("BadPackets",
 								Math.round(perecentageDifference) + " packets: " + movementsPerTick), e);
 					}
 				} else if (movementsPerTick > 0.084 && movementsPerTick < 0.9) {
-					double result = Math.abs(np.lastPacketsPerTicks - movementsPerTick);
-					if (np.isDevMode()) {
-						np.getPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
+					double result = Math.abs(nessPlayer.lastPacketsPerTicks - movementsPerTick);
+					if (nessPlayer.isDebugMode()) {
+						nessPlayer.getPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
 					}
 					if (result < 0.001) {
-						np.setViolation(new Violation("BadPackets",
+						nessPlayer.setViolation(new Violation("BadPackets",
 								"[EXPERIMENTAL] Packets: " + movementsPerTick + " Result: " + result), null);
 					}
 				}
 
 				// Reset everything.
-				np.lastPacketsPerTicks = (float) movementsPerTick;
-				np.lastPacketTime = System.currentTimeMillis();
-				np.movementPackets = 0;
+				nessPlayer.lastPacketsPerTicks = (float) movementsPerTick;
+				nessPlayer.lastPacketTime = System.currentTimeMillis();
+				nessPlayer.movementPackets = 0;
 			}
 		} else {
-			np.lastPacketTime = System.currentTimeMillis();
+			nessPlayer.lastPacketTime = System.currentTimeMillis();
 		}
 
-		np.movementPackets++;
+		nessPlayer.movementPackets++;
 	}
 
 }

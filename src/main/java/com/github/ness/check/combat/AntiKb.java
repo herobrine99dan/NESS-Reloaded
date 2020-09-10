@@ -30,17 +30,19 @@ public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 	 */
 	public void Check(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof Player) {
-			Player p = (Player) event.getEntity();
-			final Location from = p.getLocation();
-			if(Utility.isClimbableBlock(p.getLocation().getBlock()) || Utility.specificBlockNear(from.clone(), "web") || Utility.hasKbBypass(p)) {
+			Player player = (Player) event.getEntity();
+			final Location from = player.getLocation();
+			if (Utility.isClimbableBlock(from.getBlock()) || Utility.specificBlockNear(from.clone(), "web")
+					|| Utility.hasKbBypass(player)) {
 				return;
 			}
 			Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
-				Location to = p.getLocation();
-				if (Math.abs(to.distanceSquared(from)) < 0.1 && !Utility.specificBlockNear(to, "water")) {
-					manager.getPlayer(p).setViolation(new Violation("AntiKb", ""), null);
+				Location to = player.getLocation();
+				if (to.distanceSquared(from) < .4 && !player.getLocation().add(0, 2, 0).getBlock().getType().isSolid()
+						&& !player.getLocation().getBlock().getType().isSolid()) {
+					manager.getPlayer(player).setViolation(new Violation("AntiKb", ""), null);
 				}
-			}, 10L);
+			}, 5L);
 		}
 	}
 }

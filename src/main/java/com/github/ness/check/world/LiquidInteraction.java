@@ -1,4 +1,4 @@
-package com.github.ness.check.misc;
+package com.github.ness.check.world;
 
 import java.util.List;
 

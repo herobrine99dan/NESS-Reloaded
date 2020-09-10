@@ -88,6 +88,7 @@ public class NessPlayer implements AutoCloseable {
 	public double lastSpeedDist;
 	public ImmutableLoc velocity;
 	public Set<Integer> attackedEntities;
+	public ImmutableLoc lastEntityAttackedLoc;
 	long setBackTicks;
 	public boolean hasSetback;
 	// Used in OldMovementChecks
@@ -131,6 +132,7 @@ public class NessPlayer implements AutoCloseable {
 		this.teleported = false;
 		this.lastPacketTime = 0;
 		this.blockPlace = 0;
+		this.lastEntityAttackedLoc = new ImmutableLoc(player.getWorld().getName(), 0, 0, 0, 0, 0);
 		this.CPS = 0;
 		this.setBackTicks = 0;
 		this.mouseRecordValues = new ArrayList<Point>();

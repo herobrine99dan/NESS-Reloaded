@@ -70,7 +70,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 					.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
 				maxReach += 0.3D;
 			}
-			maxReach += (Utility.getPing(player) / 100) / 5;
+			maxReach += (Utility.getPing(player) / 100) / 15;
 			if ((range > maxReach && range < 6.5D)
 					|| Utility.getDistance3D(player.getLocation(), entity.getLocation()) > 5) {
 				this.punish(e, player, "Reach: " + range);
@@ -145,7 +145,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 				NessPlayer nessPlayer = this.getNessPlayer((Player) e.getDamager());
 				double angle = Utility.getAngle((Player) e.getDamager(), e.getEntity().getLocation(),
 						nessPlayer.getMovementValues().getTo().getDirectionVector());
-				if (angle < -0.35) {
+				if (angle < -0.4) {
 					punish(e, (Player) e.getDamager(), "HitBox");
 				}
 			}

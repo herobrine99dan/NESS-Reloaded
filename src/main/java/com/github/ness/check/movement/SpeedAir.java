@@ -21,26 +21,27 @@ public class SpeedAir extends AbstractCheck<PlayerMoveEvent> {
 
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
-		Player p = event.getPlayer();
-		NessPlayer nessPlayer = this.getNessPlayer(p);
-		Location to = event.getTo().clone();
+		Player player = event.getPlayer();
+		NessPlayer nessPlayer = this.getNessPlayer(player);
 		double xDiff = nessPlayer.getMovementValues().xDiff;
 		double zDiff = nessPlayer.getMovementValues().zDiff;
-		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
-			xDiff -= nessPlayer.velocity.getX();
-			zDiff -= nessPlayer.velocity.getZ();
+		double total = Math.abs(xDiff) + Math.abs(zDiff);
+		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 2000) {
+			total -= nessPlayer.velocity.getX();
+			total -= nessPlayer.velocity.getZ();
 		}
-		final double total = Math.abs(xDiff) + Math.abs(zDiff);
-		if (nessPlayer.airTicks > 4 && (Math.abs(xDiff) > getBaseSpeed(p) || Math.abs(zDiff) > getBaseSpeed(p))) {
+		final double maxDist = getBaseSpeed(nessPlayer);
+		if (nessPlayer.airTicks > 4 && (Math.abs(xDiff) > maxDist || Math.abs(zDiff) > maxDist) && !Utility.hasflybypass(player) && !player.getAllowFlight()) {
 			nessPlayer.setViolation(new Violation("Speed", "AirCheck Dist: " + total), event);
 		}
 	}
 
-	public static float getBaseSpeed(Player player) {
+	public static float getBaseSpeed(NessPlayer nessPlayer) {
+		Player player = nessPlayer.getPlayer();
 		float max = 0.36f + (Utility.getPotionEffectLevel(player, PotionEffectType.SPEED) * 0.062f)
 				+ ((player.getWalkSpeed() - 0.2f) * 1.6f);
 		if (Utility.getMaterialName(player.getLocation().clone().add(0, -0.6, 0)).contains("ice")
-				|| Utility.specificBlockNear(player.getLocation().clone(), "ice")) {
+				|| Utility.specificBlockNear(player.getLocation().clone(), "ice") || nessPlayer.getTimeSinceLastWasOnIce() < 1500) {
 			max *= 1.4;
 		}
 		return max;
