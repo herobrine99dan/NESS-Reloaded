@@ -91,6 +91,8 @@ public class NessPlayer implements AutoCloseable {
 	public ImmutableLoc lastEntityAttackedLoc;
 	long setBackTicks;
 	public boolean hasSetback;
+	public int movedInvItemsLastCount;
+	public int movedInvItems;
 	// Used in OldMovementChecks
 
 	private long lastWasOnGround = System.nanoTime() - Duration.ofHours(1L).toNanos();
@@ -156,7 +158,8 @@ public class NessPlayer implements AutoCloseable {
 	}
 
 	public void updateMovementValue(MovementValues values) {
-		if (!Utility.isMathematicallyOnGround(values.getTo().getY())) {
+		if (!Utility.isMathematicallyOnGround(values.getTo().getY())
+				&& !Utility.groundAround(values.getTo().toBukkitLocation())) {
 			airTicks++;
 		} else {
 			airTicks = 0;
@@ -233,7 +236,7 @@ public class NessPlayer implements AutoCloseable {
 						if (!block.getBlock().getType().isSolid()) {
 							hasSetback = true;
 							player.teleport(block, TeleportCause.PLUGIN);
-						} else if(!block.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
+						} else if (!block.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
 							player.teleport(block.add(0, 0.4, 0), TeleportCause.PLUGIN);
 						}
 					}
