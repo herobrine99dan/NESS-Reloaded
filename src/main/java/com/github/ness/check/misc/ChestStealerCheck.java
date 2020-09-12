@@ -37,8 +37,8 @@ public class ChestStealerCheck extends AbstractCheck<InventoryClickEvent> {
 	protected void checkEvent(InventoryClickEvent e) {
 		NessPlayer nessPlayer = this.getNessPlayer((Player) e.getWhoClicked());
 		final Inventory i1 = e.getWhoClicked().getInventory();
-		final Inventory i2 = e.getClickedInventory();
-		if (!i1.equals(i2) && e.getCurrentItem().getType() != Material.AIR) {
+		final Inventory i2 = e.getInventory();
+		if (i1 != i2 && e.getCurrentItem().getType() != Material.AIR) {
 		    nessPlayer.movedInvItems++;
 		    if (nessPlayer.movedInvItems > 4) {
 			nessPlayer.setViolation(new Violation("ChestStealer", "movedInventoryItems: " + nessPlayer.movedInvItems), null);
