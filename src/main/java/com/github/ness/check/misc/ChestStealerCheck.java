@@ -27,7 +27,7 @@ public class ChestStealerCheck extends AbstractCheck<InventoryClickEvent> {
 	protected void checkAsyncPeriodic(NessPlayer player) {
 		/*if (player.movedInvItemsLastCount == player.movedInvItems) {
 			player.setViolation(new Violation("ChestStealer", "movedInventoryItems: " + player.movedInvItems), null);
-		}
+		} // BAD CHECK.
 		player.movedInvItemsLastCount = player.movedInvItems;*/
 		player.movedInvItems = 0;
 	}
