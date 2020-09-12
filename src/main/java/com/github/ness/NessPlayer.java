@@ -91,7 +91,7 @@ public class NessPlayer implements AutoCloseable {
 	public ImmutableLoc lastEntityAttackedLoc;
 	long setBackTicks;
 	public boolean hasSetback;
-	public int movedInvItemsLastCount;
+	public long moveInvItemsLastTime;
 	public int movedInvItems;
 	// Used in OldMovementChecks
 

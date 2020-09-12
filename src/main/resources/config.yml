@@ -70,6 +70,7 @@ enabled-checks:
   - 'NoSlowDownFood'
   - 'NoWeb'
   - 'NameExploit'
+  - 'Phase'
   - 'OldMovementChecks'
   - 'ImpossibleBreak'
 #  - 'SpeedAir'

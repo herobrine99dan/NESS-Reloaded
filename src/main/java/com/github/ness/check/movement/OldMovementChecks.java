@@ -9,7 +9,6 @@ import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
@@ -22,7 +21,6 @@ import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.MSG;
 import com.github.ness.utility.PlayerManager;
-import com.github.ness.utility.ReflectionUtility;
 import com.github.ness.utility.Utility;
 
 public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
@@ -73,7 +71,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		double dTG = 0; // Distance to ground
 		boolean groundAround = Utility.groundAround(player.getLocation()), waterAround = false;
 		int radius = 2;
-		boolean ice = false, surrounded = true, lilypad = false, web = false, cactus = false;
+		boolean ice = false, surrounded = true, lilypad = false, web = false;
 
 		for (int x = -1; x <= 1; x++) {
 			for (int z = -1; z <= 1; z++) {
@@ -111,8 +109,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 					if (belowSel.name().toLowerCase().contains("web")) {
 						web = true;
 					}
-					if (belowSel.name().toLowerCase().contains("cactus"))
-						cactus = true;
 				}
 			}
 		}
@@ -177,9 +173,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			maxSpd += 0.4;
 		}
 		if (hozDist > maxSpd && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED)
-				&& PlayerManager.timeSince("wasFlight", player) >= 2000
-				&& nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) >= 2000
-				&& PlayerManager.timeSince("teleported", player) >= 100) {
+				&& !player.getAllowFlight() && nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) >= 2000
+				&& !nessPlayer.isTeleported()) {
 			if (groundAround) {
 				if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000) {
 					if (!player.isInsideVehicle()
@@ -208,8 +203,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		} // Changing isOnGround method, check in server side
 		if (!(player.isSneaking() && below.name().toLowerCase().contains("ladder")) && !player.isFlying()
 				&& !player.isOnGround() && to.getY() % 1.0 == 0
-				&& nessPlayer.nanoTimeDifference(PlayerAction.JOIN) >= 1000
-				&& PlayerManager.timeSince("teleported", player) >= 5000
+				&& nessPlayer.nanoTimeDifference(PlayerAction.JOIN) >= 1000 && !nessPlayer.isTeleported()
 				&& !below.toString().toLowerCase().contains("stairs")
 				&& !below.toString().toLowerCase().contains("slime")) {
 			if (!Utility.getPlayerUnderBlock(player).getType().name().toLowerCase().contains("ice")
@@ -236,8 +230,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				}
 			} else {
 				step: if (to.getY() - from.getY() > .6 && !player.isFlying() && groundAround
-						&& !player.hasPotionEffect(PotionEffectType.JUMP)
-						&& PlayerManager.timeSince("wasFlight", player) >= 100
+						&& !player.hasPotionEffect(PotionEffectType.JUMP) && !player.getAllowFlight()
 						&& !bottom.name().toLowerCase().contains("slime")) {
 					for (Entity ent : player.getNearbyEntities(2, 2, 2)) {
 						if (ent instanceof Boat)
@@ -249,7 +242,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 				}
 				if (from.getY() - to.getY() > 2 && fallDist == 0 && player.getVelocity().getY() < 0.45) {
 					punish(event, "Phase", "(OnMove)");
-
 				}
 			}
 			if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().toLowerCase().contains("water")
@@ -262,7 +254,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 										&& !Utility.specificBlockNear(to.clone(), "ice"))
 							punish(event, "Speed", "HighDistance");
 					} else if (PlayerManager.timeSince("breakTime", player) >= 2000
-							&& PlayerManager.timeSince("teleported", player) >= 500
+							&& !nessPlayer.isTeleported()
 							&& !below.name().toLowerCase().contains("piston")) {
 						if ((!player.isInsideVehicle()
 								|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))
