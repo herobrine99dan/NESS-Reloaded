@@ -158,8 +158,7 @@ public class NessPlayer implements AutoCloseable {
 	}
 
 	public void updateMovementValue(MovementValues values) {
-		if (!Utility.isMathematicallyOnGround(values.getTo().getY())
-				&& !Utility.groundAround(values.getTo().toBukkitLocation())) {
+		if (!Utility.isOnGround(values.getTo().toBukkitLocation().clone())) {
 			airTicks++;
 		} else {
 			airTicks = 0;

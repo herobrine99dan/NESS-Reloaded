@@ -145,10 +145,8 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 			punish(event, "NoClip", "(OnMove)");
 		}
 		// SPEED/FLIGHT CHECK
-		Double maxSpd = 0.4209;
+		double maxSpd = 0.4209;
 		Material mat = null;
-		if (player.isBlocking())
-			maxSpd = .1729;
 		if (player.isBlocking()) {
 			if (event.getTo().getY() % .5 == 0.0) {
 				maxSpd = .2;
@@ -172,28 +170,32 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		if (Utility.specificBlockNear(to.clone(), "stair")) {
 			maxSpd += 0.4;
 		}
+		if (nessPlayer.getTimeSinceLastWasOnIce() < 1300) {
+			maxSpd += 0.14;
+			if(Utility.groundAround(to.clone().add(0, 2, 0))) {
+				maxSpd += 0.3;
+			}
+		}
 		if (hozDist > maxSpd && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED)
 				&& !player.getAllowFlight() && nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) >= 2000
 				&& !nessPlayer.isTeleported()) {
 			if (groundAround) {
-				if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000) {
-					if (!player.isInsideVehicle()
-							|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE) {
-						Material small = player.getWorld().getBlockAt(player.getLocation().subtract(0, .1, 0))
-								.getType();
-						if (!player.getWorld().getBlockAt(from).getType().isSolid()
-								&& !player.getWorld().getBlockAt(to).getType().isSolid()) {
-							if (!small.name().toLowerCase().contains("trap")) {
-								if (devMode)
-									MSG.tell(player, "&9Dev> &7Speed amo: " + hozDist);
-								if (player.isBlocking()) {
-									punish(event, "NoSlowDown", "HighDistance(OnMove)");
-								} else {
-									punish(event, "Speed", "MaxDistance(OnMove)");
-								}
+				if (!player.isInsideVehicle()
+						|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE)) {
+					Material small = player.getWorld().getBlockAt(player.getLocation().subtract(0, .1, 0)).getType();
+					if (!player.getWorld().getBlockAt(from).getType().isSolid()
+							&& !player.getWorld().getBlockAt(to).getType().isSolid()) {
+						if (!small.name().toLowerCase().contains("trap")) {
+							if (devMode)
+								MSG.tell(player, "&9Dev> &7Speed amo: " + hozDist);
+							if (player.isBlocking()) {
+								punish(event, "NoSlowDown", "HighDistance(OnMove)");
+							} else {
+								punish(event, "Speed", "MaxDistance(OnMove)");
 							}
 						}
 					}
+
 				}
 			}
 		}
@@ -236,11 +238,11 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 						if (ent instanceof Boat)
 							break step;
 					}
-					if (player.getVelocity().getY() < 0.45) {
+					if (player.getVelocity().getY() < 0.42) {
 						punish(event, "Step", "(OnMove)");
 					}
 				}
-				if (from.getY() - to.getY() > 2 && fallDist == 0 && player.getVelocity().getY() < 0.45) {
+				if (from.getY() - to.getY() > 2 && fallDist == 0 && player.getVelocity().getY() < 0.42) {
 					punish(event, "Phase", "(OnMove)");
 				}
 			}
@@ -253,8 +255,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 								|| player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE
 										&& !Utility.specificBlockNear(to.clone(), "ice"))
 							punish(event, "Speed", "HighDistance");
-					} else if (PlayerManager.timeSince("breakTime", player) >= 2000
-							&& !nessPlayer.isTeleported()
+					} else if (PlayerManager.timeSince("breakTime", player) >= 2000 && !nessPlayer.isTeleported()
 							&& !below.name().toLowerCase().contains("piston")) {
 						if ((!player.isInsideVehicle()
 								|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))

@@ -46,7 +46,7 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent> {
 		if (event.getClickedBlock() == null || event.getBlockFace() == null) {
 			return;
 		}
-		if ((event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK)
+		if ((event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
 				&& targetBlock.getType().isSolid() && targetBlock.getType().isOccluding()
 				&& p.getMovementValues().XZDiff < 0.15 && !targetBlock.equals(event.getClickedBlock())) {
 			Location block = event.getClickedBlock().getLocation().add(event.getBlockFace().getModX(),
