@@ -6,7 +6,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
@@ -22,7 +22,7 @@ public class NewOldStrafe extends AbstractCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent e) {
 		Player p = e.getPlayer();
-		NessPlayer np = this.manager.getPlayer(p);
+		NESSPlayer np = this.manager.getPlayer(p);
 		Vector dir = e.getTo().clone().subtract(e.getFrom()).toVector();
 
 		double dist = distanceXZ(e.getFrom(), e.getTo());

@@ -3,12 +3,13 @@ package com.github.ness.check.combat;
 import java.util.concurrent.TimeUnit;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.GCDUtils;
+import com.github.ness.utility.Utility;
 
 public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 
@@ -17,7 +18,7 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 	}
 
 	@Override
-	protected void checkAsyncPeriodic(NessPlayer player) {
+	protected void checkAsyncPeriodic(NESSPlayer player) {
 		
 	}
 
@@ -28,11 +29,12 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 		}
 		GCDCheck(e);
 		Check2(e);
+		Check3(e);
 	}
 
 	public void GCDCheck(ReceivedPacketEvent event) {
 		// float yaw = to.getYaw() - from.getYaw();
-		NessPlayer player = event.getNessPlayer();
+		NESSPlayer player = event.getNessPlayer();
 		float pitch = (float) Math.abs(player.getMovementValues().pitchDiff);
 		if (Math.abs(pitch) >= 10 || Math.abs(pitch) < 0.05 || pitch == 0.0 || !player.isTeleported() || Math.abs(player.getMovementValues().getTo().getPitch()) == 90) {
 			return;
@@ -62,7 +64,7 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 	}
 
 	public void Check1(ReceivedPacketEvent e) {
-		NessPlayer np = e.getNessPlayer();
+		NESSPlayer np = e.getNessPlayer();
 		if (np.sensitivity == 0) {
 			return;
 		}
@@ -85,7 +87,7 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 	 * Check for some Aimbot Pattern
 	 */
 	public boolean Check2(ReceivedPacketEvent e) {
-		NessPlayer player = e.getNessPlayer();
+		NESSPlayer player = e.getNessPlayer();
 		float yawChange = (float) Math.abs(player.getMovementValues().yawDiff);
 		float pitchChange = (float) Math.abs(player.getMovementValues().pitchDiff);
 		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {
@@ -96,5 +98,20 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 			return true;
 		}
 		return false;
+	}
+	/**
+	 * Check for some Aimbot Pattern
+	 */
+	public void Check3(ReceivedPacketEvent e) {
+		NESSPlayer player = e.getNessPlayer();
+		float yawChange = (float) Math.abs(player.getMovementValues().yawDiff);
+		float pitchChange = (float) Math.abs(player.getMovementValues().pitchDiff);
+		if (yawChange > 2 && pitchChange < 0.3) {
+			player.setViolation(new Violation("Aimbot", "[Experimental] PerfectAura3"), e);
+		} else {
+			if(yawChange > 1.0f && Utility.round(yawChange, 100) * 0.1f == yawChange) {
+				player.setViolation(new Violation("Aimbot", "[Experimental] PerfectAura4"), e);
+			}
+		}
 	}
 }

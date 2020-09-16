@@ -28,7 +28,7 @@ public class MouseRecord implements Listener {
 
 	@EventHandler
 	public void onMove(PlayerMoveEvent e) {
-		NessPlayer np = ness.getCheckManager().getPlayer(e.getPlayer());
+		NESSPlayer np = ness.getCheckManager().getPlayer(e.getPlayer());
 		if(np.getMovementValues().yawDiff == 0.0) {
 			return;
 		}
@@ -46,7 +46,7 @@ public class MouseRecord implements Listener {
 		}
 	}
 
-	public void render(NessPlayer np) {
+	public void render(NESSPlayer np) {
 		BufferedImage img = new BufferedImage(1000, 920, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = img.createGraphics();
 		g.setBackground(Color.BLACK);

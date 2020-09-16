@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
@@ -33,7 +33,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	}
 
 	@Override
-	protected void checkAsyncPeriodic(NessPlayer player) {
+	protected void checkAsyncPeriodic(NESSPlayer player) {
 		player.attackedEntities.clear();
 	}
 
@@ -52,10 +52,10 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 		if (e.getDamager() instanceof Player) {
 			Player player = (Player) e.getDamager();
 			Entity entity = e.getEntity();
-			NessPlayer np = this.manager.getPlayer(player);
+			NESSPlayer np = this.manager.getPlayer(player);
 			double range = 0;
 			if (entity instanceof Player) {
-				NessPlayer damaged = this.getNessPlayer((Player) entity);
+				NESSPlayer damaged = this.getNessPlayer((Player) entity);
 				range = Math.hypot(np.getMovementValues().getTo().getX() - damaged.getMovementValues().getTo().getX(),
 						np.getMovementValues().getTo().getZ() - damaged.getMovementValues().getTo().getZ());
 			} else {
@@ -130,7 +130,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check5(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			if (e.getEntity() instanceof LivingEntity && Bukkit.getVersion().contains("1.8")) {
-				NessPlayer nessPlayer = this.getNessPlayer((Player) e.getDamager());
+				NESSPlayer nessPlayer = this.getNessPlayer((Player) e.getDamager());
 				nessPlayer.attackedEntities.add(e.getEntity().getEntityId());
 				if (nessPlayer.attackedEntities.size() > 2) {
 					punish(e, (Player) e.getDamager(), "MultiAura Entities: " + nessPlayer.attackedEntities.size());
@@ -142,7 +142,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	public void Check6(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
 			if (e.getEntity() instanceof LivingEntity) {
-				NessPlayer nessPlayer = this.getNessPlayer((Player) e.getDamager());
+				NESSPlayer nessPlayer = this.getNessPlayer((Player) e.getDamager());
 				double angle = Utility.getAngle((Player) e.getDamager(), e.getEntity().getLocation(),
 						nessPlayer.getMovementValues().getTo().getDirectionVector());
 				if (angle < -0.4) {

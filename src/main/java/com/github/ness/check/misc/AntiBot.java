@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
 
@@ -23,7 +23,7 @@ public class AntiBot extends AbstractCheck<AsyncPlayerPreLoginEvent> {
 	}
 
 	@Override
-	protected void checkAsyncPeriodic(NessPlayer player) {
+	protected void checkAsyncPeriodic(NESSPlayer player) {
 		this.playerCounter = 0;
 	}
 	

@@ -32,7 +32,7 @@ import com.github.ness.utility.Utility;
 import lombok.Getter;
 import lombok.Setter;
 
-public class NessPlayer implements AutoCloseable {
+public class NESSPlayer implements AutoCloseable {
 
 	/**
 	 * Bukkit Player corresponding to this NessPlayer
@@ -129,7 +129,7 @@ public class NessPlayer implements AutoCloseable {
 	public double lastSpeedPredictionDist; // For Speed Prediction
 	public boolean lastSpeedPredictionOnGround; // For Speed Prediction
 
-	NessPlayer(Player player, boolean devMode) {
+	NESSPlayer(Player player, boolean devMode) {
 		this.player = player;
 		this.teleported = false;
 		this.lastPacketTime = 0;
@@ -257,12 +257,12 @@ public class NessPlayer implements AutoCloseable {
 		if (webhookurl == null || webhookurl.isEmpty()) {
 			return;
 		}
-		NessConfig config = NESSAnticheat.getInstance().getNessConfig();
+		NESSConfig config = NESSAnticheat.getInstance().getNessConfig();
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				DiscordWebhook webhook = new DiscordWebhook(webhookurl);
-				Player hacker = NessPlayer.this.getPlayer();
+				Player hacker = NESSPlayer.this.getPlayer();
 				webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle(config.getDiscordTitle())
 						.setDescription(config.getDiscordDescription().replaceFirst("<hacker>", hacker.getName()))
 						.setColor(config.getDiscordColor()).addField("Cheater", hacker.getName(), true)

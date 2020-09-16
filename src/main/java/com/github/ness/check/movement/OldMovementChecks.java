@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
@@ -30,12 +30,12 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 	}
 
 	@Override
-	protected void checkAsyncPeriodic(NessPlayer player) {
+	protected void checkAsyncPeriodic(NESSPlayer player) {
 		player.noGround = 0;
 	}
 
 	private void punish(PlayerMoveEvent e, String cheat, String module) {
-		NessPlayer nessPlayer = manager.getPlayer(e.getPlayer());
+		NESSPlayer nessPlayer = manager.getPlayer(e.getPlayer());
 		if (nessPlayer.isTeleported()) {
 			return;
 		}
@@ -48,7 +48,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 
 		Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0, 1, 0)).getType();
 		Material bottom = null;
-		NessPlayer nessPlayer = this.manager.getPlayer(player);
+		NESSPlayer nessPlayer = this.manager.getPlayer(player);
 		final boolean devMode = nessPlayer.isDevMode();
 		final boolean debugMode = nessPlayer.isDebugMode();
 		Location from = event.getFrom(), to = event.getTo();
@@ -173,7 +173,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 		if (nessPlayer.getTimeSinceLastWasOnIce() < 1300) {
 			maxSpd += 0.14;
 			if(Utility.groundAround(to.clone().add(0, 2, 0))) {
-				maxSpd += 0.3;
+				maxSpd += 0.35;
 			}
 		}
 		if (hozDist > maxSpd && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED)

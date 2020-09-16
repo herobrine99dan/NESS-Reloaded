@@ -6,7 +6,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
@@ -28,7 +28,7 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 	void Check(PlayerInteractEvent e) {
 		Action action = e.getAction();
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-			NessPlayer player = manager.getPlayer(e.getPlayer());
+			NESSPlayer player = manager.getPlayer(e.getPlayer());
 			player.CPS++;
 			if (player.CPS > maxCPS && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
 				player.setViolation(new Violation("AutoClicker", "MaxCPS: " + player.CPS), e);
@@ -37,7 +37,7 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 	}
 
 	@Override
-	protected void checkAsyncPeriodic(NessPlayer player) {
+	protected void checkAsyncPeriodic(NESSPlayer player) {
 		player.CPS = 0;
 	}
 }

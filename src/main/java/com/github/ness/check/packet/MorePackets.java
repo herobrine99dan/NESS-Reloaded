@@ -3,7 +3,7 @@ package com.github.ness.check.packet;
 import java.util.concurrent.TimeUnit;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
@@ -22,7 +22,7 @@ public class MorePackets extends AbstractCheck<ReceivedPacketEvent> {
 	}
 
 	@Override
-	protected void checkAsyncPeriodic(NessPlayer player) {
+	protected void checkAsyncPeriodic(NESSPlayer player) {
 		player.normalPacketsCounter = 0;
 	}
 
@@ -30,7 +30,7 @@ public class MorePackets extends AbstractCheck<ReceivedPacketEvent> {
 	protected void checkEvent(ReceivedPacketEvent e) {
 		int ping = Utility.getPing(e.getNessPlayer().getPlayer());
 		int maxPackets = this.maxPackets + ((ping / 100) * 6);
-		NessPlayer np = e.getNessPlayer();
+		NESSPlayer np = e.getNessPlayer();
 		if (np == null) {
 			return;
 		}

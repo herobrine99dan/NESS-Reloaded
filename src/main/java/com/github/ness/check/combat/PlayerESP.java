@@ -9,7 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NESSAnticheat;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.data.ImmutableVector;
@@ -25,7 +25,7 @@ public class PlayerESP extends AbstractCheck<PlayerInteractEvent> {
 	}
 
 	@Override
-	protected void checkAsyncPeriodic(NessPlayer player) {
+	protected void checkAsyncPeriodic(NESSPlayer player) {
 		(new BukkitRunnable() {
 			public void run() {
 				for (Player cheater : Bukkit.getOnlinePlayers()) {

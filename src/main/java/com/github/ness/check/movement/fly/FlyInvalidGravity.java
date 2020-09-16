@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
@@ -32,7 +32,7 @@ public class FlyInvalidGravity extends AbstractCheck<PlayerMoveEvent> {
 	 * @param e
 	 */
 	public void Check(PlayerMoveEvent e) {
-		NessPlayer np = this.manager.getPlayer(e.getPlayer());
+		NESSPlayer np = this.manager.getPlayer(e.getPlayer());
 		Player p = e.getPlayer();
 		double y = np.getMovementValues().yDiff;
 		double yresult = y - p.getVelocity().getY();

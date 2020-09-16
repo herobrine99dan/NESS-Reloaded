@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NESSApiImpl;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.NESSApi;
 import com.github.ness.api.PlayerViolationEvent;
 import com.github.ness.api.Violation;
@@ -37,7 +37,7 @@ public class NESSExample extends JavaPlugin implements Listener {
 		String module = violation.getDetails();
 		int vl = e.getViolations();
 		e.setCancelled(true);
-		NessPlayer np = e.getNessplayer();
+		NESSPlayer np = e.getNessplayer();
 		Player p = np.getPlayer();
 	}
 

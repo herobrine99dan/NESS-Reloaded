@@ -1,12 +1,11 @@
 package com.github.ness.check.movement;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
@@ -22,7 +21,7 @@ public class SpeedAir extends AbstractCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-		NessPlayer nessPlayer = this.getNessPlayer(player);
+		NESSPlayer nessPlayer = this.getNessPlayer(player);
 		double xDiff = nessPlayer.getMovementValues().xDiff;
 		double zDiff = nessPlayer.getMovementValues().zDiff;
 		double total = Math.abs(xDiff) + Math.abs(zDiff);
@@ -36,7 +35,7 @@ public class SpeedAir extends AbstractCheck<PlayerMoveEvent> {
 		}
 	}
 
-	public static float getBaseSpeed(NessPlayer nessPlayer) {
+	public static float getBaseSpeed(NESSPlayer nessPlayer) {
 		Player player = nessPlayer.getPlayer();
 		float max = 0.36f + (Utility.getPotionEffectLevel(player, PotionEffectType.SPEED) * 0.062f)
 				+ ((player.getWalkSpeed() - 0.2f) * 1.6f);

@@ -4,7 +4,7 @@ import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
@@ -19,7 +19,7 @@ public class Phase extends AbstractCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		Block b = event.getTo().getBlock();
-		NessPlayer nessPlayer = this.getNessPlayer(event.getPlayer());
+		NESSPlayer nessPlayer = this.getNessPlayer(event.getPlayer());
 		if (b.getType().isOccluding() && !event.getPlayer().isInsideVehicle()
 				&& Utility.groundAround(event.getTo().clone()) && !nessPlayer.isTeleported()
 				&& nessPlayer.getMovementValues().XZDiff > 0.1) {

@@ -5,7 +5,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
@@ -21,7 +21,7 @@ public class FastSneak extends AbstractCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
-		NessPlayer nessPlayer = this.manager.getPlayer(p);
+		NESSPlayer nessPlayer = this.manager.getPlayer(p);
 		float dist = (float) Math.abs(nessPlayer.getMovementValues().XZDiff); // Our XZ Distance
 		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1300) {
 			dist -= Math.abs(nessPlayer.velocity.getX()) + Math.abs(nessPlayer.velocity.getZ());

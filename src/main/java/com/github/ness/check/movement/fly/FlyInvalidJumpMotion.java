@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
@@ -69,7 +69,7 @@ public class FlyInvalidJumpMotion extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.hasflybypass(player)) {
 			return;
 		}
-		NessPlayer nessPlayer = this.manager.getPlayer(player);
+		NESSPlayer nessPlayer = this.manager.getPlayer(player);
 		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1300) {
 			yDiff -= Math.abs(nessPlayer.velocity.getY());
 		}

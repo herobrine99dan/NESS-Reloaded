@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import com.github.ness.NESSAnticheat;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 
 public class ViolationGUI {
 
@@ -37,7 +37,7 @@ public class ViolationGUI {
 			i++;
 			List<String> lore = new ArrayList<String>();
 			lore.add("Cheats:");
-			NessPlayer np = NESSAnticheat.getInstance().getCheckManager().getPlayer(cheater);
+			NESSPlayer np = NESSAnticheat.getInstance().getCheckManager().getPlayer(cheater);
 			for (String s : np.checkViolationCounts.keySet()) {
 				lore.add(s + " VL: " + np.checkViolationCounts.getOrDefault(s, 0));
 			}

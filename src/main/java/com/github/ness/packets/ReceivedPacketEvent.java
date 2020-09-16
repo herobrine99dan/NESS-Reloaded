@@ -5,7 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.packets.wrappers.SimplePacket;
 
 import lombok.Getter;
@@ -15,11 +15,11 @@ public class ReceivedPacketEvent extends Event implements Cancellable {
 	@Getter
 	SimplePacket packet;
 	@Getter
-	NessPlayer nessPlayer;
+	NESSPlayer nessPlayer;
 
 	private static final HandlerList HANDLERS = new HandlerList();
 
-	public ReceivedPacketEvent(NessPlayer nessplayer, SimplePacket packet) {
+	public ReceivedPacketEvent(NESSPlayer nessplayer, SimplePacket packet) {
 		super(!Bukkit.isPrimaryThread());
 		this.packet = packet;
 		this.nessPlayer = nessplayer;

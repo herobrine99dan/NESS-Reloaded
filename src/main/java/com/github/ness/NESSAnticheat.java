@@ -22,7 +22,7 @@ public class NESSAnticheat extends JavaPlugin {
 	private ScheduledExecutorService executor;
 	static NESSAnticheat main;
 	@Getter
-	private NessConfig nessConfig;
+	private NESSConfig nessConfig;
 	@Getter
 	private CheckManager checkManager;
 	@Getter
@@ -38,7 +38,7 @@ public class NESSAnticheat extends JavaPlugin {
 		main = this;
 
 		mouseRecord = new MouseRecord(this);
-		nessConfig = new NessConfig("config.yml", "messages.yml");
+		nessConfig = new NESSConfig("config.yml", "messages.yml");
 		nessConfig.reloadConfiguration(this);
 		if (!nessConfig.checkConfigVersion()) {
 			getLogger().warning(
@@ -53,7 +53,7 @@ public class NESSAnticheat extends JavaPlugin {
 			getLogger().warning("Please use 1.16.2 Spigot Version since 1.16/1.16.1 has a lot of false flags");
 		}
 		executor = Executors.newSingleThreadScheduledExecutor();
-		getCommand("ness").setExecutor(new NessCommands(this));
+		getCommand("ness").setExecutor(new NESSCommands(this));
 		if (!new File(this.getDataFolder(), "records").exists()) {
 			new File(this.getDataFolder(), "records").mkdir();
 		}

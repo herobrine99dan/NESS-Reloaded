@@ -1,7 +1,7 @@
 package com.github.ness.check.packet;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
@@ -26,7 +26,7 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 	 */
 	@Override
 	protected void checkEvent(ReceivedPacketEvent e) {
-		NessPlayer nessPlayer = e.getNessPlayer();
+		NESSPlayer nessPlayer = e.getNessPlayer();
 		if (!e.getPacket().getName().toLowerCase().contains("position")) {
 			return;
 		}

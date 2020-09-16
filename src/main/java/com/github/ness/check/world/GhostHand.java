@@ -11,11 +11,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
-import com.github.ness.utility.Utility;
 
 public class GhostHand extends AbstractCheck<PlayerInteractEvent> {
 
@@ -39,7 +38,7 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent> {
 		Player player = event.getPlayer();
 		final Location loc = player.getLocation();
 		Block targetBlock = player.getTargetBlock((Set<Material>) null, 7);
-		NessPlayer p = manager.getPlayer(event.getPlayer());
+		NESSPlayer p = manager.getPlayer(event.getPlayer());
 		if (targetBlock.getLocation().add(0, 1, 0).getBlock().getType().name().toLowerCase().contains("slab")) {
 			return;
 		}

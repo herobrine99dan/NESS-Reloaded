@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
@@ -29,7 +29,7 @@ public class NoSlowDownBow extends AbstractCheck<EntityShootBowEvent> {
 			if (Utility.hasflybypass(o)) {
 				return;
 			}
-			NessPlayer p = manager.getPlayer(o);
+			NESSPlayer p = manager.getPlayer(o);
 			double distance = p.getMovementValues().XZDiff;
 			/*
 			 * if (o.isSprinting() || failed==1) { e.setCancelled(true);

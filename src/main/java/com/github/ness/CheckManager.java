@@ -21,7 +21,7 @@ import com.github.ness.check.AbstractCheck;
 
 public class CheckManager implements AutoCloseable {
 
-	private final Cache<UUID, NessPlayer> playerCache = Caffeine.newBuilder().expireAfterAccess(Duration.ofMinutes(5L)).build();
+	private final Cache<UUID, NESSPlayer> playerCache = Caffeine.newBuilder().expireAfterAccess(Duration.ofMinutes(5L)).build();
 
 	final CoreListener coreListener;
 
@@ -141,10 +141,10 @@ public class CheckManager implements AutoCloseable {
 	 * @param player the corresponding player
 	 * @return the ness player, never null
 	 */
-	public NessPlayer getPlayer(Player player) {
+	public NESSPlayer getPlayer(Player player) {
 		return playerCache.get(player.getUniqueId(), (u) -> {
 			logger.log(Level.FINE, "Adding player {0}", player);
-			return new NessPlayer(player, ness.getNessConfig().isDevMode());
+			return new NESSPlayer(player, ness.getNessConfig().isDevMode());
 		});
 	}
 	
@@ -164,7 +164,7 @@ public class CheckManager implements AutoCloseable {
 	 * 
 	 * @param action what to do
 	 */
-	public void forEachPlayer(Consumer<NessPlayer> action) {
+	public void forEachPlayer(Consumer<NESSPlayer> action) {
 		playerCache.asMap().values().forEach(action);
 	}
 

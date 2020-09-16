@@ -6,7 +6,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NESSAnticheat;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
@@ -32,7 +32,7 @@ public class FlyFalseGround extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.specificBlockNear(e.getTo(), "snow") || NESSAnticheat.getInstance().getVersion() > 1152) {
 			return;
 		}
-		NessPlayer nessPlayer = this.getNessPlayer(player);
+		NESSPlayer nessPlayer = this.getNessPlayer(player);
 		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1500 && nessPlayer.velocity.getY() > 0.34) {
 			return;
 		}

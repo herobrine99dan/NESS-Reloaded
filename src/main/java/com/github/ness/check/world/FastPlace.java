@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
@@ -21,7 +21,7 @@ public class FastPlace extends AbstractCheck<BlockPlaceEvent> {
 	}
 
 	@Override
-	protected void checkAsyncPeriodic(NessPlayer player) {
+	protected void checkAsyncPeriodic(NESSPlayer player) {
 		player.blockPlace = 0;
 	}
 
@@ -36,7 +36,7 @@ public class FastPlace extends AbstractCheck<BlockPlaceEvent> {
 	 * @param event
 	 */
 	public void Check(BlockPlaceEvent e) {
-		NessPlayer player = manager.getPlayer(e.getPlayer());
+		NESSPlayer player = manager.getPlayer(e.getPlayer());
 		player.blockPlace++;
 		if (player.blockPlace > max) {
 			player.setViolation(new Violation("FastPlace", "Placing: " + player.blockPlace), e);

@@ -3,7 +3,7 @@ package com.github.ness.check.combat;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
@@ -25,7 +25,7 @@ public class NoSlowDownFood extends AbstractCheck<PlayerItemConsumeEvent> {
 		if (Utility.hasflybypass(e.getPlayer())) {
 			return;
 		}
-		NessPlayer p = manager.getPlayer(e.getPlayer());
+		NESSPlayer p = manager.getPlayer(e.getPlayer());
 		double distance = p.getMovementValues().XZDiff;
 		distance -= e.getPlayer().getVelocity().getX();
 		distance -= e.getPlayer().getVelocity().getZ();

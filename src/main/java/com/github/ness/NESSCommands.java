@@ -17,11 +17,11 @@ import com.github.ness.gui.ViolationGUI;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class NessCommands implements CommandExecutor {
+public class NESSCommands implements CommandExecutor {
 
 	private final NESSAnticheat ness;
 
-	private static final Logger logger = Logger.getLogger(NessCommands.class.getName());
+	private static final Logger logger = Logger.getLogger(NESSCommands.class.getName());
 
 	private String getPermission(String arg) {
 		if (arg == null) {
@@ -94,7 +94,7 @@ public class NessCommands implements CommandExecutor {
 					break;
 				case "debug":
 					if (sender instanceof Player) {
-						NessPlayer np = ness.getCheckManager().getPlayer((Player) sender);
+						NESSPlayer np = ness.getCheckManager().getPlayer((Player) sender);
 						if (np.isDebugMode()) {
 							this.sendMessage(sender, "&7Debug Mode &cDisabled&7!");
 							np.setDebugMode(false);
@@ -119,7 +119,7 @@ public class NessCommands implements CommandExecutor {
 					break;
 				case "mouserecord":
 					if (sender instanceof Player) {
-						NessPlayer np = ness.getCheckManager().getPlayer((Player) sender);
+						NESSPlayer np = ness.getCheckManager().getPlayer((Player) sender);
 						if (np.isMouseRecord()) {
 							this.sendMessage(sender, "&7You've stopped the Mouse Record Process!");
 							np.mouseRecordValues.clear();

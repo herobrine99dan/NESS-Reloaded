@@ -6,7 +6,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,7 @@ public class PlayerViolationEvent extends Event implements Cancellable {
 	@Getter
 	private final Player player;
 	@Getter
-	private final NessPlayer nessplayer;
+	private final NESSPlayer nessplayer;
 	@Getter
 	private final int violations;
 	@Getter
@@ -30,7 +30,7 @@ public class PlayerViolationEvent extends Event implements Cancellable {
 	 * Other Checks)
 	 */
 
-	public PlayerViolationEvent(Player player, NessPlayer nessplayer, Violation violation, int violations) {
+	public PlayerViolationEvent(Player player, NESSPlayer nessplayer, Violation violation, int violations) {
 		super(!Bukkit.isPrimaryThread());
 		this.player = player;
 		this.nessplayer = nessplayer;

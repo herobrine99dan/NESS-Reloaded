@@ -6,7 +6,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.CheckManager;
 import com.github.ness.NESSAnticheat;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
@@ -22,7 +22,7 @@ public class Jesus extends AbstractCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
-		NessPlayer nessPlayer = this.manager.getPlayer(p);
+		NESSPlayer nessPlayer = this.manager.getPlayer(p);
 		float dist = (float) nessPlayer.getMovementValues().XZDiff; // Our XZ Distance
 		double walkSpeed = p.getWalkSpeed() * 0.7;
 		if (NESSAnticheat.getInstance().getMinecraftVersion() > 1122) {

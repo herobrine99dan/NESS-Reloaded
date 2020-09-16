@@ -10,7 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.RegisteredListener;
 
 import com.github.ness.CheckManager;
-import com.github.ness.NessPlayer;
+import com.github.ness.NESSPlayer;
 import com.github.ness.utility.HandlerListUtils;
 
 /**
@@ -46,7 +46,7 @@ public abstract class AbstractCheck<E extends Event> {
 		this.info = info;
 	}
 	
-	public NessPlayer getNessPlayer(Player p) {
+	public NESSPlayer getNessPlayer(Player p) {
 		return this.manager.getPlayer(p);
 	}
 	
@@ -132,7 +132,7 @@ public abstract class AbstractCheck<E extends Event> {
 	 * 
 	 * @param player the ness player
 	 */
-	protected void checkAsyncPeriodic(NessPlayer player) {
+	protected void checkAsyncPeriodic(NESSPlayer player) {
 		
 	}
 	
