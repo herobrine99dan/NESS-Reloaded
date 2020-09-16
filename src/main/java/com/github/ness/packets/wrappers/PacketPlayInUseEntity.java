@@ -3,17 +3,16 @@ package com.github.ness.packets.wrappers;
 import com.github.ness.utility.ReflectionUtility;
 
 public class PacketPlayInUseEntity
-extends SimplePacket {
+        extends SimplePacket {
     private int id;
     private String action;
 
     public PacketPlayInUseEntity(Object object) {
         super(object);
         try {
-            this.id = (Integer)ReflectionUtility.getDeclaredField(object, "a");
+            this.id = (Integer) ReflectionUtility.getDeclaredField(object, "a");
             this.action = ReflectionUtility.getDeclaredField(object, "action").toString();
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
     }

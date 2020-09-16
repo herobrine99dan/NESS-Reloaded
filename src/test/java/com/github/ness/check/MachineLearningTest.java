@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.github.ness.knn.DataSet;
-import com.github.ness.knn.Knn;
+import com.github.ness.utility.knn.DataSet;
+import com.github.ness.utility.knn.Knn;
 
 public class MachineLearningTest {
 

@@ -1,5 +1,7 @@
 package com.github.ness;
 
+import com.github.ness.check.CheckManager;
+
 /**
  * Can be useful to instantiate checks during test
  * 
