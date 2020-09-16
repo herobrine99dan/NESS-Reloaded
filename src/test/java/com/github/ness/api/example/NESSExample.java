@@ -1,6 +1,5 @@
 package com.github.ness.api.example;
 
-import com.github.ness.NESSPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,10 +8,12 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ness.NESSAnticheat;
-import com.github.ness.api.NESSApiImpl;
+import com.github.ness.NESSPlayer;
 import com.github.ness.api.NESSApi;
-import com.github.ness.api.impl.PlayerViolationEvent;
 import com.github.ness.api.Violation;
+import com.github.ness.api.impl.NESSApiImpl;
+import com.github.ness.api.impl.PlayerPunishEvent;
+import com.github.ness.api.impl.PlayerViolationEvent;
 
 public class NESSExample extends JavaPlugin implements Listener {
 	NESSApi api;
@@ -32,6 +33,17 @@ public class NESSExample extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void onViolation(PlayerViolationEvent e) {
+		Violation violation = e.getViolation();
+		String cheat = violation.getCheck();
+		String module = violation.getDetails();
+		int vl = e.getViolations();
+		e.setCancelled(true);
+		NESSPlayer np = e.getNessplayer();
+		Player p = np.getPlayer();
+	}
+	
+	@EventHandler
+	public void onPunish(PlayerPunishEvent e) {
 		Violation violation = e.getViolation();
 		String cheat = violation.getCheck();
 		String module = violation.getDetails();

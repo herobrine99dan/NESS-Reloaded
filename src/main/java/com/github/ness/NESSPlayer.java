@@ -1,14 +1,18 @@
 package com.github.ness;
 
-import com.github.ness.api.impl.PlayerViolationEvent;
-import com.github.ness.api.Violation;
-import com.github.ness.data.ImmutableLoc;
-import com.github.ness.data.MovementValues;
-import com.github.ness.data.PlayerAction;
-import com.github.ness.utility.DiscordWebhook;
-import com.github.ness.utility.Utility;
-import lombok.Getter;
-import lombok.Setter;
+import java.awt.Point;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,13 +21,17 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.awt.*;
-import java.io.IOException;
-import java.time.Duration;
-import java.util.List;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicReference;
+import com.github.ness.api.Violation;
+import com.github.ness.api.impl.PlayerViolationEvent;
+import com.github.ness.check.AbstractCheck;
+import com.github.ness.data.ImmutableLoc;
+import com.github.ness.data.MovementValues;
+import com.github.ness.data.PlayerAction;
+import com.github.ness.utility.DiscordWebhook;
+import com.github.ness.utility.Utility;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class NESSPlayer implements AutoCloseable {
 
@@ -93,11 +101,13 @@ public class NESSPlayer implements AutoCloseable {
     private boolean mouseRecord; // Is the player recording?
     private long lastWasOnGround = System.nanoTime() - Duration.ofHours(1L).toNanos();
     private long lastWasOnIce = lastWasOnGround;
+    public Set<AbstractCheck> checksActivated;
 
     public NESSPlayer(Player player, boolean devMode) {
         this.player = player;
         this.teleported = false;
         this.lastPacketTime = 0;
+        checksActivated = new HashSet<AbstractCheck>();
         this.blockPlace = 0;
         this.lastEntityAttackedLoc = new ImmutableLoc(player.getWorld().getName(), 0, 0, 0, 0, 0);
         this.CPS = 0;

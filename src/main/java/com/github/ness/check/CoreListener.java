@@ -1,6 +1,5 @@
-package com.github.ness.listener;
+package com.github.ness.check;
 
-import com.github.ness.check.CheckManager;
 import com.github.ness.NESSPlayer;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
@@ -29,7 +28,11 @@ public class CoreListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent event) {
+    	NESSPlayer nessPlayer = manager.getPlayer(event.getPlayer());
         manager.getPlayer(event.getPlayer()).actionTime.put(PlayerAction.JOIN, System.nanoTime());
+        for(AbstractCheck<?> check : manager.checks) {
+        	
+        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

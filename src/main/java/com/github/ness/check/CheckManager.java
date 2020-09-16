@@ -1,13 +1,5 @@
 package com.github.ness.check;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.ness.NESSAnticheat;
-import com.github.ness.NESSPlayer;
-import com.github.ness.listener.CoreListener;
-import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
@@ -15,9 +7,20 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.ness.NESSAnticheat;
+import com.github.ness.NESSPlayer;
+
+import lombok.Getter;
 
 public class CheckManager implements AutoCloseable {
 
@@ -25,11 +28,14 @@ public class CheckManager implements AutoCloseable {
     public final CoreListener coreListener;
     private final Cache<UUID, NESSPlayer> playerCache = Caffeine.newBuilder().expireAfterAccess(Duration.ofMinutes(5L)).build();
     private final NESSAnticheat ness;
-    private volatile Set<AbstractCheck<?>> checks;
+    @Getter
+    private final ConcurrentHashMap<Class<? extends AbstractCheck<?>>, CheckFactory> checksFactory;
+    volatile Set<AbstractCheck<?>> checks;
 
     public CheckManager(NESSAnticheat ness) {
         this.ness = ness;
         coreListener = new CoreListener(this);
+        checksFactory = new ConcurrentHashMap<Class<? extends AbstractCheck<?>>, CheckFactory>();
     }
 
     public NESSAnticheat getNess() {

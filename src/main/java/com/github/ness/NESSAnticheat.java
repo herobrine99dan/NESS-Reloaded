@@ -1,7 +1,7 @@
 package com.github.ness;
 
 import com.github.ness.api.NESSApi;
-import com.github.ness.api.NESSApiImpl;
+import com.github.ness.api.impl.NESSApiImpl;
 import com.github.ness.check.CheckManager;
 import com.github.ness.check.ViolationManager;
 import com.github.ness.listener.BungeeCordListener;

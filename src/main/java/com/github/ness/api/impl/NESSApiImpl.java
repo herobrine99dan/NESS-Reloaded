@@ -1,4 +1,4 @@
-package com.github.ness.api;
+package com.github.ness.api.impl;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.api.NESSApi;
