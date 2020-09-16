@@ -1,27 +1,26 @@
 package com.github.ness.utility;
 
-import java.lang.reflect.Method;
-
 import org.bukkit.event.Event;
 import org.bukkit.event.EventException;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.EventExecutor;
 
+import java.lang.reflect.Method;
+
 /**
  * Utility class for accessing handler lists
- * 
- * @author A248
  *
+ * @author A248
  */
 public class HandlerListUtils {
-	
-	/**
-	 * Gets the handler lists for an event. This is identical to {@code SimplePluginManager#getEventListeners}
-	 * 
-	 * @param evtClass the event class
-	 * @return the handler list
-	 */
+
+    /**
+     * Gets the handler lists for an event. This is identical to {@code SimplePluginManager#getEventListeners}
+     *
+     * @param evtClass the event class
+     * @return the handler list
+     */
     public static HandlerList getEventListeners(Class<? extends Event> evtClass) {
         try {
             Method method = getRegistrationClass(evtClass).getDeclaredMethod("getHandlerList");
@@ -46,46 +45,44 @@ public class HandlerListUtils {
             }
         }
     }
-    
+
     /**
      * Empty {@code Listener} for use in registered listeners to maintain compatibility with
      * {@code RegisteredListener}'s undocumented nonnull contracts.
-     * 
-     * @author A248
      *
+     * @author A248
      */
     public static final class DummyListener implements Listener {
-    	
-    	public static final DummyListener INSTANCE = new DummyListener();
-    	
-    	private DummyListener() {}
-    	
+
+        public static final DummyListener INSTANCE = new DummyListener();
+
+        private DummyListener() {}
+
     }
-    
+
     /**
      * Empty {@code EventExecutor} for use in registered listeners to maintain compatibility with
      * {@code RegisteredListener}'s undocumented nonnull contracts.
-     * 
-     * @author A248
      *
+     * @author A248
      */
     public static final class DummyEventExecutor implements EventExecutor {
 
-    	public static final DummyEventExecutor INSTANCE = new DummyEventExecutor();
-    	
-    	private DummyEventExecutor() {}
-    	
-    	/**
-    	 * This method should never be called; {@code RegisteredListener}s utilising this dummy
-    	 * instance should override the {@code callEvent} method.
-    	 * 
-    	 * @throws EventException always
-    	 */
-		@Override
-		public void execute(Listener listener, Event event) throws EventException {
-			throw new EventException("DummyEventExecutor should never be invoked");
-		}
-    	
+        public static final DummyEventExecutor INSTANCE = new DummyEventExecutor();
+
+        private DummyEventExecutor() {}
+
+        /**
+         * This method should never be called; {@code RegisteredListener}s utilising this dummy
+         * instance should override the {@code callEvent} method.
+         *
+         * @throws EventException always
+         */
+        @Override
+        public void execute(Listener listener, Event event) throws EventException {
+            throw new EventException("DummyEventExecutor should never be invoked");
+        }
+
     }
-	
+
 }
