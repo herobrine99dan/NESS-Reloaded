@@ -1,6 +1,7 @@
 package com.github.ness.packets;
 
 import com.github.ness.NESSAnticheat;
+import com.github.ness.NessPlayer;
 import com.github.ness.packets.wrappers.PacketPlayInPositionLook;
 import com.github.ness.packets.wrappers.PacketPlayInUseEntity;
 import com.github.ness.packets.wrappers.SimplePacket;
@@ -92,8 +93,12 @@ public class PacketListener implements Listener {
             @Override
             public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
                 // We can drop the packet disabling this super method!
+            	NessPlayer nessPlayer = NESSAnticheat.getInstance().getCheckManager().getExistingPlayer(player);
+            	if (nessPlayer == null) {
+            		return;
+            	}
                 ReceivedPacketEvent event = new ReceivedPacketEvent(
-                        NESSAnticheat.getInstance().getCheckManager().getPlayer(player),
+                        nessPlayer,
                         PacketListener.this.getPacketObject(packet));
                 Bukkit.getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {

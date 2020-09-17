@@ -1,36 +1,114 @@
 package com.github.ness.check;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
 
-import org.bukkit.event.Event;
-import org.bukkit.plugin.RegisteredListener;
+import com.github.ness.NessPlayer;
+import com.github.ness.utility.UncheckedReflectiveOperationException;
 
-import com.github.ness.utility.HandlerListUtils;
+public class CheckFactory<C extends AbstractCheck<?>> {
 
-public class CheckFactory {
+	private final Constructor<C> constructor;
+	private final CheckManager manager;
+	private final CheckInfo<?> checkInfo;
 	
-	ScheduledFuture<?> scheduler;
-	RegisteredListener listener;
-	CheckManager manager;
-	CheckInfo<?> info;
+	private transient boolean started;
+	private transient ScheduledFuture<?> scheduledFuture;
 	
-	public CheckFactory(CheckInfo<?> info, CheckManager manager) {
+	private transient final ConcurrentMap<UUID, C> checks = new ConcurrentHashMap<>();
+	
+	CheckFactory(Constructor<C> constructor, CheckManager manager, CheckInfo<?> checkInfo) {
+		this.constructor = constructor;
 		this.manager = manager;
-		this.info = info;
+		this.checkInfo = checkInfo;
 	}
 	
-	public void start() {
-        if (info.asyncInterval != -1L) {
-        	scheduler = manager.getNess().getExecutor().scheduleWithFixedDelay(() -> {
-            }, 1L, info.asyncInterval, info.units);
-        }
-        if (info.event != null) {
-            HandlerListUtils.getEventListeners(info.event).register(listener);
-        }
+	CheckManager getCheckManager() {
+		return manager;
 	}
 	
-	public AbstractCheck<?> generateCheck() {
-		return null;//return new AbstractCheck<Event>(manager, (CheckInfo<Event>) info);
+	String getCheckName() {
+		return constructor.getDeclaringClass().getSimpleName().toLowerCase(Locale.ROOT);
+	}
+	
+	Map<UUID, C> getChecks() {
+		return checks;
+	}
+	
+	private void checkAsyncPeriodic() {
+		synchronized (this) {
+			if (!started) {
+				return;
+			}
+		}
+		checks.values().forEach((check) -> check.checkAsyncPeriodic());
+	}
+	
+	C newCheck(NessPlayer nessPlayer) {
+		C check;
+		try {
+			check = constructor.newInstance(this, nessPlayer);
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+			throw new UncheckedReflectiveOperationException(
+					"Unable to instantiate check " + constructor.getDeclaringClass().getName(), ex);
+		}
+		checks.put(nessPlayer.getUUID(), check);
+		return check;
+	}
+	
+	void removeCheck(NessPlayer nessPlayer) {
+		checks.remove(nessPlayer.getUUID());
+	}
+	
+	/**
+	 * Called to start the check
+	 * 
+	 */
+	final void start() {
+		synchronized (this) {
+			if (!started) {
+				start0();
+			}
+			started = true;
+		}
+		
+	}
+	
+	void start0() {
+		assert Thread.holdsLock(this);
+
+		if (checkInfo.asyncInterval == -1) {
+			scheduledFuture = null;
+		} else {
+			scheduledFuture = manager.getNess().getExecutor().scheduleWithFixedDelay(
+					this::checkAsyncPeriodic, 0L, checkInfo.asyncInterval, checkInfo.units);
+		}
+	}
+	
+	final void close() {
+		synchronized (this) {
+			close0();
+		}
+	}
+	
+	void close0() {
+		assert Thread.holdsLock(this);
+
+		if (scheduledFuture != null) {
+			scheduledFuture.cancel(false);
+		}
 	}
 
+	@Override
+	public String toString() {
+		return "CheckFactory [constructor=" + constructor + ", manager=" + manager + ", checkInfo=" + checkInfo
+				+ ", getCheckName()=" + getCheckName() + "]";
+	}
+	
 }

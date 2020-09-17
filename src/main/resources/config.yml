@@ -40,20 +40,18 @@ violation-handling:
 #
 # Comment out a check to disable
 #
-
 enabled-checks:
-  - 'Aimbot'
+#  - 'Aimbot'
   - 'AutoClicker'
-  - 'AntiBot'
-  - 'AntiBotWhitelist'
   - 'AntiUnicode'
   - 'AntiKb'
-  - 'BadPackets'
+  - 'Timer'
   - 'Criticals'
-  - 'FastEat'
+  - 'ChestStealerCheck'
+#  - 'FastEat'
   - 'FastLadder'
   - 'FastPlace'
-  - 'ChestESP'
+#  - 'ChestESP'
   - 'FlyGhostMode'
   - 'FlyInvalidMove'
   - 'FlyHighJump'
@@ -62,14 +60,12 @@ enabled-checks:
   - 'FlyFalseGround'
   - 'GhostHand'
   - 'LiquidInteraction'
-  - 'NameExploit'
   - 'InventoryHack'
   - 'Killaura'
   - 'MorePackets'
   - 'NoSlowDownBow'
   - 'NoSlowDownFood'
   - 'NoWeb'
-  - 'NameExploit'
   - 'Phase'
   - 'OldMovementChecks'
   - 'ImpossibleBreak'
@@ -78,6 +74,20 @@ enabled-checks:
   - 'ScaffoldIllegalTarget'
   - 'ScaffoldAngle'
 
+#
+# AntiBot
+#
+# Blocks Bot Attacks which sends a lot of players
+#
+# Performance impact: Minimal (Use Async Events)
+# Effectiveness: High
+#
+antibot:
+   enable: true
+   maxplayers: 15 #Max Players to join in one second
+   message: 'Bot Attack Detected! By NESS Reloaded' #The Kick message
+   minimumseconds: 10 #Add A Player to the NESS Reloaded Whitelist, so during a bot attack, this player will not be kicked
+    
 #
 # Check name
 #
@@ -144,25 +154,6 @@ checks:
     whitelisted-materials:
       - 'WATER_LILY'
 #
-# AntiBot
-#
-# Blocks Bot Attacks which sends a lot of players
-#
-# Performance impact: Minimal (Use Async Events)
-# Effectiveness: High
-#
-  antibot:
-    maxplayers: 15
-    message: 'Bot Attack Detected! By NESS Reloaded'
-#
-# AntiBotWhitelist
-#
-# Add A Player to the NESS Reloaded Whitelist, so during a bot attack, this player will not be kicked
-#
-#
-  antibotwhitelist:
-    minimumseconds: 10
-#
 # AutoClicker
 #
 # A Simple Max CPS Check
@@ -180,7 +171,7 @@ checks:
 # Performance impact: low
 # Effectiveness: High
 #
-  badpackets:
+  timer:
     maxpackets: 1.12
 #
 # ElytraCheats
@@ -212,7 +203,7 @@ checks:
 # Effectiveness: Medium
 #
   fastplace:
-    maxblockplaced: 14
+    maxblockplaced: 10
 #
 # Fly
 #

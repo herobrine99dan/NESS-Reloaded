@@ -1,6 +1,7 @@
 package com.github.ness.api.impl;
 
 import com.github.ness.NESSAnticheat;
+import com.github.ness.NessPlayer;
 import com.github.ness.api.NESSApi;
 import com.github.ness.api.Violation;
 import com.github.ness.api.ViolationAction;
@@ -19,7 +20,11 @@ public class NESSApiImpl implements NESSApi {
 
     @Override
     public void flagHack(Violation violation, Player player) {
-        this.ness.getCheckManager().getPlayer(player).setViolation(violation, null);
+        NessPlayer nessPlayer = ness.getCheckManager().getExistingPlayer(player);
+        if (nessPlayer == null) {
+        	return;
+        }
+        nessPlayer.setViolation(violation, null);
     }
 
 }

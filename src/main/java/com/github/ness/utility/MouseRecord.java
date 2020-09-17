@@ -1,9 +1,8 @@
 package com.github.ness.utility;
 
 import com.github.ness.NESSAnticheat;
-import com.github.ness.NESSPlayer;
+import com.github.ness.NessPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -27,11 +26,13 @@ public class MouseRecord implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
-        NESSPlayer np = ness.getCheckManager().getPlayer(e.getPlayer());
+        NessPlayer np = ness.getCheckManager().getExistingPlayer(e.getPlayer());
+        if (np == null) {
+        	return;
+        }
         if (np.getMovementValues().yawDiff == 0.0) {
             return;
         }
-        Location to = e.getTo().clone();
         if (np.isMouseRecord()) {
             if (np.mouseRecordValues.size() < SIZE) {
                 np.mouseRecordValues
@@ -45,7 +46,7 @@ public class MouseRecord implements Listener {
         }
     }
 
-    public void render(NESSPlayer np) {
+    public void render(NessPlayer np) {
         BufferedImage img = new BufferedImage(1000, 920, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
         g.setBackground(Color.BLACK);
