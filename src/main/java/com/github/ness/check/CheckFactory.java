@@ -30,7 +30,7 @@ public class CheckFactory {
 	}
 	
 	public AbstractCheck<?> generateCheck() {
-		return new AbstractCheck<Event>(manager, (CheckInfo<Event>) info);
+		return null;//return new AbstractCheck<Event>(manager, (CheckInfo<Event>) info);
 	}
 
 }
