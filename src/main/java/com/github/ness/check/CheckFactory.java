@@ -2,6 +2,7 @@ package com.github.ness.check;
 
 import java.util.concurrent.ScheduledFuture;
 
+import org.bukkit.event.Event;
 import org.bukkit.plugin.RegisteredListener;
 
 import com.github.ness.utility.HandlerListUtils;
@@ -26,6 +27,10 @@ public class CheckFactory {
         if (info.event != null) {
             HandlerListUtils.getEventListeners(info.event).register(listener);
         }
+	}
+	
+	public AbstractCheck<?> generateCheck() {
+		return new AbstractCheck<Event>(manager, (CheckInfo<Event>) info);
 	}
 
 }

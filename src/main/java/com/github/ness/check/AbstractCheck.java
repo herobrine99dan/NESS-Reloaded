@@ -1,15 +1,18 @@
 package com.github.ness.check;
 
-import com.github.ness.NESSPlayer;
-import com.github.ness.utility.HandlerListUtils;
+import java.util.concurrent.ScheduledFuture;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.RegisteredListener;
 
-import java.util.concurrent.ScheduledFuture;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.github.ness.NESSPlayer;
+import com.github.ness.utility.HandlerListUtils;
+
+import lombok.Getter;
 
 /**
  * General check to be extended. <br>
@@ -20,10 +23,11 @@ import java.util.logging.Logger;
  * @param <E> the type of the event listened to
  * @author A248
  */
-public abstract class AbstractCheck<E extends Event> {
+public class AbstractCheck<E extends Event> {
 
     private static final Logger logger = Logger.getLogger(AbstractCheck.class.getName());
     protected final CheckManager manager;
+    @Getter
     private final CheckInfo<E> info;
     private final Object stateLock = new Object();
     private State state;

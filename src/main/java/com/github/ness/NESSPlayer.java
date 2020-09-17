@@ -101,13 +101,14 @@ public class NESSPlayer implements AutoCloseable {
     private boolean mouseRecord; // Is the player recording?
     private long lastWasOnGround = System.nanoTime() - Duration.ofHours(1L).toNanos();
     private long lastWasOnIce = lastWasOnGround;
-    public Set<AbstractCheck> checksActivated;
+    @Getter
+    private final Set<AbstractCheck<?>> checksActivated;
 
     public NESSPlayer(Player player, boolean devMode) {
         this.player = player;
         this.teleported = false;
         this.lastPacketTime = 0;
-        checksActivated = new HashSet<AbstractCheck>();
+        checksActivated = new HashSet<AbstractCheck<?>>();
         this.blockPlace = 0;
         this.lastEntityAttackedLoc = new ImmutableLoc(player.getWorld().getName(), 0, 0, 0, 0, 0);
         this.CPS = 0;
