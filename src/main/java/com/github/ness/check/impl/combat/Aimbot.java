@@ -1,14 +1,15 @@
 package com.github.ness.check.impl.combat;
 
-import com.github.ness.check.CheckManager;
+import java.util.concurrent.TimeUnit;
+
 import com.github.ness.NESSPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckManager;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.GCDUtils;
-
-import java.util.concurrent.TimeUnit;
+import com.github.ness.utility.Utility;
 
 public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 
@@ -28,6 +29,7 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
         }
         GCDCheck(e);
         Check2(e);
+        Check3(e);
     }
 
     public void GCDCheck(ReceivedPacketEvent event) {
@@ -97,4 +99,21 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
         }
         return false;
     }
+    
+	/**
+	 * Check for some Aimbot Pattern
+	 */
+	public void Check3(ReceivedPacketEvent e) {
+		NESSPlayer player = e.getNessPlayer();
+		float yawChange = (float) Math.abs(player.getMovementValues().yawDiff);
+		float pitchChange = (float) Math.abs(player.getMovementValues().pitchDiff);
+		if (yawChange > 5 && pitchChange < 0.3) {
+			player.setViolation(new Violation("Aimbot", "[Experimental] PerfectAura3"), e);
+		} else {
+			if(yawChange > 1.0f && Utility.round(yawChange, 100) * 0.1f == yawChange) {
+				player.setViolation(new Violation("Aimbot", "[Experimental] PerfectAura4"), e);
+			}
+		}
+	}
+    
 }

@@ -23,7 +23,7 @@ import lombok.Getter;
  * @param <E> the type of the event listened to
  * @author A248
  */
-public class AbstractCheck<E extends Event> {
+public abstract class AbstractCheck<E extends Event> {
 
     private static final Logger logger = Logger.getLogger(AbstractCheck.class.getName());
     protected final CheckManager manager;
