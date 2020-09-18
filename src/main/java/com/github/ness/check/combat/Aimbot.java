@@ -63,6 +63,7 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void Check1(ReceivedPacketEvent e) {
 		NessPlayer np = e.getNessPlayer();
 		if (np.sensitivity == 0) {

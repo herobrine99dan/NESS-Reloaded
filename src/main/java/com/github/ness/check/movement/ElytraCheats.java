@@ -1,15 +1,13 @@
 package com.github.ness.check.movement;
 
-import com.github.ness.check.CheckManager;
-import com.github.ness.check.packet.BadPackets;
-import com.github.ness.packets.ReceivedPacketEvent;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerMoveEvent;
+
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerMoveEvent;
 
 public class ElytraCheats extends AbstractCheck<PlayerMoveEvent> {
 
@@ -21,9 +19,9 @@ public class ElytraCheats extends AbstractCheck<PlayerMoveEvent> {
 
 	public ElytraCheats(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
-        this.maxYDiff = this.manager.getNess().getNessConfig().getCheck(this.getClass())
+        this.maxYDiff = this.ness().getNessConfig().getCheck(this.getClass())
                 .getDouble("maxxzdiff", 1.5);
-        this.maxXZDiff = this.manager.getNess().getNessConfig().getCheck(this.getClass())
+        this.maxXZDiff = this.ness().getNessConfig().getCheck(this.getClass())
                 .getDouble("maxydiff", 1);
 	}
 

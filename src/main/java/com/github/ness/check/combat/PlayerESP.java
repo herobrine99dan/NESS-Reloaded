@@ -1,6 +1,11 @@
 package com.github.ness.check.combat;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
@@ -10,20 +15,15 @@ import com.github.ness.check.CheckInfo;
 import com.github.ness.data.ImmutableVector;
 import com.github.ness.utility.Utility;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerInteractEvent;
-
 public class PlayerESP extends AbstractCheck<PlayerInteractEvent> {
 
     private final double minangle;
     
-	public static final CheckInfo<PlayerInteractEvent> checkInfo = CheckInfo
-			.eventOnly(PlayerInteractEvent.class);
+	public static final CheckInfo<PlayerInteractEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(PlayerInteractEvent.class, 700, TimeUnit.MILLISECONDS);
 
 	public PlayerESP(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
-        this.minangle = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getDouble("minangle", -0.05);
+        this.minangle = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("minangle", -0.05);
 	}
 
     @Override

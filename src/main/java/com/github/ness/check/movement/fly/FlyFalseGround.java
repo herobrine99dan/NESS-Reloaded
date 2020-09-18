@@ -1,6 +1,9 @@
 package com.github.ness.check.movement.fly;
 
-import com.github.ness.check.CheckManager;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerMoveEvent;
+
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
@@ -11,9 +14,6 @@ import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.ReflectionUtility;
 import com.github.ness.utility.Utility;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerMoveEvent;
 
 public class FlyFalseGround extends AbstractCheck<PlayerMoveEvent> {
 

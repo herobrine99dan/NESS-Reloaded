@@ -1,16 +1,7 @@
 package com.github.ness.check.movement;
 
-import com.github.ness.check.CheckManager;
-import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
-import com.github.ness.data.ImmutableLoc;
-import com.github.ness.data.PlayerAction;
-import com.github.ness.utility.MSG;
-import com.github.ness.utility.PlayerManager;
-import com.github.ness.utility.Utility;
+import java.util.concurrent.TimeUnit;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -21,7 +12,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.concurrent.TimeUnit;
+import com.github.ness.NessPlayer;
+import com.github.ness.api.Violation;
+import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
+import com.github.ness.check.CheckInfo;
+import com.github.ness.data.ImmutableLoc;
+import com.github.ness.data.PlayerAction;
+import com.github.ness.utility.MSG;
+import com.github.ness.utility.PlayerManager;
+import com.github.ness.utility.Utility;
 
 public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(PlayerMoveEvent.class, 1, TimeUnit.SECONDS);

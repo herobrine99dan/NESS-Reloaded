@@ -1,16 +1,14 @@
 package com.github.ness.check.misc;
 
-import com.github.ness.check.CheckManager;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+
 import com.github.ness.NessPlayer;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
-
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 public class AntiBot extends AbstractCheck<AsyncPlayerPreLoginEvent> {
 	public static ArrayList<String> whitelistbypass = new ArrayList<String>();
@@ -18,14 +16,13 @@ public class AntiBot extends AbstractCheck<AsyncPlayerPreLoginEvent> {
 	int playerCounter = 0;
 	String message;
 
-	public static final CheckInfo<AsyncPlayerPreLoginEvent> checkInfo = CheckInfo
-			.eventOnly(AsyncPlayerPreLoginEvent.class);
+	public static final CheckInfo<AsyncPlayerPreLoginEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(AsyncPlayerPreLoginEvent.class, 1, TimeUnit.SECONDS);
 
 	public AntiBot(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
-		message = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getString("message",
+		message = this.ness().getNessConfig().getCheck(this.getClass()).getString("message",
 				"BotAttack Detected! By NESS Reloaded");
-		maxPlayers = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getInt("maxplayers", 15);
+		maxPlayers = this.ness().getNessConfig().getCheck(this.getClass()).getInt("maxplayers", 15);
 	}
 
 	@Override

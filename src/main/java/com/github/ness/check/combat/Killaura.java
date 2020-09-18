@@ -1,13 +1,7 @@
 package com.github.ness.check.combat;
 
-import com.github.ness.check.CheckManager;
-import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
-import com.github.ness.utility.MathUtils;
-import com.github.ness.utility.Utility;
+import java.util.concurrent.TimeUnit;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -17,7 +11,13 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import java.util.concurrent.TimeUnit;
+import com.github.ness.NessPlayer;
+import com.github.ness.api.Violation;
+import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
+import com.github.ness.check.CheckInfo;
+import com.github.ness.utility.MathUtils;
+import com.github.ness.utility.Utility;
 
 public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
@@ -25,14 +25,13 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
     double minAngle;
     double maxReach;
     
-	public static final CheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfo
-			.eventOnly(EntityDamageByEntityEvent.class);
+	public static final CheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(EntityDamageByEntityEvent.class, 70, TimeUnit.MILLISECONDS);
 
 	public Killaura(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
-        this.maxYaw = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getDouble("maxyaw", 357);
-        this.minAngle = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getDouble("minangle", -0.2);
-        this.maxReach = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getDouble("maxreach", 3.4);
+        this.maxYaw = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("maxyaw", 357);
+        this.minAngle = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("minangle", -0.2);
+        this.maxReach = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("maxreach", 3.4);
 	}
 
     @Override
@@ -88,7 +87,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
         if (e.getDamager() instanceof Player) {
             Player p = (Player) e.getDamager();
             final Location loc = p.getLocation();
-            Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
+            Bukkit.getScheduler().runTaskLater(this.ness(), () -> {
                 Location loc1 = p.getLocation();
                 float grade = loc.getYaw() - loc1.getYaw();
                 if (Math.round(grade) > maxYaw) {

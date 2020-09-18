@@ -1,15 +1,13 @@
 package com.github.ness.check.combat;
 
-import com.github.ness.check.CheckManager;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
+
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.utility.Utility;
-
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 public class NoSlowDownFood extends AbstractCheck<PlayerItemConsumeEvent> {
 

@@ -1,15 +1,12 @@
 package com.github.ness.check.world;
 
-import com.github.ness.check.CheckManager;
+import org.bukkit.event.block.BlockBreakEvent;
+
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-
-import java.util.List;
 
 public class ImpossibleBreak extends AbstractCheck<BlockBreakEvent> {
 

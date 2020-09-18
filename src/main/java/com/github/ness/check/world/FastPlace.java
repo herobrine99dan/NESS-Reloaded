@@ -1,25 +1,24 @@
 package com.github.ness.check.world;
 
-import com.github.ness.check.CheckManager;
+import java.util.concurrent.TimeUnit;
+
+import org.bukkit.event.block.BlockPlaceEvent;
+
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
-import org.bukkit.event.block.BlockPlaceEvent;
-
-import java.util.concurrent.TimeUnit;
 
 public class FastPlace extends AbstractCheck<BlockPlaceEvent> {
 
     int max;
     
-	public static final CheckInfo<BlockPlaceEvent> checkInfo = CheckInfo
-			.eventOnly(BlockPlaceEvent.class);
+	public static final CheckInfo<BlockPlaceEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(BlockPlaceEvent.class, 1, TimeUnit.SECONDS);
 
 	public FastPlace(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
-	      this.max = this.manager.getNess().getNessConfig().getCheck(this.getClass())
+	      this.max = this.ness().getNessConfig().getCheck(this.getClass())
 	                .getInt("maxblockplaced", 14);
 	}
 

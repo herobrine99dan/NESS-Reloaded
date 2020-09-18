@@ -1,6 +1,9 @@
 package com.github.ness.check.movement.fly;
 
-import com.github.ness.check.CheckManager;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerMoveEvent;
+
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
@@ -8,9 +11,6 @@ import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerMoveEvent;
 
 public class FlyInvalidJumpMotion extends AbstractCheck<PlayerMoveEvent> {
 

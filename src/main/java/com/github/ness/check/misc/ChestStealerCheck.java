@@ -1,18 +1,16 @@
 package com.github.ness.check.misc;
 
-import com.github.ness.check.CheckManager;
-import com.github.ness.packets.ReceivedPacketEvent;
+import java.util.concurrent.TimeUnit;
+
+import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
+
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-
-import java.util.concurrent.TimeUnit;
 
 public class ChestStealerCheck extends AbstractCheck<InventoryClickEvent> {
 
@@ -20,8 +18,7 @@ public class ChestStealerCheck extends AbstractCheck<InventoryClickEvent> {
      * @author MatuloM
      */
     
-	public static final CheckInfo<InventoryClickEvent> checkInfo = CheckInfo
-			.eventOnly(InventoryClickEvent.class);
+	public static final CheckInfo<InventoryClickEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(InventoryClickEvent.class, 500, TimeUnit.MILLISECONDS);
 
 	public ChestStealerCheck(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
@@ -38,9 +35,9 @@ public class ChestStealerCheck extends AbstractCheck<InventoryClickEvent> {
 
     @Override
     protected void checkEvent(InventoryClickEvent e) {
+        NessPlayer nessPlayer = player();
 		if (player().isNot(e.getWhoClicked()))
 			return;
-        NessPlayer nessPlayer = player();
         final Inventory i1 = e.getWhoClicked().getInventory();
         final Inventory i2 = e.getInventory();
         if (i1 != i2 && e.getCurrentItem().getType() != Material.AIR) {

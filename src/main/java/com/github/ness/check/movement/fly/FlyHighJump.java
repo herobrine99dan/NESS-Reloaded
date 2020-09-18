@@ -1,6 +1,9 @@
 package com.github.ness.check.movement.fly;
 
-import com.github.ness.check.CheckManager;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.potion.PotionEffectType;
+
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
@@ -10,9 +13,6 @@ import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.ReflectionUtility;
 import com.github.ness.utility.Utility;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.potion.PotionEffectType;
 
 public class FlyHighJump extends AbstractCheck<PlayerMoveEvent> {
 

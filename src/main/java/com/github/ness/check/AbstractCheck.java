@@ -2,6 +2,7 @@ package com.github.ness.check;
 
 import java.time.Duration;
 
+import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 
 import org.bukkit.event.Event;
@@ -22,14 +23,6 @@ public abstract class AbstractCheck<E extends Event> {
 	private final NessPlayer nessPlayer;
 
 	/**
-	 * Direct access to the check manager
-	 * 
-	 * @deprecated Use {@link #manager()} instead
-	 */
-	@Deprecated
-	protected final CheckManager manager;
-
-	/**
 	 * Creates the check. Subclasses should declare a constructor with the same signature
 	 *
 	 * @param manager the check manager
@@ -38,12 +31,14 @@ public abstract class AbstractCheck<E extends Event> {
 	protected AbstractCheck(CheckFactory<?> checkFactory, NessPlayer nessPlayer) {
 		this.checkFactory = checkFactory;
 		this.nessPlayer = nessPlayer;
-
-		manager = checkFactory.getCheckManager();
 	}
 
 	protected CheckManager manager() {
 		return checkFactory.getCheckManager();
+	}
+	
+	protected NESSAnticheat ness() {
+		return this.manager().getNess();
 	}
 	
 	protected NessPlayer player() {

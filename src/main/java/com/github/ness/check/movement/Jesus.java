@@ -1,6 +1,9 @@
 package com.github.ness.check.movement;
 
-import com.github.ness.check.CheckManager;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.potion.PotionEffectType;
+
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
@@ -9,9 +12,6 @@ import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.potion.PotionEffectType;
 
 public class Jesus extends AbstractCheck<PlayerMoveEvent> {
     

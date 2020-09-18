@@ -1,19 +1,18 @@
 package com.github.ness.check.required;
 
-import com.github.ness.check.CheckManager;
+import java.util.concurrent.TimeUnit;
+
+import org.bukkit.Location;
+import org.bukkit.event.player.PlayerTeleportEvent;
+
 import com.github.ness.NessPlayer;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
-import org.bukkit.Location;
-import org.bukkit.event.player.PlayerTeleportEvent;
-
-import java.util.concurrent.TimeUnit;
 
 public class TeleportEvent extends AbstractCheck<PlayerTeleportEvent> {
 
-	public static final CheckInfo<PlayerTeleportEvent> checkInfo = CheckInfo
-			.eventOnly(PlayerTeleportEvent.class);
+	public static final CheckInfo<PlayerTeleportEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(PlayerTeleportEvent.class, 1500, TimeUnit.MILLISECONDS);
 
 	public TeleportEvent(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);

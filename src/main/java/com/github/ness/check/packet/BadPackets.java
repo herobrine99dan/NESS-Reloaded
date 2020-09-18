@@ -1,9 +1,5 @@
 package com.github.ness.check.packet;
 
-import com.github.ness.check.CheckManager;
-
-import org.bukkit.event.block.BlockPlaceEvent;
-
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
@@ -20,7 +16,7 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
 
 	public BadPackets(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
-        this.MAX_PACKETS_PER_TICK = this.manager.getNess().getNessConfig().getCheck(BadPackets.class)
+        this.MAX_PACKETS_PER_TICK = this.ness().getNessConfig().getCheck(BadPackets.class)
                 .getDouble("maxpackets", 1.12);
 	}
 

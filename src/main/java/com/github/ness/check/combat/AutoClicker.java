@@ -1,26 +1,25 @@
 package com.github.ness.check.combat;
 
-import com.github.ness.check.CheckManager;
-import com.github.ness.packets.ReceivedPacketEvent;
+import java.util.concurrent.TimeUnit;
+
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
+
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-
-import java.util.concurrent.TimeUnit;
 
 public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 
 	int maxCPS;
 
-	public static final CheckInfo<PlayerInteractEvent> checkInfo = CheckInfo.eventOnly(PlayerInteractEvent.class);
+	public static final CheckInfo<PlayerInteractEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(PlayerInteractEvent.class, 1, TimeUnit.SECONDS);
 
 	public AutoClicker(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
-		this.maxCPS = this.manager.getNess().getNessConfig().getCheck(AutoClicker.class).getInt("maxCPS", 18);
+		this.maxCPS = this.ness().getNessConfig().getCheck(AutoClicker.class).getInt("maxCPS", 18);
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 import java.util.function.Function;
 
+import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.HandlerListUtils;
 import com.github.ness.utility.UncheckedReflectiveOperationException;
 
@@ -59,6 +60,9 @@ class ListeningCheckFactory<E extends Event, C extends AbstractCheck<E>> extends
 	private static <E extends Event> Function<E, Player> findGetPlayerFunction(Class<E> eventClass) {
 		if (PlayerEvent.class.isAssignableFrom(eventClass)) {
 			return (evt) -> ((PlayerEvent) evt).getPlayer();
+		}
+		if (eventClass == ReceivedPacketEvent.class) {
+			return (evt) -> ((ReceivedPacketEvent) evt).getNessPlayer().getPlayer();
 		}
 		/*
 		 * Bukkit does not implement some sort of "IPlayerEvent" on events with getPlayer

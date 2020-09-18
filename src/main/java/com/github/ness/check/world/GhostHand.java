@@ -1,18 +1,17 @@
 package com.github.ness.check.world;
 
-import com.github.ness.check.CheckManager;
-import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+
+import com.github.ness.NessPlayer;
+import com.github.ness.api.Violation;
+import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
+import com.github.ness.check.CheckInfo;
 
 public class GhostHand extends AbstractCheck<PlayerInteractEvent> {
     
@@ -50,7 +49,7 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent> {
                 && p.getMovementValues().XZDiff < 0.15 && !targetBlock.equals(event.getClickedBlock())) {
             Location block = event.getClickedBlock().getLocation().add(event.getBlockFace().getModX(),
                     event.getBlockFace().getModY(), event.getBlockFace().getModZ());
-            Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
+            Bukkit.getScheduler().runTaskLater(this.ness(), () -> {
 
                 Location loc1 = player.getLocation();
                 float grade = Math.abs(loc.getYaw() - loc1.getYaw()) + Math.abs(loc.getPitch() - loc1.getPitch());
