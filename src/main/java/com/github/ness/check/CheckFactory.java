@@ -45,9 +45,7 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 				return;
 			}
 		}
-		for (C check : checks) {
-			check.checkAsyncPeriodic();
-		}
+		checks.forEach((check) -> check.checkAsyncPeriodic());
 	}
 	
 	C newCheck(NessPlayer nessPlayer) {

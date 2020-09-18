@@ -145,9 +145,7 @@ public class CheckManager {
 		CompletableFuture.runAsync(() -> {
 			Set<AbstractCheck<?>> checks = new HashSet<>();
 			for (CheckFactory<?> factory : enabledFactories) {
-				if (!player.hasPermission("ness.bypass." + factory.getCheckName())) {
-					checks.add(factory.newCheck(nessPlayer));
-				}
+				checks.add(factory.newCheck(nessPlayer));
 			}
 			playerChecks.put(nessPlayer, checks);
 		}, ness.getExecutor()).whenComplete((ignore, ex) -> {
