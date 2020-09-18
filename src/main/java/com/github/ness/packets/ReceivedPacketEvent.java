@@ -1,6 +1,6 @@
 package com.github.ness.packets;
 
-import com.github.ness.NESSPlayer;
+import com.github.ness.NessPlayer;
 import com.github.ness.packets.wrappers.SimplePacket;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -13,10 +13,10 @@ public class ReceivedPacketEvent extends Event implements Cancellable {
     @Getter
     SimplePacket packet;
     @Getter
-    NESSPlayer nessPlayer;
+    NessPlayer nessPlayer;
     private boolean cancelled;
 
-    public ReceivedPacketEvent(NESSPlayer nessplayer, SimplePacket packet) {
+    public ReceivedPacketEvent(NessPlayer nessplayer, SimplePacket packet) {
         super(!Bukkit.isPrimaryThread());
         this.packet = packet;
         this.nessPlayer = nessplayer;

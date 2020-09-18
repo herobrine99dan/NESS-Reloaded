@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ness.NESSAnticheat;
-import com.github.ness.NESSPlayer;
+import com.github.ness.NessPlayer;
 import com.github.ness.api.NESSApi;
 import com.github.ness.api.Violation;
 import com.github.ness.api.impl.NESSApiImpl;
@@ -38,7 +38,7 @@ public class NESSExample extends JavaPlugin implements Listener {
 		String module = violation.getDetails();
 		int vl = e.getViolations();
 		e.setCancelled(true);
-		NESSPlayer np = e.getNessplayer();
+		NessPlayer np = e.getNessplayer();
 		Player p = np.getPlayer();
 	}
 	
@@ -49,7 +49,7 @@ public class NESSExample extends JavaPlugin implements Listener {
 		String module = violation.getDetails();
 		int vl = e.getViolations();
 		e.setCancelled(true);
-		NESSPlayer np = e.getNessplayer();
+		NessPlayer np = e.getNessplayer();
 		Player p = np.getPlayer();
 	}
 

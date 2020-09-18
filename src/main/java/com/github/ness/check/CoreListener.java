@@ -1,6 +1,11 @@
 package com.github.ness.check;
 
-import java.io.File;
+import com.github.ness.NessPlayer;
+import com.github.ness.data.ImmutableLoc;
+import com.github.ness.data.MovementValues;
+import com.github.ness.data.PlayerAction;
+import com.github.ness.packets.ReceivedPacketEvent;
+import com.github.ness.utility.Utility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -9,69 +14,42 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
-import com.github.ness.NESSPlayer;
-import com.github.ness.data.ImmutableLoc;
-import com.github.ness.data.MovementValues;
-import com.github.ness.data.PlayerAction;
-import com.github.ness.packets.ReceivedPacketEvent;
-import com.github.ness.utility.Utility;
-
 public class CoreListener implements Listener {
+
 	private final CheckManager manager;
 
-	public CoreListener(CheckManager manager) {
+	CoreListener(CheckManager manager) {
 		this.manager = manager;
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onJoin(PlayerJoinEvent event) {
-		NESSPlayer nessPlayer = manager.getPlayer(event.getPlayer());
-		manager.getPlayer(event.getPlayer()).actionTime.put(PlayerAction.JOIN, System.nanoTime());
-		for (AbstractCheck<?> check : manager.checks) {
-			//TODO Compute the CheckFactory
-			CheckFactory factory = manager.getChecksFactory().computeIfAbsent((Class<? extends AbstractCheck<?>>) check.getClass(), (k) -> new CheckFactory(check.getInfo(), manager));
-			factory.start();
-			nessPlayer.getChecksActivated().add(factory.generateCheck());
-		}
+	@EventHandler(priority = EventPriority.LOW)
+	public void onJoin(PlayerJoinEvent evt) {
+		NessPlayer nessPlayer = manager.addPlayer(evt.getPlayer());
+
+		nessPlayer.actionTime.put(PlayerAction.JOIN, System.nanoTime());
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onTick(ReceivedPacketEvent event) {
-		final String packetName = event.getPacket().getName().toLowerCase();
-		if (packetName.contains("flying") || packetName.contains("position") || packetName.contains("look")) {
-			event.getNessPlayer().onClientTick();
-		}
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onQuit(PlayerQuitEvent evt) {
+		Player player = evt.getPlayer();
+		final long tenSecondsLater = 20L * 10L;
+		Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
+			if (player.isOnline()) {
+				manager.removePlayer(player);
+			}
+		}, tenSecondsLater);
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void onPlace(BlockBreakEvent event) {
-		if (Utility.getMaterialName(event.getBlock().getLocation()).contains("web")) {
-			manager.getPlayer(event.getPlayer()).actionTime.put(PlayerAction.WEBBREAKED, System.nanoTime());
-		}
-	}
-
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onVelocity(PlayerVelocityEvent event) {
-		NESSPlayer nessPlayer = this.manager.getPlayer(event.getPlayer());
-		nessPlayer.velocity = ImmutableLoc.of(event.getVelocity().toLocation(event.getPlayer().getWorld()));
-		nessPlayer.actionTime.put(PlayerAction.VELOCITY, System.nanoTime());
-		if (nessPlayer.isDevMode()) {
-			event.getPlayer().sendMessage("Velocity: " + nessPlayer.velocity);
-		}
-	}
-
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onDamage(EntityDamageEvent event) {
-		if (event.getEntity() instanceof Player) {
-			manager.getPlayer((Player) event.getEntity()).actionTime.put(PlayerAction.DAMAGE, System.nanoTime());
-		}
-	}
+	/*
+	 * 
+	 * Check helpers
+	 * 
+	 */
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onMove(PlayerMoveEvent event) {
@@ -86,20 +64,46 @@ public class CoreListener implements Listener {
 			return;
 		}
 		Player player = event.getPlayer();
+		NessPlayer nessPlayer = manager.getExistingPlayer(player);
+		if (nessPlayer == null) {
+			return;
+		}
+
 		MovementValues values = new MovementValues(player, ImmutableLoc.of(destination, destinationWorld),
 				ImmutableLoc.of(source, sourceWorld));
-		manager.getPlayer(player).updateMovementValue(values);
+		nessPlayer.updateMovementValue(values);
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onQuit(PlayerQuitEvent evt) {
-		Player player = evt.getPlayer();
-		final long tenSecondsLater = 20L * 10L;
-		Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
-			if (player.isOnline()) {
-				manager.removePlayer(player);
-			}
-		}, tenSecondsLater);
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onVelocity(PlayerVelocityEvent event) {
+		NessPlayer nessPlayer = manager.getExistingPlayer(event.getPlayer());
+		if (nessPlayer == null) {
+			return;
+		}
+		nessPlayer.velocity = ImmutableLoc.of(event.getVelocity().toLocation(event.getPlayer().getWorld()));
+		nessPlayer.actionTime.put(PlayerAction.VELOCITY, System.nanoTime());
+		if (nessPlayer.isDevMode()) {
+			event.getPlayer().sendMessage("Velocity: " + nessPlayer.velocity);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
+	public void onPlace(BlockBreakEvent event) {
+		NessPlayer nessPlayer = manager.getExistingPlayer(event.getPlayer());
+		if (nessPlayer == null) {
+			return;
+		}
+		if (Utility.getMaterialName(event.getBlock().getLocation()).contains("web")) {
+			nessPlayer.actionTime.put(PlayerAction.WEBBREAKED, System.nanoTime());
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onTick(ReceivedPacketEvent event) {
+		final String packetName = event.getPacket().getName().toLowerCase();
+		if (packetName.contains("flying") || packetName.contains("position") || packetName.contains("look")) {
+			event.getNessPlayer().onClientTick();
+		}
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.github.ness.api.impl;
 
-import com.github.ness.NESSPlayer;
+import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +15,7 @@ public class PlayerPunishEvent extends Event implements Cancellable {
     @Getter
     private final Player player;
     @Getter
-    private final NESSPlayer nessplayer;
+    private final NessPlayer nessplayer;
     @Getter
     private final int violations;
     @Getter
@@ -29,7 +29,7 @@ public class PlayerPunishEvent extends Event implements Cancellable {
      * This event is fired when someone is punished
      */
 
-    public PlayerPunishEvent(Player player, NESSPlayer nessplayer, Violation violation, int violations, String command) {
+    public PlayerPunishEvent(Player player, NessPlayer nessplayer, Violation violation, int violations, String command) {
         super(!Bukkit.isPrimaryThread());
         this.player = player;
         this.command = command;

@@ -6,7 +6,7 @@ import com.github.ness.utility.HandlerListUtils;
 
 import org.bukkit.event.Event;
 
-class ListeningCheckFactory<E extends Event, C extends AbstractCheck<E>> extends BaseCheckFactory<C> {
+class ListeningCheckFactory<E extends Event, C extends AbstractCheck<E>> extends CheckFactory<C> {
 
 	private final ScalableRegisteredListener<E> scalableListener;
 	private final Class<E> eventClass;
@@ -21,18 +21,20 @@ class ListeningCheckFactory<E extends Event, C extends AbstractCheck<E>> extends
 		return eventClass;
 	}
 	
-	ScalableRegisteredListener<E> getScalableListener() {
-		return scalableListener;
-	}
-	
 	void checkEvent(E event) {
 		getChecks().forEach((check) -> check.checkEvent(event));
 	}
 	
 	@Override
-	void close() {
-		super.close();
-		HandlerListUtils.getEventListeners(eventClass).unregister(getScalableListener());
+	void start0() {
+		super.start0();
+		HandlerListUtils.getEventListeners(eventClass).register(scalableListener);
+	}
+	
+	@Override
+	void close0() {
+		super.close0();
+		HandlerListUtils.getEventListeners(eventClass).unregister(scalableListener);
 	}
 
 }

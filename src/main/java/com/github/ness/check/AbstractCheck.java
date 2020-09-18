@@ -1,147 +1,85 @@
 package com.github.ness.check;
 
-import java.util.concurrent.ScheduledFuture;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.time.Duration;
 
-import org.bukkit.entity.Player;
+import com.github.ness.NessPlayer;
+
 import org.bukkit.event.Event;
-import org.bukkit.event.EventPriority;
-import org.bukkit.plugin.RegisteredListener;
-
-import com.github.ness.NESSPlayer;
-import com.github.ness.utility.HandlerListUtils;
-
-import lombok.Getter;
 
 /**
  * General check to be extended. <br>
  * <br>
- * Subclasses must declare a public constructor with CheckManager as a parameter, e.g.: <br>
- * <code>public XXXCheck(CheckManager manager)</code>
+ * Subclasses must declare a public constructor with BaseCheckFactory as a
+ * parameter, e.g.: <br>
+ * <code>public XXXCheck(BaseCheckFactory<?> checkFactory)</code>
  *
  * @param <E> the type of the event listened to
  * @author A248
  */
 public abstract class AbstractCheck<E extends Event> {
 
-    private static final Logger logger = Logger.getLogger(AbstractCheck.class.getName());
-    protected final CheckManager manager;
-    @Getter
-    private final CheckInfo<E> info;
-    private final Object stateLock = new Object();
-    private State state;
+	private final CheckFactory<?> checkFactory;
+	private final NessPlayer nessPlayer;
 
-    /**
-     * Creates the check. Subclasses should require CheckManager as a parameter in their constructors
-     * and simply pass it along to this superconstructor. They should make their own CheckInfo.
-     *
-     * @param manager the check manager
-     * @param info    information about the check, designated by the check itself
-     */
-    protected AbstractCheck(CheckManager manager, CheckInfo<E> info) {
-        this.manager = manager;
-        this.info = info;
-    }
+	/**
+	 * Direct access to the check manager
+	 * 
+	 * @deprecated Use {@link #manager()} instead
+	 */
+	@Deprecated
+	protected final CheckManager manager;
 
-    public NESSPlayer getNessPlayer(Player p) {
-        return this.manager.getPlayer(p);
-    }
+	/**
+	 * Creates the check. Subclasses should declare a constructor with the same signature
+	 *
+	 * @param manager the check manager
+	 * @param nessPlayer the ness player
+	 */
+	protected AbstractCheck(CheckFactory<?> checkFactory, NessPlayer nessPlayer) {
+		this.checkFactory = checkFactory;
+		this.nessPlayer = nessPlayer;
 
-    public void initiate() {
-        synchronized (stateLock) {
-            this.state = getNewState();
-        }
-    }
+		manager = checkFactory.getCheckManager();
+	}
 
-    // Should only be called under state lock
-    private State getNewState() {
-        assert Thread.holdsLock(stateLock);
+	protected CheckManager manager() {
+		return checkFactory.getCheckManager();
+	}
+	
+	protected NessPlayer player() {
+		return nessPlayer;
+	}
+	
+	/**
+	 * Runs a delayed task using the bukkit scheduler
+	 * 
+	 * @param command the runnable to run later
+	 * @param duration the delay
+	 */
+	protected void runTaskLater(Runnable command, Duration duration) {
+		manager().getNess().getServer().getScheduler().runTaskLater(manager().getNess(), command, duration.toMillis() / 50L);
+	}
+	
+	protected Duration durationOfTicks(int ticks) {
+		return Duration.ofMillis(ticks * 50L);
+	}
 
-        ScheduledFuture<?> asyncFuture = null;
-        NessRegisteredListener nessListener = null;
-        if (info.asyncInterval != -1L) {
-            asyncFuture = manager.getNess().getExecutor().scheduleWithFixedDelay(() -> {
-                manager.forEachPlayer(this::checkAsyncPeriodic);
-            }, 1L, info.asyncInterval, info.units);
-        }
-        if (info.event != null) {
-            nessListener = new NessRegisteredListener();
-            HandlerListUtils.getEventListeners(info.event).register(nessListener);
-        }
-        return new State(asyncFuture, nessListener);
-    }
+	/**
+	 * Called async and periodically, as defined by {@link CheckInfo}
+	 *
+	 */
+	protected void checkAsyncPeriodic() {
+		throw new UnsupportedOperationException("Not implemented - checkAsyncPeriodic");
+	}
 
-    // To be called by CheckManager
-
-    public void close() {
-        synchronized (stateLock) {
-            state.close();
-            state = null;
-        }
-    }
-
-    /**
-     * Called async and periodically for each player, as defined by {@link CheckInfo}
-     *
-     * @param player the ness player
-     */
-    protected void checkAsyncPeriodic(NESSPlayer player) {
-
-    }
-
-    /**
-     * Called when this check's event is fired, whether synchronously depends on whether
-     * the event is fired synchronously
-     *
-     * @param evt the event
-     */
-    protected void checkEvent(E evt) {
-
-    }
-
-    // To be overriden by subclasses
-
-    private class State {
-
-        final ScheduledFuture<?> asyncFuture;
-        final NessRegisteredListener nessListener;
-
-        State(ScheduledFuture<?> asyncFuture, NessRegisteredListener nessListener) {
-            this.asyncFuture = asyncFuture;
-            this.nessListener = nessListener;
-        }
-
-        void close() {
-            if (asyncFuture != null) {
-                asyncFuture.cancel(false);
-            }
-            if (nessListener != null) {
-                HandlerListUtils.getEventListeners(info.event).unregister(nessListener);
-            }
-        }
-
-    }
-
-    private class NessRegisteredListener extends RegisteredListener {
-
-        NessRegisteredListener() {
-            super(HandlerListUtils.DummyListener.INSTANCE, HandlerListUtils.DummyEventExecutor.INSTANCE,
-                    EventPriority.NORMAL, manager.getNess(), false);
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public void callEvent(Event event) {
-            try {
-                if (info.event.isInstance(event)) {
-                    checkEvent((E) event);
-                }
-            } catch (Throwable ex) {
-                logger.log(Level.WARNING, "NESS made a mistake in listening to an event. Please report this error on Github.", ex);
-            }
-        }
-
-    }
+	/**
+	 * Called when this check's event is fired, whether synchronously depends on
+	 * whether the event is fired synchronously
+	 *
+	 * @param evt        the event
+	 */
+	protected void checkEvent(E evt) {
+		throw new UnsupportedOperationException("Not implemented - checkEvent");
+	}
 
 }

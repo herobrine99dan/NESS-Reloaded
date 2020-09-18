@@ -21,88 +21,87 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class NESSAnticheat extends JavaPlugin {
-    private static final Logger logger = Logger.getLogger(NESSAnticheat.class.getName());
-    static NESSAnticheat main;
-    @Getter
-    private ScheduledExecutorService executor;
-    @Getter
-    private NESSConfig nessConfig;
-    @Getter
-    private CheckManager checkManager;
-    @Getter
-    private ViolationManager violationManager;
-    @Getter
-    private int minecraftVersion;
-    @Getter
-    private MouseRecord mouseRecord;
+	private static final Logger logger = Logger.getLogger(NESSAnticheat.class.getName());
+	static NESSAnticheat main;
+	@Getter
+	private ScheduledExecutorService executor;
+	@Getter
+	private NESSConfig nessConfig;
+	@Getter
+	private CheckManager checkManager;
+	@Getter
+	private ViolationManager violationManager;
+	@Getter
+	private int minecraftVersion;
+	@Getter
+	private MouseRecord mouseRecord;
 
-    public static NESSAnticheat getInstance() {
-        return NESSAnticheat.main;
-    }
+	public static NESSAnticheat getInstance() {
+		return NESSAnticheat.main;
+	}
 
-    @Override
-    public void onEnable() {
-        main = this;
+	@Override
+	public void onEnable() {
+		main = this;
 
-        mouseRecord = new MouseRecord(this);
-        nessConfig = new NESSConfig("config.yml", "messages.yml");
-        nessConfig.reloadConfiguration(this);
-        if (!nessConfig.checkConfigVersion()) {
-            getLogger().warning(
-                    "Your config.yml is outdated! Until you regenerate it, NESS will use default values for some checks.");
-        }
-        if (!nessConfig.checkMessagesVersion()) {
-            getLogger().warning(
-                    "Your messages.yml is outdated! Until you regenerate it, NESS will use default values for some messages.");
-        }
-        logger.fine("Configuration loaded. Initiating checks...");
-        if (this.getVersion() > 1152 && this.getVersion() < 1162) {
-            getLogger().warning("Please use 1.16.2 Spigot Version since 1.16/1.16.1 has a lot of false flags");
-        }
-        executor = Executors.newSingleThreadScheduledExecutor();
-        getCommand("ness").setExecutor(new NESSCommands(this));
-        if (!new File(this.getDataFolder(), "records").exists()) {
-            new File(this.getDataFolder(), "records").mkdir();
-        }
-        checkManager = new CheckManager(this);
-        CompletableFuture<?> future = checkManager.loadChecks();
-        getServer().getPluginManager().registerEvents(checkManager.coreListener, this);
+		mouseRecord = new MouseRecord(this);
+		nessConfig = new NESSConfig("config.yml", "messages.yml");
+		nessConfig.reloadConfiguration(this);
+		if (!nessConfig.checkConfigVersion()) {
+			getLogger().warning(
+					"Your config.yml is outdated! Until you regenerate it, NESS will use default values for some checks.");
+		}
+		if (!nessConfig.checkMessagesVersion()) {
+			getLogger().warning(
+					"Your messages.yml is outdated! Until you regenerate it, NESS will use default values for some messages.");
+		}
+		logger.fine("Configuration loaded. Initiating checks...");
+		if (this.getVersion() > 1152 && this.getVersion() < 1162) {
+			getLogger().warning("Please use 1.16.2 Spigot Version since 1.16/1.16.1 has a lot of false flags");
+		}
+		executor = Executors.newSingleThreadScheduledExecutor();
+		getCommand("ness").setExecutor(new NESSCommands(this));
+		if (!new File(this.getDataFolder(), "records").exists()) {
+			new File(this.getDataFolder(), "records").mkdir();
+		}
+		checkManager = new CheckManager(this);
+		CompletableFuture<?> future = checkManager.start();
 
-        violationManager = new ViolationManager(this);
-        violationManager.addDefaultActions();
-        violationManager.initiatePeriodicTask();
-        getServer().getScheduler().runTaskLater(this, future::join, 1L);
+		violationManager = new ViolationManager(this);
+		violationManager.addDefaultActions();
+		violationManager.initiatePeriodicTask();
+		getServer().getScheduler().runTaskLater(this, future::join, 1L);
 
-        getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(this), this, ServicePriority.Low);
-        minecraftVersion = this.getVersion();
-        if (!Bukkit.getName().toLowerCase().contains("glowstone")) {
-            getServer().getPluginManager().registerEvents(new PacketListener(), this);
-        }
-        if (this.getNessConfig().getViolationHandling().getConfigurationSection("notify-staff").getBoolean("bungeecord",
-                false)) {
-            this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-            this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeCordListener());
-        }
-    }
+		getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(this), this, ServicePriority.Low);
+		minecraftVersion = this.getVersion();
+		if (!Bukkit.getName().toLowerCase().contains("glowstone")) {
+			getServer().getPluginManager().registerEvents(new PacketListener(), this);
+		}
+		if (this.getNessConfig().getViolationHandling().getConfigurationSection("notify-staff").getBoolean("bungeecord",
+				false)) {
+			this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+			this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeCordListener());
+		}
+	}
 
-    public int getVersion() {
-        String first = Bukkit.getVersion().substring(Bukkit.getVersion().indexOf("(MC: "));
-        return Integer.valueOf(first.replace("(MC: ", "").replace(")", "").replace(" ", "").replace(".", ""));
-    }
+	public int getVersion() {
+		String first = Bukkit.getVersion().substring(Bukkit.getVersion().indexOf("(MC: "));
+		return Integer.valueOf(first.replace("(MC: ", "").replace(")", "").replace(" ", "").replace(".", ""));
+	}
 
-    @Override
-    public void onDisable() {
-        if (checkManager != null) {
-            checkManager.close();
-        }
-        if (executor != null) {
-            try {
-                executor.shutdown();
-                executor.awaitTermination(10L, TimeUnit.SECONDS);
-            } catch (InterruptedException ex) {
-                logger.log(Level.WARNING, "Failed to complete thread pool termination", ex);
-            }
-        }
-    }
+	@Override
+	public void onDisable() {
+		if (checkManager != null) {
+			checkManager.close();
+		}
+		if (executor != null) {
+			try {
+				executor.shutdown();
+				executor.awaitTermination(10L, TimeUnit.SECONDS);
+			} catch (InterruptedException ex) {
+				logger.log(Level.WARNING, "Failed to complete thread pool termination", ex);
+			}
+		}
+	}
 
 }
