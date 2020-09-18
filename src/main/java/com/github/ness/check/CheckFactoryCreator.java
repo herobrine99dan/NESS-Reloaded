@@ -13,8 +13,6 @@ class CheckFactoryCreator<E extends Event, C extends AbstractCheck<E>> {
 	private final CheckManager manager;
 	private final String fullClassName;
 	
-	private Class<C> clazz;
-	
 	CheckFactoryCreator(CheckManager manager, String packagePrefix, String checkName) {
 		this.manager = manager;
 		this.fullClassName = "com.github.ness.check." + packagePrefix + '.' + checkName;
@@ -29,7 +27,7 @@ class CheckFactoryCreator<E extends Event, C extends AbstractCheck<E>> {
 		}
 	}
 	
-	private Constructor<C> getConstructor() {
+	private Constructor<C> getConstructor(Class<C> clazz) {
 		try {
 			return clazz.getDeclaredConstructor(CheckFactory.class, NessPlayer.class);
 		} catch (NoSuchMethodException ex) {
@@ -38,7 +36,7 @@ class CheckFactoryCreator<E extends Event, C extends AbstractCheck<E>> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private CheckInfo<E> getCheckInfo() {
+	private CheckInfo<E> getCheckInfo(Class<C> clazz) {
 		Field checkInfoField;
 		try {
 			checkInfoField = clazz.getDeclaredField("checkInfo");
@@ -58,12 +56,12 @@ class CheckFactoryCreator<E extends Event, C extends AbstractCheck<E>> {
 	 * @return the check factory or {@code null} if none in the package exists
 	 */
 	CheckFactory<C> create() {
-		Class<C> checkClass = getCheckClass();
-		if (checkClass == null) {
+		Class<C> clazz = getCheckClass();
+		if (clazz == null) {
 			return null;
 		}
-		Constructor<C> constructor = getConstructor();
-		CheckInfo<E> checkInfo = getCheckInfo();
+		Constructor<C> constructor = getConstructor(clazz);
+		CheckInfo<E> checkInfo = getCheckInfo(clazz);
 		if (checkInfo.event != null) {
 			return new ListeningCheckFactory<>(constructor, manager, checkInfo);
 		}
