@@ -14,7 +14,7 @@ import com.github.ness.utility.Utility;
 public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 
     public Aimbot(CheckManager manager) {
-        super(manager, CheckInfo.eventWithAsyncPeriodic(ReceivedPacketEvent.class, 1, TimeUnit.SECONDS));
+        super(manager, CheckInfo.eventOnly(ReceivedPacketEvent.class));
     }
 
     @Override

@@ -65,7 +65,7 @@ public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
                     }
                 } else if (movementsPerTick > 0.084 && movementsPerTick < 0.9) {
                     double result = Math.abs(nessPlayer.lastPacketsPerTicks - movementsPerTick);
-                    if (nessPlayer.isDebugMode()) {
+                    if (nessPlayer.isDevMode()) {
                         nessPlayer.getPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
                     }
                     if (result < 0.001) {

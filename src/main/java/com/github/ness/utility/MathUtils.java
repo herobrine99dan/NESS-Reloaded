@@ -22,8 +22,8 @@ public class MathUtils {
         return obtained * 100.0D / total;
     }
 
-    public static double gcd(double limit, double a, double b) {
-        return b <= limit ? a : MathUtils.gcd(limit, b, a % b);
+    public static double gcd(double a, double b) {
+        return b <= 16384L ? a : MathUtils.gcd(b, a % b);
     }
 
     public static float yawTo180F(float flub) {
