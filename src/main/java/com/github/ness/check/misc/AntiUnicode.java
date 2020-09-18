@@ -1,8 +1,11 @@
 package com.github.ness.check.misc;
 
 import com.github.ness.check.CheckManager;
+import com.github.ness.packets.ReceivedPacketEvent;
+import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
@@ -12,10 +15,12 @@ import java.nio.charset.StandardCharsets;
 public class AntiUnicode extends AbstractCheck<AsyncPlayerChatEvent> {
 
     private static final ThreadLocal<CharsetEncoder> asciiEncoder = ThreadLocal.withInitial(() -> StandardCharsets.US_ASCII.newEncoder());
+	public static final CheckInfo<AsyncPlayerChatEvent> checkInfo = CheckInfo
+			.eventOnly(AsyncPlayerChatEvent.class);
 
-    public AntiUnicode(CheckManager manager) {
-        super(manager, CheckInfo.eventOnly(AsyncPlayerChatEvent.class));
-    }
+	public AntiUnicode(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
+	}
 
     @Override
     protected void checkEvent(AsyncPlayerChatEvent e) {
@@ -23,7 +28,7 @@ public class AntiUnicode extends AbstractCheck<AsyncPlayerChatEvent> {
          * Check if player send Unicode message
          */
         if (!asciiEncoder.get().canEncode(e.getMessage())) {
-            manager.getPlayer(e.getPlayer()).setViolation(new Violation("AntiUnicode", e.getMessage()), e);
+            player().setViolation(new Violation("AntiUnicode", e.getMessage()), e);
         }
     }
 

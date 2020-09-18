@@ -4,42 +4,44 @@ import com.github.ness.check.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.utility.Utility;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
 public class NoSlowDownBow extends AbstractCheck<EntityShootBowEvent> {
 
-    public NoSlowDownBow(CheckManager manager) {
-        super(manager, CheckInfo.eventOnly(EntityShootBowEvent.class));
-        // TODO Auto-generated constructor stub
-    }
+	public static final CheckInfo<EntityShootBowEvent> checkInfo = CheckInfo.eventOnly(EntityShootBowEvent.class);
 
-    @Override
-    protected void checkEvent(EntityShootBowEvent e) {
-        Check(e);
-    }
+	public NoSlowDownBow(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
+	}
 
-    public void Check(EntityShootBowEvent e) {
-        if (e.getEntityType() == EntityType.PLAYER) {
-            Player o = (Player) e.getEntity();
-            if (Utility.hasflybypass(o)) {
-                return;
-            }
-            NessPlayer p = manager.getPlayer(o);
-            double distance = p.getMovementValues().XZDiff;
-            /*
-             * if (o.isSprinting() || failed==1) { e.setCancelled(true);
-             * checkfailed(o.getName()); }
-             */
-            distance -= o.getVelocity().getX();
-            distance -= o.getVelocity().getZ();
-            if (distance > 0.25 || o.isSprinting()) {
-                p.setViolation(new Violation("NoSlowDown", ""), e);
-            }
-        }
-    }
+	@Override
+	protected void checkEvent(EntityShootBowEvent e) {
+		if (player().isNot(e.getEntity()))
+			return;
+		Check(e);
+	}
 
+	public void Check(EntityShootBowEvent e) {
+		Player o = (Player) e.getEntity();
+		if (Utility.hasflybypass(o)) {
+			return;
+		}
+		NessPlayer p = player();
+		double distance = p.getMovementValues().XZDiff;
+		/*
+		 * if (o.isSprinting() || failed==1) { e.setCancelled(true);
+		 * checkfailed(o.getName()); }
+		 */
+		distance -= o.getVelocity().getX();
+		distance -= o.getVelocity().getZ();
+		if (distance > 0.25 || o.isSprinting()) {
+			p.setViolation(new Violation("NoSlowDown", ""), e);
+		}
+	}
 }

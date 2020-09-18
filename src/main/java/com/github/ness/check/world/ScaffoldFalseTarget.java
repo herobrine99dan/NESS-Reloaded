@@ -1,20 +1,25 @@
 package com.github.ness.check.world;
 
 import com.github.ness.check.CheckManager;
+import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.utility.Utility;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class ScaffoldFalseTarget extends AbstractCheck<BlockPlaceEvent> {
 
-    public ScaffoldFalseTarget(CheckManager manager) {
-        super(manager, CheckInfo.eventOnly(BlockPlaceEvent.class));
-        // TODO Auto-generated constructor stub
-    }
+	public static final CheckInfo<BlockPlaceEvent> checkInfo = CheckInfo
+			.eventOnly(BlockPlaceEvent.class);
+
+	public ScaffoldFalseTarget(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
+	}
 
     @Override
     protected void checkEvent(BlockPlaceEvent e) {
@@ -32,7 +37,7 @@ public class ScaffoldFalseTarget extends AbstractCheck<BlockPlaceEvent> {
                     && target.getType().isSolid() && !target.getType().name().toLowerCase().contains("sign")
                     && !target.getType().toString().toLowerCase().contains("fence")
                     && player.getLocation().getY() > event.getBlock().getLocation().getY() && target.getType().isOccluding()) {
-                manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold", "Impossible1"), event);
+                this.player().setViolation(new Violation("Scaffold", "Impossible1"), event);
             }
         }
     }

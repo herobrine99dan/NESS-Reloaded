@@ -4,6 +4,7 @@ import com.github.ness.check.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.utility.MathUtils;
 import com.github.ness.utility.Utility;
@@ -23,21 +24,26 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
     double maxYaw;
     double minAngle;
     double maxReach;
+    
+	public static final CheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfo
+			.eventOnly(EntityDamageByEntityEvent.class);
 
-    public Killaura(CheckManager manager) {
-        super(manager, CheckInfo.eventWithAsyncPeriodic(EntityDamageByEntityEvent.class, 70, TimeUnit.MILLISECONDS));
+	public Killaura(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
         this.maxYaw = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getDouble("maxyaw", 357);
         this.minAngle = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getDouble("minangle", -0.2);
         this.maxReach = this.manager.getNess().getNessConfig().getCheck(this.getClass()).getDouble("maxreach", 3.4);
-    }
+	}
 
     @Override
-    protected void checkAsyncPeriodic(NessPlayer player) {
-        player.attackedEntities.clear();
+    protected void checkAsyncPeriodic() {
+        player().attackedEntities.clear();
     }
 
     @Override
     protected void checkEvent(EntityDamageByEntityEvent e) {
+		if (player().isNot(e.getDamager()))
+			return;
         Check(e);
         Check1(e);
         Check2(e);
@@ -51,7 +57,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
         if (e.getDamager() instanceof Player) {
             Player player = (Player) e.getDamager();
             Entity entity = e.getEntity();
-            NessPlayer np = this.manager.getPlayer(player);
+            NessPlayer np = player();
             double range = 0;
             if (entity instanceof Player) {
                 NessPlayer damaged = this.getNessPlayer((Player) entity);
@@ -129,7 +135,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
     public void Check5(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Player) {
             if (e.getEntity() instanceof LivingEntity && Bukkit.getVersion().contains("1.8")) {
-                NessPlayer nessPlayer = this.getNessPlayer((Player) e.getDamager());
+                NessPlayer nessPlayer = player();
                 nessPlayer.attackedEntities.add(e.getEntity().getEntityId());
                 if (nessPlayer.attackedEntities.size() > 2) {
                     punish(e, (Player) e.getDamager(), "MultiAura Entities: " + nessPlayer.attackedEntities.size());
@@ -141,7 +147,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
     public void Check6(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Player) {
             if (e.getEntity() instanceof LivingEntity) {
-                NessPlayer nessPlayer = this.getNessPlayer((Player) e.getDamager());
+            	NessPlayer nessPlayer = player();
                 double angle = Utility.getAngle((Player) e.getDamager(), e.getEntity().getLocation(),
                         nessPlayer.getMovementValues().getTo().getDirectionVector());
                 if (angle < -0.4) {
@@ -152,7 +158,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
     }
 
     private void punish(EntityDamageByEntityEvent e, Player p, String module) {
-        manager.getPlayer(p).setViolation(new Violation("Killaura", module), e);
+        player().setViolation(new Violation("Killaura", module), e);
     }
 
 }
