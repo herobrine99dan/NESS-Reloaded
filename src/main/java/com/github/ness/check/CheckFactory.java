@@ -3,8 +3,10 @@ package com.github.ness.check;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
 
 import com.github.ness.NessPlayer;
@@ -19,7 +21,7 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 	private boolean started;
 	private ScheduledFuture<?> scheduledFuture;
 	
-	private final Set<C> checks = new CopyOnWriteArraySet<>();
+	private final ConcurrentMap<UUID, C> checks = new ConcurrentHashMap<>();
 	
 	CheckFactory(Constructor<C> constructor, CheckManager manager, CheckInfo<?> checkInfo) {
 		this.constructor = constructor;
@@ -35,7 +37,7 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 		return constructor.getDeclaringClass().getSimpleName().toLowerCase(Locale.ROOT);
 	}
 	
-	Set<C> getChecks() {
+	Map<UUID, C> getChecks() {
 		return checks;
 	}
 	
@@ -45,7 +47,7 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 				return;
 			}
 		}
-		checks.forEach((check) -> check.checkAsyncPeriodic());
+		checks.values().forEach((check) -> check.checkAsyncPeriodic());
 	}
 	
 	C newCheck(NessPlayer nessPlayer) {
@@ -56,7 +58,7 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 			throw new UncheckedReflectiveOperationException(
 					"Unable to instantiate check " + constructor.getDeclaringClass().getName(), ex);
 		}
-		checks.add(check);
+		checks.put(nessPlayer.getUUID(), check);
 		return check;
 	}
 	

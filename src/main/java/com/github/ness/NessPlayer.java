@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -45,6 +46,11 @@ public class NessPlayer implements AutoCloseable {
      * Player's current violation, package visibility for ViolationManager to use
      */
     public final AtomicReference<Violation> violation = new AtomicReference<>();
+    
+    /**
+     * Player UUID
+     */
+    private final UUID uuid;
     /**
      * Bukkit Player corresponding to this NESSPlayer
      */
@@ -106,6 +112,7 @@ public class NessPlayer implements AutoCloseable {
     private final Set<AbstractCheck<?>> checksActivated;
 
     public NessPlayer(Player player, boolean devMode) {
+    	uuid = player.getUniqueId();
         this.player = player;
         this.teleported = false;
         this.lastPacketTime = 0;
@@ -126,12 +133,16 @@ public class NessPlayer implements AutoCloseable {
                 new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
     }
     
+    public UUID getUUID() {
+    	return uuid;
+    }
+    
     /*
      * Convenience methods
      */
     
     public boolean is(Player other) {
-    	return player.getUniqueId().equals(other.getUniqueId());
+    	return uuid.equals(other.getUniqueId());
     }
     
     public boolean is(Entity entity) {
