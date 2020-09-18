@@ -266,9 +266,6 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		Action action = evt.getAction();
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
 			Player player = evt.getPlayer();
-			if (!player().is(player)) {
-				return;
-			}
 			logger.log(Level.FINEST, "Added click from {0}", player);
 			player().getClickHistory().add(monotonicMillis());
 		}

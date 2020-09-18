@@ -25,12 +25,10 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 
 	@Override
 	protected void checkEvent(PlayerInteractEvent e) {
-		if (player().isNot(e.getPlayer()))
-			return;
-		Check(e);
+		check(e);
 	}
 
-	void Check(PlayerInteractEvent e) {
+	private void check(PlayerInteractEvent e) {
 		Action action = e.getAction();
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
 			NessPlayer player = this.player();

@@ -24,11 +24,10 @@ public class Criticals extends AbstractCheck<EntityDamageByEntityEvent> {
 	protected void checkEvent(EntityDamageByEntityEvent e) {
 		if (player().isNot(e.getDamager()))
 			return;
-		Check(e);
-		// newCheck(e);
+		check(e);
 	}
 
-	public void Check(EntityDamageByEntityEvent event) {
+	private void check(EntityDamageByEntityEvent event) {
 		if (event.getDamager() instanceof Player) {
 			Player player = (Player) event.getDamager();
 			if (!player.isOnGround() && player.getFallDistance() > 0 && !Utility.hasflybypass(player)

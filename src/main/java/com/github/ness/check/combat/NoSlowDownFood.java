@@ -21,12 +21,10 @@ public class NoSlowDownFood extends AbstractCheck<PlayerItemConsumeEvent> {
 
     @Override
     protected void checkEvent(PlayerItemConsumeEvent e) {
-		if (player().isNot(e.getPlayer()))
-			return;
-        Check(e);
+        check(e);
     }
 
-    public void Check(PlayerItemConsumeEvent e) {
+    private void check(PlayerItemConsumeEvent e) {
         if (Utility.hasflybypass(e.getPlayer())) {
             return;
         }
