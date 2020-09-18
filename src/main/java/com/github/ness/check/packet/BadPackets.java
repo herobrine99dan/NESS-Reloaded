@@ -1,21 +1,28 @@
 package com.github.ness.check.packet;
 
 import com.github.ness.check.CheckManager;
+
+import org.bukkit.event.block.BlockPlaceEvent;
+
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.Utility;
 
 public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
     private double MAX_PACKETS_PER_TICK = 1.12;
+    
+	public static final CheckInfo<ReceivedPacketEvent> checkInfo = CheckInfo
+			.eventOnly(ReceivedPacketEvent.class);
 
-    public BadPackets(CheckManager manager) {
-        super(manager, CheckInfo.eventOnly(ReceivedPacketEvent.class));
+	public BadPackets(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
         this.MAX_PACKETS_PER_TICK = this.manager.getNess().getNessConfig().getCheck(BadPackets.class)
                 .getDouble("maxpackets", 1.12);
-    }
+	}
 
     /**
      * From Crescent AntiCheat

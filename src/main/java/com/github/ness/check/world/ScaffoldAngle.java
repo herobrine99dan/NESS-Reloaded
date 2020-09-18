@@ -8,16 +8,19 @@ import org.bukkit.util.Vector;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.check.CheckManager;
 
 public class ScaffoldAngle extends AbstractCheck<BlockPlaceEvent> {
     private static final double MAX_ANGLE = Math.toRadians(90);
+    
+	public static final CheckInfo<BlockPlaceEvent> checkInfo = CheckInfo
+			.eventOnly(BlockPlaceEvent.class);
 
-    public ScaffoldAngle(CheckManager manager) {
-        super(manager, CheckInfo.eventOnly(BlockPlaceEvent.class));
-        // TODO Auto-generated constructor stub
-    }
+	public ScaffoldAngle(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
+	}    
 
     @Override
     protected void checkEvent(BlockPlaceEvent event) {
@@ -26,11 +29,11 @@ public class ScaffoldAngle extends AbstractCheck<BlockPlaceEvent> {
         if (placedFace == null) {
             return;
         }
-        NessPlayer nessPlayer = this.getNessPlayer(player);
+        NessPlayer nessPlayer = player();
         final Vector placedVector = new Vector(placedFace.getModX(), placedFace.getModY(), placedFace.getModZ());
         float placedAngle = nessPlayer.getMovementValues().getTo().getDirectionVector().toBukkitVector().angle(placedVector);
         if (placedAngle > MAX_ANGLE) {
-            manager.getPlayer(event.getPlayer()).setViolation(new Violation("Scaffold", "HighAngle"), event);
+        	nessPlayer.setViolation(new Violation("Scaffold", "HighAngle"), event);
         }
     }
 

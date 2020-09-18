@@ -1,27 +1,30 @@
 package com.github.ness.check.world;
 
 import com.github.ness.check.CheckManager;
+import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 import java.util.List;
 
 public class ImpossibleBreak extends AbstractCheck<BlockBreakEvent> {
 
-    private final List<String> whitelistedMaterials;
+    
+	public static final CheckInfo<BlockBreakEvent> checkInfo = CheckInfo
+			.eventOnly(BlockBreakEvent.class);
 
-    public ImpossibleBreak(CheckManager manager) {
-        super(manager, CheckInfo.eventOnly(BlockBreakEvent.class));
-        whitelistedMaterials = manager.getNess().getNessConfig().getCheck(LiquidInteraction.class)
-                .getStringList("whitelisted-materials");
-    }
+	public ImpossibleBreak(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
+	}
 
     @Override
     protected void checkEvent(BlockBreakEvent event) {
         if (event.getBlock().isLiquid()) {
-            manager.getPlayer(event.getPlayer()).setViolation(new Violation("ImpossibleBreak", ""), event);
+            player().setViolation(new Violation("ImpossibleBreak", ""), event);
         }
 //		Block target = player.getTargetBlock((Set<Material>) null, 5);
 //		boolean bypass = false;

@@ -4,6 +4,7 @@ import com.github.ness.check.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.utility.Utility;
 import org.bukkit.Location;
@@ -12,16 +13,18 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
 public class NewOldStrafe extends AbstractCheck<PlayerMoveEvent> {
+    
+	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo
+			.eventOnly(PlayerMoveEvent.class);
 
-    public NewOldStrafe(CheckManager manager) {
-        super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
-        // TODO Auto-generated constructor stub
-    }
+	public NewOldStrafe(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
+	}
 
     @Override
     protected void checkEvent(PlayerMoveEvent e) {
         Player p = e.getPlayer();
-        NessPlayer np = this.manager.getPlayer(p);
+        NessPlayer np = this.player();
         Vector dir = e.getTo().clone().subtract(e.getFrom()).toVector();
 
         double dist = distanceXZ(e.getFrom(), e.getTo());
@@ -35,8 +38,7 @@ public class NewOldStrafe extends AbstractCheck<PlayerMoveEvent> {
         double result = Math.abs(np.lastStrafeAngle - angle);
         if (np.lastStrafeAngle != 0 && result > 35 && result < 300 && Math.abs(yawDiff) < 8 && !p.isOnGround()
                 && dist > .19 && !isAgainstBlock(e.getFrom()) && !isAgainstBlock(e.getTo())) {
-            manager.getPlayer(p)
-                    .setViolation(new Violation("Strafe", "High Angle Diff: " + Math.abs(np.lastStrafeAngle - angle)), e);
+            this.player().setViolation(new Violation("Strafe", "High Angle Diff: " + Math.abs(np.lastStrafeAngle - angle)), e);
         }
 
         np.lastStrafeAngle = angle;

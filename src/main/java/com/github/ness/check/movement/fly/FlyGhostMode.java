@@ -4,6 +4,7 @@ import com.github.ness.check.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -11,17 +12,20 @@ import org.bukkit.event.player.PlayerMoveEvent;
 public class FlyGhostMode extends AbstractCheck<PlayerMoveEvent> {
 
 
-    public FlyGhostMode(CheckManager manager) {
-        super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
-    }
+	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo
+			.eventOnly(PlayerMoveEvent.class);
+
+	public FlyGhostMode(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
+	}
 
     @Override
     protected void checkEvent(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (player.isDead()) {
-            NessPlayer np = this.manager.getPlayer(player);
+            NessPlayer np = this.player();
             if ((np.getMovementValues().XZDiff > 0.3 || np.getMovementValues().yDiff > 0.16) && !np.isTeleported()) {
-                this.getNessPlayer(player).setViolation(new Violation("Fly", "GhostMode"), event);
+            	np.setViolation(new Violation("Fly", "GhostMode"), event);
             }
         }
     }

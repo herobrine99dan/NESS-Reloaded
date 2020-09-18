@@ -3,6 +3,7 @@ package com.github.ness.check.required;
 import com.github.ness.check.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -11,13 +12,16 @@ import java.util.concurrent.TimeUnit;
 
 public class TeleportEvent extends AbstractCheck<PlayerTeleportEvent> {
 
-    public TeleportEvent(CheckManager manager) {
-        super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerTeleportEvent.class, 1500, TimeUnit.MILLISECONDS));
-    }
+	public static final CheckInfo<PlayerTeleportEvent> checkInfo = CheckInfo
+			.eventOnly(PlayerTeleportEvent.class);
+
+	public TeleportEvent(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
+	}
 
     @Override
-    protected void checkAsyncPeriodic(NessPlayer player) {
-        player.setTeleported(false);
+    protected void checkAsyncPeriodic() {
+        player().setTeleported(false);
     }
 
     protected void checkEvent(PlayerTeleportEvent e) {
@@ -36,7 +40,7 @@ public class TeleportEvent extends AbstractCheck<PlayerTeleportEvent> {
             }
         }
         e.setTo(result);
-        NessPlayer nessPlayer = this.manager.getPlayer(e.getPlayer());
+        NessPlayer nessPlayer = this.player();
         if (!nessPlayer.hasSetback) {
             nessPlayer.setTeleported(true);
         }

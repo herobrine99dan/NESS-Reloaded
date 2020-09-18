@@ -4,20 +4,24 @@ import com.github.ness.check.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class GhostHand extends AbstractCheck<PlayerInteractEvent> {
+    
+	public static final CheckInfo<PlayerInteractEvent> checkInfo = CheckInfo
+			.eventOnly(PlayerInteractEvent.class);
 
-    public GhostHand(CheckManager manager) {
-        super(manager, CheckInfo.eventOnly(PlayerInteractEvent.class));
-        // TODO Auto-generated constructor stub
-    }
+	public GhostHand(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
+	}
 
     @Override
     protected void checkEvent(PlayerInteractEvent e) {
@@ -34,7 +38,7 @@ public class GhostHand extends AbstractCheck<PlayerInteractEvent> {
         Player player = event.getPlayer();
         final Location loc = player.getLocation();
         Block targetBlock = player.getTargetBlock(null, 7);
-        NessPlayer p = manager.getPlayer(event.getPlayer());
+        NessPlayer p = player();
         if (targetBlock.getLocation().add(0, 1, 0).getBlock().getType().name().toLowerCase().contains("slab")) {
             return;
         }

@@ -5,6 +5,7 @@ import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.PlayerAction;
@@ -16,10 +17,12 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class FlyFalseGround extends AbstractCheck<PlayerMoveEvent> {
 
+	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo
+			.eventOnly(PlayerMoveEvent.class);
 
-    public FlyFalseGround(CheckManager manager) {
-        super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
-    }
+	public FlyFalseGround(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
+	}
 
     @Override
     protected void checkEvent(PlayerMoveEvent e) {
@@ -31,7 +34,7 @@ public class FlyFalseGround extends AbstractCheck<PlayerMoveEvent> {
                 || Utility.specificBlockNear(e.getTo(), "snow") || NESSAnticheat.getInstance().getVersion() > 1152) {
             return;
         }
-        NessPlayer nessPlayer = this.getNessPlayer(player);
+        NessPlayer nessPlayer = this.player();
         if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1500 && nessPlayer.velocity.getY() > 0.34) {
             return;
         }

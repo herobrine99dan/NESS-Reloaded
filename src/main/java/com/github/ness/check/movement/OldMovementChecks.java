@@ -4,6 +4,7 @@ import com.github.ness.check.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.PlayerAction;
@@ -23,18 +24,19 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.concurrent.TimeUnit;
 
 public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
+	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(PlayerMoveEvent.class, 1, TimeUnit.SECONDS);
 
-    public OldMovementChecks(CheckManager manager) {
-        super(manager, CheckInfo.eventWithAsyncPeriodic(PlayerMoveEvent.class, 1, TimeUnit.SECONDS));
-    }
+	public OldMovementChecks(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
+	}
 
     @Override
-    protected void checkAsyncPeriodic(NessPlayer player) {
-        player.noGround = 0;
+    protected void checkAsyncPeriodic() {
+        player().noGround = 0;
     }
 
     private void punish(PlayerMoveEvent e, String cheat, String module) {
-        NessPlayer nessPlayer = manager.getPlayer(e.getPlayer());
+        NessPlayer nessPlayer = this.player();
         if (nessPlayer.isTeleported()) {
             return;
         }
@@ -47,7 +49,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 
         Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0, 1, 0)).getType();
         Material bottom = null;
-        NessPlayer nessPlayer = this.manager.getPlayer(player);
+        NessPlayer nessPlayer = this.player();
         final boolean devMode = nessPlayer.isDevMode();
         final boolean debugMode = nessPlayer.isDebugMode();
         Location from = event.getFrom(), to = event.getTo();

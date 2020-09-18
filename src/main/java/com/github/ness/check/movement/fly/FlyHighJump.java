@@ -4,6 +4,7 @@ import com.github.ness.check.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.PlayerAction;
@@ -15,13 +16,16 @@ import org.bukkit.potion.PotionEffectType;
 
 public class FlyHighJump extends AbstractCheck<PlayerMoveEvent> {
 
-    public FlyHighJump(CheckManager manager) {
-        super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
-    }
+	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo
+			.eventOnly(PlayerMoveEvent.class);
+
+	public FlyHighJump(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
+	}
 
     @Override
     protected void checkEvent(PlayerMoveEvent e) {
-        NessPlayer nessPlayer = this.manager.getPlayer(e.getPlayer());
+        NessPlayer nessPlayer = this.player();
         Player p = e.getPlayer();
         double y = nessPlayer.getMovementValues().yDiff;
         if (Utility.isMathematicallyOnGround(e.getTo().getY()) || Utility.hasflybypass(p)

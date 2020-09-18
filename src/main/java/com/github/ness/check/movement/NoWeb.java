@@ -4,6 +4,7 @@ import com.github.ness.check.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
@@ -12,15 +13,18 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
 public class NoWeb extends AbstractCheck<PlayerMoveEvent> {
+    
+	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo
+			.eventOnly(PlayerMoveEvent.class);
 
-    public NoWeb(CheckManager manager) {
-        super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
-    }
+	public NoWeb(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
+	}
 
     @Override
     protected void checkEvent(PlayerMoveEvent event) {
         Player p = event.getPlayer();
-        NessPlayer nessPlayer = this.manager.getPlayer(p);
+        NessPlayer nessPlayer = this.player();
         float dist = (float) nessPlayer.getMovementValues().XZDiff; // Our XZ Distance
         final double walkSpeed = p.getWalkSpeed() * 0.85;
         dist -= (dist / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);

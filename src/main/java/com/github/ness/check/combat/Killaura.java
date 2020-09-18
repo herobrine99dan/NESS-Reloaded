@@ -60,7 +60,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
             NessPlayer np = player();
             double range = 0;
             if (entity instanceof Player) {
-                NessPlayer damaged = this.getNessPlayer((Player) entity);
+                NessPlayer damaged = this.manager().getExistingPlayer((Player) entity);
                 range = Math.hypot(np.getMovementValues().getTo().getX() - damaged.getMovementValues().getTo().getX(),
                         np.getMovementValues().getTo().getZ() - damaged.getMovementValues().getTo().getZ());
             } else {

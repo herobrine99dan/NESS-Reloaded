@@ -4,6 +4,7 @@ import com.github.ness.check.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import org.bukkit.event.block.BlockPlaceEvent;
 
@@ -12,16 +13,19 @@ import java.util.concurrent.TimeUnit;
 public class FastPlace extends AbstractCheck<BlockPlaceEvent> {
 
     int max;
+    
+	public static final CheckInfo<BlockPlaceEvent> checkInfo = CheckInfo
+			.eventOnly(BlockPlaceEvent.class);
 
-    public FastPlace(CheckManager manager) {
-        super(manager, CheckInfo.eventWithAsyncPeriodic(BlockPlaceEvent.class, 1, TimeUnit.SECONDS));
-        this.max = this.manager.getNess().getNessConfig().getCheck(this.getClass())
-                .getInt("maxblockplaced", 14);
-    }
+	public FastPlace(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
+	      this.max = this.manager.getNess().getNessConfig().getCheck(this.getClass())
+	                .getInt("maxblockplaced", 14);
+	}
 
     @Override
-    protected void checkAsyncPeriodic(NessPlayer player) {
-        player.blockPlace = 0;
+    protected void checkAsyncPeriodic() {
+        player().blockPlace = 0;
     }
 
     @Override
@@ -35,7 +39,7 @@ public class FastPlace extends AbstractCheck<BlockPlaceEvent> {
      * @param event
      */
     public void Check(BlockPlaceEvent e) {
-        NessPlayer player = manager.getPlayer(e.getPlayer());
+        NessPlayer player = player();
         player.blockPlace++;
         if (player.blockPlace > max) {
             player.setViolation(new Violation("FastPlace", "Placing: " + player.blockPlace), e);

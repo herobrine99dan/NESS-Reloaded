@@ -4,6 +4,7 @@ import com.github.ness.check.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
@@ -13,9 +14,12 @@ import org.bukkit.potion.PotionEffectType;
 
 public class SpeedAir extends AbstractCheck<PlayerMoveEvent> {
 
-    public SpeedAir(CheckManager manager) {
-        super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
-    }
+	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo
+			.eventOnly(PlayerMoveEvent.class);
+
+	public SpeedAir(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
+	}
 
     public static float getBaseSpeed(NessPlayer nessPlayer) {
         Player player = nessPlayer.getPlayer();
@@ -35,7 +39,7 @@ public class SpeedAir extends AbstractCheck<PlayerMoveEvent> {
     @Override
     protected void checkEvent(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        NessPlayer nessPlayer = this.getNessPlayer(player);
+        NessPlayer nessPlayer = this.player();
         double xDiff = nessPlayer.getMovementValues().xDiff;
         double zDiff = nessPlayer.getMovementValues().zDiff;
         double total = Math.abs(xDiff) + Math.abs(zDiff);

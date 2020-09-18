@@ -4,6 +4,7 @@ import com.github.ness.check.CheckManager;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
+import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
@@ -13,9 +14,12 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class FlyInvalidJumpMotion extends AbstractCheck<PlayerMoveEvent> {
 
-    public FlyInvalidJumpMotion(CheckManager manager) {
-        super(manager, CheckInfo.eventOnly(PlayerMoveEvent.class));
-    }
+	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo
+			.eventOnly(PlayerMoveEvent.class);
+
+	public FlyInvalidJumpMotion(CheckFactory<?> factory, NessPlayer player) {
+		super(factory, player);
+	}
 
     @Override
     protected void checkEvent(PlayerMoveEvent event) {
@@ -68,7 +72,7 @@ public class FlyInvalidJumpMotion extends AbstractCheck<PlayerMoveEvent> {
                 || Utility.hasflybypass(player)) {
             return;
         }
-        NessPlayer nessPlayer = this.manager.getPlayer(player);
+        NessPlayer nessPlayer = this.player();
         if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1300) {
             yDiff -= Math.abs(nessPlayer.velocity.getY());
         }
