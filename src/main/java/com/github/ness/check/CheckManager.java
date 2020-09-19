@@ -107,7 +107,6 @@ public class CheckManager {
 			}
 		}
 		UUID uuid = player.getUniqueId();
-		logger.log(Level.FINE, "Loading checks {0} for {0}", new Object[] {enabledFactories, uuid});
 		playerCache.get(uuid, (u, executor) -> {
 			return CompletableFuture.supplyAsync(() -> {
 				Set<AbstractCheck<?>> checks = new HashSet<>();
