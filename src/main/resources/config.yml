@@ -61,7 +61,7 @@ enabled-checks:
   - 'LiquidInteraction'
   - 'InventoryHack'
   - 'Killaura'
-  - 'MorePackets'
+#  - 'MorePackets'
   - 'NoSlowDownBow'
   - 'NoSlowDownFood'
   - 'NoWeb'

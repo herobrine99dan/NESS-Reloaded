@@ -1,5 +1,6 @@
 package com.github.ness.check.world;
 
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.util.Vector;
@@ -27,7 +28,8 @@ public class ScaffoldAngle extends AbstractCheck<BlockPlaceEvent> {
             return;
         }
         NessPlayer nessPlayer = player();
-        if((event.getBlockPlaced().getType() != event.getPlayer().getItemInHand().getType()) && event.getPlayer().getItemInHand().getType().isBlock()) {
+        Material material = event.getPlayer().getItemInHand().getType();
+        if((event.getBlockPlaced().getType() != material) && material.isSolid() && material.isOccluding()) {
         	nessPlayer.setViolation(new Violation("Scaffold", "Impossible"), event);
         	return;
         }
