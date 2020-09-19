@@ -18,10 +18,10 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 	private final CheckManager manager;
 	private final CheckInfo<?> checkInfo;
 	
-	private boolean started;
-	private ScheduledFuture<?> scheduledFuture;
+	private transient boolean started;
+	private transient ScheduledFuture<?> scheduledFuture;
 	
-	private final ConcurrentMap<UUID, C> checks = new ConcurrentHashMap<>();
+	private transient final ConcurrentMap<UUID, C> checks = new ConcurrentHashMap<>();
 	
 	CheckFactory(Constructor<C> constructor, CheckManager manager, CheckInfo<?> checkInfo) {
 		this.constructor = constructor;
@@ -103,6 +103,12 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 		if (scheduledFuture != null) {
 			scheduledFuture.cancel(false);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "CheckFactory [constructor=" + constructor + ", manager=" + manager + ", checkInfo=" + checkInfo
+				+ ", getCheckName()=" + getCheckName() + "]";
 	}
 	
 }
