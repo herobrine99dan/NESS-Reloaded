@@ -3,11 +3,14 @@ package com.github.ness.antibot;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.ness.NESSAnticheat;
@@ -41,14 +44,22 @@ public class AntiBot implements Listener, Runnable {
 
 	@EventHandler
 	public void Check(PlayerJoinEvent e) {
+		Player p = e.getPlayer();
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				if (e.getPlayer().isOnline()) {
-					whitelistbypass.add(e.getPlayer().getName());
+				if (p.isOnline()) {
+					whitelistbypass.add(p.getName());
 				}
 			}
 		}.runTaskLater(this.ness, neededSeconds * 20L);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (p != player) {
+                if (p.getName().equalsIgnoreCase(player.getName()) || player.getName().equalsIgnoreCase(p.getName())) {
+                    p.kickPlayer("You are already joined!");
+                }
+            }
+        }
 	}
 
 	@Override

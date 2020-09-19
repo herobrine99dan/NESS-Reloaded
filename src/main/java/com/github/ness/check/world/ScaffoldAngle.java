@@ -27,6 +27,10 @@ public class ScaffoldAngle extends AbstractCheck<BlockPlaceEvent> {
             return;
         }
         NessPlayer nessPlayer = player();
+        if(event.getBlockPlaced().getType() != event.getPlayer().getItemInHand().getType()) {
+        	nessPlayer.setViolation(new Violation("Scaffold", "Impossible"), event);
+        	return;
+        }
         final Vector placedVector = new Vector(placedFace.getModX(), placedFace.getModY(), placedFace.getModZ());
         float placedAngle = nessPlayer.getMovementValues().getTo().getDirectionVector().toBukkitVector().angle(placedVector);
         if (placedAngle > MAX_ANGLE) {

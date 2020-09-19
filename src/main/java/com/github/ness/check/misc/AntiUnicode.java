@@ -23,8 +23,6 @@ public class AntiUnicode extends AbstractCheck<AsyncPlayerChatEvent> {
 
     @Override
     protected void checkEvent(AsyncPlayerChatEvent e) {
-		if (player().isNot(e.getPlayer()))
-			return;
         /**
          * Check if player send Unicode message
          */

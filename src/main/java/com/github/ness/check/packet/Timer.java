@@ -8,15 +8,15 @@ import com.github.ness.check.CheckInfo;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.Utility;
 
-public class BadPackets extends AbstractCheck<ReceivedPacketEvent> {
+public class Timer extends AbstractCheck<ReceivedPacketEvent> {
     private double MAX_PACKETS_PER_TICK = 1.12;
     
 	public static final CheckInfo<ReceivedPacketEvent> checkInfo = CheckInfo
 			.eventOnly(ReceivedPacketEvent.class);
 
-	public BadPackets(CheckFactory<?> factory, NessPlayer player) {
+	public Timer(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
-        this.MAX_PACKETS_PER_TICK = this.ness().getNessConfig().getCheck(BadPackets.class)
+        this.MAX_PACKETS_PER_TICK = this.ness().getNessConfig().getCheck(Timer.class)
                 .getDouble("maxpackets", 1.12);
 	}
 

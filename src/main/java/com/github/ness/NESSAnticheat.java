@@ -76,9 +76,11 @@ public class NESSAnticheat extends JavaPlugin {
 		violationManager.addDefaultActions();
 		violationManager.initiatePeriodicTask();
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);
-		antiBot = new AntiBot(this);
-		getServer().getPluginManager().registerEvents(antiBot, this);
-		getServer().getScheduler().runTaskTimer(this, antiBot, 0L, 20L);
+		if (this.getNessConfig().getConfig().getConfigurationSection("antibot").getBoolean("enable")) {
+			antiBot = new AntiBot(this);
+			getServer().getPluginManager().registerEvents(antiBot, this);
+			getServer().getScheduler().runTaskTimer(this, antiBot, 0L, 20L);
+		}
 		getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(this), this, ServicePriority.Low);
 		minecraftVersion = this.getVersion();
 		if (!Bukkit.getName().toLowerCase().contains("glowstone")) {
