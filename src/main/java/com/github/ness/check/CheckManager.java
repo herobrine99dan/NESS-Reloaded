@@ -48,6 +48,7 @@ public class CheckManager {
 	}
 
 	public CompletableFuture<?> start() {
+		logger.log(Level.FINE, "CheckManager starting...");
 		ness.getServer().getPluginManager().registerEvents(coreListener, ness);
 
 		return loadFactories(() -> {});
