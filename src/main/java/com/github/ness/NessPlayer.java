@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -77,7 +78,7 @@ public class NessPlayer implements AutoCloseable {
     public double flyYSum; // The sum beetween positive y values
     public double sensitivity; // The Player Sensitivity
     public float lastPacketsPerTicks; // Used in BadPackets
-    public Map<PlayerAction, Long> actionTime;
+    final public Map<PlayerAction, Object> actionTime;
     public List<Point> mouseRecordValues;
     public ImmutableLoc safeLocation;
     public int airTicks;
@@ -122,7 +123,7 @@ public class NessPlayer implements AutoCloseable {
         this.CPS = 0;
         this.setBackTicks = 0;
         this.mouseRecordValues = new ArrayList<Point>();
-        this.actionTime = Collections.synchronizedMap(new HashMap<>());
+        this.actionTime = Collections.synchronizedMap(new EnumMap<>(PlayerAction.class));
         this.pitchDiff = new ArrayList<Float>();
         this.normalPacketsCounter = 0;
         this.sensitivity = 0;
@@ -178,7 +179,7 @@ public class NessPlayer implements AutoCloseable {
     }
 
     public long nanoTimeDifference(PlayerAction action) {
-        return (System.nanoTime() - this.actionTime.getOrDefault(action, (long) 0)) / 1000_000L;
+        return (System.nanoTime() - (Long)this.actionTime.getOrDefault(action, (long) 0)) / 1000_000L;
     }
 
     public void onClientTick() {
