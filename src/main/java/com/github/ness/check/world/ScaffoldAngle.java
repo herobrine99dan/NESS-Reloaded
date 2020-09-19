@@ -27,7 +27,7 @@ public class ScaffoldAngle extends AbstractCheck<BlockPlaceEvent> {
             return;
         }
         NessPlayer nessPlayer = player();
-        if(event.getBlockPlaced().getType() != event.getPlayer().getItemInHand().getType()) {
+        if((event.getBlockPlaced().getType() != event.getPlayer().getItemInHand().getType()) && event.getPlayer().getItemInHand().getType().isBlock()) {
         	nessPlayer.setViolation(new Violation("Scaffold", "Impossible"), event);
         	return;
         }

@@ -11,8 +11,7 @@ import com.github.ness.utility.Utility;
 
 public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 
-	public static final CheckInfo<ReceivedPacketEvent> checkInfo = CheckInfo
-			.eventOnly(ReceivedPacketEvent.class);
+	public static final CheckInfo<ReceivedPacketEvent> checkInfo = CheckInfo.eventOnly(ReceivedPacketEvent.class);
 
 	public Aimbot(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
@@ -107,14 +106,8 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 	private void Check3(ReceivedPacketEvent e) {
 		NessPlayer player = e.getNessPlayer();
 		float yawChange = (float) Math.abs(player.getMovementValues().yawDiff);
-		float pitchChange = (float) Math.abs(player.getMovementValues().pitchDiff);
-		if (yawChange > 5 && pitchChange < 0.3) {
+		if (yawChange > 1.0f && Utility.round(yawChange, 100) * 0.1f == yawChange) {
 			player.setViolation(new Violation("Aimbot", "[Experimental] PerfectAura3"), e);
-		} else {
-			if (yawChange > 1.0f && Utility.round(yawChange, 100) * 0.1f == yawChange) {
-				player.setViolation(new Violation("Aimbot", "[Experimental] PerfectAura4"), e);
-			}
 		}
 	}
-
 }

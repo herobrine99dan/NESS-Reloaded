@@ -78,7 +78,7 @@ public class NessPlayer implements AutoCloseable {
     public double flyYSum; // The sum beetween positive y values
     public double sensitivity; // The Player Sensitivity
     public float lastPacketsPerTicks; // Used in BadPackets
-    final public Map<PlayerAction, Object> actionTime;
+    final public Map<PlayerAction, Long> actionTime;
     public List<Point> mouseRecordValues;
     public ImmutableLoc safeLocation;
     public int airTicks;
@@ -179,7 +179,7 @@ public class NessPlayer implements AutoCloseable {
     }
 
     public long nanoTimeDifference(PlayerAction action) {
-        return (System.nanoTime() - (Long)this.actionTime.getOrDefault(action, (long) 0)) / 1000_000L;
+        return (System.nanoTime() - this.actionTime.getOrDefault(action, (long) 0)) / 1000_000L;
     }
 
     public void onClientTick() {

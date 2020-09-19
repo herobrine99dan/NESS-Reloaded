@@ -170,7 +170,7 @@ checks:
 # Performance impact: low
 # Effectiveness: High
 #
-  badpackets:
+  timer:
     maxpackets: 1.12
 #
 # ElytraCheats
