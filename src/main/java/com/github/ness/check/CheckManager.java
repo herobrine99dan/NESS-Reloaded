@@ -19,6 +19,7 @@ import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.RemovalListener;
 import com.github.benmanes.caffeine.cache.Scheduler;
 import com.github.ness.NESSAnticheat;
+import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
 
 import org.bukkit.entity.Player;
@@ -26,7 +27,7 @@ import org.bukkit.event.HandlerList;
 
 public class CheckManager {
 
-	private static final Logger logger = Logger.getLogger(CheckManager.class.getName());
+	private static final Logger logger = NessLogger.getLogger(CheckManager.class);
 
 	private final NESSAnticheat ness;
 	private final CoreListener coreListener;

@@ -11,6 +11,7 @@ import java.util.function.IntBinaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
@@ -28,7 +29,7 @@ import lombok.EqualsAndHashCode;
 
 public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 
-	private static final Logger logger = Logger.getLogger(AutoClick.class.getName());
+	private static final Logger logger = NessLogger.getLogger(AutoClick.class);
 	private final List<HardLimitEntry> hardLimits = new ArrayList<>();
 	private final Set<DeviationEntry> deviationRequirements = new HashSet<>();
 	private final Set<DeviationEntry> superDeviationRequirements = new HashSet<>();

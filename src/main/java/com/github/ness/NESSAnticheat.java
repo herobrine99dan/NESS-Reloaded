@@ -24,7 +24,7 @@ import com.github.ness.utility.MouseRecord;
 import lombok.Getter;
 
 public class NESSAnticheat extends JavaPlugin {
-	private static final Logger logger = Logger.getLogger(NESSAnticheat.class.getName());
+	private static final Logger logger = NessLogger.getLogger(NESSAnticheat.class);
 	static NESSAnticheat main;
 	@Getter
 	private ScheduledExecutorService executor;

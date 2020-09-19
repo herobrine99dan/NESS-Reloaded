@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 @AllArgsConstructor
 public class NESSCommands implements CommandExecutor {
 
-	private static final Logger logger = Logger.getLogger(NESSCommands.class.getName());
+	private static final Logger logger = NessLogger.getLogger(NESSCommands.class);
 	private final NESSAnticheat ness;
 
 	private String getPermission(String arg) {

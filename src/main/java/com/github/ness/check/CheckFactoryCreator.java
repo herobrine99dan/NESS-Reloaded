@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
 import com.github.ness.utility.UncheckedReflectiveOperationException;
 
@@ -18,7 +19,7 @@ class CheckFactoryCreator {
 	private final CheckManager manager;
 	private final Collection<String> enabledCheckNames;
 	
-	private static final Logger logger = Logger.getLogger(CheckFactoryCreator.class.getName());
+	private static final Logger logger = NessLogger.getLogger(CheckFactoryCreator.class);
 	
 	CheckFactoryCreator(CheckManager manager, Collection<String> enabledCheckNames) {
 		this.manager = manager;
