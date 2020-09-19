@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,25 +13,25 @@ import java.util.logging.Logger;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.AsyncCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.RemovalListener;
+import com.github.benmanes.caffeine.cache.Scheduler;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class CheckManager {
 
 	private static final Logger logger = Logger.getLogger(CheckManager.class.getName());
 
-	private final CoreListener coreListener;
-	private final Cache<UUID, NessPlayer> playerCache;
-	private final ConcurrentMap<NessPlayer, Set<AbstractCheck<?>>> playerChecks = new ConcurrentHashMap<>();
 	private final NESSAnticheat ness;
+	private final CoreListener coreListener;
+
+	private final AsyncCache<UUID, NessPlayerData> playerCache;
 
 	private volatile Set<CheckFactory<?>> checkFactories;
 
@@ -42,14 +40,7 @@ public class CheckManager {
 		coreListener = new CoreListener(this);
 
 		playerCache = Caffeine.newBuilder().expireAfterAccess(Duration.ofMinutes(5L))
-				.removalListener(new RemovalListener<UUID, NessPlayer>() {
-
-					@Override
-					public void onRemoval(@Nullable UUID key, @Nullable NessPlayer value, @NonNull RemovalCause cause) {
-						value.close();
-					}
-
-				}).build();
+				.removalListener(new PlayerCacheRemovalListener()).scheduler(Scheduler.systemScheduler()).buildAsync();
 	}
 
 	public NESSAnticheat getNess() {
@@ -66,7 +57,7 @@ public class CheckManager {
 		Set<CheckFactory<?>> factories = checkFactories;
 		factories.forEach((factory) -> factory.close());
 
-		playerCache.invalidateAll();
+		playerCache.synchronous().invalidateAll();
 		return loadFactories(() -> {
 			ness.getServer().getScheduler().runTask(ness, () -> {
 				for (Player player : ness.getServer().getOnlinePlayers()) {
@@ -85,12 +76,13 @@ public class CheckManager {
 		Collection<String> enabledCheckNames = ness.getNessConfig().getEnabledChecks();
 
 		CompletableFuture<Set<CheckFactory<?>>> checkCreationFuture;
-		checkCreationFuture = CompletableFuture.supplyAsync(() -> createAllFactories(enabledCheckNames),
-				ness.getExecutor());
+		checkCreationFuture = CompletableFuture.supplyAsync(() -> {
+			return new CheckFactoryCreator(this, enabledCheckNames).createAllFactories();
+		}, ness.getExecutor());
 		return checkCreationFuture.whenComplete((checkFactories, ex) -> {
 
 			if (ex != null) {
-				logger.log(Level.SEVERE, "Failed to load check factories");
+				logger.log(Level.SEVERE, "Failed to load check factories", ex);
 				return;
 			}
 			for (CheckFactory<?> factory : checkFactories) {
@@ -101,39 +93,7 @@ public class CheckManager {
 		});
 	}
 
-	private Set<CheckFactory<?>> createAllFactories(Collection<String> enabledCheckNames) {
-		Set<CheckFactory<?>> factories = new HashSet<>();
-
-		factoryLoadLoop: for (String checkName : enabledCheckNames) {
-			for (ChecksPackage checksPackage : ChecksPackage.values()) {
-
-				CheckFactory<?> factory = loadFactory(checksPackage.prefix(), checkName);
-				if (factory != null) {
-					factories.add(factory);
-					continue factoryLoadLoop;
-				}
-			}
-			logger.log(Level.WARNING, "No check class found for check " + checkName);
-		}
-		for (String requiredCheck : ChecksPackage.REQUIRED_CHECKS) {
-			CheckFactory<?> factory = loadFactory("required", requiredCheck);
-			if (factory == null) {
-				logger.log(Level.WARNING, "No check class found for required check " + requiredCheck);
-				continue;
-			}
-			factories.add(factory);
-		}
-		return factories;
-	}
-
-	@SuppressWarnings("unchecked")
-	private <E extends Event, C extends AbstractCheck<E>> CheckFactory<C> loadFactory(String packagePrefix,
-			String checkName) {
-		return (CheckFactory<C>) new CheckFactoryCreator<>(this, packagePrefix, checkName).create();
-	}
-
 	NessPlayer addPlayer(Player player) {
-		UUID uuid = player.getUniqueId();
 		NessPlayer nessPlayer = new NessPlayer(player, ness.getNessConfig().isDevMode());
 
 		Set<CheckFactory<?>> enabledFactories = new HashSet<>();
@@ -142,20 +102,27 @@ public class CheckManager {
 				enabledFactories.add(factory);
 			}
 		}
-		CompletableFuture.runAsync(() -> {
+		playerCache.get(player.getUniqueId(), (u) -> {
 			Set<AbstractCheck<?>> checks = new HashSet<>();
 			for (CheckFactory<?> factory : enabledFactories) {
 				checks.add(factory.newCheck(nessPlayer));
 			}
-			playerChecks.put(nessPlayer, checks);
-		}, ness.getExecutor()).whenComplete((ignore, ex) -> {
-			if (ex != null) {
-				logger.log(Level.SEVERE, "Failed to load checks for " + uuid);
-			}
+			return new NessPlayerData(nessPlayer, checks);
 		});
-
-		playerCache.put(uuid, nessPlayer);
 		return nessPlayer;
+	}
+	
+	private static class PlayerCacheRemovalListener implements RemovalListener<UUID, NessPlayerData> {
+
+		@Override
+		public void onRemoval(@Nullable UUID key, @Nullable NessPlayerData playerData, @NonNull RemovalCause cause) {
+			try (NessPlayer nessPlayer = playerData.getNessPlayer()) {
+				for (AbstractCheck<?> check : playerData.getChecks()) {
+					check.getFactory().removeCheck(nessPlayer);
+				}
+			}
+		}
+		
 	}
 	
 	/**
@@ -165,18 +132,19 @@ public class CheckManager {
 	 * @return the ness player or {@code null} if not loaded
 	 */
 	public NessPlayer getExistingPlayer(Player player) {
-		return playerCache.getIfPresent(player.getUniqueId());
+		NessPlayerData playerData = playerCache.synchronous().getIfPresent(player.getUniqueId());
+		return (playerData == null) ? null : playerData.getNessPlayer();
 	}
 
 	/**
-	 * Forcibly remove NESSPlayer. This may be used to clear the NESSPlayer before
-	 * automatic expiration of the 10 minute cache.
+	 * Forcibly remove a player. This may be used to clear the player's data before
+	 * automatic expiration of the 5 minute cache.
 	 *
 	 * @param player the player to remove
 	 */
 	void removePlayer(Player player) {
 		logger.log(Level.FINE, "Forcibly removing player {0}", player);
-		playerCache.invalidate(player.getUniqueId());
+		playerCache.synchronous().invalidate(player.getUniqueId());
 	}
 
 	/**
@@ -185,7 +153,11 @@ public class CheckManager {
 	 * @param action what to do
 	 */
 	void forEachPlayer(Consumer<NessPlayer> action) {
-		playerCache.asMap().values().forEach(action);
+		playerCache.asMap().values().forEach((playerData) -> {
+			if (playerData.isDone()) {
+				action.accept(playerData.join().getNessPlayer());
+			}
+		});
 	}
 
 }

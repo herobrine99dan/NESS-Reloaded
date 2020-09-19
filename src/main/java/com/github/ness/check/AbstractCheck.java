@@ -32,6 +32,10 @@ public abstract class AbstractCheck<E extends Event> {
 		this.checkFactory = checkFactory;
 		this.nessPlayer = nessPlayer;
 	}
+	
+	CheckFactory<?> getFactory() {
+		return checkFactory;
+	}
 
 	protected CheckManager manager() {
 		return checkFactory.getCheckManager();

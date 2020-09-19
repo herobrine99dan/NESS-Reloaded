@@ -62,6 +62,10 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 		return check;
 	}
 	
+	void removeCheck(NessPlayer nessPlayer) {
+		checks.remove(nessPlayer.getUUID());
+	}
+	
 	/**
 	 * Called to start the check
 	 * 

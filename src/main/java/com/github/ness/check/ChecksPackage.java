@@ -20,8 +20,8 @@ public enum ChecksPackage {
 	ChecksPackage(String prefix) {
 		this.prefix = prefix;
 	}
-
-	public String prefix() {
+	
+	String prefix() {
 		return prefix;
 	}
 

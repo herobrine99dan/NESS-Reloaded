@@ -1,5 +1,6 @@
 package com.github.ness.check;
 
+import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
@@ -7,7 +8,6 @@ import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.Utility;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,7 +38,8 @@ public class CoreListener implements Listener {
 	public void onQuit(PlayerQuitEvent evt) {
 		Player player = evt.getPlayer();
 		final long tenSecondsLater = 20L * 10L;
-		Bukkit.getScheduler().runTaskLater(manager.getNess(), () -> {
+		NESSAnticheat ness = manager.getNess();
+		ness.getServer().getScheduler().runTaskLater(ness, () -> {
 			if (player.isOnline()) {
 				manager.removePlayer(player);
 			}
@@ -87,7 +88,7 @@ public class CoreListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlace(BlockBreakEvent event) {
 		NessPlayer nessPlayer = manager.getExistingPlayer(event.getPlayer());
 		if (nessPlayer == null) {
