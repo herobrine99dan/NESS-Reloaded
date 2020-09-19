@@ -70,6 +70,7 @@ public class NESSAnticheat extends JavaPlugin {
 			new File(this.getDataFolder(), "records").mkdir();
 		}
 		checkManager = new CheckManager(this);
+		logger.log(Level.FINE, "Starting CheckManager");
 		CompletableFuture<?> future = checkManager.start();
 
 		violationManager = new ViolationManager(this);
