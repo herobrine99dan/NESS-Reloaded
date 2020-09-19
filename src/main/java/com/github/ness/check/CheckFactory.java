@@ -53,7 +53,7 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 	C newCheck(NessPlayer nessPlayer) {
 		C check;
 		try {
-			check = constructor.newInstance(manager, nessPlayer);
+			check = constructor.newInstance(this, nessPlayer);
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
 			throw new UncheckedReflectiveOperationException(
 					"Unable to instantiate check " + constructor.getDeclaringClass().getName(), ex);
