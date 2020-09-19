@@ -98,6 +98,8 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 	}
 	
 	void close0() {
+		assert Thread.holdsLock(this);
+
 		if (scheduledFuture != null) {
 			scheduledFuture.cancel(false);
 		}

@@ -74,6 +74,7 @@ public class CheckManager {
 	
 	private CompletableFuture<?> loadFactories(Runnable whenComplete) {
 		Collection<String> enabledCheckNames = ness.getNessConfig().getEnabledChecks();
+		logger.log(Level.FINE, "Loading all check factories: {0}", enabledCheckNames);
 
 		CompletableFuture<Set<CheckFactory<?>>> checkCreationFuture;
 		checkCreationFuture = CompletableFuture.supplyAsync(() -> {
@@ -88,6 +89,7 @@ public class CheckManager {
 			for (CheckFactory<?> factory : checkFactories) {
 				factory.start();
 			}
+			logger.log(Level.FINE, "Started all check factories");
 			this.checkFactories = checkFactories;
 			whenComplete.run();
 		});
@@ -103,6 +105,7 @@ public class CheckManager {
 			}
 		}
 		UUID uuid = player.getUniqueId();
+		logger.log(Level.FINE, "Loading checks for {0}", uuid);
 		playerCache.get(uuid, (u, executor) -> {
 			return CompletableFuture.supplyAsync(() -> {
 				Set<AbstractCheck<?>> checks = new HashSet<>();
@@ -115,6 +118,7 @@ public class CheckManager {
 					logger.log(Level.SEVERE, "Failed to load checks for " + uuid, ex);
 					return null;
 				}
+				logger.log(Level.FINE, "Successfully loaded checks for {0}", uuid);
 				return value;
 			});
 		});
