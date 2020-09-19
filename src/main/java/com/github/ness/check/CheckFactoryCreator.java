@@ -88,7 +88,7 @@ class CheckFactoryCreator {
 			try {
 				checkInfoField = clazz.getDeclaredField("checkInfo");
 			} catch (NoSuchFieldException ex) {
-				throw new IllegalArgumentException("Class " + clazz + " does not declare checkInfo", ex);
+				throw new UncheckedReflectiveOperationException("Class " + clazz + " does not declare checkInfo", ex);
 			}
 			try {
 				return (CheckInfo<E>) checkInfoField.get(null);
