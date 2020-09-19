@@ -102,12 +102,21 @@ public class CheckManager {
 				enabledFactories.add(factory);
 			}
 		}
-		playerCache.get(player.getUniqueId(), (u) -> {
-			Set<AbstractCheck<?>> checks = new HashSet<>();
-			for (CheckFactory<?> factory : enabledFactories) {
-				checks.add(factory.newCheck(nessPlayer));
-			}
-			return new NessPlayerData(nessPlayer, checks);
+		UUID uuid = player.getUniqueId();
+		playerCache.get(uuid, (u, executor) -> {
+			return CompletableFuture.supplyAsync(() -> {
+				Set<AbstractCheck<?>> checks = new HashSet<>();
+				for (CheckFactory<?> factory : enabledFactories) {
+					checks.add(factory.newCheck(nessPlayer));
+				}
+				return new NessPlayerData(nessPlayer, checks);
+			}).handle((value, ex) -> {
+				if (ex != null) {
+					logger.log(Level.SEVERE, "Failed to load checks for " + uuid, ex);
+					return null;
+				}
+				return value;
+			});
 		});
 		return nessPlayer;
 	}
