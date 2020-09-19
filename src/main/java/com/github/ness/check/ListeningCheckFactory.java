@@ -5,10 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import com.github.ness.NessLogger;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.HandlerListUtils;
 import com.github.ness.utility.UncheckedReflectiveOperationException;
@@ -23,8 +20,6 @@ class ListeningCheckFactory<E extends Event, C extends AbstractCheck<E>> extends
 	private final Class<E> eventClass;
 	private final Function<E, UUID> getPlayerFunction;
 	
-	private static final Logger logger = NessLogger.getLogger(ListeningCheckFactory.class);
-	
 	ListeningCheckFactory(Constructor<C> constructor, CheckManager manager, CheckInfo<E> checkInfo) {
 		super(constructor, manager, checkInfo);
 		scalableListener = new ScalableRegisteredListener<>(manager, this);
@@ -37,18 +32,13 @@ class ListeningCheckFactory<E extends Event, C extends AbstractCheck<E>> extends
 	}
 	
 	void checkEvent(E event) {
-		logger.log(Level.FINEST, "Listening to event {0}", event);
-
 		if (getPlayerFunction != null) {
 			UUID uuid = getPlayerFunction.apply(event);
-			logger.log(Level.FINEST, "Found UUID {0} for event", uuid);
 			C check = getChecks().get(uuid);
 			if (check != null) {
-				logger.log(Level.FINEST, "Found check {0} for uuid in event", check);
 				check.checkEvent(event);
 			}
 		} else {
-			logger.fine("No UUID involved in event");
 			getChecks().values().forEach((check) -> check.checkEvent(event));
 		}
 		
