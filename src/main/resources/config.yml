@@ -40,20 +40,17 @@ violation-handling:
 #
 # Comment out a check to disable
 #
-
 enabled-checks:
   - 'Aimbot'
   - 'AutoClicker'
-  - 'AntiBot'
-  - 'AntiBotWhitelist'
   - 'AntiUnicode'
   - 'AntiKb'
   - 'BadPackets'
   - 'Criticals'
-  - 'FastEat'
+#  - 'FastEat'
   - 'FastLadder'
   - 'FastPlace'
-  - 'ChestESP'
+#  - 'ChestESP'
   - 'FlyGhostMode'
   - 'FlyInvalidMove'
   - 'FlyHighJump'
@@ -78,6 +75,20 @@ enabled-checks:
   - 'ScaffoldIllegalTarget'
   - 'ScaffoldAngle'
 
+#
+# AntiBot
+#
+# Blocks Bot Attacks which sends a lot of players
+#
+# Performance impact: Minimal (Use Async Events)
+# Effectiveness: High
+#
+antibot:
+   enable: true
+   maxplayers: 15 #Max Players to join in one second
+   message: 'Bot Attack Detected! By NESS Reloaded' #The Kick message
+   minimumseconds: 10 #Add A Player to the NESS Reloaded Whitelist, so during a bot attack, this player will not be kicked
+    
 #
 # Check name
 #
@@ -143,25 +154,6 @@ checks:
   liquidinteraction:
     whitelisted-materials:
       - 'WATER_LILY'
-#
-# AntiBot
-#
-# Blocks Bot Attacks which sends a lot of players
-#
-# Performance impact: Minimal (Use Async Events)
-# Effectiveness: High
-#
-  antibot:
-    maxplayers: 15
-    message: 'Bot Attack Detected! By NESS Reloaded'
-#
-# AntiBotWhitelist
-#
-# Add A Player to the NESS Reloaded Whitelist, so during a bot attack, this player will not be kicked
-#
-#
-  antibotwhitelist:
-    minimumseconds: 10
 #
 # AutoClicker
 #

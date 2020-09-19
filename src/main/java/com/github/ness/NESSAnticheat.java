@@ -1,17 +1,5 @@
 package com.github.ness;
 
-import com.github.ness.api.NESSApi;
-import com.github.ness.api.impl.NESSApiImpl;
-import com.github.ness.check.CheckManager;
-import com.github.ness.check.ViolationManager;
-import com.github.ness.listener.BungeeCordListener;
-import com.github.ness.packets.PacketListener;
-import com.github.ness.utility.MouseRecord;
-import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.ServicePriority;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -19,6 +7,21 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.ServicePriority;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.ness.antibot.AntiBot;
+import com.github.ness.api.NESSApi;
+import com.github.ness.api.impl.NESSApiImpl;
+import com.github.ness.check.CheckManager;
+import com.github.ness.check.ViolationManager;
+import com.github.ness.listener.BungeeCordListener;
+import com.github.ness.packets.PacketListener;
+import com.github.ness.utility.MouseRecord;
+
+import lombok.Getter;
 
 public class NESSAnticheat extends JavaPlugin {
 	private static final Logger logger = Logger.getLogger(NESSAnticheat.class.getName());
@@ -35,6 +38,8 @@ public class NESSAnticheat extends JavaPlugin {
 	private int minecraftVersion;
 	@Getter
 	private MouseRecord mouseRecord;
+	@Getter
+	private AntiBot antiBot;
 
 	public static NESSAnticheat getInstance() {
 		return NESSAnticheat.main;
@@ -71,7 +76,9 @@ public class NESSAnticheat extends JavaPlugin {
 		violationManager.addDefaultActions();
 		violationManager.initiatePeriodicTask();
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);
-
+		antiBot = new AntiBot(this);
+		getServer().getPluginManager().registerEvents(antiBot, this);
+		getServer().getScheduler().runTaskTimer(this, antiBot, 0L, 20L);
 		getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(this), this, ServicePriority.Low);
 		minecraftVersion = this.getVersion();
 		if (!Bukkit.getName().toLowerCase().contains("glowstone")) {

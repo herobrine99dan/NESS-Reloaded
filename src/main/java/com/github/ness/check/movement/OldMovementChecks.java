@@ -295,7 +295,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
                     && !player.getLocation().getBlock().isLiquid()) {
                 for (Double amo : new Double[]{.3959395, .8152412, .4751395, .5317675}) {
                     if (Math.abs(fallDist - amo) < .01 && !web) {
-                        if (groundAround && below.isSolid() && PlayerManager.timeSince("sincePlace", player) >= 1000
+                        if (groundAround && below.isSolid() && nessPlayer.nanoTimeDifference(PlayerAction.JOIN) >= 1000
                                 && nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) >= 1000)
                             punish(event, "Speed", "BunnyHop (OnMove)");
                     }
