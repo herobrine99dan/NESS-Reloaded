@@ -83,8 +83,7 @@ class CheckFactoryCreator {
 			}
 		}
 		
-		@SuppressWarnings("unchecked")
-		private CheckInfo<E> getCheckInfo(Class<C> clazz) {
+		private CheckInfo<?> getCheckInfo(Class<C> clazz) {
 			Field checkInfoField;
 			try {
 				checkInfoField = clazz.getDeclaredField("checkInfo");
@@ -92,7 +91,7 @@ class CheckFactoryCreator {
 				throw new UncheckedReflectiveOperationException("Class " + clazz + " does not declare checkInfo", ex);
 			}
 			try {
-				return (CheckInfo<E>) checkInfoField.get(null);
+				return (CheckInfo<?>) checkInfoField.get(null);
 			} catch (IllegalAccessException ex) {
 				throw new UncheckedReflectiveOperationException(ex);
 			}
@@ -109,9 +108,12 @@ class CheckFactoryCreator {
 				return null;
 			}
 			Constructor<C> constructor = getConstructor(clazz);
-			CheckInfo<E> checkInfo = getCheckInfo(clazz);
-			if (checkInfo.event != null) {
-				return new ListeningCheckFactory<>(constructor, manager, checkInfo);
+			CheckInfo<?> checkInfo = getCheckInfo(clazz);
+
+			if (checkInfo instanceof ListeningCheckInfo) {
+				@SuppressWarnings("unchecked")
+				ListeningCheckInfo<E> listeningCheckInfo = (ListeningCheckInfo<E>) checkInfo;
+				return new ListeningCheckFactory<>(constructor, manager, listeningCheckInfo);
 			}
 			return new CheckFactory<>(constructor, manager, checkInfo);
 		}
