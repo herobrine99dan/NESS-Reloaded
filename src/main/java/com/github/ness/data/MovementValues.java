@@ -50,6 +50,7 @@ public class MovementValues {
     public final boolean AroundLadders;
     public final boolean AroundLily;
     public final boolean AroundCarpet;
+    public final boolean isOnGround;
     @Getter
     ImmutableLoc to;
     @Getter
@@ -74,12 +75,14 @@ public class MovementValues {
             AroundLadders = ladders;
             AroundSnow = Utility.specificBlockNear(to.toBukkitLocation(), "snow");
             AroundLily = Utility.specificBlockNear(to.toBukkitLocation(), "lily");
+            isOnGround = Utility.groundAround(p.getLocation().clone());
             AroundCarpet = Utility.specificBlockNear(to.toBukkitLocation(), "carpet");
         } else {
             AroundIce = false;
             AroundSlabs = false;
             AroundCarpet = false;
             AroundLadders = false;
+            isOnGround = false;
             AroundSnow = false;
             AroundLily = false;
             AroundLiquids = false;
