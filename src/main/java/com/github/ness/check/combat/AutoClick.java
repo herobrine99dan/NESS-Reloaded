@@ -35,8 +35,8 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 	private final Set<DeviationEntry> deviationRequirements = new HashSet<>();
 	private final Set<DeviationEntry> superDeviationRequirements = new HashSet<>();
 	private final int totalRetentionSecs;
-    private final Set<Long> clickHistory = ConcurrentHashMap.newKeySet();
-	
+	private final Set<Long> clickHistory = ConcurrentHashMap.newKeySet();
+
 	public static final CheckInfo<PlayerInteractEvent> checkInfo = CheckInfo
 			.eventWithAsyncPeriodic(PlayerInteractEvent.class, 2, TimeUnit.SECONDS);
 
@@ -257,7 +257,8 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 				}
 				int superStdDevPercent = getStdDevPercent(standardDeviations);
 				if (superStdDevPercent < superDeviationRequirement.deviationPercentage) {
-					player().setViolation(new Violation("AutoClick", "SuperStdDevPercent: " + superStdDevPercent), null);
+					player().setViolation(new Violation("AutoClick", "SuperStdDevPercent: " + superStdDevPercent),
+							null);
 					return;
 				}
 			}
@@ -270,7 +271,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
 			Player player = evt.getPlayer();
 			logger.log(Level.FINEST, "Added click from {0}", player);
-			this.clickHistory.add(monotonicMillis());
+			clickHistory.add(monotonicMillis());
 		}
 	}
 
