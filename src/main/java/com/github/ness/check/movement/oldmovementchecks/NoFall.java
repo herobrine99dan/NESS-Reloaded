@@ -1,4 +1,4 @@
-package com.github.ness.check.movement;
+package com.github.ness.check.movement.oldmovementchecks;
 
 import java.util.concurrent.TimeUnit;
 
@@ -50,82 +50,36 @@ public class NoFall extends AbstractCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-
 		Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0, 1, 0)).getType();
 		Material bottom = null;
 		NessPlayer nessPlayer = this.player();
 		final boolean debugMode = nessPlayer.isDebugMode();
 		Location from = event.getFrom(), to = event.getTo();
-		Double dist = from.distance(to);
-		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1600) {
-			dist -= Math.abs(nessPlayer.velocity.getX()) + Math.abs(nessPlayer.velocity.getY())
-					+ Math.abs(nessPlayer.velocity.getZ());
-		}
-		Double hozDist = dist - (to.getY() - from.getY());
+		MovementValues values = nessPlayer.getMovementValues();
+		Double hozDist = values.XZDiff;
 		Double fallDist = (double) player.getFallDistance();
 		MovementValues movementValues = nessPlayer.getMovementValues();
 		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
 				|| nessPlayer.isTeleported()) {
 			return;
 		}
-		if (to.getY() < from.getY())
-			hozDist = dist - (from.getY() - to.getY());
-		Double vertDist = Math.abs(dist - hozDist);
-		double dTG = 0; // Distance to ground
-		boolean groundAround = Utility.groundAround(player.getLocation()), waterAround = false;
-		int radius = 2;
-		boolean ice = false;
-
-		for (int x = -1; x <= 1; x++) {
-			for (int z = -1; z <= 1; z++) {
-				int y = 0;
-				while (!player.getLocation().subtract(x, y, z).getBlock().getType().isSolid() && y < 20) {
-					y++;
-				}
-				if (y < dTG || dTG == 0)
-					dTG = y;
-			}
+		Double vertDist = values.yDiff;
+		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
+			hozDist -= Math.abs(nessPlayer.velocity.getX()) + Math.abs(nessPlayer.velocity.getZ());
+			vertDist -= Math.abs(nessPlayer.velocity.getY());
 		}
-		dTG += player.getLocation().getY() % 1;
-		bottom = player.getLocation().getWorld().getBlockAt(player.getLocation().subtract(0, dTG, 0)).getType();
-		for (int x = -1; x <= 1; x++) {
-			for (int z = -1; z <= 1; z++) {
-				Material belowSel = player.getWorld().getBlockAt(player.getLocation().add(x, -1, z)).getType();
-				if (belowSel.name().toLowerCase().contains("piston") || belowSel.name().toLowerCase().contains("ice")) {
-					ice = true;
-				}
-				belowSel = player.getWorld().getBlockAt(player.getLocation().add(x, -.01, z)).getType();
-				if (belowSel.isSolid()) {
-					nessPlayer.updateLastWasOnGround();
-				}
-			}
-		}
-		if (ice) {
-			nessPlayer.updateLastWasOnIce();
-		}
-		for (int x = -radius; x < radius; x++) {
-			for (int y = -1; y < radius; y++) {
-				for (int z = -radius; z < radius; z++) {
-					Block b = to.getWorld().getBlockAt(player.getLocation().add(x, y, z));
-					if (b.isLiquid())
-						waterAround = true;
-				}
-			}
-		}
+		boolean groundAround = Utility.groundAround(player.getLocation());
+		bottom = player.getLocation().getWorld().getBlockAt(player.getLocation().subtract(0, Utility.getDistanceFromGround(player.getLocation()), 0)).getType();
 
 		if (debugMode) {
-			MSG.tell(player, "&7dist: &e" + dist);
 			MSG.tell(player, "&7X: &e" + player.getLocation().getX() + " &7V: &e" + player.getVelocity().getX());
 			MSG.tell(player, "&7Y: &e" + player.getLocation().getY() + " &7V: &e" + player.getVelocity().getY());
 			MSG.tell(player, "&7Z: &e" + player.getLocation().getZ() + " &7V: &e" + player.getVelocity().getZ());
 			MSG.tell(player, "&7hozDist: &e" + hozDist + " &7vertDist: &e" + vertDist + " &7fallDist: &e" + fallDist);
 			MSG.tell(player,
 					"&7below: &e" + Utility.getMaterialName(below) + " bottom: " + Utility.getMaterialName(bottom));
-			MSG.tell(player, "&7dTG: " + dTG);
 			MSG.tell(player,
 					"&7groundAround: &e" + MSG.torF(groundAround) + " &7onGround: " + MSG.torF(player.isOnGround()));
-			MSG.tell(player, "&7ice: " + MSG.torF(ice));
-			MSG.tell(player, " &7waterAround: " + MSG.torF(waterAround));
 		}
 		if (to.getY() != from.getY()) {
 			if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().toLowerCase().contains("water")

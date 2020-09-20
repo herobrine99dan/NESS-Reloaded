@@ -156,14 +156,20 @@ public class Utility {
         }
     }
 
-    public static Integer calculateFallDistance(final Location loc) {
-        Location res;
-        int yDif;
-        for (res = loc.clone(), yDif = -1; !res.subtract(0.0, yDif, 0.0).getBlock().getType().isSolid()
-                && res.subtract(0.0, yDif, 0.0).getY() > 0.0; ++yDif) {
-            res.add(0.0, yDif, 0.0);
-        }
-        return yDif;
+    public static double getDistanceFromGround(final Location loc) {
+		double dTG = 0; // Distance to ground
+		for (int x = -1; x <= 1; x++) {
+			for (int z = -1; z <= 1; z++) {
+				int y = 0;
+				while (!loc.clone().subtract(x, y, z).getBlock().getType().isSolid() && y < 20) {
+					y++;
+				}
+				if (y < dTG || dTG == 0)
+					dTG = y;
+			}
+		}
+		dTG += loc.getY() % 1;
+        return dTG;
     }
 
     public static boolean groundAround(Location loc) {

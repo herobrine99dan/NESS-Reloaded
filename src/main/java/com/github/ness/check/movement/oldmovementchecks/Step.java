@@ -18,7 +18,7 @@ import com.github.ness.utility.Utility;
 public class Step extends AbstractCheck<PlayerMoveEvent> {
 
 	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo.eventOnly(PlayerMoveEvent.class);
-	
+
 	public Step(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
 	}
@@ -33,9 +33,8 @@ public class Step extends AbstractCheck<PlayerMoveEvent> {
 				|| player().isTeleported()) {
 			return;
 		}
-		if (to.getY() - from.getY() > .6 && !player.isFlying() && values.isOnGround
-				&& !player.hasPotionEffect(PotionEffectType.JUMP) && !player.getAllowFlight()
-				&& !values.AroundSlime) {
+		if (to.getY() - from.getY() > 0.6 && values.isOnGround
+				&& !player.getAllowFlight() && !values.AroundSlime) {
 			boolean boatNear = false;
 			for (Entity ent : player.getNearbyEntities(2, 2, 2)) {
 				if (ent instanceof Boat)
@@ -44,8 +43,7 @@ public class Step extends AbstractCheck<PlayerMoveEvent> {
 			if (player.getVelocity().getY() < 0.43 && !boatNear) {
 				this.player().setViolation(new Violation("Step", "(OnMove)"), e);
 			}
-		}
-		if (from.getY() - to.getY() > 2 && player.getFallDistance() == 0.0 && player.getVelocity().getY() < 0.43) {
+		} else if (from.getY() - to.getY() > 2 && player.getFallDistance() == 0.0 && player.getVelocity().getY() < 0.43) {
 			this.player().setViolation(new Violation("Phase", "(OnMove)"), e);
 		}
 	}

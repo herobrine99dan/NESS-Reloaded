@@ -71,6 +71,7 @@ enabled-checks:
   - 'NoClip'
   - 'NoGround'
   - 'NoGround'
+  - 'NoFall'
   - 'Speed'
   - 'Step'
   - 'Phase'

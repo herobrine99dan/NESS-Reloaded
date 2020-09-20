@@ -40,7 +40,7 @@ public class NoClip extends AbstractCheck<PlayerMoveEvent> {
 			}
 		}
 		final double hozDist = this.player().getMovementValues().XZDiff;
-		if (surrounded && (hozDist > .2 || to.getBlockY() < from.getBlockY())) {
+		if (surrounded && (hozDist > 0.2 || to.getBlockY() < from.getBlockY())) {
 			this.player().setViolation(new Violation("NoClip", "(OnMove)"), e);
 		}
 	}

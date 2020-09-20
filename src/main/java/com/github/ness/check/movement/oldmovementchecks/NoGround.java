@@ -31,12 +31,16 @@ public class NoGround extends AbstractCheck<PlayerMoveEvent> {
 		Player player = e.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = this.player().getMovementValues();
-		if (!(player.isSneaking() && !from.getBlock().getType().name().contains("LADDER") && !to.getBlock().getType().name().contains("LADDER") && !to.clone().add(0, -0.3, 0).getBlock().getType().name().contains("LADDER")) && !player.isFlying()
-				&& !player.isOnGround() && to.getY() % 1.0 == 0
-				&& nessPlayer.nanoTimeDifference(PlayerAction.JOIN) >= 1000 && !nessPlayer.isTeleported()
+		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
+				|| player().isTeleported()) {
+			return;
+		}
+		if (!(player.isSneaking() && !from.getBlock().getType().name().contains("LADDER")
+				&& !to.getBlock().getType().name().contains("LADDER")
+				&& !to.clone().add(0, -0.3, 0).getBlock().getType().name().contains("LADDER")) && !player.isOnGround()
+				&& to.getY() % 1.0 == 0 && nessPlayer.nanoTimeDifference(PlayerAction.JOIN) >= 1000
 				&& !movementValues.AroundStairs && !movementValues.AroundSlime) {
-			if (!Utility.getPlayerUnderBlock(player).getType().name().toLowerCase().contains("ice")
-					&& !Utility.getPlayerUpperBlock(player).getType().isSolid()) {
+			if (!Utility.groundAround(to.clone().add(0, 2, 0))) {
 				int failed = flags++;
 				if (failed > 3) {
 					nessPlayer.setViolation(new Violation("NoGround", "(OnMove)"), e);

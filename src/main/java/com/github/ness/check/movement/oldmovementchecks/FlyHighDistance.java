@@ -30,9 +30,10 @@ public class FlyHighDistance extends AbstractCheck<PlayerMoveEvent> {
 				|| player().isTeleported()) {
 			return;
 		}
-		if (!values.isOnGround && values.XZDiff > .32 && values.yDiff == 0 && !Utility.hasflybypass(e.getPlayer())
-				&& this.player().getTimeSinceLastWasOnIce() >= 1000)
+		if (!values.isOnGround && values.XZDiff > 0.32 && values.yDiff == 0.0
+				&& this.player().getTimeSinceLastWasOnIce() >= 1000) {
 			this.player().setViolation(new Violation("Fly", "InvalidDistance6(OnMove)"), e);
+		}
 	}
 
 }
