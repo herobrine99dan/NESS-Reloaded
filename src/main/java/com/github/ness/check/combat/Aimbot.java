@@ -33,12 +33,12 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 		if (!e.getPacket().getName().toLowerCase().contains("look") || e.getNessPlayer().isTeleported()) {
 			return;
 		}
-		GCDCheck(e);
+		makeSensitivity(e);
 		Check2(e);
 		Check3(e);
 	}
 
-	private void GCDCheck(ReceivedPacketEvent event) {
+	private void makeSensitivity(ReceivedPacketEvent event) {
 		// float yaw = to.getYaw() - from.getYaw();
 		NessPlayer player = event.getNessPlayer();
 		float pitch = (float) Math.abs(player.getMovementValues().pitchDiff);
@@ -53,17 +53,13 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 				lastGCD = gcd;
 			}
 			double result = Math.abs(gcd - lastGCD);
-			if (result < 0.01) {
+			if (result < 0.007) {
 
 				final double sensitivity = GCDUtils.getSensitivity(gcd);
 				if (player.isDevMode()) {
 					player.getPlayer().sendMessage("Setting Sensitivity to: " + sensitivity);
 				}
 				player.sensitivity = sensitivity;
-			}
-			if ((result > 0.001 || gcd < 0.0001)) {
-				// TODO Trying to fix Cinematic Mode
-				player.setViolation(new Violation("Aimbot", "GCDCheck" + " GCD: " + gcd), null);
 			}
 			pitchDiff.clear();
 			lastGCD = gcd;

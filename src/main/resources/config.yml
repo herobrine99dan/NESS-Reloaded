@@ -41,7 +41,8 @@ violation-handling:
 # Comment out a check to disable
 #
 enabled-checks:
-#  - 'Aimbot'
+  - 'Aimbot'
+  - 'AimbotGCD'
   - 'AutoClicker'
   - 'AntiUnicode'
   - 'AntiKb'

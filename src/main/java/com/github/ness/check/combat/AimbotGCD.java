@@ -1,8 +1,7 @@
 package com.github.ness.check.combat;
 
-import java.util.ArrayList;
-
 import com.github.ness.NessPlayer;
+import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
@@ -40,7 +39,7 @@ public class AimbotGCD extends AbstractCheck<ReceivedPacketEvent> {
 			final double result = Math.abs(gcd - lastGCD);
 			if(result > 512 && result < 100000) {
 				if(preVL++ > 7) {
-					player.getPlayer().sendMessage("Result: " + result + " VL: " + preVL);
+					player.setViolation(new Violation("AimbotGCD", " GCD Difference: " + (float) result), event);
 				}
 			} else {
 				if(preVL > 0) {

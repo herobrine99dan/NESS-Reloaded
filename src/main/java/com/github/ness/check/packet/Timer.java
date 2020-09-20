@@ -5,6 +5,7 @@ import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
+import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.Utility;
 
@@ -56,7 +57,7 @@ public class Timer extends AbstractCheck<ReceivedPacketEvent> {
 				 * per tick.
 				 */
 				final double movementsPerTick = ((double) movementPackets / ((double) difference / 1000.0)) / 20.0;
-				if (movementsPerTick > maxPackets) {
+				if (movementsPerTick > maxPackets && nessPlayer.nanoTimeDifference(PlayerAction.JOIN) > 1300) {
 					// The player is sending more packets than allowed.
 
 					/*
@@ -72,7 +73,7 @@ public class Timer extends AbstractCheck<ReceivedPacketEvent> {
 						nessPlayer.getPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
 					}
 					if (result < 0.001) {
-						nessPlayer.setViolation(new Violation("BadPackets",
+						nessPlayer.setViolation(new Violation("Timer",
 								"[EXPERIMENTAL] Packets: " + movementsPerTick + " Result: " + result), null);
 					}
 				}
