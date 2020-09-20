@@ -40,7 +40,7 @@ public class CoreListener implements Listener {
 		final long tenSecondsLater = 20L * 10L;
 		NESSAnticheat ness = manager.getNess();
 		ness.getServer().getScheduler().runTaskLater(ness, () -> {
-			if (player.isOnline()) {
+			if (!player.isOnline()) {
 				manager.removePlayer(player);
 			}
 		}, tenSecondsLater);
