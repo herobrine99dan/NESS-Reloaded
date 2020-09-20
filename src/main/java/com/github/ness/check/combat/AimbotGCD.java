@@ -23,16 +23,16 @@ public class AimbotGCD extends AbstractCheck<ReceivedPacketEvent> {
 	
 	@Override
 	protected void checkEvent(ReceivedPacketEvent event) {
-		if (!player().equals(event.getNessPlayer())) {
-			return;
-		}
-		if (!event.getPacket().getName().toLowerCase().contains("look") || event.getNessPlayer().isTeleported()) {
-			return;
-		}
 		NessPlayer player = event.getNessPlayer();
+		if (!player().equals(player)) {
+			return;
+		}
+		if (!event.getPacket().getName().toLowerCase().contains("look") || player.isTeleported()) {
+			return;
+		}
 		float pitch = (float) Math.abs(player.getMovementValues().pitchDiff);
         final double gcd = MathUtils.gcd(16384.0, pitch * MULTIPLIER, lastPitch * MULTIPLIER);
-		if (Math.abs(pitch) >= 10 || Math.abs(pitch) < 0.05 || pitch == 0.0
+		if (Math.abs(pitch) > 9 || Math.abs(pitch) < 0.05 || pitch == 0.0
 				|| Math.abs(player.getMovementValues().getTo().getPitch()) == 90) {
 			return;
 		}
