@@ -16,9 +16,11 @@ public class NewOldStrafe extends AbstractCheck<PlayerMoveEvent> {
     
 	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo
 			.eventOnly(PlayerMoveEvent.class);
+	private double lastStrafeAngle; // For the Beta NewOldStrafe Check;
 
 	public NewOldStrafe(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
+		lastStrafeAngle = 0;
 	}
 
     @Override
@@ -35,13 +37,13 @@ public class NewOldStrafe extends AbstractCheck<PlayerMoveEvent> {
         if (angle < 0) {
             angle += 360;
         }
-        double result = Math.abs(np.lastStrafeAngle - angle);
-        if (np.lastStrafeAngle != 0 && result > 35 && result < 300 && Math.abs(yawDiff) < 8 && !p.isOnGround()
+        double result = Math.abs(lastStrafeAngle - angle);
+        if (lastStrafeAngle != 0 && result > 35 && result < 300 && Math.abs(yawDiff) < 8 && !p.isOnGround()
                 && dist > .19 && !isAgainstBlock(e.getFrom()) && !isAgainstBlock(e.getTo())) {
-            this.player().setViolation(new Violation("Strafe", "High Angle Diff: " + Math.abs(np.lastStrafeAngle - angle)), e);
+            this.player().setViolation(new Violation("Strafe", "High Angle Diff: " + Math.abs(lastStrafeAngle - angle)), e);
         }
 
-        np.lastStrafeAngle = angle;
+        lastStrafeAngle = angle;
     }
 
     double distanceXZ(Location loc1, Location loc2) {

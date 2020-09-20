@@ -26,13 +26,15 @@ import com.github.ness.utility.Utility;
 public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
 	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(PlayerMoveEvent.class, 1, TimeUnit.SECONDS);
 
+	int noGround; // Used in NoGround Check
 	public OldMovementChecks(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
+		noGround = 0;
 	}
 
     @Override
     protected void checkAsyncPeriodic() {
-        player().noGround = 0;
+        noGround = 0;
     }
 
     private void punish(PlayerMoveEvent e, String cheat, String module) {
@@ -85,7 +87,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
             }
         }
         dTG += player.getLocation().getY() % 1;
-        nessPlayer.distanceFromGround = dTG;
         bottom = player.getLocation().getWorld().getBlockAt(player.getLocation().subtract(0, dTG, 0)).getType();
         for (int x = -1; x <= 1; x++) {
             for (int z = -1; z <= 1; z++) {
@@ -211,7 +212,7 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
                 && !below.toString().toLowerCase().contains("slime")) {
             if (!Utility.getPlayerUnderBlock(player).getType().name().toLowerCase().contains("ice")
                     && !Utility.getPlayerUpperBlock(player).getType().isSolid()) {
-                int failed = nessPlayer.noGround++;
+                int failed = noGround++;
                 if (failed > 3) {
                     if (!below.name().toLowerCase().contains("slime")) {
                         punish(event, "NoGround", "(OnMove)");
@@ -322,9 +323,6 @@ public class OldMovementChecks extends AbstractCheck<PlayerMoveEvent> {
                         && nessPlayer.getTimeSinceLastWasOnIce() >= 1000)
                     this.punish(event, "Fly", "InvalidDistance6(OnMove)");
                 // Block rightBelow = player.getLocation().subtract(0, .1, 0).getBlock();
-            }
-            if (below.isSolid() && Utility.isMathematicallyOnGround(event.getTo().getY())) {
-                nessPlayer.safeLocation = ImmutableLoc.of(event.getTo());
             }
         }
     }

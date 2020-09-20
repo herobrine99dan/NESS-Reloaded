@@ -16,16 +16,17 @@ public class MorePackets extends AbstractCheck<ReceivedPacketEvent> {
     int maxPackets;
     
 	public static final CheckInfo<ReceivedPacketEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(ReceivedPacketEvent.class, 1, TimeUnit.SECONDS);
-
+	int normalPacketsCounter; // For MorePackets
 	public MorePackets(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
         this.maxPackets = this.ness().getNessConfig().getCheck(this.getClass())
                 .getInt("maxpackets", 65);
+        normalPacketsCounter = -5;
 	}
 
     @Override
     protected void checkAsyncPeriodic() {
-        player().normalPacketsCounter = 0;
+        normalPacketsCounter = 0;
     }
 
     @Override
@@ -37,7 +38,7 @@ public class MorePackets extends AbstractCheck<ReceivedPacketEvent> {
             return;
         }
         // sender.sendMessage("Counter: " + np.getPacketscounter());
-        if (np.normalPacketsCounter++ > maxPackets && np.nanoTimeDifference(PlayerAction.JOIN) > 2500) {
+        if (normalPacketsCounter++ > maxPackets && np.nanoTimeDifference(PlayerAction.JOIN) > 2500) {
             /*
              * new BukkitRunnable() {
              *
@@ -45,7 +46,7 @@ public class MorePackets extends AbstractCheck<ReceivedPacketEvent> {
              * sender.teleport(OldMovementChecks.safeLoc.getOrDefault(sender,
              * sender.getLocation())); } }.runTask(NESSAnticheat.main);
              */
-            np.setViolation(new Violation("MorePackets", np.normalPacketsCounter + ""), e);
+            np.setViolation(new Violation("MorePackets", normalPacketsCounter + ""), e);
         }
     }
 }

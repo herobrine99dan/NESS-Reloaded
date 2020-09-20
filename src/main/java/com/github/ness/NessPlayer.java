@@ -57,44 +57,14 @@ public class NessPlayer implements AutoCloseable {
      */
     @Getter
     private final Player player;
-    // Used for AutoClick check
-    @Getter
-    private final Set<Long> clickHistory = ConcurrentHashMap.newKeySet();
     @Getter
     private final boolean devMode;
-    public double lastStrafeAngle; // For the Beta NewOldStrafe Check
-    public int blockPlace; // For FastPlace Check
-    public int normalPacketsCounter; // For MorePackets
-    public int CPS; // For AutoClicker
-    public long lastPacketTime; // Used in BadPackets
-    public long movementPackets; // Used in BadPackets
-    public double lastStrafeDist; // Used in Strafe
-    public float lastStairDist; // Used in BadPackets
-    public int noGround; // Used in NoGround Check
-    public long pingspooftimer; // For PingSpoof
-    public long oldpingspooftimer; // For PingSpoof
-    public float lastYaw; // For Aimbot
-    public double distanceFromGround; // Updated from OldMovementsCheck
-    public double flyYSum; // The sum beetween positive y values
     public double sensitivity; // The Player Sensitivity
-    public float lastPacketsPerTicks; // Used in BadPackets
     final public Map<PlayerAction, Long> actionTime;
     public List<Point> mouseRecordValues;
-    public ImmutableLoc safeLocation;
-    public int airTicks;
-    public double lastSpeedDist;
     public ImmutableLoc velocity;
     public Set<Integer> attackedEntities;
-    public ImmutableLoc lastEntityAttackedLoc;
     public boolean hasSetback;
-    public long moveInvItemsLastTime;
-    public int movedInvItems;
-    // Used for Aimbot check
-    public List<Float> pitchDiff;
-    public double lastGCD = 0;
-    public double lastSpeedPredictionDist; // For Speed Prediction
-    // Used in OldMovementChecks
-    public boolean lastSpeedPredictionOnGround; // For Speed Prediction
     long setBackTicks;
     @Getter
     @Setter
@@ -109,23 +79,14 @@ public class NessPlayer implements AutoCloseable {
     private boolean mouseRecord; // Is the player recording?
     private long lastWasOnGround = System.nanoTime() - Duration.ofHours(1L).toNanos();
     private long lastWasOnIce = lastWasOnGround;
-    @Getter
-    private final Set<AbstractCheck<?>> checksActivated;
 
     public NessPlayer(Player player, boolean devMode) {
     	uuid = player.getUniqueId();
         this.player = player;
         this.teleported = false;
-        this.lastPacketTime = 0;
-        checksActivated = new HashSet<AbstractCheck<?>>();
-        this.blockPlace = 0;
-        this.lastEntityAttackedLoc = new ImmutableLoc(player.getWorld().getName(), 0, 0, 0, 0, 0);
-        this.CPS = 0;
         this.setBackTicks = 0;
         this.mouseRecordValues = new ArrayList<Point>();
         this.actionTime = Collections.synchronizedMap(new EnumMap<>(PlayerAction.class));
-        this.pitchDiff = new ArrayList<Float>();
-        this.normalPacketsCounter = 0;
         this.sensitivity = 0;
         this.devMode = devMode;
         this.attackedEntities = new HashSet<Integer>();
@@ -182,16 +143,12 @@ public class NessPlayer implements AutoCloseable {
         return (System.nanoTime() - this.actionTime.getOrDefault(action, (long) 0)) / 1000_000L;
     }
 
+    //This will called everytime a player sends a flying packet
     public void onClientTick() {
         this.attackedEntities.clear();
     }
 
     public void updateMovementValue(MovementValues values) {
-        if (!Utility.isOnGround(values.getTo().toBukkitLocation().clone())) {
-            airTicks++;
-        } else {
-            airTicks = 0;
-        }
         this.movementValues = values;
     }
 

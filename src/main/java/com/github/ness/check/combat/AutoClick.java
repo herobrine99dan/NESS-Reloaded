@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.IntBinaryOperator;
 import java.util.logging.Level;
@@ -34,6 +35,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 	private final Set<DeviationEntry> deviationRequirements = new HashSet<>();
 	private final Set<DeviationEntry> superDeviationRequirements = new HashSet<>();
 	private final int totalRetentionSecs;
+    private final Set<Long> clickHistory = ConcurrentHashMap.newKeySet();
 	
 	public static final CheckInfo<PlayerInteractEvent> checkInfo = CheckInfo
 			.eventWithAsyncPeriodic(PlayerInteractEvent.class, 2, TimeUnit.SECONDS);
@@ -168,7 +170,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 	@Override
 	protected void checkAsyncPeriodic() {
 		// Cleanup old history
-		Set<Long> clickHistory = player().getClickHistory();
+		Set<Long> clickHistory = this.clickHistory;
 		long now1 = monotonicMillis();
 		long totalRetentionMillis = totalRetentionMillis();
 		clickHistory.removeIf((time) -> time - now1 > totalRetentionMillis);
@@ -268,7 +270,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
 			Player player = evt.getPlayer();
 			logger.log(Level.FINEST, "Added click from {0}", player);
-			player().getClickHistory().add(monotonicMillis());
+			this.clickHistory.add(monotonicMillis());
 		}
 	}
 

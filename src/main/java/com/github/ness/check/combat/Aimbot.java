@@ -1,5 +1,8 @@
 package com.github.ness.check.combat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
@@ -13,8 +16,13 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 
 	public static final CheckInfo<ReceivedPacketEvent> checkInfo = CheckInfo.eventOnly(ReceivedPacketEvent.class);
 
+	private float lastYaw;
+	private List<Float> pitchDiff;
+	private double lastGCD = 0;
 	public Aimbot(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
+		lastYaw = 0;
+        this.pitchDiff = new ArrayList<Float>();
 	}
 
 	@Override
@@ -38,13 +46,13 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 				|| Math.abs(player.getMovementValues().getTo().getPitch()) == 90) {
 			return;
 		}
-		player.pitchDiff.add(pitch);
-		if (player.pitchDiff.size() >= 20) {
-			final float gcd = GCDUtils.gcdRational(player.pitchDiff);
-			if (player.lastGCD == 0.0) {
-				player.lastGCD = gcd;
+		pitchDiff.add(pitch);
+		if (pitchDiff.size() >= 20) {
+			final float gcd = GCDUtils.gcdRational(pitchDiff);
+			if (lastGCD == 0.0) {
+				lastGCD = gcd;
 			}
-			double result = Math.abs(gcd - player.lastGCD);
+			double result = Math.abs(gcd - lastGCD);
 			if (result < 0.01) {
 
 				final double sensitivity = GCDUtils.getSensitivity(gcd);
@@ -57,8 +65,8 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 				// TODO Trying to fix Cinematic Mode
 				player.setViolation(new Violation("Aimbot", "GCDCheck" + " GCD: " + gcd), null);
 			}
-			player.pitchDiff.clear();
-			player.lastGCD = gcd;
+			pitchDiff.clear();
+			lastGCD = gcd;
 		}
 	}
 
@@ -73,14 +81,14 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 		}
 		double firstvar = np.sensitivity * 0.6F + 0.2F;
 		float secondvar = (float) (Math.pow(firstvar, 3f) * 8.0F);
-		double yawResult = np.getMovementValues().yawDiff - np.lastYaw;
+		double yawResult = np.getMovementValues().yawDiff - lastYaw;
 		float thirdvar = (float) yawResult / (secondvar * 0.15F);
 		float x = (float) (thirdvar - Math.floor(thirdvar));
 		// TODO Fixing Smooth Camera
 		if (x > 0.1 && x < 0.95) {
 			np.setViolation(new Violation("Aimbot", "ImpossibleRotations: " + x), null);
 		}
-		np.lastYaw = (float) np.getMovementValues().yawDiff;
+		lastYaw = (float) np.getMovementValues().yawDiff;
 	}
 
 	/**

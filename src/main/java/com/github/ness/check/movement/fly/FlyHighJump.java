@@ -19,6 +19,7 @@ public class FlyHighJump extends AbstractCheck<PlayerMoveEvent> {
 	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo
 			.eventOnly(PlayerMoveEvent.class);
 
+	private double flyYSum;
 	public FlyHighJump(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
 	}
@@ -44,19 +45,19 @@ public class FlyHighJump extends AbstractCheck<PlayerMoveEvent> {
                 || Utility.getMaterialName(e.getTo()).contains("snow") || Utility.specificBlockNear(e.getTo(), "snow")
                 || Utility.specificBlockNear(e.getTo(), "ladder") || Utility.specificBlockNear(e.getTo(), "vine")
                 || nessPlayer.isTeleported()) {
-            nessPlayer.flyYSum = 0;
+            flyYSum = 0;
             return;
         }
         if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
             y -= Math.abs(nessPlayer.velocity.getY());
         }
         if (y > 0) {
-            nessPlayer.flyYSum += y;
+            flyYSum += y;
             double max = 1.30;
             double jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
             max += jumpBoost * (max / 2);
-            if (nessPlayer.flyYSum > max && p.getVelocity().getY() < 0) {
-                nessPlayer.setViolation(new Violation("Fly", "HighJump ySum: " + nessPlayer.flyYSum), e);
+            if (flyYSum > max && p.getVelocity().getY() < 0) {
+                nessPlayer.setViolation(new Violation("Fly", "HighJump ySum: " + flyYSum), e);
             }
         }
     }

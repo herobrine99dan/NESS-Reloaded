@@ -16,6 +16,8 @@ public class SpeedAir extends AbstractCheck<PlayerMoveEvent> {
 
 	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo
 			.eventOnly(PlayerMoveEvent.class);
+	
+	int airTicks;
 
 	public SpeedAir(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
@@ -47,8 +49,13 @@ public class SpeedAir extends AbstractCheck<PlayerMoveEvent> {
             total -= nessPlayer.velocity.getX();
             total -= nessPlayer.velocity.getZ();
         }
+        if (!Utility.isMathematicallyOnGround(event.getTo().getY())) {
+            airTicks++;
+        } else {
+            airTicks = 0;
+        }
         final double maxDist = getBaseSpeed(nessPlayer);
-        if (nessPlayer.airTicks > 4 && (Math.abs(xDiff) > maxDist || Math.abs(zDiff) > maxDist) && !Utility.hasflybypass(player) && !player.getAllowFlight()) {
+        if (airTicks > 4 && (Math.abs(xDiff) > maxDist || Math.abs(zDiff) > maxDist) && !Utility.hasflybypass(player) && !player.getAllowFlight()) {
             nessPlayer.setViolation(new Violation("Speed", "AirCheck Dist: " + total), event);
         }
     }

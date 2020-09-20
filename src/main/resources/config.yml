@@ -202,7 +202,7 @@ checks:
 # Effectiveness: Medium
 #
   fastplace:
-    maxblockplaced: 14
+    maxblockplaced: 10
 #
 # Fly
 #

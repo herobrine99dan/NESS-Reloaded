@@ -16,10 +16,11 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 	int maxCPS;
 
 	public static final CheckInfo<PlayerInteractEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(PlayerInteractEvent.class, 1, TimeUnit.SECONDS);
-
+	private int CPS; // For AutoClicker
 	public AutoClicker(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
 		this.maxCPS = this.ness().getNessConfig().getCheck(AutoClicker.class).getInt("maxCPS", 18);
+		this.CPS = 0;
 	}
 
 	@Override
@@ -31,15 +32,15 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 		Action action = e.getAction();
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
 			NessPlayer player = this.player();
-			player.CPS++;
-			if (player.CPS > maxCPS && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
-				player.setViolation(new Violation("AutoClicker", "MaxCPS: " + player.CPS), e);
+			CPS++;
+			if (CPS > maxCPS && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
+				player.setViolation(new Violation("AutoClicker", "MaxCPS: " + CPS), e);
 			}
 		}
 	}
 
 	@Override
 	protected void checkAsyncPeriodic() {
-		player().CPS = 0;
+		CPS = 0;
 	}
 }

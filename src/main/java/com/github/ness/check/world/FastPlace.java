@@ -15,16 +15,18 @@ public class FastPlace extends AbstractCheck<BlockPlaceEvent> {
     int max;
     
 	public static final CheckInfo<BlockPlaceEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(BlockPlaceEvent.class, 1, TimeUnit.SECONDS);
+    private int blockPlace; // For FastPlace Check
 
 	public FastPlace(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
 	      this.max = this.ness().getNessConfig().getCheck(this.getClass())
 	                .getInt("maxblockplaced", 14);
+	      blockPlace = 0;
 	}
 
     @Override
     protected void checkAsyncPeriodic() {
-        player().blockPlace = 0;
+        blockPlace = 0;
     }
 
     @Override
@@ -39,9 +41,9 @@ public class FastPlace extends AbstractCheck<BlockPlaceEvent> {
      */
     public void Check(BlockPlaceEvent e) {
         NessPlayer player = player();
-        player.blockPlace++;
-        if (player.blockPlace > max) {
-            player.setViolation(new Violation("FastPlace", "Placing: " + player.blockPlace), e);
+        blockPlace++;
+        if (blockPlace > max) {
+            player.setViolation(new Violation("FastPlace", "Placing: " + blockPlace), e);
         }
     }
 

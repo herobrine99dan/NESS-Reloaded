@@ -1,5 +1,6 @@
 package com.github.ness.check.combat;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
@@ -26,7 +27,6 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
     double maxReach;
     
 	public static final CheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(EntityDamageByEntityEvent.class, 70, TimeUnit.MILLISECONDS);
-
 	public Killaura(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
         this.maxYaw = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("maxyaw", 357);
@@ -36,7 +36,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 
     @Override
     protected void checkAsyncPeriodic() {
-        player().attackedEntities.clear();
+        this.player().attackedEntities.clear();
     }
 
     @Override
