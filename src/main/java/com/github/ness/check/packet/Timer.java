@@ -5,6 +5,7 @@ import com.github.ness.api.Violation;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
+import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.Utility;
 
@@ -56,35 +57,15 @@ public class Timer extends AbstractCheck<ReceivedPacketEvent> {
 				 * per tick.
 				 */
 				final double movementsPerTick = ((double) movementPackets / ((double) difference / 1000.0)) / 20.0;
-				if (movementsPerTick > maxPackets) {
+				if (movementsPerTick > maxPackets && nessPlayer.nanoTimeDifference(PlayerAction.JOIN) > 1300) {
 					// The player is sending more packets than allowed.
 
-<<<<<<< HEAD
-                    /*
-                     * If the percentage difference is over 7% of what is allowed, the player is
-                     * likely to be cheating.
-                     */
-                    if (perecentageDifference > 7.0 && !nessPlayer.isTeleported()) {
-                        nessPlayer.setViolation(new Violation("BadPackets",
-                                Math.round(perecentageDifference) + " packets: " + movementsPerTick), e);
-                    }
-                } else if (movementsPerTick > 0.084 && movementsPerTick < 0.9) {
-                    double result = Math.abs(nessPlayer.lastPacketsPerTicks - movementsPerTick);
-                    if (nessPlayer.isDevMode()) {
-                        nessPlayer.getPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
-                    }
-                    if (result < 0.001) {
-                        nessPlayer.setViolation(new Violation("BadPackets",
-                                "[EXPERIMENTAL] Packets: " + movementsPerTick + " Result: " + result), null);
-                    }
-                }
-=======
 					/*
 					 * If the percentage difference is over 7% of what is allowed, the player is
 					 * likely to be cheating.
 					 */
 					if (!nessPlayer.isTeleported()) {
-						nessPlayer.setViolation(new Violation("BadPackets", " packets: " + movementsPerTick), e);
+						nessPlayer.setViolation(new Violation("Timer", " packets: " + movementsPerTick), e);
 					}
 				} else if (movementsPerTick > 0.084 && movementsPerTick < 0.9) {
 					double result = Math.abs(lastPacketsPerTicks - movementsPerTick);
@@ -92,11 +73,10 @@ public class Timer extends AbstractCheck<ReceivedPacketEvent> {
 						nessPlayer.getPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
 					}
 					if (result < 0.001) {
-						nessPlayer.setViolation(new Violation("BadPackets",
+						nessPlayer.setViolation(new Violation("Timer",
 								"[EXPERIMENTAL] Packets: " + movementsPerTick + " Result: " + result), null);
 					}
 				}
->>>>>>> 7f360d2... Moving NessPlayer fields to relevant checks
 
 				// Reset everything.
 				lastPacketsPerTicks = (float) movementsPerTick;
