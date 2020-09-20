@@ -30,7 +30,7 @@ public class CoreListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void onJoin(PlayerJoinEvent evt) {
 		NessPlayer nessPlayer = manager.addPlayer(evt.getPlayer());
-
+		
 		nessPlayer.actionTime.put(PlayerAction.JOIN, System.nanoTime());
 	}
 

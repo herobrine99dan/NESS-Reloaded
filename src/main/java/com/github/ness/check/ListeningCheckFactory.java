@@ -6,13 +6,13 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 import java.util.function.Function;
 
-import com.github.ness.packets.ReceivedPacketEvent;
-import com.github.ness.utility.HandlerListUtils;
-import com.github.ness.utility.UncheckedReflectiveOperationException;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerEvent;
+
+import com.github.ness.packets.ReceivedPacketEvent;
+import com.github.ness.utility.HandlerListUtils;
+import com.github.ness.utility.UncheckedReflectiveOperationException;
 
 class ListeningCheckFactory<E extends Event, C extends AbstractCheck<E>> extends CheckFactory<C> {
 

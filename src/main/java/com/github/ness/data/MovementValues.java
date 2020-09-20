@@ -34,10 +34,6 @@ public class MovementValues {
      * XZ Difference Math.abs(xDiff) + Math.abs(zDiff);
      */
     public final double XZDiff;
-    /**
-     * XZ Multiplicated ((xDiff * xDiff) + (zDiff * zDiff));
-     */
-    public final double xzDiffMultiplier;
     public final boolean AroundIce;
     /**
      * Liquids= Lava and Water
@@ -49,6 +45,11 @@ public class MovementValues {
      * Utility.specificBlockNear(to, "slime"); or Utility.hasBlock(p, "slime");
      */
     public final boolean AroundSlime;
+    public final boolean AroundSlabs;
+    public final boolean AroundSnow;
+    public final boolean AroundLadders;
+    public final boolean AroundLily;
+    public final boolean AroundCarpet;
     @Getter
     ImmutableLoc to;
     @Getter
@@ -65,8 +66,22 @@ public class MovementValues {
                 AroundSlime = Utility.specificBlockNear(to.toBukkitLocation(), "slime");
             }
             AroundStairs = Utility.specificBlockNear(to.toBukkitLocation(), "stair");
+            AroundSlabs = Utility.specificBlockNear(to.toBukkitLocation(), "slab");
+            boolean ladders = Utility.specificBlockNear(to.toBukkitLocation(), "ladder");
+            if(!ladders) {
+            	ladders = Utility.specificBlockNear(to.toBukkitLocation(), "vine");
+            }
+            AroundLadders = ladders;
+            AroundSnow = Utility.specificBlockNear(to.toBukkitLocation(), "snow");
+            AroundLily = Utility.specificBlockNear(to.toBukkitLocation(), "lily");
+            AroundCarpet = Utility.specificBlockNear(to.toBukkitLocation(), "carpet");
         } else {
             AroundIce = false;
+            AroundSlabs = false;
+            AroundCarpet = false;
+            AroundLadders = false;
+            AroundSnow = false;
+            AroundLily = false;
             AroundLiquids = false;
             AroundSlime = false;
             AroundStairs = false;
@@ -79,7 +94,6 @@ public class MovementValues {
         XZDiff = Math.abs(xDiff) + Math.abs(zDiff);
         this.to = to;
         this.from = from;
-        xzDiffMultiplier = (xDiff * xDiff) + (zDiff * zDiff);
     }
 
     public ImmutableVector getDirection() {

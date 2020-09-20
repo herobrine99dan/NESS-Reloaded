@@ -1,5 +1,6 @@
 package com.github.ness.check.misc;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NessPlayer;
@@ -18,8 +19,7 @@ public class TestCheck extends AbstractCheck<PlayerMoveEvent> {
 
     @Override
     protected void checkEvent(PlayerMoveEvent event) {
-    	if(player().isNot(event.getPlayer())) return;
-       // NessPlayer nessPlayer = player();
+    	Player player = event.getPlayer();
     }
 
 }

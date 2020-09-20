@@ -41,12 +41,13 @@ violation-handling:
 # Comment out a check to disable
 #
 enabled-checks:
-  - 'Aimbot'
+#  - 'Aimbot'
   - 'AutoClicker'
   - 'AntiUnicode'
   - 'AntiKb'
   - 'Timer'
   - 'Criticals'
+  - 'ChestStealerCheck'
 #  - 'FastEat'
   - 'FastLadder'
   - 'FastPlace'
@@ -61,7 +62,7 @@ enabled-checks:
   - 'LiquidInteraction'
   - 'InventoryHack'
   - 'Killaura'
-#  - 'MorePackets'
+  - 'MorePackets'
   - 'NoSlowDownBow'
   - 'NoSlowDownFood'
   - 'NoWeb'

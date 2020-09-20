@@ -80,9 +80,9 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 			return;
 		}
 		double firstvar = np.sensitivity * 0.6F + 0.2F;
-		float secondvar = (float) (Math.pow(firstvar, 3f) * 8.0F);
+		float secondvar = (float) (Math.pow(firstvar, 3f));
 		double yawResult = np.getMovementValues().yawDiff - lastYaw;
-		float thirdvar = (float) yawResult / (secondvar * 0.15F);
+		float thirdvar = (float) yawResult / (secondvar * 1.2f);
 		float x = (float) (thirdvar - Math.floor(thirdvar));
 		// TODO Fixing Smooth Camera
 		if (x > 0.1 && x < 0.95) {

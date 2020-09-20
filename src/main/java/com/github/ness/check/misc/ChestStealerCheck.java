@@ -2,6 +2,7 @@ package com.github.ness.check.misc;
 
 import java.util.concurrent.TimeUnit;
 
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -45,6 +46,9 @@ public class ChestStealerCheck extends AbstractCheck<InventoryClickEvent> {
 			return;
 		final Inventory i1 = e.getWhoClicked().getInventory();
 		final Inventory i2 = e.getInventory();
+		if(nessPlayer.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+			return;
+		}
 		if (i1 != i2 && e.getCurrentItem().getType() != Material.AIR) {
 			movedInvItems++;
 			if (movedInvItems > 4) {

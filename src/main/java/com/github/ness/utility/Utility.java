@@ -190,8 +190,7 @@ public class Utility {
         for (int x = -radius; x < radius; x++) {
             for (int y = -radius; y < radius; y++) {
                 for (int z = -radius; z < radius; z++) {
-                    Block block = loc.getWorld().getBlockAt(loc.clone().add(x, y, z));
-                    result.add(block);
+                    result.add(loc.getWorld().getBlockAt(loc.clone().add(x, y, z)));
                 }
             }
         }
@@ -207,6 +206,7 @@ public class Utility {
     }
 
     public static boolean hasBlock(Player p, String m) {
+    	m = m.toUpperCase();
         boolean done = false;
         Location loc = p.getLocation().clone();
         int min = (int) loc.getY() - 15;
@@ -219,7 +219,7 @@ public class Utility {
         }
         for (int i = min; i < max; i++) {
             loc.setY(i);
-            if (loc.getBlock().getType().name().toLowerCase().contains(m)) {
+            if (loc.getBlock().getType().name().contains(m)) {
                 return true;
             }
         }
@@ -231,13 +231,14 @@ public class Utility {
     }
 
     public static boolean specificBlockNear(Location loc, String m) {
+    	m = m.toUpperCase();
         for (Block b : Utility.getBlocksAround(loc, 2)) {
             if (m.equals("liquid")) {
                 if (b.isLiquid()) {
                     return true;
                 }
             }
-            if (b.getType().name().toLowerCase().contains(m.toLowerCase())) {
+            if (b.getType().name().contains(m)) {
                 return true;
             }
         }
