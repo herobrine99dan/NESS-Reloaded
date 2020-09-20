@@ -20,10 +20,17 @@ class ListeningCheckFactory<E extends Event, C extends AbstractCheck<E>> extends
 	private final Class<E> eventClass;
 	private final Function<E, UUID> getPlayerFunction;
 	
-	ListeningCheckFactory(Constructor<C> constructor, CheckManager manager, CheckInfo<E> checkInfo) {
+	ListeningCheckFactory(Constructor<C> constructor, CheckManager manager, ListeningCheckInfo<E> checkInfo) {
 		super(constructor, manager, checkInfo);
 		scalableListener = new ScalableRegisteredListener<>(manager, this);
-		eventClass = checkInfo.event;
+		eventClass = checkInfo.getEvent();
+		getPlayerFunction = findGetPlayerFunction(eventClass);
+	}
+	
+	protected ListeningCheckFactory(CheckInstantiator<C> instantiator, String checkName, CheckManager manager, ListeningCheckInfo<E> checkInfo) {
+		super(instantiator, checkName, manager, checkInfo);
+		scalableListener = new ScalableRegisteredListener<>(manager, this);
+		eventClass = checkInfo.getEvent();
 		getPlayerFunction = findGetPlayerFunction(eventClass);
 	}
 	
@@ -34,12 +41,12 @@ class ListeningCheckFactory<E extends Event, C extends AbstractCheck<E>> extends
 	void checkEvent(E event) {
 		if (getPlayerFunction != null) {
 			UUID uuid = getPlayerFunction.apply(event);
-			C check = getChecks().get(uuid);
+			C check = getChecksMap().get(uuid);
 			if (check != null) {
 				check.checkEvent(event);
 			}
 		} else {
-			getChecks().values().forEach((check) -> check.checkEvent(event));
+			getChecksMap().values().forEach((check) -> check.checkEvent(event));
 		}
 		
 	}
