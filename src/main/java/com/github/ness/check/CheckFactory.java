@@ -2,6 +2,7 @@ package com.github.ness.check;
 
 import java.lang.reflect.Constructor;
 import java.time.Duration;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
@@ -47,6 +48,15 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 	
 	Map<UUID, C> getChecksMap() {
 		return checks;
+	}
+	
+	/**
+	 * Gets a collection of all checks associated with this factory
+	 * 
+	 * @return the collection of this factory's checks
+	 */
+	protected Collection<C> getChecks() {
+		return checks.values();
 	}
 	
 	private void checkAsyncPeriodic() {
