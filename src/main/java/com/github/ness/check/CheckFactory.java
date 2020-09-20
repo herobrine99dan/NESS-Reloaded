@@ -1,20 +1,22 @@
 package com.github.ness.check;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.time.Duration;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.utility.UncheckedReflectiveOperationException;
 
 public class CheckFactory<C extends AbstractCheck<?>> {
 
-	private final Constructor<C> constructor;
+	private final CheckInstantiator<C> instantiator;
+	private final String checkName;
 	private final CheckManager manager;
 	private final CheckInfo<?> checkInfo;
 	
@@ -24,7 +26,14 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 	private transient final ConcurrentMap<UUID, C> checks = new ConcurrentHashMap<>();
 	
 	CheckFactory(Constructor<C> constructor, CheckManager manager, CheckInfo<?> checkInfo) {
-		this.constructor = constructor;
+		this(CheckInstantiators.fromConstructor(constructor),
+				constructor.getDeclaringClass().getSimpleName().toLowerCase(Locale.ROOT),
+				manager, checkInfo);
+	}
+	
+	protected CheckFactory(CheckInstantiator<C> instantiator, String checkName, CheckManager manager, CheckInfo<?> checkInfo) {
+		this.instantiator = instantiator;
+		this.checkName = checkName;
 		this.manager = manager;
 		this.checkInfo = checkInfo;
 	}
@@ -34,11 +43,20 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 	}
 	
 	String getCheckName() {
-		return constructor.getDeclaringClass().getSimpleName().toLowerCase(Locale.ROOT);
+		return checkName;
 	}
 	
-	Map<UUID, C> getChecks() {
+	Map<UUID, C> getChecksMap() {
 		return checks;
+	}
+	
+	/**
+	 * Gets a collection of all checks associated with this factory
+	 * 
+	 * @return the collection of this factory's checks
+	 */
+	protected Collection<C> getChecks() {
+		return checks.values();
 	}
 	
 	private void checkAsyncPeriodic() {
@@ -51,13 +69,7 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 	}
 	
 	C newCheck(NessPlayer nessPlayer) {
-		C check;
-		try {
-			check = constructor.newInstance(this, nessPlayer);
-		} catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
-			throw new UncheckedReflectiveOperationException(
-					"Unable to instantiate check " + constructor.getDeclaringClass().getName(), ex);
-		}
+		C check = instantiator.newCheck(this, nessPlayer);
 		checks.put(nessPlayer.getUUID(), check);
 		return check;
 	}
@@ -83,11 +95,13 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 	void start0() {
 		assert Thread.holdsLock(this);
 
-		if (checkInfo.asyncInterval == -1) {
-			scheduledFuture = null;
-		} else {
+		if (checkInfo.hasAsyncInterval()) {
+			Duration asyncInterval = checkInfo.getAsyncInterval();
 			scheduledFuture = manager.getNess().getExecutor().scheduleWithFixedDelay(
-					this::checkAsyncPeriodic, 0L, checkInfo.asyncInterval, checkInfo.units);
+					this::checkAsyncPeriodic, 0L, asyncInterval.toNanos(), TimeUnit.NANOSECONDS);
+
+		} else {
+			scheduledFuture = null;
 		}
 	}
 	
@@ -107,8 +121,8 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 
 	@Override
 	public String toString() {
-		return "CheckFactory [constructor=" + constructor + ", manager=" + manager + ", checkInfo=" + checkInfo
-				+ ", getCheckName()=" + getCheckName() + "]";
+		return "CheckFactory [instantiator=" + instantiator + ", manager=" + manager + ", checkInfo=" + checkInfo
+				+ ", checkName=" + checkName + "]";
 	}
 	
 }
