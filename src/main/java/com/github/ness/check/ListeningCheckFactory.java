@@ -1,7 +1,8 @@
 package com.github.ness.check;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.UUID;
 import java.util.function.Function;
@@ -74,10 +75,10 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 	
 	private static <E extends Event> Function<E, UUID> findGetPlayerFunction(Class<E> eventClass) {
 		if (PlayerEvent.class.isAssignableFrom(eventClass)) {
-			return (evt) -> ((PlayerEvent) evt).getPlayer().getUniqueId();
+			return PlayerEventUUIDFunction.instance();
 		}
 		if (ReceivedPacketEvent.class.isAssignableFrom(eventClass)) {
-			return (evt) -> ((ReceivedPacketEvent) evt).getNessPlayer().getUUID();
+			return ReceivedPacketEventUUIDFunction.instance();
 		}
 		/*
 		 * Bukkit does not implement some sort of "IPlayerEvent" on events with getPlayer
@@ -85,18 +86,73 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 		 */
 		try {
 			Method getPlayerMethod = eventClass.getMethod("getPlayer");
-			return (evt) -> {
-				Player player;
-				try {
-					player = (Player) getPlayerMethod.invoke(evt);
-
-				} catch (IllegalAccessException | InvocationTargetException ex) {
-					throw new UncheckedReflectiveOperationException(ex);
-				}
-				return player.getUniqueId();
-			};
+			return new ReflectionGetPlayerUUIDFunction<>(getPlayerMethod);
 		} catch (NoSuchMethodException ignored) {}
 		return null;
+	}
+	
+	private static class PlayerEventUUIDFunction<E extends Event> implements Function<E, UUID> {
+
+		private static final PlayerEventUUIDFunction<?> INSTANCE = new PlayerEventUUIDFunction<>();
+		
+		private PlayerEventUUIDFunction() {}
+		
+		@SuppressWarnings("unchecked")
+		static <E extends Event> PlayerEventUUIDFunction<E> instance() {
+			return (PlayerEventUUIDFunction<E>) INSTANCE;
+		}
+		
+		@Override
+		public UUID apply(E evt) {
+			return ((PlayerEvent) evt).getPlayer().getUniqueId();
+		}
+		
+	}
+	
+	private static class ReceivedPacketEventUUIDFunction<E extends Event> implements Function<E, UUID> {
+
+		private static final ReceivedPacketEventUUIDFunction<?> INSTANCE = new ReceivedPacketEventUUIDFunction<>();
+		
+		private ReceivedPacketEventUUIDFunction() {}
+		
+		@SuppressWarnings("unchecked")
+		static <E extends Event> ReceivedPacketEventUUIDFunction<E> instance() {
+			return (ReceivedPacketEventUUIDFunction<E>) INSTANCE;
+		}
+		
+		@Override
+		public UUID apply(E evt) {
+			return ((ReceivedPacketEvent) evt).getNessPlayer().getUUID();
+		}
+		
+	}
+	
+	private static class ReflectionGetPlayerUUIDFunction<E extends Event> implements Function<E, UUID> {
+		
+		private final MethodHandle getPlayerHandle;
+		
+		ReflectionGetPlayerUUIDFunction(Method getPlayerMethod) {
+			try {
+				getPlayerHandle = MethodHandles.publicLookup().unreflect(getPlayerMethod);
+			} catch (IllegalAccessException ex) {
+				throw new UncheckedReflectiveOperationException(ex);
+			}
+		}
+
+		@Override
+		public UUID apply(E evt) {
+			Player player;
+			try {
+				player = (Player) getPlayerHandle.invoke(evt);
+
+			} catch (RuntimeException | Error ex) {
+				throw ex;
+			} catch (Throwable ex) { // MethodHandle.invoke requires we catch Throwable
+				throw new RuntimeException(ex);
+			}
+			return player.getUniqueId();
+		}
+		
 	}
 
 }
