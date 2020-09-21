@@ -1,72 +1,35 @@
 package com.github.ness.check;
 
-import java.time.Duration;
-
-import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 
 import org.bukkit.event.Event;
 
 /**
- * General check to be extended. <br>
- * <br>
- * Subclasses must declare a public constructor with BaseCheckFactory as a
- * parameter, e.g.: <br>
- * <code>public XXXCheck(BaseCheckFactory<?> checkFactory)</code>
+ * Legacy check class
  *
  * @param <E> the type of the event listened to
  * @author A248
+ * @deprecated Use one of {@link BaseCheck}, {@link Check}, or {@link ListeningCheck} depending on what this check does
  */
-public abstract class AbstractCheck<E extends Event> {
-
-	private final CheckFactory<?> checkFactory;
-	private final NessPlayer nessPlayer;
+@Deprecated
+public abstract class AbstractCheck<E extends Event> extends ListeningCheck<E> {
 
 	/**
 	 * Creates the check. Subclasses should declare a constructor with the same signature
 	 *
-	 * @param manager the check manager
+	 * @param factory the check factory
 	 * @param nessPlayer the ness player
 	 */
-	protected AbstractCheck(CheckFactory<?> checkFactory, NessPlayer nessPlayer) {
-		this.checkFactory = checkFactory;
-		this.nessPlayer = nessPlayer;
-	}
-	
-	CheckFactory<?> getFactory() {
-		return checkFactory;
-	}
-
-	protected CheckManager manager() {
-		return checkFactory.getCheckManager();
-	}
-	
-	protected NESSAnticheat ness() {
-		return this.manager().getNess();
-	}
-	
-	protected NessPlayer player() {
-		return nessPlayer;
-	}
-	
-	/**
-	 * Runs a delayed task using the bukkit scheduler
-	 * 
-	 * @param command the runnable to run later
-	 * @param duration the delay
-	 */
-	protected void runTaskLater(Runnable command, Duration duration) {
-		manager().getNess().getServer().getScheduler().runTaskLater(manager().getNess(), command, duration.toMillis() / 50L);
-	}
-	
-	protected Duration durationOfTicks(int ticks) {
-		return Duration.ofMillis(ticks * 50L);
+	@SuppressWarnings("unchecked")
+	protected AbstractCheck(CheckFactory<?> factory, NessPlayer nessPlayer) {
+		super((ListeningCheckFactory<?, E>) factory, nessPlayer);
 	}
 
 	/**
 	 * Called async and periodically, as defined by {@link CheckInfo}
 	 *
 	 */
+	@Override
 	protected void checkAsyncPeriodic() {
 		throw new UnsupportedOperationException("Not implemented - checkAsyncPeriodic");
 	}
@@ -77,6 +40,7 @@ public abstract class AbstractCheck<E extends Event> {
 	 *
 	 * @param evt        the event
 	 */
+	@Override
 	protected void checkEvent(E evt) {
 		throw new UnsupportedOperationException("Not implemented - checkEvent");
 	}

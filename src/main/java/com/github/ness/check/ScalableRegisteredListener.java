@@ -9,9 +9,9 @@ import org.bukkit.plugin.RegisteredListener;
 
 class ScalableRegisteredListener<E extends Event> extends RegisteredListener {
 	
-	private final ListeningCheckFactory<E, ?> checkFactory;
+	private final ListeningCheckFactory<?, E> checkFactory;
 	
-	ScalableRegisteredListener(CheckManager manager, ListeningCheckFactory<E, ?> checkFactory) {
+	ScalableRegisteredListener(CheckManager manager, ListeningCheckFactory<?, E> checkFactory) {
 		super(HandlerListUtils.DummyListener.INSTANCE, HandlerListUtils.DummyEventExecutor.INSTANCE,
 				EventPriority.LOW, manager.getNess(), false);
 		this.checkFactory = checkFactory;

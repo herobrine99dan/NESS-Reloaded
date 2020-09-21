@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * 
  * @author A248
  */
-public class CheckInfo<T> {
+public class CheckInfo<T> extends BaseCheckInfo {
 
 	/**
 	 * Interval of repeating async task, {@link Duration#ZERO} for none
@@ -22,10 +22,14 @@ public class CheckInfo<T> {
 	private final Duration asyncInterval;
 
 	CheckInfo(Duration asyncInterval) {
-		if (asyncInterval.isNegative()) {
-			throw new IllegalArgumentException("asyncInterval cannot be negative");
+		if (asyncInterval.isNegative() || asyncInterval.isZero()) {
+			throw new IllegalArgumentException("asyncInterval must be positive");
 		}
 		this.asyncInterval = Objects.requireNonNull(asyncInterval, "asyncInterval");
+	}
+	
+	CheckInfo() {
+		this(Duration.ZERO);
 	}
 	
 	boolean hasAsyncInterval() {
@@ -33,42 +37,10 @@ public class CheckInfo<T> {
 	}
 	
 	Duration getAsyncInterval() {
+		if (!hasAsyncInterval()) {
+			throw new IllegalStateException("Cannot get async interval if there is none");
+		}
 		return asyncInterval;
-	}
-
-	/**
-	 * Gets a check info demanding a periodic async task
-	 * 
-	 * @param asyncInterval the interval of the periodic task
-	 * @return the check info
-	 */
-	public static CheckInfo<?> asyncPeriodic(Duration asyncInterval) {
-		return new CheckInfo<>(asyncInterval);
-	}
-
-	/**
-	 * Gets a check info to listen to a certain event <i>and</i> with a periodic
-	 * async task
-	 * 
-	 * @param <E>           the event
-	 * @param event         the event class
-	 * @param asyncInterval the interval of the periodic task
-	 * @return the listening check info
-	 */
-	public static <E extends Event> ListeningCheckInfo<E> forEventWithAsyncPeriodic(Class<E> event,
-			Duration asyncInterval) {
-		return new ListeningCheckInfo<>(asyncInterval, event);
-	}
-
-	/**
-	 * Gets a check info to listen to a certain event
-	 * 
-	 * @param <E>   the event
-	 * @param event the event class
-	 * @return the listening check info
-	 */
-	public static <E extends Event> ListeningCheckInfo<E> forEvent(Class<E> event) {
-		return new ListeningCheckInfo<>(event);
 	}
 
 	/**
@@ -81,7 +53,7 @@ public class CheckInfo<T> {
 	 */
 	@Deprecated
 	public static <E extends Event> CheckInfo<E> eventOnly(Class<E> event) {
-		return parameteriseForLegacy(forEvent(event));
+		return parameteriseForLegacy(CheckInfos.forEvent(event));
 	}
 
 	/**
@@ -98,7 +70,9 @@ public class CheckInfo<T> {
 	public static <E extends Event> CheckInfo<E> eventWithAsyncPeriodic(Class<E> event, long interval,
 			TimeUnit units) {
 		Objects.requireNonNull(units, "units");
-		return parameteriseForLegacy(forEventWithAsyncPeriodic(event, Duration.of(interval, chronoUnitFromTimeUnit(units))));
+		Duration asyncInterval = Duration.of(interval, chronoUnitFromTimeUnit(units));
+		ListeningCheckInfo<E> listeningCheckInfo = CheckInfos.forEventWithAsyncPeriodic(event, asyncInterval);
+		return parameteriseForLegacy(listeningCheckInfo);
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -34,7 +34,7 @@ public class CheckManager {
 
 	private final AsyncCache<UUID, NessPlayerData> playerCache;
 
-	private volatile Set<CheckFactory<?>> checkFactories;
+	private volatile Set<BaseCheckFactory<?>> checkFactories;
 
 	public CheckManager(NESSAnticheat ness) {
 		this.ness = ness;
@@ -56,7 +56,7 @@ public class CheckManager {
 	}
 	
 	public CompletableFuture<?> reload() {
-		Set<CheckFactory<?>> factories = checkFactories;
+		Set<BaseCheckFactory<?>> factories = checkFactories;
 		factories.forEach((factory) -> factory.close());
 
 		playerCache.synchronous().invalidateAll();
@@ -78,9 +78,9 @@ public class CheckManager {
 		Collection<String> enabledCheckNames = ness.getNessConfig().getEnabledChecks();
 		logger.log(Level.FINE, "Loading all check factories: {0}", enabledCheckNames);
 
-		CompletableFuture<Set<CheckFactory<?>>> checkCreationFuture;
+		CompletableFuture<Set<BaseCheckFactory<?>>> checkCreationFuture;
 		checkCreationFuture = CompletableFuture.supplyAsync(() -> {
-			return new CheckFactoryCreator(this, enabledCheckNames).createAllFactories();
+			return new FactoryLoader(this, enabledCheckNames).createAllFactories();
 		}, ness.getExecutor());
 		return checkCreationFuture.whenComplete((checkFactories, ex) -> {
 
@@ -88,7 +88,7 @@ public class CheckManager {
 				logger.log(Level.SEVERE, "Failed to load check factories", ex);
 				return;
 			}
-			for (CheckFactory<?> factory : checkFactories) {
+			for (BaseCheckFactory<?> factory : checkFactories) {
 				factory.start();
 			}
 			logger.log(Level.FINE, "Started all check factories");
@@ -100,8 +100,8 @@ public class CheckManager {
 	NessPlayer addPlayer(Player player) {
 		NessPlayer nessPlayer = new NessPlayer(player, ness.getNessConfig().isDevMode());
 
-		Set<CheckFactory<?>> enabledFactories = new HashSet<>();
-		for (CheckFactory<?> factory : checkFactories) {
+		Set<BaseCheckFactory<?>> enabledFactories = new HashSet<>();
+		for (BaseCheckFactory<?> factory : checkFactories) {
 			if (!player.hasPermission("ness.bypass." + factory.getCheckName())) {
 				enabledFactories.add(factory);
 			}
@@ -109,9 +109,14 @@ public class CheckManager {
 		UUID uuid = player.getUniqueId();
 		playerCache.get(uuid, (u, executor) -> {
 			return CompletableFuture.supplyAsync(() -> {
-				Set<AbstractCheck<?>> checks = new HashSet<>();
-				for (CheckFactory<?> factory : enabledFactories) {
-					checks.add(factory.newCheck(nessPlayer));
+
+				Set<Check> checks = new HashSet<>();
+				for (BaseCheckFactory<?> factory : enabledFactories) {
+
+					BaseCheck baseCheck = factory.newCheck(nessPlayer);
+					if (baseCheck instanceof Check) {
+						checks.add((Check) baseCheck);
+					}
 				}
 				return new NessPlayerData(nessPlayer, checks);
 			}).handle((value, ex) -> {
@@ -131,7 +136,7 @@ public class CheckManager {
 		@Override
 		public void onRemoval(@Nullable UUID key, @Nullable NessPlayerData playerData, @NonNull RemovalCause cause) {
 			try (NessPlayer nessPlayer = playerData.getNessPlayer()) {
-				for (AbstractCheck<?> check : playerData.getChecks()) {
+				for (Check check : playerData.getChecks()) {
 					check.getFactory().removeCheck(nessPlayer);
 				}
 			}

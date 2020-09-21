@@ -14,7 +14,15 @@ import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.HandlerListUtils;
 import com.github.ness.utility.UncheckedReflectiveOperationException;
 
-class ListeningCheckFactory<E extends Event, C extends AbstractCheck<E>> extends CheckFactory<C> {
+/**
+ * A check factory for {@link ListeningCheck}s
+ * 
+ * @author A248
+ *
+ * @param <C> the type of the check
+ * @param <E> the type of the event
+ */
+public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event> extends CheckFactory<C> {
 
 	private final ScalableRegisteredListener<E> scalableListener;
 	private final Class<E> eventClass;
@@ -48,26 +56,27 @@ class ListeningCheckFactory<E extends Event, C extends AbstractCheck<E>> extends
 		} else {
 			getChecksMap().values().forEach((check) -> check.checkEvent(event));
 		}
-		
 	}
 	
 	@Override
-	void start0() {
-		super.start0();
+	protected synchronized void start() {
 		HandlerListUtils.getEventListeners(eventClass).register(scalableListener);
+
+		super.start();
 	}
 	
 	@Override
-	void close0() {
-		super.close0();
+	protected synchronized void close() {
 		HandlerListUtils.getEventListeners(eventClass).unregister(scalableListener);
+
+		super.close();
 	}
 	
 	private static <E extends Event> Function<E, UUID> findGetPlayerFunction(Class<E> eventClass) {
 		if (PlayerEvent.class.isAssignableFrom(eventClass)) {
 			return (evt) -> ((PlayerEvent) evt).getPlayer().getUniqueId();
 		}
-		if (eventClass == ReceivedPacketEvent.class) {
+		if (ReceivedPacketEvent.class.isAssignableFrom(eventClass)) {
 			return (evt) -> ((ReceivedPacketEvent) evt).getNessPlayer().getUUID();
 		}
 		/*
@@ -80,6 +89,7 @@ class ListeningCheckFactory<E extends Event, C extends AbstractCheck<E>> extends
 				Player player;
 				try {
 					player = (Player) getPlayerMethod.invoke(evt);
+
 				} catch (IllegalAccessException | InvocationTargetException ex) {
 					throw new UncheckedReflectiveOperationException(ex);
 				}

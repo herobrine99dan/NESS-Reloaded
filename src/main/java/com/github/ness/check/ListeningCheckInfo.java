@@ -20,7 +20,7 @@ public class ListeningCheckInfo<E extends Event> extends CheckInfo<Object> {
     private final Class<E> event;
     
     ListeningCheckInfo(Class<E> event) {
-    	this(Duration.ZERO, event);
+    	this.event = Objects.requireNonNull(event, "event");
     }
     
     ListeningCheckInfo(Duration asyncInterval, Class<E> event) {
