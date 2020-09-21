@@ -32,15 +32,15 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Player player = e.getPlayer();
 		double maxSpd = player.getWalkSpeed() + 0.1;
 		MovementValues movementValues = this.player().getMovementValues();
-		double xDist = movementValues.xDiff;
-		double zDist = movementValues.zDiff;
+		double xDist = Math.abs(movementValues.xDiff);
+		double zDist = Math.abs(movementValues.zDiff);
 		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
 				|| player().isTeleported()) {
 			return;
 		}
 		// Handling Velocity From other Plugins
 		if (player().nanoTimeDifference(PlayerAction.VELOCITY) < 1600) {
-			xDist -= +Math.abs(player().velocity.getX());
+			xDist -= Math.abs(player().velocity.getX());
 			zDist -= Math.abs(player().velocity.getZ());
 		}
 		// Handling Stairs
@@ -49,12 +49,12 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		}
 		// Handling Ice Speed
 		if (player().getTimeSinceLastWasOnIce() < 1300) {
-			maxSpd += 0.12;
+			maxSpd *= 1.6;
 			if (Utility.groundAround(to.clone().add(0, 2, 0))) {
-				maxSpd += 0.26;
+				maxSpd *= 1.65;
 			}
 		}
-		maxSpd += Math.abs(player.getVelocity().getY()) * 0.55f;
+		maxSpd += Math.abs(movementValues.yDiff) * 0.6f;
 		// Handling Speed Potion Effect
 		if (player.hasPotionEffect(PotionEffectType.SPEED)) {
 			final int level = Utility.getPotionEffectLevel(player, PotionEffectType.SPEED);
@@ -68,7 +68,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				if (!player.getWorld().getBlockAt(from).getType().isSolid()
 						&& !player.getWorld().getBlockAt(to).getType().isSolid()
 						&& !small.name().toLowerCase().contains("trap")) {
-					if (player().isDevMode())
+					if (player().isDevMode()) //TODO False Flag to fix (Jumping and Sprinting gives maxSpd = 0.53 and dist of = 0.57)
 						MSG.tell(player, "&9Dev> &7Speed amo: " + movementValues.XZDiff);
 					player().setViolation(new Violation("Speed",
 							"MaxDistance(OnMove)" + " MaxDist: " + maxSpd + " Dist: " + (float) xDist), e);
