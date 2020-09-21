@@ -29,7 +29,7 @@ public class CheckInfo<T> {
 	}
 	
 	boolean hasAsyncInterval() {
-		return asyncInterval.isZero();
+		return !asyncInterval.isZero();
 	}
 	
 	Duration getAsyncInterval() {
