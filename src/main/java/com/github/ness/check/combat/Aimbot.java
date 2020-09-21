@@ -30,7 +30,7 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 		if (!player().equals(e.getNessPlayer())) {
 			return;
 		}
-		if (!e.getPacket().getName().toLowerCase().contains("look") || e.getNessPlayer().isTeleported()) {
+		if (!e.getPacket().getName().toLowerCase().contains("LOOK") || e.getNessPlayer().isTeleported()) {
 			return;
 		}
 		makeSensitivity(e);

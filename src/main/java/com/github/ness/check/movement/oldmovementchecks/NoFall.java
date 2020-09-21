@@ -36,7 +36,6 @@ public class NoFall extends AbstractCheck<PlayerMoveEvent> {
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0, 1, 0)).getType();
-		Material bottom = null;
 		NessPlayer nessPlayer = this.player();
 		final boolean debugMode = nessPlayer.isDebugMode();
 		Location from = event.getFrom(), to = event.getTo();
@@ -54,7 +53,6 @@ public class NoFall extends AbstractCheck<PlayerMoveEvent> {
 			vertDist -= Math.abs(nessPlayer.velocity.getY());
 		}
 		boolean groundAround = Utility.groundAround(player.getLocation());
-		bottom = player.getLocation().getWorld().getBlockAt(player.getLocation().subtract(0, Utility.getDistanceFromGround(player.getLocation()), 0)).getType();
 
 		if (debugMode) {
 			MSG.tell(player, "&7X: &e" + player.getLocation().getX() + " &7V: &e" + player.getVelocity().getX());
@@ -62,20 +60,20 @@ public class NoFall extends AbstractCheck<PlayerMoveEvent> {
 			MSG.tell(player, "&7Z: &e" + player.getLocation().getZ() + " &7V: &e" + player.getVelocity().getZ());
 			MSG.tell(player, "&7hozDist: &e" + hozDist + " &7vertDist: &e" + vertDist + " &7fallDist: &e" + fallDist);
 			MSG.tell(player,
-					"&7below: &e" + below.name() + " bottom: " + bottom.name());
+					"&7below: &e" + below.name());
 			MSG.tell(player,
 					"&7groundAround: &e" + MSG.torF(groundAround) + " &7onGround: " + MSG.torF(player.isOnGround()));
 		}
 		if (to.getY() != from.getY()) {
-			if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().toLowerCase().contains("water")
+			if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().contains("WATER")
 					&& !player.getLocation().getBlock().isLiquid()) {
 				if (hozDist < .2 || !groundAround) {
 					if (PlayerManager.timeSince("breakTime", player) >= 2000 && !nessPlayer.isTeleported()
-							&& !below.name().toLowerCase().contains("piston")) {
+							&& !below.name().contains("PISTON")) {
 						if ((!player.isInsideVehicle()
 								|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))
 								&& !player.isFlying() && to.getY() > 0) {
-							if (!bottom.name().toLowerCase().contains("slime") && !Utility.hasBlock(player, "water")
+							if (!movementValues.AroundSlime && !Utility.hasBlock(player, "water")
 									&& !Utility.isInWater(player) && !movementValues.AroundLiquids
 									&& !Utility.specificBlockNear(event.getTo(), "fire")
 									&& !Utility.getMaterialName(event.getTo()).contains("FIRE") && !Utility

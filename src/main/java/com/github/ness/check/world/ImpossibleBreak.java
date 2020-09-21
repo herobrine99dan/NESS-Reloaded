@@ -21,7 +21,7 @@ public class ImpossibleBreak extends AbstractCheck<BlockBreakEvent> {
     @Override
     protected void checkEvent(BlockBreakEvent event) {
         if (event.getBlock().isLiquid()) {
-            player().setViolation(new Violation("ImpossibleBreak", ""), event);
+            player().setViolation(new Violation("ImpossibleBreak", event.getPlayer().getName() + " isn't a god"), event);
         }
 //		Block target = player.getTargetBlock((Set<Material>) null, 5);
 //		boolean bypass = false;

@@ -27,7 +27,7 @@ public class AimbotGCD extends AbstractCheck<ReceivedPacketEvent> {
 		if (!player().equals(player)) {
 			return;
 		}
-		if (!event.getPacket().getName().toLowerCase().contains("look") || player.isTeleported()) {
+		if (!event.getPacket().getName().toLowerCase().contains("LOOK") || player.isTeleported()) {
 			return;
 		}
 		float pitch = (float) Math.abs(player.getMovementValues().pitchDiff);

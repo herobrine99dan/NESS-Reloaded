@@ -39,13 +39,13 @@ public class FlyInvalidJumpMotion extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.specificBlockNear(to.clone(), "detector") || movementValues.AroundStairs
 				|| Utility.getMaterialName(to.clone().add(0, 1.8, 0)).contains("CHORUS")
 				|| Utility.getMaterialName(from.clone().add(0, 1.6, 0)).contains("CHORUS")
-				|| Utility.getMaterialName(to).toLowerCase().contains("LADDER")
-				|| Utility.getMaterialName(to).toLowerCase().contains("VINE")
-				|| Utility.getMaterialName(to).toLowerCase().contains("SEA")
-				|| Utility.getMaterialName(from).toLowerCase().contains("SEA")
-				|| Utility.getMaterialName(to.clone().add(0, 0.3, 0)).toLowerCase().contains("SEA")
-				|| Utility.getMaterialName(to.clone().add(0, -0.2, 0)).toLowerCase().contains("SEA")
-				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("LADDER")
+				|| Utility.getMaterialName(to).contains("LADDER")
+				|| Utility.getMaterialName(to).contains("VINE")
+				|| Utility.getMaterialName(to).contains("SEA")
+				|| Utility.getMaterialName(from).contains("SEA")
+				|| Utility.getMaterialName(to.clone().add(0, 0.3, 0)).contains("SEA")
+				|| Utility.getMaterialName(to.clone().add(0, -0.2, 0)).contains("SEA")
+				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).contains("LADDER")
 				|| movementValues.AroundIce || movementValues.AroundSlime || Utility.hasflybypass(player)) {
 			return;
 		}

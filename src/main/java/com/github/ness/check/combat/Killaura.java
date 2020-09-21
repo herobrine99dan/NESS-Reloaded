@@ -78,8 +78,6 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	}
 
 	public void Check1(EntityDamageByEntityEvent e) {
-
-		if (e.getDamager() instanceof Player) {
 			Player p = (Player) e.getDamager();
 			final Location loc = p.getLocation();
 			Bukkit.getScheduler().runTaskLater(this.ness(), () -> {
@@ -88,8 +86,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 				if (Math.round(grade) > maxYaw) {
 					punish(e, p, "HighYaw " + grade);
 				}
-			}, 3L);
-		}
+			}, 2L);
 	}
 
 	public void Check2(EntityDamageByEntityEvent event) {
