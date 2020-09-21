@@ -155,7 +155,7 @@ public class NessPlayer implements AutoCloseable {
 		for (int x = -1; x <= 1; x++) {
 			for (int z = -1; z <= 1; z++) {
 				Material belowSel = player.getWorld().getBlockAt(player.getLocation().add(x, -1, z)).getType();
-				if (belowSel.name().toLowerCase().contains("piston") || belowSel.name().toLowerCase().contains("ice")) {
+				if (belowSel.name().contains("PISTON") || belowSel.name().contains("ICE")) {
 					ice = true;
 				}
 				belowSel = player.getWorld().getBlockAt(player.getLocation().add(x, -.01, z)).getType();
@@ -204,7 +204,7 @@ public class NessPlayer implements AutoCloseable {
                 && cancelsec.getBoolean("enable", false);
         if (cancel) {
             if (e != null) {
-                if (violation.getCheck().equals("Fly") || violation.getCheck().equals("NoFall")) {
+                if (violation.getCheck().equals("Fly") || violation.getCheck().equals("NoFall") || violation.getCheck().equals("Step") || violation.getCheck().equals("Phase")) {
                     this.dragDown();
                 } else {
                     e.setCancelled(true);

@@ -49,7 +49,7 @@ public class SpeedAir extends AbstractCheck<PlayerMoveEvent> {
             total -= nessPlayer.velocity.getX();
             total -= nessPlayer.velocity.getZ();
         }
-        if (!Utility.isMathematicallyOnGround(event.getTo().getY())) {
+        if (!nessPlayer.getMovementValues().isOnGround) {
             airTicks++;
         } else {
             airTicks = 0;

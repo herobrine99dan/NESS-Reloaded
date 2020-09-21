@@ -33,8 +33,7 @@ public class Step extends AbstractCheck<PlayerMoveEvent> {
 				|| player().isTeleported()) {
 			return;
 		}
-		if (to.getY() - from.getY() > 0.6 && values.isOnGround
-				&& !player.getAllowFlight() && !values.AroundSlime) {
+		if (to.getY() - from.getY() > 0.6 && values.isOnGround && !values.AroundSlime) {
 			boolean boatNear = false;
 			for (Entity ent : player.getNearbyEntities(2, 2, 2)) {
 				if (ent instanceof Boat)
@@ -43,8 +42,8 @@ public class Step extends AbstractCheck<PlayerMoveEvent> {
 			if (player.getVelocity().getY() < 0.43 && !boatNear) {
 				this.player().setViolation(new Violation("Step", "(OnMove)"), e);
 			}
-		} else if (from.getY() - to.getY() > 2 && player.getFallDistance() == 0.0 && player.getVelocity().getY() < 0.43) {
-			this.player().setViolation(new Violation("Phase", "(OnMove)"), e);
+		} else if (from.getY() - to.getY() > 1.5 && player.getFallDistance() == 0.0 && player.getVelocity().getY() < 0.43) {
+			this.player().setViolation(new Violation("Step", "(OnMove)"), e);
 		}
 	}
 

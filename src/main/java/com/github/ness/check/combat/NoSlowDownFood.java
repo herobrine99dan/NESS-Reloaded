@@ -9,6 +9,7 @@ import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.utility.Utility;
 
+@Deprecated //This Check needs a complete recode
 public class NoSlowDownFood extends AbstractCheck<PlayerItemConsumeEvent> {
 
 	public static final CheckInfo<PlayerItemConsumeEvent> checkInfo = CheckInfo.eventOnly(PlayerItemConsumeEvent.class);

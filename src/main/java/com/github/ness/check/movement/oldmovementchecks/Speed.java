@@ -29,63 +29,49 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 	protected void checkEvent(PlayerMoveEvent e) {
 		Location to = e.getTo();
 		Location from = e.getFrom();
-		double maxSpd = 0.4209;
 		Player player = e.getPlayer();
+		double maxSpd = player.getWalkSpeed() + 0.1;
 		MovementValues movementValues = this.player().getMovementValues();
+		double xDist = movementValues.xDiff;
+		double zDist = movementValues.zDiff;
 		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
 				|| player().isTeleported()) {
 			return;
 		}
-		Material mat = null;
-		if (player.isBlocking()) {
-			if (to.getY() % .5 == 0.0) {
-				maxSpd = .2;
-			} else {
-				maxSpd = .3;
-			}
+		// Handling Velocity From other Plugins
+		if (player().nanoTimeDifference(PlayerAction.VELOCITY) < 1600) {
+			xDist -= +Math.abs(player().velocity.getX());
+			zDist -= Math.abs(player().velocity.getZ());
 		}
-		for (int x = -1; x < 1; x++) {
-			for (int z = -1; z < 1; z++) {
-				mat = from.getWorld()
-						.getBlockAt(from.getBlockX() + x, player.getEyeLocation().getBlockY() + 1, from.getBlockZ() + z)
-						.getType();
-				if (mat.isSolid()) {
-					maxSpd = 0.50602;
-					break;
-				}
-			}
-		}
-		if (player.isInsideVehicle() && player.getVehicle().getType() == EntityType.BOAT)
-			maxSpd = 2.8;
+		// Handling Stairs
 		if (movementValues.AroundStairs) {
-			maxSpd += 0.4;
+			maxSpd *= 2.5;
 		}
+		// Handling Ice Speed
 		if (player().getTimeSinceLastWasOnIce() < 1300) {
-			maxSpd += 0.14;
+			maxSpd += 0.12;
 			if (Utility.groundAround(to.clone().add(0, 2, 0))) {
-				maxSpd += 0.3;
+				maxSpd += 0.26;
 			}
 		}
-		if (movementValues.XZDiff > maxSpd && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED)
-				&& !player.getAllowFlight() && player().nanoTimeDifference(PlayerAction.DAMAGE) >= 2000
-				&& !player().isTeleported()) {
-			if (Utility.groundAround(player.getLocation())) {
-				if (!player.isInsideVehicle()
-						|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE)) {
-					Material small = player.getWorld().getBlockAt(player.getLocation().subtract(0, .1, 0)).getType();
-					if (!player.getWorld().getBlockAt(from).getType().isSolid()
-							&& !player.getWorld().getBlockAt(to).getType().isSolid()) {
-						if (!small.name().toLowerCase().contains("trap")) {
-							if (player().isDevMode())
-								MSG.tell(player, "&9Dev> &7Speed amo: " + movementValues.XZDiff);
-							if (player.isBlocking()) {
-								player().setViolation(new Violation("NoSlowDown", "HighDistance(OnMove)"), e);
-							} else {
-								player().setViolation(new Violation("Speed", "MaxDistance(OnMove)"),e);
-							}
-						}
-					}
-
+		maxSpd += Math.abs(player.getVelocity().getY()) * 0.55f;
+		// Handling Speed Potion Effect
+		if (player.hasPotionEffect(PotionEffectType.SPEED)) {
+			final int level = Utility.getPotionEffectLevel(player, PotionEffectType.SPEED);
+			xDist = (float) (xDist - xDist / 100.0D * level * 20.0D);
+			zDist = (float) (zDist - zDist / 100.0D * level * 20.0D);
+		}
+		MSG.tell(player, "&9Dev> &7Speed Dist: " + maxSpd);
+		if ((xDist > maxSpd || zDist > maxSpd) && player().nanoTimeDifference(PlayerAction.DAMAGE) >= 2000) {
+			if (Utility.groundAround(player.getLocation()) && !player.isInsideVehicle()) {
+				Material small = player.getWorld().getBlockAt(player.getLocation().subtract(0, .1, 0)).getType();
+				if (!player.getWorld().getBlockAt(from).getType().isSolid()
+						&& !player.getWorld().getBlockAt(to).getType().isSolid()
+						&& !small.name().toLowerCase().contains("trap")) {
+					if (player().isDevMode())
+						MSG.tell(player, "&9Dev> &7Speed amo: " + movementValues.XZDiff);
+					player().setViolation(new Violation("Speed",
+							"MaxDistance(OnMove)" + " MaxDist: " + maxSpd + " Dist: " + (float) xDist), e);
 				}
 			}
 		}
