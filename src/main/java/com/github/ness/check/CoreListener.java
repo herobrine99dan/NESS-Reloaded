@@ -94,7 +94,7 @@ public class CoreListener implements Listener {
 		if (nessPlayer == null) {
 			return;
 		}
-		if (Utility.getMaterialName(event.getBlock().getLocation()).contains("web")) {
+		if (Utility.getMaterialName(event.getBlock().getLocation()).contains("WEB")) {
 			nessPlayer.actionTime.put(PlayerAction.WEBBREAKED, System.nanoTime());
 		}
 	}

@@ -84,17 +84,7 @@ public class Utility {
      * @return the material name
      */
     public static String getMaterialName(Location loc) {
-        return loc.getBlock().getType().name().toLowerCase();
-    }
-
-    /**
-     * Get the material name and convert it to lowercase
-     *
-     * @param loc
-     * @return the material name
-     */
-    public static String getMaterialName(Material m) {
-        return m.name().toLowerCase();
+        return loc.getBlock().getType().name();
     }
 
     /**
@@ -105,7 +95,7 @@ public class Utility {
      */
     public static boolean isClimbableBlock(Block b) {
         String block = Utility.getMaterialName(b.getLocation());
-        return block.contains("ladder") || block.contains("vine");
+        return block.contains("LADDER") || block.contains("VINE");
     }
 
     public static boolean hasVehicleNear(Player p, int range) {

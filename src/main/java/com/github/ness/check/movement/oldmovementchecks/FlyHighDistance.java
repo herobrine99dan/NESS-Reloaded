@@ -15,11 +15,8 @@ public class FlyHighDistance extends AbstractCheck<PlayerMoveEvent> {
 
 	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo.eventOnly(PlayerMoveEvent.class);
 
-	private int flags;
-
 	public FlyHighDistance(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
-		flags = 0;
 	}
 
 	@Override

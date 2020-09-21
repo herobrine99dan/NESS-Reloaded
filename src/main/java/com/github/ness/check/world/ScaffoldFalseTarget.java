@@ -31,7 +31,7 @@ public class ScaffoldFalseTarget extends AbstractCheck<BlockPlaceEvent> {
         if (target == null) {
             return;
         }
-        if (Utility.getMaterialName(event.getBlock().getWorld().getBlockAt(event.getBlock().getLocation().subtract(0.0D, 1.0D, 0.0D)).getLocation()).contains("air")) {
+        if (Utility.getMaterialName(event.getBlock().getWorld().getBlockAt(event.getBlock().getLocation().subtract(0.0D, 1.0D, 0.0D)).getLocation()).contains("AIR")) {
             if (!event.getBlock().getLocation().equals(target.getLocation()) && !event.isCancelled()
                     && target.getType().isSolid() && !target.getType().name().toLowerCase().contains("sign")
                     && !target.getType().toString().toLowerCase().contains("fence")

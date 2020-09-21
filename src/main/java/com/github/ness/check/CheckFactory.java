@@ -10,7 +10,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
+import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
 
 public class CheckFactory<C extends AbstractCheck<?>> {
@@ -22,6 +24,7 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 	
 	private transient boolean started;
 	private transient ScheduledFuture<?> scheduledFuture;
+	private static final Logger logger = NessLogger.getLogger(CheckFactory.class);
 	
 	private transient final ConcurrentMap<UUID, C> checks = new ConcurrentHashMap<>();
 	
@@ -97,6 +100,7 @@ public class CheckFactory<C extends AbstractCheck<?>> {
 
 		if (checkInfo.hasAsyncInterval()) {
 			Duration asyncInterval = checkInfo.getAsyncInterval();
+			logger.fine("Loading Schedule for: " + this.checkName);
 			scheduledFuture = manager.getNess().getExecutor().scheduleWithFixedDelay(
 					this::checkAsyncPeriodic, 0L, asyncInterval.toNanos(), TimeUnit.NANOSECONDS);
 

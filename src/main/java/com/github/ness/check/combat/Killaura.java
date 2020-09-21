@@ -110,8 +110,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 			Player p = (Player) e.getDamager();
 			if (!p.hasLineOfSight(e.getEntity())) {
 				Block b = p.getTargetBlock(null, 5);
-				if (!Utility.getMaterialName(b.getLocation()).contains("slab") && b.getType().isSolid()
-						&& b.getType().isOccluding()) {
+				if (b.getType().isSolid() && b.getType().isOccluding()) {
 					punish(e, p, "WallHit");
 				}
 			}

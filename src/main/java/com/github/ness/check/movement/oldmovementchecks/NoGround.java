@@ -1,5 +1,7 @@
 package com.github.ness.check.movement.oldmovementchecks;
 
+import java.util.concurrent.TimeUnit;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -15,12 +17,17 @@ import com.github.ness.utility.Utility;
 
 public class NoGround extends AbstractCheck<PlayerMoveEvent> {
 
-	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo.eventOnly(PlayerMoveEvent.class);
-
+	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(PlayerMoveEvent.class,
+			1, TimeUnit.SECONDS);
 	private int flags;
 
 	public NoGround(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
+		flags = 0;
+	}
+	
+	@Override
+	protected void checkAsyncPeriodic() {
 		flags = 0;
 	}
 

@@ -75,7 +75,6 @@ enabled-checks:
   - 'Speed'
   - 'Step'
   - 'Phase'
-  - 'OldMovementChecks'
   - 'ImpossibleBreak'
 #  - 'SpeedAir'
   - 'ScaffoldFalseTarget'

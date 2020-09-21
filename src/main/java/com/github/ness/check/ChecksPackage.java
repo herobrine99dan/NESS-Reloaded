@@ -7,7 +7,7 @@ public enum ChecksPackage {
 	FLYCHEAT("movement.fly"),
 	PACKET("packet"),
 	WORLD("world"),
-	OldMovementChecks("oldmovementchecks"),
+	OldMovementChecks("movement.oldmovementchecks"),
 	MISC("misc");
 
 	/**

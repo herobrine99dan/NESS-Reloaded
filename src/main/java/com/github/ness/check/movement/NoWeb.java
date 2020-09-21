@@ -31,8 +31,8 @@ public class NoWeb extends AbstractCheck<PlayerMoveEvent> {
         if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1300) {
             dist -= Math.abs(nessPlayer.velocity.getX()) + Math.abs(nessPlayer.velocity.getZ());
         }
-        if (dist > walkSpeed && Utility.getMaterialName(event.getTo()).contains("web")
-                && Utility.getMaterialName(event.getFrom()).contains("web") && !Utility.hasflybypass(p) && nessPlayer.nanoTimeDifference(PlayerAction.WEBBREAKED) > 1300) {
+        if (dist > walkSpeed && Utility.getMaterialName(event.getTo()).contains("WEB")
+                && Utility.getMaterialName(event.getFrom()).contains("WEB") && !Utility.hasflybypass(p) && nessPlayer.nanoTimeDifference(PlayerAction.WEBBREAKED) > 1300) {
             nessPlayer.setViolation(new Violation("NoWeb", "Dist: " + dist), event);
         }
     }

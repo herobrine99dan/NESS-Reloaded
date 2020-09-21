@@ -1,16 +1,10 @@
 package com.github.ness.check.movement.oldmovementchecks;
 
-import java.util.concurrent.TimeUnit;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Boat;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
@@ -24,19 +18,10 @@ import com.github.ness.utility.PlayerManager;
 import com.github.ness.utility.Utility;
 
 public class NoFall extends AbstractCheck<PlayerMoveEvent> {
-	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(PlayerMoveEvent.class,
-			1, TimeUnit.SECONDS);
-
-	int noGround; // Used in NoGround Check
+	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo.eventOnly(PlayerMoveEvent.class);
 
 	public NoFall(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
-		noGround = 0;
-	}
-
-	@Override
-	protected void checkAsyncPeriodic() {
-		noGround = 0;
 	}
 
 	private void punish(PlayerMoveEvent e, String cheat, String module) {
@@ -77,7 +62,7 @@ public class NoFall extends AbstractCheck<PlayerMoveEvent> {
 			MSG.tell(player, "&7Z: &e" + player.getLocation().getZ() + " &7V: &e" + player.getVelocity().getZ());
 			MSG.tell(player, "&7hozDist: &e" + hozDist + " &7vertDist: &e" + vertDist + " &7fallDist: &e" + fallDist);
 			MSG.tell(player,
-					"&7below: &e" + Utility.getMaterialName(below) + " bottom: " + Utility.getMaterialName(bottom));
+					"&7below: &e" + below.name() + " bottom: " + bottom.name());
 			MSG.tell(player,
 					"&7groundAround: &e" + MSG.torF(groundAround) + " &7onGround: " + MSG.torF(player.isOnGround()));
 		}
@@ -93,8 +78,8 @@ public class NoFall extends AbstractCheck<PlayerMoveEvent> {
 							if (!bottom.name().toLowerCase().contains("slime") && !Utility.hasBlock(player, "water")
 									&& !Utility.isInWater(player) && !movementValues.AroundLiquids
 									&& !Utility.specificBlockNear(event.getTo(), "fire")
-									&& !Utility.getMaterialName(event.getTo()).contains("fire") && !Utility
-											.getMaterialName(event.getTo().clone().add(0, 0.4, 0)).contains("fire")) {
+									&& !Utility.getMaterialName(event.getTo()).contains("FIRE") && !Utility
+											.getMaterialName(event.getTo().clone().add(0, 0.4, 0)).contains("FIRE")) {
 								boolean gotFire = false;
 								if (player.getLastDamageCause() != null) {
 									if (player.getLastDamageCause().getCause() != null) {
