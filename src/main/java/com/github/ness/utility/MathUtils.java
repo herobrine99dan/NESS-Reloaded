@@ -10,18 +10,40 @@ public class MathUtils {
         }
     }
 
+    /**
+     * Get the sine of a double value from the table
+     * @param double f
+     * @return the sine of that double value
+     */
     public static final double sin(double f) {
         return table[(int) (f * 10430.378F) & '\uffff'];
     }
 
+    /**
+     * Get the cosine of a double value from the table
+     * @param double f
+     * @return the cosine of that double value
+     */
     public static final double cos(double f) {
         return table[(int) (f * 10430.378F + 16384.0F) & '\uffff'];
     }
 
+    /**
+     * Calculate Percentage
+     * @param obtained Value
+     * @param total Values
+     * @return the Percentage
+     */
     public static double calculatePercentage(double obtained, double total) {
         return obtained * 100.0D / total;
     }
 
+    /**
+     * Calculate the Greatest Common Divisor from two double values
+     * @param double a
+     * @param double b
+     * @return the GCD
+     */
     public static double gcd(double a, double b) {
         return b <= 16384L ? a : MathUtils.gcd(b, a % b);
     }
@@ -35,9 +57,4 @@ public class MathUtils {
         }
         return flub;
     }
-
-    public static double sigmoid(double x) {
-        return 1.0D / (1.0D + Math.exp(-x));
-    }
-
 }
