@@ -7,9 +7,9 @@ import com.github.ness.NessPlayer;
 final class NessPlayerData {
 
 	private final NessPlayer nessPlayer;
-	private final Set<AbstractCheck<?>> checks;
+	private final Set<Check> checks;
 	
-	NessPlayerData(NessPlayer nessPlayer, Set<AbstractCheck<?>> checks) {
+	NessPlayerData(NessPlayer nessPlayer, Set<Check> checks) {
 		this.nessPlayer = nessPlayer;
 		this.checks = checks;
 	}
@@ -18,7 +18,7 @@ final class NessPlayerData {
 		return nessPlayer;
 	}
 	
-	Set<AbstractCheck<?>> getChecks() {
+	Set<Check> getChecks() {
 		return checks;
 	}
 

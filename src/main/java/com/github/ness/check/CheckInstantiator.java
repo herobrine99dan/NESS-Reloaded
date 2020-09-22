@@ -14,7 +14,7 @@ import com.github.ness.utility.UncheckedReflectiveOperationException;
  * @param <C> the check type
  */
 @FunctionalInterface
-public interface CheckInstantiator<C extends AbstractCheck<?>> {
+public interface CheckInstantiator<C extends Check> {
 
 	/**
 	 * Creates a new check with the associated factory and ness player. Most implementations
@@ -32,7 +32,7 @@ class CheckInstantiators {
 	
 	private CheckInstantiators() {}
 	
-	static <C extends AbstractCheck<?>> CheckInstantiator<C> fromConstructor(Constructor<C> constructor) {
+	static <C extends Check> CheckInstantiator<C> fromFactoryAndPlayerConstructor(Constructor<C> constructor) {
 		return (factory, nessPlayer) -> {
 			try {
 				return constructor.newInstance(factory, nessPlayer);
