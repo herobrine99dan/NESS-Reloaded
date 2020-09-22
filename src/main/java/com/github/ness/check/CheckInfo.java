@@ -49,7 +49,8 @@ public class CheckInfo<T> extends BaseCheckInfo {
 	 * @param <E>   the event
 	 * @param event the event class
 	 * @return the check info
-	 * @deprecated Prefer {@link #forEvent(Class)} as it is better named
+	 * @deprecated This is the old fashioned way of getting check info. Use {@link CheckInfos#forEvent(Class)} which correctly
+	 * returns {@link ListeningCheckInfo} with the right generics.
 	 */
 	@Deprecated
 	public static <E extends Event> CheckInfo<E> eventOnly(Class<E> event) {
@@ -64,7 +65,9 @@ public class CheckInfo<T> extends BaseCheckInfo {
 	 * @param interval the interval of the periodic task
 	 * @param units the units of the interval of the periodic task
 	 * @return the listening check info
-	 * @deprecated Use {@link #forEventWithAsyncPeriodic(Class, Duration)} which uses a {@code Duration}
+	 * @deprecated This is the old fashioned way of getting check info. Use
+	 * {@link CheckInfos#forEventWithAsyncPeriodic(Class, Duration)} which uses a {@code Duration} and returns
+	 * {@link ListeningCheckInfo} with the right generics.
 	 */
 	@Deprecated
 	public static <E extends Event> CheckInfo<E> eventWithAsyncPeriodic(Class<E> event, long interval,
