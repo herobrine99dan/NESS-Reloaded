@@ -33,7 +33,7 @@ public class CheckInfo<T> extends BaseCheckInfo {
 	}
 	
 	boolean hasAsyncInterval() {
-		return asyncInterval.isZero();
+		return !asyncInterval.isZero();
 	}
 	
 	Duration getAsyncInterval() {
