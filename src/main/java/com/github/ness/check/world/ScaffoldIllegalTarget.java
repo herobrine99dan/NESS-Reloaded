@@ -36,7 +36,7 @@ public class ScaffoldIllegalTarget extends AbstractCheck<PlayerInteractEvent> {
                 if (blocks.size() > 1) {
                     face = blocks.get(1).getFace(blocks.get(0));
                 }
-                if (event.getBlockFace() != face && target.getType().isSolid() && !Utility.getMaterialName(target.getType()).contains("lever")) {
+                if (event.getBlockFace() != face && target.getType().isSolid() && target.getType().isOccluding()) {
                     this.player().setViolation(new Violation("Scaffold", " IllegalTarget"), event);
                 }
             }

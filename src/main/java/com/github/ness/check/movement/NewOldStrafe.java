@@ -55,14 +55,14 @@ public class NewOldStrafe extends AbstractCheck<PlayerMoveEvent> {
         double expand = 0.31;
         for (double x = -expand; x <= expand; x += expand) {
             for (double z = -expand; z <= expand; z += expand) {
-                if (!Utility.getMaterialName(loc.clone().add(x, 0.0001, z)).contains("air")) {
+                if (!Utility.getMaterialName(loc.clone().add(x, 0.0001, z)).contains("AIR")) {
                     return true;
                 }
             }
         }
         for (double x = -expand; x <= expand; x += expand) {
             for (double z = -expand; z <= expand; z += expand) {
-                if (!Utility.getMaterialName(loc.clone().add(x, 1.0001, z)).contains("air")) {
+                if (!Utility.getMaterialName(loc.clone().add(x, 1.0001, z)).contains("AIR")) {
                     return true;
                 }
             }

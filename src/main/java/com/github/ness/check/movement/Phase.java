@@ -21,12 +21,12 @@ public class Phase extends AbstractCheck<PlayerMoveEvent> {
 
     @Override
     protected void checkEvent(PlayerMoveEvent event) {
-        Block b = event.getTo().getBlock();
+        Block b = event.getTo().clone().add(0, event.getPlayer().getEyeHeight(), 0).getBlock();
         NessPlayer nessPlayer = this.player();
         if (b.getType().isOccluding() && !event.getPlayer().isInsideVehicle()
                 && Utility.groundAround(event.getTo().clone()) && !nessPlayer.isTeleported()
-                && nessPlayer.getMovementValues().XZDiff > 0.1) {
-            nessPlayer.setViolation(new Violation("Phase", "Walking in a non-Trasparent block"), event);
+                && nessPlayer.getMovementValues().XZDiff > 0.25) {
+            nessPlayer.setViolation(new Violation("Phase", "Dist: " + (float) nessPlayer.getMovementValues().XZDiff), event);
         }
     }
 }

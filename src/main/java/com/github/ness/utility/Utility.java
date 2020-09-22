@@ -84,17 +84,7 @@ public class Utility {
      * @return the material name
      */
     public static String getMaterialName(Location loc) {
-        return loc.getBlock().getType().name().toLowerCase();
-    }
-
-    /**
-     * Get the material name and convert it to lowercase
-     *
-     * @param loc
-     * @return the material name
-     */
-    public static String getMaterialName(Material m) {
-        return m.name().toLowerCase();
+        return loc.getBlock().getType().name();
     }
 
     /**
@@ -105,7 +95,7 @@ public class Utility {
      */
     public static boolean isClimbableBlock(Block b) {
         String block = Utility.getMaterialName(b.getLocation());
-        return block.contains("ladder") || block.contains("vine");
+        return block.contains("LADDER") || block.contains("VINE");
     }
 
     public static boolean hasVehicleNear(Player p, int range) {
@@ -156,14 +146,20 @@ public class Utility {
         }
     }
 
-    public static Integer calculateFallDistance(final Location loc) {
-        Location res;
-        int yDif;
-        for (res = loc.clone(), yDif = -1; !res.subtract(0.0, yDif, 0.0).getBlock().getType().isSolid()
-                && res.subtract(0.0, yDif, 0.0).getY() > 0.0; ++yDif) {
-            res.add(0.0, yDif, 0.0);
-        }
-        return yDif;
+    public static double getDistanceFromGround(final Location loc) {
+		double dTG = 0; // Distance to ground
+		for (int x = -1; x <= 1; x++) {
+			for (int z = -1; z <= 1; z++) {
+				int y = 0;
+				while (!loc.clone().subtract(x, y, z).getBlock().getType().isSolid() && y < 20) {
+					y++;
+				}
+				if (y < dTG || dTG == 0)
+					dTG = y;
+			}
+		}
+		dTG += loc.getY() % 1;
+        return dTG;
     }
 
     public static boolean groundAround(Location loc) {
@@ -274,41 +270,41 @@ public class Utility {
 
     public static boolean isInWater(Player player) {
         final Material m = player.getLocation().getBlock().getType();
-        return m.name().toLowerCase().contains("water");
+        return m.name().contains("WATER");
     }
 
     public static boolean hasKbBypass(Player player) {
-        if (player.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
+        if (!player.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().getType().isSolid())
             return true;
-        if (player.getLocation().add(1.0D, 0.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
+        if (!player.getLocation().add(1.0D, 0.0D, 0.0D).getBlock().getType().isSolid())
             return true;
-        if (player.getLocation().add(0.0D, 0.0D, 1.0D).getBlock().getType().name().toLowerCase().contains("air"))
+        if (!player.getLocation().add(0.0D, 0.0D, 1.0D).getBlock().getType().isSolid())
             return true;
-        if (player.getLocation().add(-1.0D, 0.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
+        if (!player.getLocation().add(-1.0D, 0.0D, 0.0D).getBlock().getType().isSolid())
             return true;
-        if (player.getLocation().add(0.0D, 0.0D, -1.0D).getBlock().getType().name().toLowerCase().contains("air"))
+        if (!player.getLocation().add(0.0D, 0.0D, -1.0D).getBlock().getType().isSolid())
             return true;
-        if (player.getLocation().add(1.0D, 1.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
+        if (!player.getLocation().add(1.0D, 1.0D, 0.0D).getBlock().getType().isSolid())
             return true;
-        if (player.getLocation().add(0.0D, 1.0D, 1.0D).getBlock().getType().name().toLowerCase().contains("air"))
+        if (!player.getLocation().add(0.0D, 1.0D, 1.0D).getBlock().getType().isSolid())
             return true;
-        if (player.getLocation().add(-1.0D, 1.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
+        if (!player.getLocation().add(-1.0D, 1.0D, 0.0D).getBlock().getType().isSolid())
             return true;
-        if (player.getLocation().add(0.0D, 1.0D, -1.0D).getBlock().getType().name().toLowerCase().contains("air"))
+        if (!player.getLocation().add(0.0D, 1.0D, -1.0D).getBlock().getType().isSolid())
             return true;
-        if (player.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
+        if (!player.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().getType().isSolid())
             return true;
-        if (player.getLocation().add(1.0D, 2.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
+        if (!player.getLocation().add(1.0D, 2.0D, 0.0D).getBlock().getType().isSolid())
             return true;
-        if (player.getLocation().add(0.0D, 2.0D, 1.0D).getBlock().getType().name().toLowerCase().contains("air"))
+        if (!player.getLocation().add(0.0D, 2.0D, 1.0D).getBlock().getType().isSolid())
             return true;
-        if (player.getLocation().add(0.0D, 2.0D, -1.0D).getBlock().getType().name().toLowerCase().contains("air"))
+        if (!player.getLocation().add(0.0D, 2.0D, -1.0D).getBlock().getType().isSolid())
             return true;
-        if (player.getLocation().add(-1.0D, 2.0D, 0.0D).getBlock().getType().name().toLowerCase().contains("air"))
+        if (!player.getLocation().add(-1.0D, 2.0D, 0.0D).getBlock().getType().isSolid())
             return true;
-        if (player.getLocation().add(1.0D, 2.0D, 1.0D).getBlock().getType().name().toLowerCase().contains("air"))
+        if (!player.getLocation().add(1.0D, 2.0D, 1.0D).getBlock().getType().isSolid())
             return true;
-        if (player.getLocation().add(-1.0D, 2.0D, -1.0D).getBlock().getType().name().toLowerCase().contains("air"))
+        if (!player.getLocation().add(-1.0D, 2.0D, -1.0D).getBlock().getType().isSolid())
             return true;
         return player.getVehicle() != null;
     }

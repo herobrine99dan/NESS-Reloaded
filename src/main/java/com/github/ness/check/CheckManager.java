@@ -39,7 +39,7 @@ public class CheckManager {
 	public CheckManager(NESSAnticheat ness) {
 		this.ness = ness;
 		coreListener = new CoreListener(this);
-
+		//olyviypul99khu kvlzu'a sprl X2MtGtCwitB=
 		playerCache = Caffeine.newBuilder().expireAfterAccess(Duration.ofMinutes(5L))
 				.removalListener(new PlayerCacheRemovalListener()).scheduler(Scheduler.systemScheduler()).buildAsync();
 	}

@@ -11,12 +11,12 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
+public class SimpleAntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 
 	public static final CheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfo
 			.eventOnly(EntityDamageByEntityEvent.class);
 
-	public AntiKb(CheckFactory<?> factory, NessPlayer player) {
+	public SimpleAntiKb(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
 	}
 

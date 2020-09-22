@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -150,6 +151,22 @@ public class NessPlayer implements AutoCloseable {
 
     public void updateMovementValue(MovementValues values) {
         this.movementValues = values;
+        boolean ice = false;
+		for (int x = -1; x <= 1; x++) {
+			for (int z = -1; z <= 1; z++) {
+				Material belowSel = player.getWorld().getBlockAt(player.getLocation().add(x, -1, z)).getType();
+				if (belowSel.name().contains("PISTON") || belowSel.name().contains("ICE")) {
+					ice = true;
+				}
+				belowSel = player.getWorld().getBlockAt(player.getLocation().add(x, -.01, z)).getType();
+				if (belowSel.isSolid()) {
+					this.updateLastWasOnGround();
+				}
+			}
+		}
+		if (ice) {
+			this.updateLastWasOnIce();
+		}
     }
 
     /**
@@ -187,7 +204,7 @@ public class NessPlayer implements AutoCloseable {
                 && cancelsec.getBoolean("enable", false);
         if (cancel) {
             if (e != null) {
-                if (violation.getCheck().equals("Fly") || violation.getCheck().equals("NoFall")) {
+                if (violation.getCheck().equals("Fly") || violation.getCheck().equals("NoFall") || violation.getCheck().equals("Step") || violation.getCheck().equals("Phase")) {
                     this.dragDown();
                 } else {
                     e.setCancelled(true);

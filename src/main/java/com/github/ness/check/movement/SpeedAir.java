@@ -27,11 +27,11 @@ public class SpeedAir extends AbstractCheck<PlayerMoveEvent> {
         Player player = nessPlayer.getPlayer();
         float max = 0.36f + (Utility.getPotionEffectLevel(player, PotionEffectType.SPEED) * 0.062f)
                 + ((player.getWalkSpeed() - 0.2f) * 1.6f);
-        if (Utility.getMaterialName(player.getLocation().clone().add(0, -0.6, 0)).contains("ice")
+        if (Utility.getMaterialName(player.getLocation().clone().add(0, -0.6, 0)).contains("ICE")
                 || Utility.specificBlockNear(player.getLocation().clone(), "ice") || nessPlayer.getTimeSinceLastWasOnIce() < 1500) {
             max *= 1.4;
         }
-        if (Utility.getMaterialName(player.getLocation().clone().add(0, -0.6, 0)).contains("slime")
+        if (Utility.getMaterialName(player.getLocation().clone().add(0, -0.6, 0)).contains("SLIME")
                 || Utility.specificBlockNear(player.getLocation().clone(), "slime")) {
             max *= 1.2;
         }
@@ -49,7 +49,7 @@ public class SpeedAir extends AbstractCheck<PlayerMoveEvent> {
             total -= nessPlayer.velocity.getX();
             total -= nessPlayer.velocity.getZ();
         }
-        if (!Utility.isMathematicallyOnGround(event.getTo().getY())) {
+        if (!nessPlayer.getMovementValues().isOnGround) {
             airTicks++;
         } else {
             airTicks = 0;

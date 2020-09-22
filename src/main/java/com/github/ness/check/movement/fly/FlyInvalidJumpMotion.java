@@ -29,7 +29,7 @@ public class FlyInvalidJumpMotion extends AbstractCheck<PlayerMoveEvent> {
 		double yDiff = event.getTo().getY() - event.getFrom().getY();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
-		if (Utility.getMaterialName(event.getTo().clone().add(0, -0.3, 0)).contains("slab")
+		if (Utility.getMaterialName(event.getTo().clone().add(0, -0.3, 0)).contains("SLAB")
 				|| event.getTo().getBlock().isLiquid() || movementValues.AroundLiquids || movementValues.AroundSnow
 				|| Utility.groundAround(to.clone().add(0, 1.8, 0))
 				|| Utility.specificBlockNear(to.clone(), "chest")
@@ -37,15 +37,15 @@ public class FlyInvalidJumpMotion extends AbstractCheck<PlayerMoveEvent> {
 				|| Utility.specificBlockNear(to.clone(), "pot")
 				|| Utility.specificBlockNear(to.clone(), "bed")
 				|| Utility.specificBlockNear(to.clone(), "detector") || movementValues.AroundStairs
-				|| Utility.getMaterialName(to.clone().add(0, 1.8, 0)).contains("chorus")
-				|| Utility.getMaterialName(from.clone().add(0, 1.6, 0)).contains("chorus")
-				|| Utility.getMaterialName(to).toLowerCase().contains("ladder")
-				|| Utility.getMaterialName(to).toLowerCase().contains("vine")
-				|| Utility.getMaterialName(to).toLowerCase().contains("sea")
-				|| Utility.getMaterialName(from).toLowerCase().contains("sea")
-				|| Utility.getMaterialName(to.clone().add(0, 0.3, 0)).toLowerCase().contains("sea")
-				|| Utility.getMaterialName(to.clone().add(0, -0.2, 0)).toLowerCase().contains("sea")
-				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).toLowerCase().contains("ladder")
+				|| Utility.getMaterialName(to.clone().add(0, 1.8, 0)).contains("CHORUS")
+				|| Utility.getMaterialName(from.clone().add(0, 1.6, 0)).contains("CHORUS")
+				|| Utility.getMaterialName(to).contains("LADDER")
+				|| Utility.getMaterialName(to).contains("VINE")
+				|| Utility.getMaterialName(to).contains("SEA")
+				|| Utility.getMaterialName(from).contains("SEA")
+				|| Utility.getMaterialName(to.clone().add(0, 0.3, 0)).contains("SEA")
+				|| Utility.getMaterialName(to.clone().add(0, -0.2, 0)).contains("SEA")
+				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).contains("LADDER")
 				|| movementValues.AroundIce || movementValues.AroundSlime || Utility.hasflybypass(player)) {
 			return;
 		}

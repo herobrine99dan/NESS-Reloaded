@@ -57,7 +57,7 @@ public class Timer extends AbstractCheck<ReceivedPacketEvent> {
 				 * per tick.
 				 */
 				final double movementsPerTick = ((double) movementPackets / ((double) difference / 1000.0)) / 20.0;
-				if (movementsPerTick > maxPackets && nessPlayer.nanoTimeDifference(PlayerAction.JOIN) > 1300) {
+				if (movementsPerTick > maxPackets && nessPlayer.nanoTimeDifference(PlayerAction.JOIN) > 1900) {
 					// The player is sending more packets than allowed.
 
 					/*
