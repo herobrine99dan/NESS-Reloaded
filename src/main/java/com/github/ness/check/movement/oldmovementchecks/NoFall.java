@@ -13,7 +13,6 @@ import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.utility.MSG;
 import com.github.ness.utility.PlayerManager;
 import com.github.ness.utility.Utility;
 
@@ -55,14 +54,17 @@ public class NoFall extends AbstractCheck<PlayerMoveEvent> {
 		boolean groundAround = Utility.groundAround(player.getLocation());
 
 		if (debugMode) {
-			MSG.tell(player, "&7X: &e" + player.getLocation().getX() + " &7V: &e" + player.getVelocity().getX());
-			MSG.tell(player, "&7Y: &e" + player.getLocation().getY() + " &7V: &e" + player.getVelocity().getY());
-			MSG.tell(player, "&7Z: &e" + player.getLocation().getZ() + " &7V: &e" + player.getVelocity().getZ());
-			MSG.tell(player, "&7hozDist: &e" + hozDist + " &7vertDist: &e" + vertDist + " &7fallDist: &e" + fallDist);
-			MSG.tell(player,
-					"&7below: &e" + below.name());
-			MSG.tell(player,
-					"&7groundAround: &e" + MSG.torF(groundAround) + " &7onGround: " + MSG.torF(player.isOnGround()));
+			nessPlayer
+					.sendDevMessage("&7X: &e" + player.getLocation().getX() + " &7V: &e" + player.getVelocity().getX());
+			nessPlayer
+					.sendDevMessage("&7Y: &e" + player.getLocation().getY() + " &7V: &e" + player.getVelocity().getY());
+			nessPlayer
+					.sendDevMessage("&7Z: &e" + player.getLocation().getZ() + " &7V: &e" + player.getVelocity().getZ());
+			nessPlayer.sendDevMessage(
+					"&7hozDist: &e" + hozDist + " &7vertDist: &e" + vertDist + " &7fallDist: &e" + fallDist);
+			nessPlayer.sendDevMessage("&7below: &e" + below.name());
+			nessPlayer.sendDevMessage("&7groundAround: &e" + Utility.booleanToColoredString(groundAround)
+					+ " &7onGround: " + Utility.booleanToColoredString(player.isOnGround()));
 		}
 		if (to.getY() != from.getY()) {
 			if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().contains("WATER")

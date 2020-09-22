@@ -52,6 +52,8 @@ public class MovementValues {
 	public final boolean AroundLily;
 	public final boolean AroundCarpet;
 	public final boolean isOnGround;
+	public final boolean isSprinting;
+	public final ImmutableVector serverVelocity;
 	@Getter
 	ImmutableLoc to;
 	@Getter
@@ -59,25 +61,6 @@ public class MovementValues {
 
 	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from) {
 		if (Bukkit.isPrimaryThread()) {
-			/*AroundIce = Utility.specificBlockNear(to.toBukkitLocation(), "ice");
-			// AroundLiquids = Utility.specificBlockNear(to.toBukkitLocation(), "liquid");
-			boolean slimenear = Utility.specificBlockNear(to.toBukkitLocation(), "slime");
-			if (!slimenear) {
-				AroundSlime = Utility.hasBlock(p, "slime");
-			} else {
-				AroundSlime = Utility.specificBlockNear(to.toBukkitLocation(), "slime");
-			}
-			AroundStairs = Utility.specificBlockNear(to.toBukkitLocation(), "stair");
-			AroundSlabs = Utility.specificBlockNear(to.toBukkitLocation(), "slab");
-			boolean ladders = Utility.specificBlockNear(to.toBukkitLocation(), "ladder");
-			if (!ladders) {
-				ladders = Utility.specificBlockNear(to.toBukkitLocation(), "vine");
-			}
-			AroundLadders = ladders;
-			AroundSnow = Utility.specificBlockNear(to.toBukkitLocation(), "snow");
-			AroundLily = Utility.specificBlockNear(to.toBukkitLocation(), "lily");
-			AroundCarpet = Utility.specificBlockNear(to.toBukkitLocation(), "carpet");*/
-			//isOnGround = Utility.groundAround(p.getLocation().clone());
 			boolean liquids = false;
 			boolean ice = false;
 			boolean slime = false;
@@ -88,31 +71,34 @@ public class MovementValues {
 			boolean lily = false;
 			boolean carpet = false;
 			boolean ground = false;
+			serverVelocity = new ImmutableVector(p.getVelocity().getX(), p.getVelocity().getY(),
+					p.getVelocity().getZ());
+			isSprinting = p.isSprinting();
 			for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 2)) {
 				String name = b.getType().name();
 				if (b.isLiquid()) {
 					liquids = true;
 				}
-				if(b.getType().isSolid()) { //Doing all things in a single for loop is better than 12 loops
+				if (b.getType().isSolid()) { // Doing all things in a single for loop is better than 12 loops
 					ground = true;
 				}
 				if (name.contains("ice")) {
 					ice = true;
 				} else if (name.contains("slime")) {
 					slime = true;
-				}else if (name.contains("stair")) {
+				} else if (name.contains("stair")) {
 					stairs = true;
-				}else if (name.contains("slab")) {
+				} else if (name.contains("slab")) {
 					slab = true;
-				}else if (name.contains("ladder")) {
+				} else if (name.contains("ladder")) {
 					ladder = true;
-				}else if (name.contains("vine")) {
+				} else if (name.contains("vine")) {
 					ladder = true;
 				} else if (name.contains("snow")) {
 					snow = true;
-				}else if (name.contains("lily")) {
+				} else if (name.contains("lily")) {
 					lily = true;
-				}else if (name.contains("carpet")) {
+				} else if (name.contains("carpet")) {
 					carpet = true;
 				}
 			}
@@ -120,7 +106,7 @@ public class MovementValues {
 			AroundLadders = ladder;
 			AroundSlabs = slab;
 			AroundStairs = stairs;
-			if(!slime) {
+			if (!slime) {
 				slime = Utility.hasBlock(p, "slime");
 			}
 			AroundSlime = slime;
@@ -132,6 +118,8 @@ public class MovementValues {
 		} else {
 			AroundIce = false;
 			AroundSlabs = false;
+			serverVelocity = new ImmutableVector(0, 0, 0);
+			isSprinting = false;
 			AroundCarpet = false;
 			AroundLadders = false;
 			isOnGround = false;
@@ -150,21 +138,12 @@ public class MovementValues {
 		this.to = to;
 		this.from = from;
 	}
+	
+	public void doCalculations() {
+		
+	}
 
 	public ImmutableVector getDirection() {
 		return this.getTo().getDirectionVector();
 	}
-
-	public CompletableFuture<Double> calculateAsyncWithCancellation(ImmutableLoc to, ImmutableLoc from)
-			throws InterruptedException {
-		CompletableFuture<Double> completableFuture = new CompletableFuture<Double>();
-		Executors.newCachedThreadPool().submit(() -> {
-			double value = to.getX() - from.getX();
-			completableFuture.complete(value);
-			return null;
-		});
-
-		return completableFuture;
-	}
-
 }

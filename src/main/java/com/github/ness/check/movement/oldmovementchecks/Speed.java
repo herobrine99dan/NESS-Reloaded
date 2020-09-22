@@ -2,7 +2,6 @@ package com.github.ness.check.movement.oldmovementchecks;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -14,7 +13,6 @@ import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.utility.MSG;
 import com.github.ness.utility.Utility;
 
 public class Speed extends AbstractCheck<PlayerMoveEvent> {
@@ -61,7 +59,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			xDist = (float) (xDist - xDist / 100.0D * level * 20.0D);
 			zDist = (float) (zDist - zDist / 100.0D * level * 20.0D);
 		}
-		MSG.tell(player, "&9Dev> &7Speed Dist: " + maxSpd);
+		//MSG.tell(player, "&9Dev> &7Speed Dist: " + maxSpd);
 		if ((xDist > maxSpd || zDist > maxSpd) && player().nanoTimeDifference(PlayerAction.DAMAGE) >= 2000) {
 			if (Utility.groundAround(player.getLocation()) && !player.isInsideVehicle()) {
 				Material small = player.getWorld().getBlockAt(player.getLocation().subtract(0, .1, 0)).getType();
@@ -69,7 +67,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 						&& !player.getWorld().getBlockAt(to).getType().isSolid()
 						&& !small.name().toLowerCase().contains("trap")) {
 					if (player().isDevMode()) //TODO False Flag to fix (Jumping and Sprinting gives maxSpd = 0.53 and dist of = 0.57)
-						MSG.tell(player, "&9Dev> &7Speed amo: " + movementValues.XZDiff);
+						player().sendDevMessage("Speed amo: " + movementValues.XZDiff);
 					player().setViolation(new Violation("Speed",
 							"MaxDistance(OnMove)" + " MaxDist: " + maxSpd + " Dist: " + (float) xDist), e);
 				}

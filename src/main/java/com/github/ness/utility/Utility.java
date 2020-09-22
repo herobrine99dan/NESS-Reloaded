@@ -31,6 +31,13 @@ public class Utility {
         return (double) Math.round(value * precision) / precision;
     }
 
+    /**
+     * Get Angle (in Radians) beetween a player and the target
+     * @param player 
+     * @param target
+     * @param direction
+     * @return the angle in radians
+     */
     public static double getAngle(Player player, Location target, ImmutableVector direction) {
         Location eye = player.getEyeLocation();
         Vector toEntity = target.toVector().subtract(eye.toVector());
@@ -44,37 +51,12 @@ public class Utility {
         throwable.printStackTrace(pw);
         return sw.getBuffer().toString();
     }
-
-    /**
-     * Check if a player is next to a wall
-     *
-     * @param p
-     * @return
-     */
-    public static boolean nextToWall(Player p) {
-        Location xp = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(),
-                p.getLocation().getZ());
-        Location xn = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(),
-                p.getLocation().getZ());
-        Location zp = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(),
-                p.getLocation().getZ());
-        Location zn = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(),
-                p.getLocation().getZ());
-        Location xpl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(),
-                p.getLocation().getZ());
-        Location xnl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(),
-                p.getLocation().getZ());
-        Location zpl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(),
-                p.getLocation().getZ());
-        Location znl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(),
-                p.getLocation().getZ());
-        if (xp.getBlock().getType().isSolid() && xpl.getBlock().getType().isSolid()) {
-        } else if (xn.getBlock().getType().isSolid() && xnl.getBlock().getType().isSolid()) {
-            return true;
-        } else if (zp.getBlock().getType().isSolid() && zpl.getBlock().getType().isSolid()) {
-            return true;
-        } else return zn.getBlock().getType().isSolid() && znl.getBlock().getType().isSolid();
-        return false;
+    
+    public static String booleanToColoredString(boolean b) {
+        if (b) {
+            return "&aTrue&r";
+        }
+        return "&cFalse&r";
     }
 
     /**
@@ -123,6 +105,7 @@ public class Utility {
         return p.getLocation().add(0, -0.7, 0).getBlock();
     }
 
+    
     public static int getPing(final Player player) {
         int ping = 76;
         try {
@@ -146,6 +129,7 @@ public class Utility {
         }
     }
 
+    
     public static double getDistanceFromGround(final Location loc) {
 		double dTG = 0; // Distance to ground
 		for (int x = -1; x <= 1; x++) {
@@ -273,6 +257,7 @@ public class Utility {
         return m.name().contains("WATER");
     }
 
+    @Deprecated //Bad Coded
     public static boolean hasKbBypass(Player player) {
         if (!player.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().getType().isSolid())
             return true;
