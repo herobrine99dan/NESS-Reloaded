@@ -60,39 +60,6 @@ public class Utility {
     }
 
     /**
-     * Check if a player is next to a wall
-     *
-     * @param p
-     * @return
-     */
-    @Deprecated //Bad Coded
-    public static boolean nextToWall(Player p) {
-        Location xp = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(),
-                p.getLocation().getZ());
-        Location xn = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(),
-                p.getLocation().getZ());
-        Location zp = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(),
-                p.getLocation().getZ());
-        Location zn = new Location(p.getWorld(), p.getLocation().getY() + 0.5, p.getLocation().getY(),
-                p.getLocation().getZ());
-        Location xpl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(),
-                p.getLocation().getZ());
-        Location xnl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(),
-                p.getLocation().getZ());
-        Location zpl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(),
-                p.getLocation().getZ());
-        Location znl = new Location(p.getWorld(), p.getLocation().getY(), p.getLocation().getY(),
-                p.getLocation().getZ());
-        if (xp.getBlock().getType().isSolid() && xpl.getBlock().getType().isSolid()) {
-        } else if (xn.getBlock().getType().isSolid() && xnl.getBlock().getType().isSolid()) {
-            return true;
-        } else if (zp.getBlock().getType().isSolid() && zpl.getBlock().getType().isSolid()) {
-            return true;
-        } else return zn.getBlock().getType().isSolid() && znl.getBlock().getType().isSolid();
-        return false;
-    }
-
-    /**
      * Get the material name from the location and convert it to lowercase
      *
      * @param loc

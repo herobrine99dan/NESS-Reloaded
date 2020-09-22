@@ -1,25 +1,30 @@
 package com.github.ness.check.misc;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 
-public class TestCheck extends AbstractCheck<PlayerMoveEvent> {
+public class TestCheck extends AbstractCheck<PlayerInteractEvent> {
 
-	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo
-			.eventOnly(PlayerMoveEvent.class);
+	public static final CheckInfo<PlayerInteractEvent> checkInfo = CheckInfo
+			.eventOnly(PlayerInteractEvent.class);
+	long lastClick;
 
 	public TestCheck(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
+		lastClick = System.nanoTime() / 1000_000L;
 	}
 
     @Override
-    protected void checkEvent(PlayerMoveEvent event) {
+    protected void checkEvent(PlayerInteractEvent event) {
     	Player player = event.getPlayer();
+    	final long currentMS = System.nanoTime() / 1000_000L;
+    	player.sendMessage("Delay: " + currentMS);
+    	lastClick = currentMS;
     }
 
 }
