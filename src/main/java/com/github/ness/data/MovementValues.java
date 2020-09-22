@@ -1,14 +1,13 @@
 package com.github.ness.data;
 
-import com.github.ness.utility.Utility;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
+import com.github.ness.utility.Utility;
 
+import lombok.Getter;
+//Need a refactor, we should move some fields to NessPlayer
 public class MovementValues {
 
 	/**

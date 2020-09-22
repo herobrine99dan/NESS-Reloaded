@@ -28,7 +28,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Location to = e.getTo();
 		Location from = e.getFrom();
 		Player player = e.getPlayer();
-		double maxSpd = player.getWalkSpeed() + 0.1;
+		double maxSpd = player.getWalkSpeed() * 3.1;
 		MovementValues movementValues = this.player().getMovementValues();
 		double xDist = Math.abs(movementValues.xDiff);
 		double zDist = Math.abs(movementValues.zDiff);
@@ -52,7 +52,10 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 				maxSpd *= 1.65;
 			}
 		}
-		maxSpd += Math.abs(movementValues.yDiff) * 0.6f;
+		// Handling Soul Sand
+		if (to.clone().add(0, -0.15, 0).getBlock().getType().name().contains("SOUL")) {
+			maxSpd = player.getWalkSpeed() * 1.1;
+		}
 		// Handling Speed Potion Effect
 		if (player.hasPotionEffect(PotionEffectType.SPEED)) {
 			final int level = Utility.getPotionEffectLevel(player, PotionEffectType.SPEED);

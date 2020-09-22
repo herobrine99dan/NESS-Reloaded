@@ -16,8 +16,11 @@ public class FlyHighDistance extends AbstractCheck<PlayerMoveEvent> {
 
 	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo.eventOnly(PlayerMoveEvent.class);
 
+	int preVL;
+	
 	public FlyHighDistance(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
+		preVL = 0;
 	}
 
 	@Override
@@ -34,7 +37,11 @@ public class FlyHighDistance extends AbstractCheck<PlayerMoveEvent> {
 		}
 		if (!values.isOnGround && dist > 0.35 && values.yDiff == 0.0
 				&& this.player().getTimeSinceLastWasOnIce() >= 1000) {
-			this.player().setViolation(new Violation("Fly", "HighDistance(OnMove)"), e);
+			if(preVL++ > 1) {
+				this.player().setViolation(new Violation("Fly", "HighDistance(OnMove)"), e);
+			}
+		} else if(preVL > 0) {
+			preVL--;
 		}
 	}
 

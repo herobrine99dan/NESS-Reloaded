@@ -23,7 +23,8 @@ public class TestCheck extends AbstractCheck<PlayerInteractEvent> {
     protected void checkEvent(PlayerInteractEvent event) {
     	Player player = event.getPlayer();
     	final long currentMS = System.nanoTime() / 1000_000L;
-    	player.sendMessage("Delay: " + currentMS);
+    	final long subtraction = currentMS - lastClick;
+    	player.sendMessage("Delay: " + subtraction);
     	lastClick = currentMS;
     }
 
