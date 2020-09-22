@@ -29,7 +29,7 @@ public class CheckInfo<T> extends BaseCheckInfo {
 	}
 	
 	CheckInfo() {
-		this(Duration.ZERO);
+		asyncInterval = Duration.ZERO;
 	}
 	
 	boolean hasAsyncInterval() {
