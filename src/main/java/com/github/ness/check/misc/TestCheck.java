@@ -4,17 +4,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 
-public class TestCheck extends AbstractCheck<PlayerInteractEvent> {
+public class TestCheck extends ListeningCheck<PlayerInteractEvent> {
 
-	public static final CheckInfo<PlayerInteractEvent> checkInfo = CheckInfo
-			.eventOnly(PlayerInteractEvent.class);
+	public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos
+			.forEvent(PlayerInteractEvent.class);
 	long lastClick;
 
-	public TestCheck(CheckFactory<?> factory, NessPlayer player) {
+	public TestCheck(ListeningCheckFactory<?, PlayerInteractEvent> factory, NessPlayer player) {
 		super(factory, player);
 		lastClick = System.nanoTime() / 1000_000L;
 	}

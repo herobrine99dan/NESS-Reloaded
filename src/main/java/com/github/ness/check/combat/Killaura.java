@@ -1,6 +1,5 @@
 package com.github.ness.check.combat;
 
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
@@ -14,22 +13,23 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.utility.MathUtils;
 import com.github.ness.utility.Utility;
 
-public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
+public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 
 	double maxYaw;
 	double minAngle;
 	double maxReach;
 
-	public static final CheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfo
+	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfo
 			.eventWithAsyncPeriodic(EntityDamageByEntityEvent.class, 70, TimeUnit.MILLISECONDS);
 
-	public Killaura(CheckFactory<?> factory, NessPlayer player) {
+	public Killaura(ListeningCheckFactory<?, EntityDamageByEntityEvent> factory, NessPlayer player) {
 		super(factory, player);
 		this.maxYaw = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("maxyaw", 357);
 		this.minAngle = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("minangle", -0.2);

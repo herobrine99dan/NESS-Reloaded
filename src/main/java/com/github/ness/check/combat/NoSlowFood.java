@@ -4,17 +4,18 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.utility.Utility;
 
 @Deprecated //This Check needs a complete recode
-public class NoSlowFood extends AbstractCheck<PlayerItemConsumeEvent> {
+public class NoSlowFood extends ListeningCheck<PlayerItemConsumeEvent> {
 
-	public static final CheckInfo<PlayerItemConsumeEvent> checkInfo = CheckInfo.eventOnly(PlayerItemConsumeEvent.class);
+	public static final ListeningCheckInfo<PlayerItemConsumeEvent> checkInfo = CheckInfos.forEvent(PlayerItemConsumeEvent.class);
 
-	public NoSlowFood(CheckFactory<?> factory, NessPlayer player) {
+	public NoSlowFood(ListeningCheckFactory<?,PlayerItemConsumeEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 

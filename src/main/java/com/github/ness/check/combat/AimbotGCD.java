@@ -2,22 +2,23 @@ package com.github.ness.check.combat;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.MathUtils;
 
-public class AimbotGCD extends AbstractCheck<ReceivedPacketEvent> {
+public class AimbotGCD extends ListeningCheck<ReceivedPacketEvent> {
 
-	public static final CheckInfo<ReceivedPacketEvent> checkInfo = CheckInfo.eventOnly(ReceivedPacketEvent.class);
+	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos.forEvent(ReceivedPacketEvent.class);
 
 	private double lastPitch = 0;
 	private double lastGCD = 0;
 	private int preVL;
 	private static final double MULTIPLIER = Math.pow(2.0, 24.0);
 
-	public AimbotGCD(CheckFactory<?> factory, NessPlayer player) {
+	public AimbotGCD(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 

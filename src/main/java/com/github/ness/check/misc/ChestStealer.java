@@ -9,22 +9,23 @@ import org.bukkit.inventory.Inventory;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 
-public class ChestStealer extends AbstractCheck<InventoryClickEvent> {
+public class ChestStealer extends ListeningCheck<InventoryClickEvent> {
 
 	/**
 	 * @author MatuloM
 	 */
 
-	public static final CheckInfo<InventoryClickEvent> checkInfo = CheckInfo
-			.eventWithAsyncPeriodic(InventoryClickEvent.class, 500, TimeUnit.MILLISECONDS);
+	public static final ListeningCheckInfo<InventoryClickEvent> checkInfo = CheckInfos.
+			forEventWithAsyncPeriodic(InventoryClickEvent.class, 500, TimeUnit.MILLISECONDS);
 	private long moveInvItemsLastTime;
 	private int movedInvItems;
 
-	public ChestStealer(CheckFactory<?> factory, NessPlayer player) {
+	public ChestStealer(ListeningCheckFactory<?, InventoryClickEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 

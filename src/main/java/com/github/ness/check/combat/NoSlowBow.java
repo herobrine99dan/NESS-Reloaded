@@ -5,17 +5,18 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.utility.Utility;
 
 @Deprecated //This Check needs a complete recode
-public class NoSlowBow extends AbstractCheck<EntityShootBowEvent> {
+public class NoSlowBow extends ListeningCheck<EntityShootBowEvent> {
 
-	public static final CheckInfo<EntityShootBowEvent> checkInfo = CheckInfo.eventOnly(EntityShootBowEvent.class);
+	public static final ListeningCheckInfo<EntityShootBowEvent> checkInfo = CheckInfos.forEvent(EntityShootBowEvent.class);
 
-	public NoSlowBow(CheckFactory<?> factory, NessPlayer player) {
+	public NoSlowBow(ListeningCheckFactory<?, EntityShootBowEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 

@@ -4,26 +4,26 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 
-public class FullBright extends AbstractCheck<BlockPlaceEvent> {
-    
-	public static final CheckInfo<BlockPlaceEvent> checkInfo = CheckInfo
-			.eventOnly(BlockPlaceEvent.class);
+public class FullBright extends ListeningCheck<BlockPlaceEvent> {
 
-	public FullBright(CheckFactory<?> factory, NessPlayer player) {
+	public static final ListeningCheckInfo<BlockPlaceEvent> checkInfo = CheckInfos.forEvent(BlockPlaceEvent.class);
+
+	public FullBright(ListeningCheckFactory<?, BlockPlaceEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 
-
-    @Override
-    protected void checkEvent(BlockPlaceEvent e) {
-        int level = e.getBlockPlaced().getLightLevel();
-        if (level < 3) {
-        	if(player().setViolation(new Violation("FullBright", ""))) e.setCancelled(true);
-        }
-    }
+	@Override
+	protected void checkEvent(BlockPlaceEvent e) {
+		int level = e.getBlockPlaced().getLightLevel();
+		if (level < 3) {
+			if (player().setViolation(new Violation("FullBright", "")))
+				e.setCancelled(true);
+		}
+	}
 
 }

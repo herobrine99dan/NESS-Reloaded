@@ -7,17 +7,18 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 
-public class AntiUnicode extends AbstractCheck<AsyncPlayerChatEvent> {
+public class AntiUnicode extends ListeningCheck<AsyncPlayerChatEvent> {
 
     private static final ThreadLocal<CharsetEncoder> asciiEncoder = ThreadLocal.withInitial(() -> StandardCharsets.US_ASCII.newEncoder());
-	public static final CheckInfo<AsyncPlayerChatEvent> checkInfo = CheckInfo
-			.eventOnly(AsyncPlayerChatEvent.class);
+	public static final ListeningCheckInfo<AsyncPlayerChatEvent> checkInfo = CheckInfos
+			.forEvent(AsyncPlayerChatEvent.class);
 
-	public AntiUnicode(CheckFactory<?> factory, NessPlayer player) {
+	public AntiUnicode(ListeningCheckFactory<?, AsyncPlayerChatEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 

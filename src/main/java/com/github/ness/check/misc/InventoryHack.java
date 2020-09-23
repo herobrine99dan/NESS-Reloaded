@@ -7,18 +7,19 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.utility.Utility;
 
-public class InventoryHack extends AbstractCheck<InventoryClickEvent> {
+public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 
     double maxdist;
-	public static final CheckInfo<InventoryClickEvent> checkInfo = CheckInfo
-			.eventOnly(InventoryClickEvent.class);
+	public static final ListeningCheckInfo<InventoryClickEvent> checkInfo = CheckInfos
+			.forEvent(InventoryClickEvent.class);
 
-	public InventoryHack(CheckFactory<?> factory, NessPlayer player) {
+	public InventoryHack(ListeningCheckFactory<?, InventoryClickEvent> factory, NessPlayer player) {
 		super(factory, player);
         this.maxdist = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("maxdist", 0.1);
 	}
