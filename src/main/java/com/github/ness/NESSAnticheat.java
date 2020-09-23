@@ -82,6 +82,10 @@ public class NESSAnticheat extends JavaPlugin {
 		}
 	}
 	
+	ConfigManager getConfigManager() {
+		return configManager;
+	}
+	
 	/**
 	 * Previous getter for configuration
 	 * 

@@ -55,8 +55,8 @@ public class NESSCommands implements CommandExecutor {
 			} else {
 				switch (args[0].toLowerCase()) {
 				case "reload":
-					ness.getNessConfig().reloadConfiguration(ness);
-					ness.getCheckManager().reload().whenComplete((ignore, ex) -> {
+					ness.getConfigManager().reload().thenCompose((ignore) -> ness.getCheckManager().reload())
+							.whenComplete((ignore, ex) -> {
 						if (ex != null) {
 							logger.log(Level.WARNING, "Error while reloading", ex);
 							sendMessage(sender, "&cError reloading NESS, check your server console for details.");
@@ -65,7 +65,7 @@ public class NESSCommands implements CommandExecutor {
 						sendMessage(sender, "&aReloaded NESS!");
 					});
 					break;
-				case "vl":
+				case "violations":
 					showViolations(sender, (args.length >= 2) ? Bukkit.getPlayer(args[1]) : null);
 					break;
 				case "clear":
@@ -84,9 +84,6 @@ public class NESSCommands implements CommandExecutor {
 					break;
 				case "version":
 					sendMessage(sender, "&7NESS Version: " + ness.getDescription().getVersion());
-					break;
-				case "report":
-					reportCommand(sender, args);
 					break;
 				case "gui":
 					if (sender instanceof Player) {
@@ -155,42 +152,6 @@ public class NESSCommands implements CommandExecutor {
 		return true;
 	}
 
-	private void reportCommand(CommandSender sender, String[] args) {
-		ConfigurationSection reportconfig = ness.getNessConfig().getMessages().getConfigurationSection("commands")
-				.getConfigurationSection("report-command");
-		if (args.length > 1) {
-			if (args.length > 2) {
-				if (Bukkit.getPlayer(args[1]) == null) {
-					sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-							reportconfig.getString("player-notonline").replace("{cheater}", args[1])));
-					return;
-				}
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', reportconfig.getString("report-done")
-						.replace("{cheater}", args[1]).replace("{cheat}", args[2])));
-				// TODO Make Accepted Checks
-
-				for (Player p : Bukkit.getOnlinePlayers()) {
-					if (p.hasPermission("ness.notify")) {
-						p.sendMessage(ChatColor.translateAlternateColorCodes('&',
-								reportconfig.getString("staff-message").replace("{sender}", sender.getName())
-										.replace("{cheater}", Bukkit.getPlayer(args[1]).getName())
-										.replace("{cheat}", args[2])));
-						// all.sendMessage(ChatColor.RED + "There has been a report for " +
-						// ChatColor.GOLD + args[0]
-						// + ChatColor.RED + "! They were reported for" + ChatColor.GOLD + " " + args[1]
-						// + ChatColor.RED + "!");
-					}
-				}
-			} else {
-				sender.sendMessage(
-						ChatColor.translateAlternateColorCodes('&', reportconfig.getString("missing-reason")));
-			}
-		} else {
-			sender.sendMessage(
-					ChatColor.translateAlternateColorCodes('&', reportconfig.getString("missing-arguments")));
-		}
-	}
-
 	private void showViolations(CommandSender sender, Player target) {
 		if (target == null) {
 			sendUnknownTarget(sender);
@@ -202,10 +163,8 @@ public class NESSCommands implements CommandExecutor {
 			return;
 		}
 		String name = target.getName();
-		String header = ness.getNessConfig().getMessages().getString("commands.show-violations.header",
-				"&7Violations for &e%TARGET%");
-		String body = ness.getNessConfig().getMessages().getString("commands.show-violations.body",
-				"&7Hack: &e%HACK%&7. Count: %VL%");
+		String header = ness.getMessagesConfig().commands().showViolationsHeader();
+		String body = ness.getMessagesConfig().commands().showViolationsBody();
 
 		Map<String, Integer> violationMap = nessPlayer.checkViolationCounts;
 		sendMessage(sender, header.replace("%TARGET%", name));
@@ -224,7 +183,7 @@ public class NESSCommands implements CommandExecutor {
 		sendMessage(sender, "&aNESS Anticheat");
 		sendMessage(sender, "&7Version " + ness.getDescription().getVersion());
 		sendMessage(sender, "/ness reload - Reload configuration");
-		sendMessage(sender, "/ness vl <player> - Show violations for a player");
+		sendMessage(sender, "/ness violations <player> - Show violations for a player");
 		sendMessage(sender, "/ness clear <player> - Clear player violations");
 		sendMessage(sender, "/ness version - View the NESS Reloaded Version");
 		sendMessage(sender, "/ness report <player> <reason> - Send a report to staffers");
