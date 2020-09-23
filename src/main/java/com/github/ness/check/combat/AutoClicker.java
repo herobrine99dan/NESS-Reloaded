@@ -1,23 +1,24 @@
 package com.github.ness.check.combat;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 
-public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
+public class AutoClicker extends ListeningCheck<PlayerInteractEvent> {
 
 	int maxCPS;
 
-	public static final CheckInfo<PlayerInteractEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(PlayerInteractEvent.class, 1, TimeUnit.SECONDS);
+	public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos.forEventWithAsyncPeriodic(PlayerInteractEvent.class, Duration.ofSeconds(1));
 	private int CPS; // For AutoClicker
-	public AutoClicker(CheckFactory<?> factory, NessPlayer player) {
+	public AutoClicker(ListeningCheckFactory<?, PlayerInteractEvent> factory, NessPlayer player) {
 		super(factory, player);
 		this.maxCPS = this.ness().getNessConfig().getCheck(AutoClicker.class).getInt("maxCPS", 18);
 		this.CPS = 0;

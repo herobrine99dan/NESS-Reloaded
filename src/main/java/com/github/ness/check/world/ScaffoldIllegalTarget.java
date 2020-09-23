@@ -10,17 +10,17 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
-import com.github.ness.utility.Utility;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 
-public class ScaffoldIllegalTarget extends AbstractCheck<PlayerInteractEvent> {
+public class ScaffoldIllegalTarget extends ListeningCheck<PlayerInteractEvent> {
 
-	public static final CheckInfo<PlayerInteractEvent> checkInfo = CheckInfo
-			.eventOnly(PlayerInteractEvent.class);
+	public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos
+			.forEvent(PlayerInteractEvent.class);
 
-	public ScaffoldIllegalTarget(CheckFactory<?> factory, NessPlayer player) {
+	public ScaffoldIllegalTarget(ListeningCheckFactory<?, PlayerInteractEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 

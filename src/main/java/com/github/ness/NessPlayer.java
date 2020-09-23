@@ -6,7 +6,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -21,18 +20,15 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.ness.api.Violation;
 import com.github.ness.api.impl.PlayerViolationEvent;
-import com.github.ness.check.AbstractCheck;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.DiscordWebhook;
-import com.github.ness.utility.Utility;
 
 import lombok.Getter;
 import lombok.Setter;

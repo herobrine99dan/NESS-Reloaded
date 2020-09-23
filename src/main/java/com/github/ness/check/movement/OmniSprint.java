@@ -4,21 +4,22 @@ import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.packets.ReceivedPacketEvent;
 
-public class OmniSprint extends AbstractCheck<ReceivedPacketEvent> {
+public class OmniSprint extends ListeningCheck<ReceivedPacketEvent> {
 
 	double maxXZDiff;
 	double maxYDiff;
 
-	public static final CheckInfo<ReceivedPacketEvent> checkInfo = CheckInfo.eventOnly(ReceivedPacketEvent.class);
+	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos.forEvent(ReceivedPacketEvent.class);
 
-	public OmniSprint(CheckFactory<?> factory, NessPlayer player) {
+	public OmniSprint(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
 		super(factory, player);
 		this.maxYDiff = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("maxxzdiff", 1.5);
 		this.maxXZDiff = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("maxydiff", 1);

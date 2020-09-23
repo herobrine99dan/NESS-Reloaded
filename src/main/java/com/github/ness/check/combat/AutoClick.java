@@ -1,5 +1,6 @@
 package com.github.ness.check.combat;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,28 +8,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.function.IntBinaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.github.ness.NessLogger;
-import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
-import com.github.ness.check.CheckManager;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import com.github.ness.NessLogger;
+import com.github.ness.NessPlayer;
+import com.github.ness.api.Violation;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.CheckManager;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 
-public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
+public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 
 	private static final Logger logger = NessLogger.getLogger(AutoClick.class);
 	private final List<HardLimitEntry> hardLimits = new ArrayList<>();
@@ -37,10 +38,10 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 	private final int totalRetentionSecs;
 	private final Set<Long> clickHistory = ConcurrentHashMap.newKeySet();
 
-	public static final CheckInfo<PlayerInteractEvent> checkInfo = CheckInfo
-			.eventWithAsyncPeriodic(PlayerInteractEvent.class, 2, TimeUnit.SECONDS);
+	public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos
+			.forEventWithAsyncPeriodic(PlayerInteractEvent.class, Duration.ofSeconds(2));
 
-	public AutoClick(CheckFactory<?> factory, NessPlayer player) {
+	public AutoClick(ListeningCheckFactory<?, PlayerInteractEvent> factory, NessPlayer player) {
 		super(factory, player);
 
 		CheckManager manager = manager();

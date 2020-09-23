@@ -5,21 +5,22 @@ import java.util.List;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.GCDUtils;
 import com.github.ness.utility.Utility;
 
-public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
+public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 
-	public static final CheckInfo<ReceivedPacketEvent> checkInfo = CheckInfo.eventOnly(ReceivedPacketEvent.class);
+	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos.forEvent(ReceivedPacketEvent.class);
 
 	private float lastYaw;
 	private List<Float> pitchDiff;
 	private double lastGCD = 0;
-	public Aimbot(CheckFactory<?> factory, NessPlayer player) {
+	public Aimbot(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
 		super(factory, player);
 		lastYaw = 0;
         this.pitchDiff = new ArrayList<Float>();

@@ -3,21 +3,20 @@ package com.github.ness.check.combat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.event.player.PlayerMoveEvent;
-
 import com.github.ness.NessPlayer;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.packets.ReceivedPacketEvent;
 
-public class AimbotPattern extends AbstractCheck<ReceivedPacketEvent> {
+public class AimbotPattern extends ListeningCheck<ReceivedPacketEvent> {
 
 	List<Double> yawChanges;
-	public static final CheckInfo<ReceivedPacketEvent> checkInfo = CheckInfo.eventOnly(ReceivedPacketEvent.class);
+	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos.forEvent(ReceivedPacketEvent.class);
 	private static final int SIZE = 20;
 
-	public AimbotPattern(CheckFactory<?> factory, NessPlayer player) {
+	public AimbotPattern(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
 		super(factory, player);
 		yawChanges = new ArrayList<Double>();
 	}

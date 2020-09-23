@@ -5,17 +5,18 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 
-public class FlyGhostMode extends AbstractCheck<PlayerMoveEvent> {
+public class FlyGhostMode extends ListeningCheck<PlayerMoveEvent> {
 
 
-	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo
-			.eventOnly(PlayerMoveEvent.class);
+	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
+			.forEvent(PlayerMoveEvent.class);
 
-	public FlyGhostMode(CheckFactory<?> factory, NessPlayer player) {
+	public FlyGhostMode(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 

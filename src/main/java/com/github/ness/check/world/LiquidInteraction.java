@@ -6,17 +6,18 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 
-public class LiquidInteraction extends AbstractCheck<BlockPlaceEvent> {
+public class LiquidInteraction extends ListeningCheck<BlockPlaceEvent> {
 
 	private final List<String> whitelistedMaterials;
 
-	public static final CheckInfo<BlockPlaceEvent> checkInfo = CheckInfo.eventOnly(BlockPlaceEvent.class);
+	public static final ListeningCheckInfo<BlockPlaceEvent> checkInfo = CheckInfos.forEvent(BlockPlaceEvent.class);
 
-	public LiquidInteraction(CheckFactory<?> factory, NessPlayer player) {
+	public LiquidInteraction(ListeningCheckFactory<?, BlockPlaceEvent> factory, NessPlayer player) {
 		super(factory, player);
 		whitelistedMaterials = this.ness().getNessConfig().getCheck(LiquidInteraction.class)
 				.getStringList("whitelisted-materials");
