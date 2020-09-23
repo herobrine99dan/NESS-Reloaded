@@ -16,12 +16,12 @@ import com.github.ness.antibot.AntiBot;
 import com.github.ness.api.NESSApi;
 import com.github.ness.api.impl.NESSApiImpl;
 import com.github.ness.check.CheckManager;
-import com.github.ness.check.ViolationManager;
 import com.github.ness.config.ConfigManager;
 import com.github.ness.config.NessConfig;
 import com.github.ness.config.NessMessages;
 import com.github.ness.listener.BungeeCordListener;
 import com.github.ness.packets.PacketListener;
+import com.github.ness.violation.ViolationManager;
 
 import lombok.Getter;
 
@@ -67,8 +67,8 @@ public class NESSAnticheat extends JavaPlugin {
 		CompletableFuture<?> future = checkManager.start();
 
 		violationManager = new ViolationManager(this);
-		violationManager.addDefaultActions();
-		violationManager.initiatePeriodicTask();
+		violationManager.initiate();
+
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);
 		if (this.getNessConfig().getConfig().getConfigurationSection("antibot").getBoolean("enable")) {
 			antiBot = new AntiBot(this);

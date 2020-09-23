@@ -75,7 +75,7 @@ public class CheckManager {
 	}
 	
 	private CompletableFuture<?> loadFactories(Runnable whenComplete) {
-		Collection<String> enabledCheckNames = ness.getNessConfig().getEnabledChecks();
+		Collection<String> enabledCheckNames = ness.getMainConfig().getEnabledChecks();
 		logger.log(Level.FINE, "Loading all check factories: {0}", enabledCheckNames);
 
 		CompletableFuture<Set<BaseCheckFactory<?>>> checkCreationFuture;
@@ -98,7 +98,7 @@ public class CheckManager {
 	}
 
 	NessPlayer addPlayer(Player player) {
-		NessPlayer nessPlayer = new NessPlayer(player, ness.getNessConfig().isDevMode());
+		NessPlayer nessPlayer = new NessPlayer(player, ness.getMainConfig().isDevMode());
 
 		Set<BaseCheckFactory<?>> enabledFactories = new HashSet<>();
 		for (BaseCheckFactory<?> factory : checkFactories) {
@@ -171,7 +171,7 @@ public class CheckManager {
 	 *
 	 * @param action what to do
 	 */
-	void forEachPlayer(Consumer<NessPlayer> action) {
+	public void forEachPlayer(Consumer<NessPlayer> action) {
 		playerCache.asMap().values().forEach((playerData) -> {
 			if (playerData.isDone()) {
 				action.accept(playerData.join().getNessPlayer());

@@ -5,6 +5,8 @@ import space.arim.dazzleconf.annote.ConfDefault.DefaultStrings;
 
 import java.util.List;
 
+import com.github.ness.violation.ViolationHandling;
+
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.annote.SubSection;
 
@@ -64,10 +66,6 @@ public interface NessConfig {
 	@ConfKey("violation-handling")
 	@SubSection
 	ViolationHandling getViolationHandling();
-	
-	@ConfKey("notify-staff")
-	@SubSection
-	NotifyStaff getNotifyStaff();
 	
 	@ConfKey("checks")
 	@SubSection
