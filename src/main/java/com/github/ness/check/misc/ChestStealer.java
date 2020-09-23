@@ -1,7 +1,6 @@
 package com.github.ness.check.misc;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;

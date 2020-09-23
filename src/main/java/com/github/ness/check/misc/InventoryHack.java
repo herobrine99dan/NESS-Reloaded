@@ -39,7 +39,7 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
     public void Check(InventoryClickEvent e) {
         if (e.getWhoClicked() instanceof Player) {
             Player player = (Player) e.getWhoClicked();
-            if (Utility.hasflybypass(player)) {
+            if (Utility.hasflybypass(player) || this.player().isTeleported()) {
                 return;
             }
             if (player.isSprinting() || player.isSneaking() || player.isBlocking() || player.isSleeping()

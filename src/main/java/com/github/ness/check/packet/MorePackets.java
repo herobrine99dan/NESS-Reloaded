@@ -1,7 +1,6 @@
 package com.github.ness.check.packet;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
