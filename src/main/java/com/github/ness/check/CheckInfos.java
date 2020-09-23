@@ -20,8 +20,8 @@ public final class CheckInfos {
 	 * @param asyncInterval the interval of the periodic task
 	 * @return the check info
 	 */
-	public static CheckInfo<?> asyncPeriodic(Duration asyncInterval) {
-		return new CheckInfo<>(asyncInterval);
+	public static CheckInfo asyncPeriodic(Duration asyncInterval) {
+		return new CheckInfo(asyncInterval);
 	}
 
 	/**

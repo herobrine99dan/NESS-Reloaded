@@ -18,8 +18,7 @@ public class PlayerESP extends Check {
 
 	private final double minangle;
 
-	public static final CheckInfo<?> checkInfo = CheckInfos
-			.asyncPeriodic(Duration.ofMillis(700));
+	public static final CheckInfo checkInfo = CheckInfos.asyncPeriodic(Duration.ofMillis(700));
 
 	public PlayerESP(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);

@@ -28,20 +28,20 @@ public class CheckFactory<C extends Check> extends BaseCheckFactory<C> {
 	
 	private transient final ConcurrentMap<UUID, C> checks = new ConcurrentHashMap<>();
 	
-	CheckFactory(Constructor<C> constructor, CheckManager manager, CheckInfo<?> checkInfo) {
+	CheckFactory(Constructor<C> constructor, CheckManager manager, CheckInfo checkInfo) {
 		this(CheckInstantiators.fromFactoryAndPlayerConstructor(constructor),
 				constructor.getDeclaringClass().getSimpleName().toLowerCase(Locale.ROOT),
 				manager, checkInfo);
 	}
 	
-	protected CheckFactory(CheckInstantiator<C> instantiator, String checkName, CheckManager manager, CheckInfo<?> checkInfo) {
+	protected CheckFactory(CheckInstantiator<C> instantiator, String checkName, CheckManager manager, CheckInfo checkInfo) {
 		super(checkName, manager, checkInfo);
 		this.instantiator = instantiator;
 	}
 	
 	@Override
-	CheckInfo<?> getCheckInfo() {
-		return (CheckInfo<?>) super.getCheckInfo();
+	CheckInfo getCheckInfo() {
+		return (CheckInfo) super.getCheckInfo();
 	}
 	
 	Map<UUID, C> getChecksMap() {

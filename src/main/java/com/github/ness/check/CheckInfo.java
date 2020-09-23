@@ -1,11 +1,7 @@
 package com.github.ness.check;
 
-import org.bukkit.event.Event;
-
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Determines how a check should be orchestrated
@@ -14,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * 
  * @author A248
  */
-public class CheckInfo<T> extends BaseCheckInfo {
+public class CheckInfo extends BaseCheckInfo {
 
 	/**
 	 * Interval of repeating async task, {@link Duration#ZERO} for none
@@ -42,11 +38,5 @@ public class CheckInfo<T> extends BaseCheckInfo {
 		}
 		return asyncInterval;
 	}
-	
-	@SuppressWarnings("unchecked")
-	private static <E extends Event> CheckInfo<E> parameteriseForLegacy(ListeningCheckInfo<E> listeningCheckInfo) {
-		CheckInfo<?> info = listeningCheckInfo;
-		// Safe because the type parameter in CheckInfo is useless
-		return (CheckInfo<E>) info;
-	}
+
 }
