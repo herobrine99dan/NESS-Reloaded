@@ -14,6 +14,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Getter
+@Deprecated
 public class NESSConfig {
 
     private static final int CONFIG_VERSION = 1;

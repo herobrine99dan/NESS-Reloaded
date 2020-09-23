@@ -14,6 +14,7 @@
 		<slf4j.version>1.7.30</slf4j.version>
 		<protocollib.version>4.5.0</protocollib.version>
 		<caffeine.version>2.8.5</caffeine.version>
+		<dazzleconf.version>0.2.0</dazzleconf.version>
 	</properties>
 	
 	<licenses>
@@ -115,18 +116,23 @@
 	</build>
 	
 	<dependencies>
+		<!-- Implementation dependencies, 'optional' is used to limit transitivity -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>1.18.12</version>
-			<!-- Used to limit transitivity of this dependency -->
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.github.ben-manes.caffeine</groupId>
 			<artifactId>caffeine</artifactId>
 			<version>${caffeine.version}</version>
-			<!-- Used to limit transitivity of this dependency -->
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>space.arim.dazzleconf</groupId>
+			<artifactId>dazzleconf-ext-snakeyaml</artifactId>
+			<version>${dazzleconf.version}</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- Testing -->
@@ -176,6 +182,10 @@
 		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
+			<id>arim-mvn-lgpl3</id>
+			<url>https://mvn-repo.arim.space/lesser-gpl3/</url>
 		</repository>
 	</repositories>
 </project>

@@ -17,27 +17,30 @@ import com.github.ness.api.NESSApi;
 import com.github.ness.api.impl.NESSApiImpl;
 import com.github.ness.check.CheckManager;
 import com.github.ness.check.ViolationManager;
+import com.github.ness.config.ConfigManager;
+import com.github.ness.config.NessConfig;
+import com.github.ness.config.NessMessages;
 import com.github.ness.listener.BungeeCordListener;
 import com.github.ness.packets.PacketListener;
-import com.github.ness.utility.MouseRecord;
 
 import lombok.Getter;
 
 public class NESSAnticheat extends JavaPlugin {
+
 	private static final Logger logger = NessLogger.getLogger(NESSAnticheat.class);
 	static NESSAnticheat main;
+
 	@Getter
 	private ScheduledExecutorService executor;
-	@Getter
-	private NESSConfig nessConfig;
+
+	private ConfigManager configManager;
 	@Getter
 	private CheckManager checkManager;
 	@Getter
 	private ViolationManager violationManager;
 	@Getter
 	private int minecraftVersion;
-	@Getter
-	private MouseRecord mouseRecord;
+
 	@Getter
 	private AntiBot antiBot;
 
@@ -49,26 +52,16 @@ public class NESSAnticheat extends JavaPlugin {
 	public void onEnable() {
 		main = this;
 
-		mouseRecord = new MouseRecord(this);
-		nessConfig = new NESSConfig("config.yml", "messages.yml");
-		nessConfig.reloadConfiguration(this);
-		if (!nessConfig.checkConfigVersion()) {
-			getLogger().warning(
-					"Your config.yml is outdated! Until you regenerate it, NESS will use default values for some checks.");
-		}
-		if (!nessConfig.checkMessagesVersion()) {
-			getLogger().warning(
-					"Your messages.yml is outdated! Until you regenerate it, NESS will use default values for some messages.");
-		}
+		configManager = new ConfigManager(getDataFolder().toPath());
+		configManager.reload().join();
+
 		logger.fine("Configuration loaded. Initiating checks...");
 		if (this.getVersion() > 1152 && this.getVersion() < 1162) {
 			getLogger().warning("Please use 1.16.2 Spigot Version since 1.16/1.16.1 has a lot of false flags");
 		}
 		executor = Executors.newSingleThreadScheduledExecutor();
 		getCommand("ness").setExecutor(new NESSCommands(this));
-		if (!new File(this.getDataFolder(), "records").exists()) {
-			new File(this.getDataFolder(), "records").mkdir();
-		}
+
 		checkManager = new CheckManager(this);
 		logger.log(Level.FINE, "Starting CheckManager");
 		CompletableFuture<?> future = checkManager.start();
@@ -92,6 +85,24 @@ public class NESSAnticheat extends JavaPlugin {
 			this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 			this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeCordListener());
 		}
+	}
+	
+	/**
+	 * Previous getter for configuration
+	 * 
+	 * @return the old ness config
+	 * @deprecated No longer used, use {@link #getMainConfig()} and {@link #getMessagesConfig()}
+	 */
+	public NESSConfig getNessConfig() {
+		throw new UnsupportedOperationException();
+	}
+	
+	public NessConfig getMainConfig() {
+		return configManager.getConfig();
+	}
+	
+	public NessMessages getMessagesConfig() {
+		return configManager.getMessages();
 	}
 
 	public int getVersion() {
