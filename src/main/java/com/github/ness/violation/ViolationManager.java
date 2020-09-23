@@ -21,7 +21,7 @@ public class ViolationManager {
 	private final NESSAnticheat ness;
 
 	private final Map<SynchronisationContext, Set<ViolationTrigger>> triggers;
-	
+
 	public ViolationManager(NESSAnticheat ness) {
 		this.ness = ness;
 
@@ -32,27 +32,26 @@ public class ViolationManager {
 	}
 
 	String addViolationVariables(String message, Player player, Violation violation, int violationCount) {
-		String replaced =  message
-				.replace("%PLAYER%", player.getName())
-				.replace("%HACK%", violation.getCheck())
+		String replaced = message.replace("%PLAYER%", player.getName()).replace("%HACK%", violation.getCheck())
 				.replace("%VIOLATIONS%", Integer.toString(violationCount));
 		return ChatColor.translateAlternateColorCodes('&', replaced);
 	}
-	
+
 	public void initiate() {
 		addDefaultTriggers();
 		initiatePeriodicTask();
 	}
 
 	private void addDefaultTriggers() {
-		for (ViolationTriggerSection triggerSection : ness.getMainConfig().getViolationHandling().getTriggerSections()) {
+		for (ViolationTriggerSection triggerSection : ness.getMainConfig().getViolationHandling()
+				.getTriggerSections()) {
 			if (!triggerSection.enable()) {
 				continue;
 			}
 			addTrigger(triggerSection.toTrigger(this, ness));
 		}
 	}
-	
+
 	public void addTrigger(ViolationTrigger trigger) {
 		Objects.requireNonNull(trigger, "trigger");
 		SynchronisationContext context = Objects.requireNonNull(trigger.context(), "context");
@@ -66,7 +65,7 @@ public class ViolationManager {
 			});
 		}, 1L, 1L, TimeUnit.SECONDS);
 	}
-	
+
 	private void cascadeViolations(NessPlayer player) {
 		// Atomicaly get the existing violation and set it to null
 		final Violation previous = player.violation.getAndSet(null);

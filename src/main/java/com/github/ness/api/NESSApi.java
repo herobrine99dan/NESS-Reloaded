@@ -9,18 +9,18 @@ import org.bukkit.entity.Player;
  */
 public interface NESSApi {
 
-    /**
-     * Adds an action to run when a player is detected for a cheat. <br>
-     * See {@link ViolationAction}
-     *
-     * @param action the violation action
-     * @deprecated Use {@link #addViolationTrigger(ViolationTrigger)}
-     */
+	/**
+	 * Adds an action to run when a player is detected for a cheat. <br>
+	 * See {@link ViolationAction}
+	 *
+	 * @param action the violation action
+	 * @deprecated Use {@link #addViolationTrigger(ViolationTrigger)}
+	 */
 	@Deprecated
-    default void addViolationAction(@SuppressWarnings("deprecation") ViolationAction action) {
+	default void addViolationAction(@SuppressWarnings("deprecation") ViolationAction action) {
 		addViolationTrigger(action);
 	}
-	
+
 	/**
 	 * Adds a violation trigger which is run when a player is detected for a cheat
 	 * 
@@ -29,12 +29,12 @@ public interface NESSApi {
 	 */
 	void addViolationTrigger(ViolationTrigger trigger);
 
-    /**
-     * Flag a player for a cheat
-     *
-     * @param violation the cause
-     * @param player    the player to flag
-     */
-    void flagHack(Violation violation, Player player);
+	/**
+	 * Flag a player for a cheat
+	 *
+	 * @param violation the cause
+	 * @param player    the player to flag
+	 */
+	void flagHack(Violation violation, Player player);
 
 }
