@@ -45,20 +45,6 @@ public class Utility {
         return dot;// dot > 0.99D
     }
 
-    public static String getStackTrace(Throwable throwable) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw, true);
-        throwable.printStackTrace(pw);
-        return sw.getBuffer().toString();
-    }
-    
-    public static String booleanToColoredString(boolean b) {
-        if (b) {
-            return "&aTrue&r";
-        }
-        return "&cFalse&r";
-    }
-
     /**
      * Get the material name from the location and convert it to lowercase
      *
@@ -105,8 +91,15 @@ public class Utility {
         return p.getLocation().add(0, -0.7, 0).getBlock();
     }
 
-    
-    public static int getPing(final Player player) {
+    /**
+     * Gets the ping of a player reflectively
+     * 
+     * @param player the player
+     * @return the ping
+     * @deprecated Handles reflective operation exceptions badly.
+     */
+    @Deprecated
+	public static int getPing(final Player player) {
         int ping = 76;
         try {
             final Object entityPlayer = player.getClass().getMethod("getHandle", new Class[0]).invoke(player
@@ -117,13 +110,21 @@ public class Utility {
         return ping;
     }
 
+    /**
+     * Sets the player's ping reflectively
+     * 
+     * @param player the player
+     * @param ping the ping
+     * @deprecated Evil! Never call this method
+     */
+    @Deprecated
     public static void setPing(Player player, int ping) {
         try {
             Class<?> craftPlayerClass = Class.forName("org.bukkit.craftbukkit."
                     + Bukkit.getServer().getClass().getPackage().getName().substring(23) + ".entity.CraftPlayer");
             Object handle = craftPlayerClass.getMethod("getHandle", new Class[0]).invoke(craftPlayerClass.cast(player)
             );
-            handle.getClass().getDeclaredField("ping").set(handle, Integer.valueOf(50));
+            handle.getClass().getDeclaredField("ping").set(handle, ping);
         } catch (Exception exception) {
 
         }

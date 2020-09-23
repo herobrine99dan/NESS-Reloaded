@@ -93,6 +93,7 @@ public class NESSAnticheat extends JavaPlugin {
 	 * @return the old ness config
 	 * @deprecated No longer used, use {@link #getMainConfig()} and {@link #getMessagesConfig()}
 	 */
+	@Deprecated
 	public NESSConfig getNessConfig() {
 		throw new UnsupportedOperationException();
 	}
