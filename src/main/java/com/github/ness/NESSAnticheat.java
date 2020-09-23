@@ -65,18 +65,19 @@ public class NESSAnticheat extends JavaPlugin {
 		violationManager = new ViolationManager(this);
 		violationManager.initiate();
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);
-		if (this.getNessConfig().getConfig().getConfigurationSection("antibot").getBoolean("enable")) {
-			AntiBot antiBot = new AntiBot(this);
+
+		if (getMainConfig().getAntiBot().enable()) {
+			AntiBot antiBot = new AntiBot(this, getMainConfig().getAntiBot());
 			getServer().getPluginManager().registerEvents(antiBot, this);
 			getServer().getScheduler().runTaskTimer(this, antiBot, 0L, 20L);
 		}
+
 		getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(this), this, ServicePriority.Low);
 		minecraftVersion = this.getVersion();
 		if (!Bukkit.getName().toLowerCase().contains("glowstone")) {
 			getServer().getPluginManager().registerEvents(new PacketListener(), this);
 		}
-		if (this.getNessConfig().getViolationHandling().getConfigurationSection("notify-staff").getBoolean("bungeecord",
-				false)) {
+		if (getMainConfig().getViolationHandling().notifyStaff().bungeecord()) {
 			this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 			this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeCordListener());
 		}

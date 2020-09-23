@@ -14,7 +14,7 @@
 		<slf4j.version>1.7.30</slf4j.version>
 		<protocollib.version>4.5.0</protocollib.version>
 		<caffeine.version>2.8.5</caffeine.version>
-		<dazzleconf.version>0.2.0</dazzleconf.version>
+		<dazzleconf.version>0.3.0</dazzleconf.version>
 	</properties>
 	
 	<licenses>
@@ -100,12 +100,17 @@
 							<artifactSet>
 								<includes>
 									<include>com.github.ben-manes.caffeine:caffeine</include>
+									<include>space.arim.dazzleconf:*</include>
 								</includes>
 							</artifactSet>
 							<relocations>
 								<relocation>
 									<pattern>com.github.benmanes.caffeine</pattern>
 									<shadedPattern>com.github.ness.shaded.com.github.benmanes.caffeine</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>space.arim.dazzleconf</pattern>
+									<shadedPattern>com.github.ness.shaded.space.arim.dazzleconf</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>
