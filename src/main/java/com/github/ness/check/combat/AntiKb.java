@@ -11,12 +11,12 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-public class SimpleAntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
+public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 
 	public static final CheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfo
 			.eventOnly(EntityDamageByEntityEvent.class);
 
-	public SimpleAntiKb(CheckFactory<?> factory, NessPlayer player) {
+	public AntiKb(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
 	}
 
@@ -39,7 +39,7 @@ public class SimpleAntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 		}
 		runTaskLater(() -> {
 			Location to = player.getLocation();
-			if (to.distanceSquared(from) < .4 && !player.getLocation().add(0, 2, 0).getBlock().getType().isSolid()
+			if (to.distanceSquared(from) < 0.3 && !player.getLocation().add(0, 2, 0).getBlock().getType().isSolid()
 					&& !player.getLocation().getBlock().getType().isSolid()) {
 				player().setViolation(new Violation("AntiKb", ""));
 			}

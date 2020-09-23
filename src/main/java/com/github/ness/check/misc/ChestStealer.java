@@ -13,7 +13,7 @@ import com.github.ness.check.AbstractCheck;
 import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 
-public class ChestStealerCheck extends AbstractCheck<InventoryClickEvent> {
+public class ChestStealer extends AbstractCheck<InventoryClickEvent> {
 
 	/**
 	 * @author MatuloM
@@ -24,7 +24,7 @@ public class ChestStealerCheck extends AbstractCheck<InventoryClickEvent> {
 	private long moveInvItemsLastTime;
 	private int movedInvItems;
 
-	public ChestStealerCheck(CheckFactory<?> factory, NessPlayer player) {
+	public ChestStealer(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
 	}
 

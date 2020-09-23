@@ -38,7 +38,7 @@ public class OmniSprint extends AbstractCheck<ReceivedPacketEvent> {
 					.subtract(values.getTo().toBukkitLocation().clone()).toVector();
 			double angle = moving.angle(getDirection(values.getTo()));
 			if (angle < 1.58) {
-				if(player().setViolation(new Violation("Sprint", "BadDirection"))) event.setCancelled(true);
+				if(player().setViolation(new Violation("OmniSprint", ""))) event.setCancelled(true);
 			}
 		}
 	}

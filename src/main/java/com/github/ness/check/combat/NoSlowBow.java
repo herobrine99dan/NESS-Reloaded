@@ -11,11 +11,11 @@ import com.github.ness.check.CheckInfo;
 import com.github.ness.utility.Utility;
 
 @Deprecated //This Check needs a complete recode
-public class NoSlowDownBow extends AbstractCheck<EntityShootBowEvent> {
+public class NoSlowBow extends AbstractCheck<EntityShootBowEvent> {
 
 	public static final CheckInfo<EntityShootBowEvent> checkInfo = CheckInfo.eventOnly(EntityShootBowEvent.class);
 
-	public NoSlowDownBow(CheckFactory<?> factory, NessPlayer player) {
+	public NoSlowBow(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
 	}
 

@@ -12,13 +12,13 @@ import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.utility.Utility;
 
-public class NewOldStrafe extends AbstractCheck<PlayerMoveEvent> {
+public class Strafe extends AbstractCheck<PlayerMoveEvent> {
     
 	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo
 			.eventOnly(PlayerMoveEvent.class);
 	private double lastStrafeAngle; // For the Beta NewOldStrafe Check;
 
-	public NewOldStrafe(CheckFactory<?> factory, NessPlayer player) {
+	public Strafe(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
 		lastStrafeAngle = 0;
 	}
