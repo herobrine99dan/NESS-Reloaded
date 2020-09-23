@@ -1,6 +1,6 @@
 package com.github.ness.check.combat;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -13,7 +13,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
@@ -26,8 +26,8 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	double minAngle;
 	double maxReach;
 
-	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfo
-			.eventWithAsyncPeriodic(EntityDamageByEntityEvent.class, 70, TimeUnit.MILLISECONDS);
+	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfos
+			.forEventWithAsyncPeriodic(EntityDamageByEntityEvent.class, Duration.ofMillis(70));
 
 	public Killaura(ListeningCheckFactory<?, EntityDamageByEntityEvent> factory, NessPlayer player) {
 		super(factory, player);

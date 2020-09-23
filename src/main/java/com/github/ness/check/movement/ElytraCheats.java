@@ -5,19 +5,20 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 
-public class ElytraCheats extends AbstractCheck<PlayerMoveEvent> {
+public class ElytraCheats extends ListeningCheck<PlayerMoveEvent> {
 
     double maxXZDiff;
     double maxYDiff;
     
-	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo
-			.eventOnly(PlayerMoveEvent.class);
+	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
+			.forEvent(PlayerMoveEvent.class);
 
-	public ElytraCheats(CheckFactory<?> factory, NessPlayer player) {
+	public ElytraCheats(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
         this.maxYDiff = this.ness().getNessConfig().getCheck(this.getClass())
                 .getDouble("maxxzdiff", 1.5);

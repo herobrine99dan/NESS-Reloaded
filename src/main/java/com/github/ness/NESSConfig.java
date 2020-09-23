@@ -1,16 +1,17 @@
 package com.github.ness;
 
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.utility.ReflectionUtility;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import java.awt.Color;
+import java.io.File;
+import java.util.List;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.awt.*;
-import java.io.File;
-import java.util.List;
+import com.github.ness.utility.ReflectionUtility;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
@@ -71,7 +72,7 @@ public class NESSConfig {
         return getViolationHandling().getConfigurationSection("notify-staff");
     }
 
-    public ConfigurationSection getCheck(Class<? extends AbstractCheck<?>> check) {
+    public ConfigurationSection getCheck(Class<?> check) {
         return config.getConfigurationSection("checks." + check.getSimpleName().toLowerCase());
     }
 }

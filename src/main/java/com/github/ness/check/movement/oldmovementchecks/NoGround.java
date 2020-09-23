@@ -1,6 +1,6 @@
 package com.github.ness.check.movement.oldmovementchecks;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -8,20 +8,20 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
-public class NoGround extends AbstractCheck<PlayerMoveEvent> {
+public class NoGround extends ListeningCheck<PlayerMoveEvent> {
 
-	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo.eventWithAsyncPeriodic(PlayerMoveEvent.class,
-			1, TimeUnit.SECONDS);
+	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEventWithAsyncPeriodic(PlayerMoveEvent.class, Duration.ofSeconds(1));
 	private int flags;
 
-	public NoGround(CheckFactory<?> factory, NessPlayer player) {
+	public NoGround(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 		flags = 0;
 	}

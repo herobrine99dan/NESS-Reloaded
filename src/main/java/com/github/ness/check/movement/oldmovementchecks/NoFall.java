@@ -8,18 +8,19 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.PlayerManager;
 import com.github.ness.utility.Utility;
 
-public class NoFall extends AbstractCheck<PlayerMoveEvent> {
-	public static final CheckInfo<PlayerMoveEvent> checkInfo = CheckInfo.eventOnly(PlayerMoveEvent.class);
+public class NoFall extends ListeningCheck<PlayerMoveEvent> {
+	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
-	public NoFall(CheckFactory<?> factory, NessPlayer player) {
+	public NoFall(ListeningCheckFactory<?,PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 

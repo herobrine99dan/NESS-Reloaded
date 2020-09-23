@@ -1,22 +1,23 @@
 package com.github.ness.check.combat;
 
-import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
-import com.github.ness.utility.Utility;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-public class AntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
+import com.github.ness.NessPlayer;
+import com.github.ness.api.Violation;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.utility.Utility;
 
-	public static final CheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfo
-			.eventOnly(EntityDamageByEntityEvent.class);
+public class AntiKb extends ListeningCheck<EntityDamageByEntityEvent> {
 
-	public AntiKb(CheckFactory<?> factory, NessPlayer player) {
+	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfos
+			.forEvent(EntityDamageByEntityEvent.class);
+
+	public AntiKb(ListeningCheckFactory<?, EntityDamageByEntityEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 

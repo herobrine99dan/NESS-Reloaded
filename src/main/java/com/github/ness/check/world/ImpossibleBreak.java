@@ -4,15 +4,16 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 
-public class ImpossibleBreak extends AbstractCheck<BlockBreakEvent> {
+public class ImpossibleBreak extends ListeningCheck<BlockBreakEvent> {
 
-	public static final CheckInfo<BlockBreakEvent> checkInfo = CheckInfo.eventOnly(BlockBreakEvent.class);
+	public static final ListeningCheckInfo<BlockBreakEvent> checkInfo = CheckInfos.forEvent(BlockBreakEvent.class);
 
-	public ImpossibleBreak(CheckFactory<?> factory, NessPlayer player) {
+	public ImpossibleBreak(ListeningCheckFactory<?, BlockBreakEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 

@@ -7,17 +7,18 @@ import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 
-public class ScaffoldAngle extends AbstractCheck<BlockPlaceEvent> {
+public class ScaffoldAngle extends ListeningCheck<BlockPlaceEvent> {
     private static final double MAX_ANGLE = Math.toRadians(90);
     
-	public static final CheckInfo<BlockPlaceEvent> checkInfo = CheckInfo
-			.eventOnly(BlockPlaceEvent.class);
+	public static final ListeningCheckInfo<BlockPlaceEvent> checkInfo = CheckInfos
+			.forEvent(BlockPlaceEvent.class);
 
-	public ScaffoldAngle(CheckFactory<?> factory, NessPlayer player) {
+	public ScaffoldAngle(ListeningCheckFactory<?, BlockPlaceEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}    
 

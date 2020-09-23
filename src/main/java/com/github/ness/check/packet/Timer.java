@@ -2,23 +2,24 @@ package com.github.ness.check.packet;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import com.github.ness.check.AbstractCheck;
-import com.github.ness.check.CheckFactory;
-import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.ListeningCheckFactory;
+import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.Utility;
 
-public class Timer extends AbstractCheck<ReceivedPacketEvent> {
+public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 	private double MAX_PACKETS_PER_TICK = 1.12;
 
-	public static final CheckInfo<ReceivedPacketEvent> checkInfo = CheckInfo.eventOnly(ReceivedPacketEvent.class);
+	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos.forEvent(ReceivedPacketEvent.class);
 
 	private long lastPacketTime; // Used in BadPackets
 	private long movementPackets; // Used in BadPackets
 	private float lastPacketsPerTicks;
 
-	public Timer(CheckFactory<?> factory, NessPlayer player) {
+	public Timer(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
 		super(factory, player);
 		this.MAX_PACKETS_PER_TICK = this.ness().getNessConfig().getCheck(Timer.class).getDouble("maxpackets", 1.12);
 	}

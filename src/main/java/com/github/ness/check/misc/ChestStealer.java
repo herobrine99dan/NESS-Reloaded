@@ -1,5 +1,6 @@
 package com.github.ness.check.misc;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.GameMode;
@@ -21,7 +22,7 @@ public class ChestStealer extends ListeningCheck<InventoryClickEvent> {
 	 */
 
 	public static final ListeningCheckInfo<InventoryClickEvent> checkInfo = CheckInfos.
-			forEventWithAsyncPeriodic(InventoryClickEvent.class, 500, TimeUnit.MILLISECONDS);
+			forEventWithAsyncPeriodic(InventoryClickEvent.class, Duration.ofMillis(500));
 	private long moveInvItemsLastTime;
 	private int movedInvItems;
 
