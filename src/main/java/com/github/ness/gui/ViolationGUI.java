@@ -52,7 +52,7 @@ public class ViolationGUI {
 	@SuppressWarnings("deprecation")
 	public ItemStack getPlayerHead(Player player) {
 		ItemStack playerhead;
-		if (NESSAnticheat.getInstance().getVersion() > 1122) {
+		if (NESSAnticheat.getInstance().getMinecraftVersion() > 1122) {
 			playerhead = new ItemStack(Material.getMaterial("PLAYER_HEAD"), 1, (short) 3);
 		} else {
 			playerhead = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);

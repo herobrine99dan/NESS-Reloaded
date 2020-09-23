@@ -1,6 +1,5 @@
 package com.github.ness;
 
-import java.io.File;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,9 +40,6 @@ public class NESSAnticheat extends JavaPlugin {
 	@Getter
 	private int minecraftVersion;
 
-	@Getter
-	private AntiBot antiBot;
-
 	public static NESSAnticheat getInstance() {
 		return NESSAnticheat.main;
 	}
@@ -68,10 +64,9 @@ public class NESSAnticheat extends JavaPlugin {
 
 		violationManager = new ViolationManager(this);
 		violationManager.initiate();
-
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);
 		if (this.getNessConfig().getConfig().getConfigurationSection("antibot").getBoolean("enable")) {
-			antiBot = new AntiBot(this);
+			AntiBot antiBot = new AntiBot(this);
 			getServer().getPluginManager().registerEvents(antiBot, this);
 			getServer().getScheduler().runTaskTimer(this, antiBot, 0L, 20L);
 		}
@@ -105,7 +100,7 @@ public class NESSAnticheat extends JavaPlugin {
 		return configManager.getMessages();
 	}
 
-	public int getVersion() {
+	private int getVersion() {
 		String first = Bukkit.getVersion().substring(Bukkit.getVersion().indexOf("(MC: "));
 		return Integer.valueOf(first.replace("(MC: ", "").replace(")", "").replace(" ", "").replace(".", ""));
 	}

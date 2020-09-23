@@ -257,7 +257,13 @@ public class Utility {
         return m.name().contains("WATER");
     }
 
-    @Deprecated //Bad Coded
+    @Deprecated 
+    /**
+     * This check if the player has air around
+     * This needs a recode
+     * @param player
+     * @return
+     */
     public static boolean hasKbBypass(Player player) {
         if (!player.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().getType().isSolid())
             return true;
