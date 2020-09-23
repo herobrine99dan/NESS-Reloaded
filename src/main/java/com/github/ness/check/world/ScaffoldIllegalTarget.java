@@ -37,7 +37,7 @@ public class ScaffoldIllegalTarget extends AbstractCheck<PlayerInteractEvent> {
                     face = blocks.get(1).getFace(blocks.get(0));
                 }
                 if (event.getBlockFace() != face && target.getType().isSolid() && target.getType().isOccluding()) {
-                    this.player().setViolation(new Violation("Scaffold", " IllegalTarget"), event);
+        			if(player().setViolation(new Violation("Scaffold", "IllegalTarget"))) event.setCancelled(true);
                 }
             }
         }

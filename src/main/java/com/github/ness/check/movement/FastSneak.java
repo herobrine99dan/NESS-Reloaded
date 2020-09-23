@@ -35,7 +35,7 @@ public class FastSneak extends AbstractCheck<PlayerMoveEvent> {
         if (dist > walkSpeed && p.isSneaking() && !Utility.hasflybypass(p)) {
             if (Math.abs(nessPlayer.getMovementValues().xDiff) > walkSpeed
                     || Math.abs(nessPlayer.getMovementValues().zDiff) > walkSpeed) {
-                nessPlayer.setViolation(new Violation("FastSneak", "Dist: " + dist), event);
+            	if(player().setViolation(new Violation("FastSneak", "Dist: " + dist))) event.setCancelled(true);
             }
         }
     }

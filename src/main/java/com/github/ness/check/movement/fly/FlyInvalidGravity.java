@@ -51,7 +51,7 @@ public class FlyInvalidGravity extends AbstractCheck<PlayerMoveEvent> {
             y -= Math.abs(np.velocity.getY());
         }
         if (Math.abs(yresult) > max && !np.isTeleported()) {
-        	np.setViolation(new Violation("Fly", "InvalidVelocity: " + yresult), e);
+        	if(player().setViolation(new Violation("Fly", "InvalidVelocity: " + yresult))) e.setCancelled(true);
         }
     }
 }

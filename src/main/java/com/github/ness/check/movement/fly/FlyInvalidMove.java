@@ -22,8 +22,8 @@ public class FlyInvalidMove extends AbstractCheck<PlayerMoveEvent> {
     protected void checkEvent(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (player.getFallDistance() < 7 && player.getVelocity().getY() < -2.0D && !player.isFlying()) {
-            this.player().setViolation(new Violation("Fly", "InvalidMove" + " FallDist: "
-                    + player.getFallDistance() + " Velocity: " + (float) player.getVelocity().getY()), event);
+        	if(player().setViolation(new Violation("Fly", "InvalidMove" + " FallDist: "
+                    + player.getFallDistance() + " Velocity: " + (float) player.getVelocity().getY()))) event.setCancelled(true);
         }
     }
 

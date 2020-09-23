@@ -148,7 +148,7 @@ public class Killaura extends AbstractCheck<EntityDamageByEntityEvent> {
 	}
 
 	private void punish(EntityDamageByEntityEvent e, Player p, String module) {
-		player().setViolation(new Violation("Killaura", module), e);
+		if(player().setViolation(new Violation("Killaura", module))) e.setCancelled(true);
 	}
 
 }

@@ -36,7 +36,7 @@ public class Criticals extends AbstractCheck<EntityDamageByEntityEvent> {
 				NessPlayer np = player();
 				if (np.getMovementValues().getTo().getY() % 1.0D == 0.0D
 						&& player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
-					np.setViolation(new Violation("Criticals", ""), event);
+					if(player().setViolation(new Violation("Criticals", ""))) event.setCancelled(true);
 				}
 			}
 		}

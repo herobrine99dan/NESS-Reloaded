@@ -43,14 +43,15 @@ public class InventoryHack extends AbstractCheck<InventoryClickEvent> {
             }
             if (player.isSprinting() || player.isSneaking() || player.isBlocking() || player.isSleeping()
                     || player.isConversing()) {
-            	player().setViolation(new Violation("InventoryHack", "Impossible"), e);
+            	if(player().setViolation(new Violation("InventoryHack", "Impossible"))) e.setCancelled(true);
             } else {
                 final Location from = player.getLocation();
                 Bukkit.getScheduler().runTaskLater(this.ness(), () -> {
                     Location to = player.getLocation();
                     double distance = (Math.abs(to.getX() - from.getX())) + (Math.abs(to.getZ() - from.getZ()));
                     if (distance > maxdist) {
-                        player().setViolation(new Violation("InventoryHack", "Dist:" + distance), e);
+                    	if(player().setViolation(new Violation("InventoryHack", "Dist: " + distance))) e.setCancelled(true);
+
                     }
                 }, 2L);
             }

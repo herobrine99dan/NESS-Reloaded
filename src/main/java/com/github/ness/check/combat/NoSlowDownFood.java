@@ -32,7 +32,7 @@ public class NoSlowDownFood extends AbstractCheck<PlayerItemConsumeEvent> {
         distance -= e.getPlayer().getVelocity().getX();
         distance -= e.getPlayer().getVelocity().getZ();
         if (distance > 0.25 || e.getPlayer().isSprinting()) {
-            p.setViolation(new Violation("NoSlowDown", ""), e);
+            if(p.setViolation(new Violation("NoSlowDown", ""))) e.setCancelled(true);
         }
     }
 }

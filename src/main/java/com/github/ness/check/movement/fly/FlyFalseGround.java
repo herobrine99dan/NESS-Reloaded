@@ -41,9 +41,9 @@ public class FlyFalseGround extends AbstractCheck<PlayerMoveEvent> {
 				&& player.isOnline() && !movementValues.AroundSlime && !player.isInsideVehicle()
 				&& !Utility.specificBlockNear(e.getTo().clone(), "web")) {
 			if (player.isOnGround() && !Utility.groundAround(e.getTo())) {
-				nessPlayer.setViolation(new Violation("Fly", "FalseGround"), e);
+	        	if(player().setViolation(new Violation("Fly", "FalseGround"))) e.setCancelled(true);
 			} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY())) {
-				nessPlayer.setViolation(new Violation("Fly", "FalseGround1"), e);
+	        	if(player().setViolation(new Violation("Fly", "FalseGround1"))) e.setCancelled(true);
 			}
 		}
 	}

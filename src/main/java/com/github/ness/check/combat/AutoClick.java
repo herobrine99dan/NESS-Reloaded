@@ -194,7 +194,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 			int maxCps = hardLimitEntry.maxCps;
 			logger.log(Level.FINE, "Clicks Per Second: {0}. Limit: {1}", new Object[] { cps, maxCps });
 			if (cps > maxCps) {
-				player().setViolation(new Violation("AutoClick", Integer.toString(cps)), null);
+				player().setViolation(new Violation("AutoClick", Integer.toString(cps)));
 				return;
 			}
 		}
@@ -239,7 +239,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 				if (subPeriods.size() == deviationRequirement.sampleCount) {
 					int stdDevPercent = getStdDevPercent(subPeriods);
 					if (stdDevPercent < deviationRequirement.deviationPercentage) {
-						player().setViolation(new Violation("AutoClick", "StdDevPercent: " + stdDevPercent), null);
+						player().setViolation(new Violation("AutoClick", "StdDevPercent: " + stdDevPercent));
 						return;
 					}
 					List<Long> deviations = standardDeviationMap.computeIfAbsent(deviationRequirement,
@@ -257,8 +257,7 @@ public class AutoClick extends AbstractCheck<PlayerInteractEvent> {
 				}
 				int superStdDevPercent = getStdDevPercent(standardDeviations);
 				if (superStdDevPercent < superDeviationRequirement.deviationPercentage) {
-					player().setViolation(new Violation("AutoClick", "SuperStdDevPercent: " + superStdDevPercent),
-							null);
+					player().setViolation(new Violation("AutoClick", "SuperStdDevPercent: " + superStdDevPercent));
 					return;
 				}
 			}

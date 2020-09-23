@@ -24,7 +24,7 @@ public class NESSApiImpl implements NESSApi {
         if (nessPlayer == null) {
         	return;
         }
-        nessPlayer.setViolation(violation, null);
+        nessPlayer.setViolation(violation);
     }
 
 }

@@ -65,16 +65,18 @@ public class Timer extends AbstractCheck<ReceivedPacketEvent> {
 					 * likely to be cheating.
 					 */
 					if (!nessPlayer.isTeleported()) {
-						nessPlayer.setViolation(new Violation("Timer", " packets: " + movementsPerTick), e);
+						if (player().setViolation(new Violation("Timer", " packets: " + movementsPerTick)))
+							e.setCancelled(true);
 					}
 				} else if (movementsPerTick > 0.084 && movementsPerTick < 0.9) {
 					double result = Math.abs(lastPacketsPerTicks - movementsPerTick);
 					if (nessPlayer.isDebugMode()) {
 						nessPlayer.getPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
 					}
-					if (result < 0.001) {
-						nessPlayer.setViolation(new Violation("Timer",
-								"[EXPERIMENTAL] Packets: " + movementsPerTick + " Result: " + result), null);
+					if (result < 0.0007) {
+						if (player().setViolation(new Violation("Timer",
+								"[EXPERIMENTAL] Packets: " + movementsPerTick + " Result: " + result)))
+							e.setCancelled(true);
 					}
 				}
 

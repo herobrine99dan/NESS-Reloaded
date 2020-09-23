@@ -28,7 +28,7 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		Location to = e.getTo();
 		Location from = e.getFrom();
 		Player player = e.getPlayer();
-		double maxSpd = player.getWalkSpeed() * 3.1;
+		double maxSpd = player.getWalkSpeed();
 		MovementValues movementValues = this.player().getMovementValues();
 		double xDist = Math.abs(movementValues.xDiff);
 		double zDist = Math.abs(movementValues.zDiff);
@@ -40,6 +40,9 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 		if (player().nanoTimeDifference(PlayerAction.VELOCITY) < 1600) {
 			xDist -= Math.abs(player().velocity.getX());
 			zDist -= Math.abs(player().velocity.getZ());
+		}
+		if(!Utility.isMathematicallyOnGround(to.getY())) {
+			maxSpd *= 3.1;
 		}
 		// Handling Stairs
 		if (movementValues.AroundStairs) {
@@ -62,17 +65,19 @@ public class Speed extends AbstractCheck<PlayerMoveEvent> {
 			xDist = (float) (xDist - xDist / 100.0D * level * 20.0D);
 			zDist = (float) (zDist - zDist / 100.0D * level * 20.0D);
 		}
-		//MSG.tell(player, "&9Dev> &7Speed Dist: " + maxSpd);
+		// MSG.tell(player, "&9Dev> &7Speed Dist: " + maxSpd);
 		if ((xDist > maxSpd || zDist > maxSpd) && player().nanoTimeDifference(PlayerAction.DAMAGE) >= 2000) {
 			if (Utility.groundAround(player.getLocation()) && !player.isInsideVehicle()) {
 				Material small = player.getWorld().getBlockAt(player.getLocation().subtract(0, .1, 0)).getType();
 				if (!player.getWorld().getBlockAt(from).getType().isSolid()
 						&& !player.getWorld().getBlockAt(to).getType().isSolid()
 						&& !small.name().toLowerCase().contains("trap")) {
-					if (player().isDevMode()) //TODO False Flag to fix (Jumping and Sprinting gives maxSpd = 0.53 and dist of = 0.57)
+					if (player().isDevMode()) // TODO False Flag to fix (Jumping and Sprinting gives maxSpd = 0.53 and
+												// dist of = 0.57)
 						player().sendDevMessage("Speed amo: " + movementValues.XZDiff);
-					player().setViolation(new Violation("Speed",
-							"MaxDistance(OnMove)" + " MaxDist: " + maxSpd + " Dist: " + (float) xDist), e);
+					if (player().setViolation(new Violation("Speed",
+							"MaxDistance(OnMove)" + " MaxDist: " + (float) maxSpd + " Dist: " + (float) xDist)))
+						e.setCancelled(true);
 				}
 			}
 		}

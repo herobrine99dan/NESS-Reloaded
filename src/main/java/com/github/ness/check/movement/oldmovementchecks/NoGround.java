@@ -50,7 +50,7 @@ public class NoGround extends AbstractCheck<PlayerMoveEvent> {
 			if (!Utility.groundAround(to.clone().add(0, 2, 0))) {
 				int failed = flags++;
 				if (failed > 3) {
-					nessPlayer.setViolation(new Violation("NoGround", "(OnMove)"), e);
+					if(player().setViolation(new Violation("NoGround", "(OnMove)"))) e.setCancelled(true);
 				}
 			}
 		}

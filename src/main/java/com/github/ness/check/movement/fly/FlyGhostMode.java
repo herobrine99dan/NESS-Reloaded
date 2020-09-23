@@ -25,7 +25,7 @@ public class FlyGhostMode extends AbstractCheck<PlayerMoveEvent> {
         if (player.isDead()) {
             NessPlayer np = this.player();
             if ((np.getMovementValues().XZDiff > 0.3 || np.getMovementValues().yDiff > 0.16) && !np.isTeleported()) {
-            	np.setViolation(new Violation("Fly", "GhostMode"), event);
+	        	if(player().setViolation(new Violation("Fly", "GhostMode"))) event.setCancelled(true);
             }
         }
     }

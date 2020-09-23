@@ -44,7 +44,7 @@ enabled-checks:
   - 'Aimbot'
   - 'AimbotGCD'
   - 'AutoClicker'
-  - 'AntiUnicode'
+#  - 'AntiUnicode'
   - 'SimpleAntiKb'
   - 'Timer'
   - 'Criticals'

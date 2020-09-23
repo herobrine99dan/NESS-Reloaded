@@ -40,10 +40,10 @@ public class Step extends AbstractCheck<PlayerMoveEvent> {
 					boatNear = true;
 			}
 			if (player.getVelocity().getY() < 0.43 && !boatNear) {
-				this.player().setViolation(new Violation("Step", "(OnMove)"), e);
+				if(player().setViolation(new Violation("Step", "(OnMove)"))) e.setCancelled(true);
 			}
 		} else if (from.getY() - to.getY() > 1.5 && player.getFallDistance() == 0.0 && player.getVelocity().getY() < 0.43) {
-			this.player().setViolation(new Violation("Step", "(OnMove)"), e);
+			if(player().setViolation(new Violation("Step", "(OnMove)"))) e.setCancelled(true);
 		}
 	}
 

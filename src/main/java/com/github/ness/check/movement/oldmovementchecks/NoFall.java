@@ -28,7 +28,7 @@ public class NoFall extends AbstractCheck<PlayerMoveEvent> {
 		if (nessPlayer.isTeleported()) {
 			return;
 		}
-		nessPlayer.setViolation(new Violation(cheat, module), e);
+		if(player().setViolation(new Violation(cheat, module))) e.setCancelled(true);
 	}
 
 	@Override

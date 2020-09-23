@@ -26,7 +26,7 @@ public class Phase extends AbstractCheck<PlayerMoveEvent> {
         if (b.getType().isOccluding() && !event.getPlayer().isInsideVehicle()
                 && Utility.groundAround(event.getTo().clone()) && !nessPlayer.isTeleported()
                 && nessPlayer.getMovementValues().XZDiff > 0.25) {
-            nessPlayer.setViolation(new Violation("Phase", "Dist: " + (float) nessPlayer.getMovementValues().XZDiff), event);
+        	if(player().setViolation(new Violation("Phase", ""))) event.setCancelled(true);
         }
     }
 }

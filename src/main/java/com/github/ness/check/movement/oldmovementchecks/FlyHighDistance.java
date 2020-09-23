@@ -38,7 +38,7 @@ public class FlyHighDistance extends AbstractCheck<PlayerMoveEvent> {
 		if (!values.isOnGround && dist > 0.35 && values.yDiff == 0.0
 				&& this.player().getTimeSinceLastWasOnIce() >= 1000) {
 			if(preVL++ > 1) {
-				this.player().setViolation(new Violation("Fly", "HighDistance(OnMove)"), e);
+				if(player().setViolation(new Violation("Fly", "HighDistance(OnMove)"))) e.setCancelled(true);
 			}
 		} else if(preVL > 0) {
 			preVL--;

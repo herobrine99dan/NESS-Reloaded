@@ -41,7 +41,7 @@ public class SimpleAntiKb extends AbstractCheck<EntityDamageByEntityEvent> {
 			Location to = player.getLocation();
 			if (to.distanceSquared(from) < .4 && !player.getLocation().add(0, 2, 0).getBlock().getType().isSolid()
 					&& !player.getLocation().getBlock().getType().isSolid()) {
-				player().setViolation(new Violation("AntiKb", ""), null);
+				player().setViolation(new Violation("AntiKb", ""));
 			}
 		}, durationOfTicks(5));
 	}

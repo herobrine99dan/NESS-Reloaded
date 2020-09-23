@@ -81,7 +81,7 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 		float x = (float) (thirdvar - Math.floor(thirdvar));
 		// TODO Fixing Smooth Camera
 		if (x > 0.1 && x < 0.95) {
-			np.setViolation(new Violation("Aimbot", "ImpossibleRotations: " + x), null);
+			if(player().setViolation(new Violation("Aimbot", "ImpossibleRotation: " + x))) e.setCancelled(true);
 		}
 		lastYaw = (float) np.getMovementValues().yawDiff;
 	}
@@ -94,10 +94,10 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 		float yawChange = (float) Math.abs(player.getMovementValues().yawDiff);
 		float pitchChange = (float) Math.abs(player.getMovementValues().pitchDiff);
 		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {
-			player.setViolation(new Violation("Aimbot", "PerfectAura"), e);
+			if(player().setViolation(new Violation("Aimbot", "PerfectAura"))) e.setCancelled(true);
 			return true;
 		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {
-			player.setViolation(new Violation("Aimbot", "PerfectAura1"), e);
+			if(player().setViolation(new Violation("Aimbot", "PerfectAura1"))) e.setCancelled(true);
 			return true;
 		}
 		return false;
@@ -110,7 +110,7 @@ public class Aimbot extends AbstractCheck<ReceivedPacketEvent> {
 		NessPlayer player = e.getNessPlayer();
 		float yawChange = (float) Math.abs(player.getMovementValues().yawDiff);
 		if (yawChange > 1.0f && Utility.round(yawChange, 100) * 0.1f == yawChange) {
-			player.setViolation(new Violation("Aimbot", "[Experimental] PerfectAura3"), e);
+			if(player().setViolation(new Violation("Aimbot", "[Experimental] PerfectAura3"))) e.setCancelled(true);
 		}
 	}
 }

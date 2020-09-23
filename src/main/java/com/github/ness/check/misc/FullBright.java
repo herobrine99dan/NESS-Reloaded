@@ -22,7 +22,7 @@ public class FullBright extends AbstractCheck<BlockPlaceEvent> {
     protected void checkEvent(BlockPlaceEvent e) {
         int level = e.getBlockPlaced().getLightLevel();
         if (level < 3) {
-            player().setViolation(new Violation("FullBright", "Block Placed in Light Free Zone"), e);
+        	if(player().setViolation(new Violation("FullBright", ""))) e.setCancelled(true);
         }
     }
 

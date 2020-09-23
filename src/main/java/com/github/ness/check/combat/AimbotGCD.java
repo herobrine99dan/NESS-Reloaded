@@ -40,7 +40,7 @@ public class AimbotGCD extends AbstractCheck<ReceivedPacketEvent> {
 			final double result = Math.abs(gcd - lastGCD);
 			if (result > 512 && result < 100000) {
 				if (preVL++ > 7) {
-					player.setViolation(new Violation("AimbotGCD", " GCD Difference: " + (float) result), event);
+					if(player().setViolation(new Violation("AimbotGCD", "Diff: " + result))) event.setCancelled(true);
 				}
 			} else {
 				if (preVL > 0) {

@@ -189,18 +189,18 @@ public class NessPlayer implements AutoCloseable {
 	 * @param violation the violation
 	 * @param e         the event (if it is null, this check will not be cancelled)
 	 */
-	public void setViolation(Violation violation, Cancellable e) {
+	public boolean setViolation(Violation violation) {
 		// Bypass permissions
 		if (this.getPlayer().hasPermission("ness.bypass." + violation.getCheck().toLowerCase())
 				|| this.getPlayer().hasPermission("ness.bypass.*") || this.getPlayer().isOp()) {
-			return;
+			return false;
 		}
 		// Violation event
 		PlayerViolationEvent event = new PlayerViolationEvent(this.getPlayer(), this, violation,
 				checkViolationCounts.getOrDefault(violation.getCheck(), 0));
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		if (event.isCancelled()) {
-			return;
+			return false;
 		}
 		// Cancel method
 		ConfigurationSection cancelsec = NESSAnticheat.main.getNessConfig().getViolationHandling()
@@ -208,13 +208,10 @@ public class NessPlayer implements AutoCloseable {
 		final boolean cancel = checkViolationCounts.getOrDefault(violation.getCheck(), 0) > cancelsec.getInt("vl", 10)
 				&& cancelsec.getBoolean("enable", false);
 		if (cancel) {
-			if (e != null) {
-				if (violation.getCheck().equals("Fly") || violation.getCheck().equals("NoFall")
-						|| violation.getCheck().equals("Step") || violation.getCheck().equals("Phase")) {
-					this.dragDown();
-				} else {
-					e.setCancelled(true);
-				}
+			if (violation.getCheck().equals("Fly") || violation.getCheck().equals("NoFall")
+					|| violation.getCheck().equals("Step") || violation.getCheck().equals("Phase")) {
+				this.dragDown();
+				return false;
 			}
 		}
 		// Main method body
@@ -227,6 +224,7 @@ public class NessPlayer implements AutoCloseable {
 						"Dev mode violation: Check " + violation.getCheck() + ". Details: " + violation.getDetails());
 			}
 		}
+		return cancel;
 	}
 
 	/**

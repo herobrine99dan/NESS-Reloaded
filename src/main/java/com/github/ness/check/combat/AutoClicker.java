@@ -34,7 +34,7 @@ public class AutoClicker extends AbstractCheck<PlayerInteractEvent> {
 			NessPlayer player = this.player();
 			CPS++;
 			if (CPS > maxCPS && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
-				player.setViolation(new Violation("AutoClicker", "MaxCPS: " + CPS), e);
+				if(player().setViolation(new Violation("AutoClicker", "CPS: " + CPS))) e.setCancelled(true);
 			}
 		}
 	}

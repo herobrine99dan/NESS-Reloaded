@@ -30,13 +30,14 @@ public class ScaffoldAngle extends AbstractCheck<BlockPlaceEvent> {
         NessPlayer nessPlayer = player();
         Material material = event.getPlayer().getItemInHand().getType();
         if((event.getBlockPlaced().getType() != material) && material.isSolid() && material.isOccluding()) {
-        	nessPlayer.setViolation(new Violation("Scaffold", "Impossible"), event);
+			if(player().setViolation(new Violation("Scaffold", "Impossible"))) event.setCancelled(true);
+
         	return;
         }
         final Vector placedVector = new Vector(placedFace.getModX(), placedFace.getModY(), placedFace.getModZ());
         float placedAngle = nessPlayer.getMovementValues().getTo().getDirectionVector().toBukkitVector().angle(placedVector);
         if (placedAngle > MAX_ANGLE) {
-        	nessPlayer.setViolation(new Violation("Scaffold", "HighAngle"), event);
+			if(player().setViolation(new Violation("Scaffold", "HighAngle"))) event.setCancelled(true);
         }
     }
 

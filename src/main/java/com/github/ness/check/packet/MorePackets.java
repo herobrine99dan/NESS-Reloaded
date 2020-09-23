@@ -46,7 +46,7 @@ public class MorePackets extends AbstractCheck<ReceivedPacketEvent> {
              * sender.teleport(OldMovementChecks.safeLoc.getOrDefault(sender,
              * sender.getLocation())); } }.runTask(NESSAnticheat.main);
              */
-            np.setViolation(new Violation("MorePackets", normalPacketsCounter + ""), e);
+        	if(player().setViolation(new Violation("MorePackets", Integer.toString(normalPacketsCounter)))) e.setCancelled(true);
         }
     }
 }

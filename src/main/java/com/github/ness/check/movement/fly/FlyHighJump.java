@@ -53,7 +53,7 @@ public class FlyHighJump extends AbstractCheck<PlayerMoveEvent> {
 			double jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
 			max += jumpBoost * (max / 2);
 			if (flyYSum > max && p.getVelocity().getY() < 0) {
-				nessPlayer.setViolation(new Violation("Fly", "HighJump ySum: " + flyYSum), e);
+	        	if(player().setViolation(new Violation("Fly", "HighJump ySum: " + flyYSum))) e.setCancelled(true);
 			}
 		}
 	}

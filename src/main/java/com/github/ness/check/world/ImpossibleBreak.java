@@ -10,19 +10,18 @@ import com.github.ness.check.CheckInfo;
 
 public class ImpossibleBreak extends AbstractCheck<BlockBreakEvent> {
 
-    
-	public static final CheckInfo<BlockBreakEvent> checkInfo = CheckInfo
-			.eventOnly(BlockBreakEvent.class);
+	public static final CheckInfo<BlockBreakEvent> checkInfo = CheckInfo.eventOnly(BlockBreakEvent.class);
 
 	public ImpossibleBreak(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
 	}
 
-    @Override
-    protected void checkEvent(BlockBreakEvent event) {
-        if (event.getBlock().isLiquid()) {
-            player().setViolation(new Violation("ImpossibleBreak", event.getPlayer().getName() + " isn't a god"), event);
-        }
+	@Override
+	protected void checkEvent(BlockBreakEvent event) {
+		if (event.getBlock().isLiquid()) {
+			if (player().setViolation(new Violation("ImpossibleBreak", event.getPlayer().getName() + " isn't a god")))
+				event.setCancelled(true);
+		}
 //		Block target = player.getTargetBlock((Set<Material>) null, 5);
 //		boolean bypass = false;
 //		if (!event.getBlock().getLocation().equals(target.getLocation()) && target.getType().isSolid()
@@ -41,6 +40,6 @@ public class ImpossibleBreak extends AbstractCheck<BlockBreakEvent> {
 //						"&9Dev> &7type: " + target.getType() + " Solid: " + MSG.TorF(target.getType().isSolid()));
 //			WarnHacks.warnHacks(player, "Illegal Interaction", 40, 200);
 //		}
-    }
+	}
 
 }
