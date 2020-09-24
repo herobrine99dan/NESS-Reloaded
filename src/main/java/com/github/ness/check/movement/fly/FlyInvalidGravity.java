@@ -12,6 +12,8 @@ import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
+import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
+
 public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
 
     double maxInvalidVelocity;
@@ -21,8 +23,12 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
 
 	public FlyInvalidGravity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
-        this.maxInvalidVelocity = this.ness().getNessConfig().getCheck(this.getClass())
-                .getDouble("maxinvalidvelocity", 0.9);
+        this.maxInvalidVelocity = this.ness().getMainConfig().getCheckSection().fly().maxGravity();
+	}
+	
+	public interface Config {
+		@DefaultDouble(0.9)
+		double maxGravity();
 	}
 
     @Override

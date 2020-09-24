@@ -12,6 +12,8 @@ import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.Utility;
 
+import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
+
 public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
 
     int maxPackets;
@@ -20,9 +22,13 @@ public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
 	int normalPacketsCounter; // For MorePackets
 	public MorePackets(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
 		super(factory, player);
-        this.maxPackets = this.ness().getNessConfig().getCheck(this.getClass())
-                .getInt("maxpackets", 65);
+        this.maxPackets = this.ness().getMainConfig().getCheckSection().morePackets().maxPackets();
         normalPacketsCounter = -5;
+	}
+	
+	public interface Config {
+		@DefaultInteger(65)
+		int maxPackets();
 	}
 
     @Override

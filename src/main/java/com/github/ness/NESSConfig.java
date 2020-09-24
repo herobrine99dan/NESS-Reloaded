@@ -73,7 +73,7 @@ public class NESSConfig {
         return getViolationHandling().getConfigurationSection("notify-staff");
     }
 
-    public ConfigurationSection getCheck(Class<?> check) {
+    public ConfigurationSection getChec(Class<?> check) {
         return config.getConfigurationSection("checks." + check.getSimpleName().toLowerCase());
     }
 }

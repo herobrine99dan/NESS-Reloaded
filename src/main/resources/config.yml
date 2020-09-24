@@ -199,9 +199,9 @@ checks:
 # Effectiveness: High
 #
   fastladder:
-    maxdist: 0.155
+    maxdist: 0.21
 #
-# FastLadder
+# FastPlace
 #
 # Check if a player place too many blocks in a seconds
 #

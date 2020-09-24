@@ -11,6 +11,8 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 
+import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
+
 public class FastPlace extends ListeningCheck<BlockPlaceEvent> {
 
     int max;
@@ -20,9 +22,13 @@ public class FastPlace extends ListeningCheck<BlockPlaceEvent> {
 
 	public FastPlace(ListeningCheckFactory<?, BlockPlaceEvent> factory, NessPlayer player) {
 		super(factory, player);
-	      this.max = this.ness().getNessConfig().getCheck(this.getClass())
-	                .getInt("maxblockplaced", 14);
+	      this.max = this.ness().getMainConfig().getCheckSection().fastPlace().max();
 	      blockPlace = 0;
+	}
+	
+	public interface Config {
+		@DefaultInteger(10)
+		int max();
 	}
 
     @Override

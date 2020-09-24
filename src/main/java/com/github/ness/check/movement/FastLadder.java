@@ -12,6 +12,8 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.utility.Utility;
 
+import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
+
 public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
 
     double maxDist;
@@ -21,8 +23,12 @@ public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
 
 	public FastLadder(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
-        this.maxDist = this.ness().getNessConfig().getCheck(this.getClass())
-                .getDouble("maxdist", 0.201D);
+        this.maxDist = this.ness().getMainConfig().getCheckSection().fastLadder().maxDist();
+	}
+	
+	public interface Config {
+		@DefaultDouble(0.21)
+		double maxDist();
 	}
 
     @Override

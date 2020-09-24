@@ -11,17 +11,16 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
 public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 
-    double maxdist;
 	public static final ListeningCheckInfo<InventoryClickEvent> checkInfo = CheckInfos
 			.forEvent(InventoryClickEvent.class);
 
 	public InventoryHack(ListeningCheckFactory<?, InventoryClickEvent> factory, NessPlayer player) {
 		super(factory, player);
-        this.maxdist = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("maxdist", 0.1);
 	}
 
     @Override
@@ -39,6 +38,9 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
     public void Check(InventoryClickEvent e) {
         if (e.getWhoClicked() instanceof Player) {
             Player player = (Player) e.getWhoClicked();
+            if(player().nanoTimeDifference(PlayerAction.DAMAGE) < 1500 || player().nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
+            	return;
+            }
             if (Utility.hasflybypass(player) || this.player().isTeleported()) {
                 return;
             }
@@ -50,7 +52,7 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
                 Bukkit.getScheduler().runTaskLater(this.ness(), () -> {
                     Location to = player.getLocation();
                     double distance = (Math.abs(to.getX() - from.getX())) + (Math.abs(to.getZ() - from.getZ()));
-                    if (distance > maxdist) {
+                    if (distance > 0.15) {
                     	if(player().setViolation(new Violation("InventoryHack", "Dist: " + distance))) e.setCancelled(true);
 
                     }

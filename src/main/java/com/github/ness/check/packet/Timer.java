@@ -10,6 +10,8 @@ import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.Utility;
 
+import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
+
 public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 	private double MAX_PACKETS_PER_TICK = 1.12;
 
@@ -21,7 +23,12 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 
 	public Timer(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
 		super(factory, player);
-		this.MAX_PACKETS_PER_TICK = this.ness().getNessConfig().getCheck(Timer.class).getDouble("maxpackets", 1.12);
+		this.MAX_PACKETS_PER_TICK = this.ness().getMainConfig().getCheckSection().timer().maxpackets();
+	}
+	
+	public interface Config {
+		@DefaultDouble(1.12)
+		double maxpackets();
 	}
 
 	/**

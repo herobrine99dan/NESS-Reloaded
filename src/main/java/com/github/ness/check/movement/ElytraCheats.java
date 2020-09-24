@@ -10,6 +10,8 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 
+import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
+
 public class ElytraCheats extends ListeningCheck<PlayerMoveEvent> {
 
     double maxXZDiff;
@@ -20,10 +22,15 @@ public class ElytraCheats extends ListeningCheck<PlayerMoveEvent> {
 
 	public ElytraCheats(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
-        this.maxYDiff = this.ness().getNessConfig().getCheck(this.getClass())
-                .getDouble("maxxzdiff", 1.5);
-        this.maxXZDiff = this.ness().getNessConfig().getCheck(this.getClass())
-                .getDouble("maxydiff", 1);
+        this.maxYDiff = this.ness().getMainConfig().getCheckSection().elytraCheats().maxYDiff();
+        this.maxXZDiff = this.ness().getMainConfig().getCheckSection().elytraCheats().maxXZDiff();
+	}
+	
+	public interface Config {
+		@DefaultDouble(1.5)
+		double maxXZDiff();
+		@DefaultDouble(1)
+		double maxYDiff();
 	}
 
     @Override

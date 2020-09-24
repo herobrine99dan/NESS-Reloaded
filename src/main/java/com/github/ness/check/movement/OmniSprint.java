@@ -14,15 +14,10 @@ import com.github.ness.packets.ReceivedPacketEvent;
 
 public class OmniSprint extends ListeningCheck<ReceivedPacketEvent> {
 
-	double maxXZDiff;
-	double maxYDiff;
-
 	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos.forEvent(ReceivedPacketEvent.class);
 
 	public OmniSprint(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
 		super(factory, player);
-		this.maxYDiff = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("maxxzdiff", 1.5);
-		this.maxXZDiff = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("maxydiff", 1);
 	}
 
 	@Override
