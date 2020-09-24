@@ -10,14 +10,11 @@ import java.util.Objects;
  */
 public final class Infraction {
 
-	private final String check;
+	private final AnticheatCheck check;
 	private final int count;
 	
-	private Infraction(String check, int count) {
+	private Infraction(AnticheatCheck check, int count) {
 		Objects.requireNonNull(check, "check");
-		if (check.isEmpty()) {
-			throw new IllegalArgumentException("Check must not be empty");
-		}
 		this.check = check;
 		if (count <= 0) {
 			throw new IllegalArgumentException("Count must be positive");
@@ -32,9 +29,9 @@ public final class Infraction {
 	 * @param count the violation count
 	 * @return the infraction
 	 * @throws NullPointerException if {@code check} is null
-	 * @throws IllegalArgumentException if {@code check} is empty or {@count} is negative or zero
+	 * @throws IllegalArgumentException if {@count} is negative or zero
 	 */
-	public static Infraction of(String check, int count) {
+	public static Infraction of(AnticheatCheck check, int count) {
 		return new Infraction(check, count);
 	}
 
@@ -43,7 +40,7 @@ public final class Infraction {
 	 * 
 	 * @return the check name
 	 */
-	public String getCheck() {
+	public AnticheatCheck getCheck() {
 		return check;
 	}
 

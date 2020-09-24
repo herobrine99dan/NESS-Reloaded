@@ -11,11 +11,13 @@ import java.util.concurrent.TimeUnit;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Infraction;
+import com.github.ness.api.NESSApi;
 import com.github.ness.api.ViolationTrigger;
 import com.github.ness.api.ViolationTrigger.SynchronisationContext;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.ServicePriority;
 
 public class ViolationManager {
 
@@ -33,7 +35,8 @@ public class ViolationManager {
 	}
 
 	String addViolationVariables(String message, Player player, Infraction infraction) {
-		String replaced = message.replace("%PLAYER%", player.getName()).replace("%HACK%", infraction.getCheck())
+		String replaced = message.replace("%PLAYER%", player.getName())
+				.replace("%HACK%", infraction.getCheck().getCheckName())
 				.replace("%VIOLATIONS%", Integer.toString(infraction.getCount()));
 		return ChatColor.translateAlternateColorCodes('&', replaced);
 	}
@@ -41,6 +44,8 @@ public class ViolationManager {
 	public void initiate() {
 		addDefaultTriggers();
 		initiatePeriodicTask();
+
+		ness.getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(ness), ness, ServicePriority.Low);
 	}
 
 	private void addDefaultTriggers() {
@@ -77,24 +82,24 @@ public class ViolationManager {
 		Set<ViolationTrigger> syncTriggers = triggers.get(SynchronisationContext.FORCE_SYNC);
 		if (!syncTriggers.isEmpty()) {
 			ness.getServer().getScheduler().runTask(ness, () -> {
-				for (ViolationTrigger trigger : syncTriggers) {
+				syncTriggers.forEach((trigger) -> {
 					trigger.trigger(nessPlayer.getPlayer(), infraction);
-				}
+				});
 			});
 		}
 
 		Set<ViolationTrigger> asyncTriggers = triggers.get(SynchronisationContext.FORCE_ASYNC);
 		if (!asyncTriggers.isEmpty()) {
 			ness.getServer().getScheduler().runTaskAsynchronously(ness, () -> {
-				for (ViolationTrigger trigger : asyncTriggers) {
+				asyncTriggers.forEach((trigger) -> {
 					trigger.trigger(nessPlayer.getPlayer(), infraction);
-				}
+				});
 			});
 		}
 
-		for (ViolationTrigger anywhere : triggers.get(SynchronisationContext.EITHER)) {
-			anywhere.trigger(nessPlayer.getPlayer(), infraction);
-		}
+		triggers.get(SynchronisationContext.EITHER).forEach((trigger) -> {
+			trigger.trigger(nessPlayer.getPlayer(), infraction);
+		});
 	}
 
 }

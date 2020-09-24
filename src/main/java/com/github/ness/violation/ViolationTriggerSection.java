@@ -114,10 +114,9 @@ public interface ViolationTriggerSection {
 					if (nessPlayer == null) {
 						return;
 					}
-					// TODO: Deprecate PlayerPunishEvent
-					@SuppressWarnings("deprecation")
+
 					PlayerPunishEvent event = new PlayerPunishEvent(player, nessPlayer,
-							new com.github.ness.api.Violation(infraction.getCheck(), ""), infraction.getCount(), cmd);
+							ViolationMigratorUtil.violationFromInfraction(infraction), infraction.getCount(), cmd);
 					ness.getServer().getPluginManager().callEvent(event);
 					if (event.isCancelled()) {
 						return;

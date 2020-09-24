@@ -54,7 +54,7 @@ public class Check extends BaseCheck {
 	
 	int flag0() {
 		int violations = this.violations.getAndIncrement();
-		nessPlayer.getInfractions().add(Infraction.of(getFactory().getCheckName(), violations));
+		nessPlayer.getInfractions().add(Infraction.of(getFactory(), violations));
 		return violations;
 	}
 
