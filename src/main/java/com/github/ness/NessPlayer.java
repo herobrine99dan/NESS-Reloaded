@@ -9,9 +9,11 @@ import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.bukkit.Bukkit;
@@ -23,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.github.ness.api.Infraction;
 import com.github.ness.api.Violation;
 import com.github.ness.api.impl.PlayerViolationEvent;
 import com.github.ness.data.ImmutableLoc;
@@ -39,12 +42,20 @@ public class NessPlayer implements AutoCloseable {
 	/**
 	 * Used by ViolationManager to count violations of specific checks. <br>
 	 * This map is synchronized and thread safe
+	 * 
+	 * @deprecated This is no longer how infractions are tracked
 	 */
+	@Deprecated
 	public final Map<String, Integer> checkViolationCounts = new ConcurrentHashMap<>();
 	/**
 	 * Player's current violation, package visibility for ViolationManager to use
+	 * 
+	 * @deprecated This is no longer how infractions are tracked
 	 */
+	@Deprecated
 	public final AtomicReference<Violation> violation = new AtomicReference<>();
+	
+	private final Queue<Infraction> infractions = new ConcurrentLinkedQueue<>();
 
 	/**
 	 * Player UUID
@@ -95,6 +106,15 @@ public class NessPlayer implements AutoCloseable {
 
 	public UUID getUUID() {
 		return uuid;
+	}
+	
+	/**
+	 * Gets the queue of infractions. This should not normally be used
+	 * 
+	 * @return
+	 */
+	public Queue<Infraction> getInfractions() {
+		return infractions;
 	}
 
 	/*

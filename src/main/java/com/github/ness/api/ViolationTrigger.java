@@ -24,14 +24,12 @@ public interface ViolationTrigger {
 	/**
 	 * Called when a player is detected for cheating. <br>
 	 * <br>
-     * The total number of times the player has violated the check in question
-     * (from <code>Violation.getCheck()</code>) is given as <i>violationCount</i>.
+     * The infraction gives both the name of the check and the amount of times it has been violated
 	 * 
 	 * @param player the player
-	 * @param violation the violation
-	 * @param violationCount the amount of times this specific check has been flagged
+	 * @param infraction the infraction
 	 */
-	void actOn(Player player, Violation violation, int violationCount);
+	void trigger(Player player, Infraction infraction);
 	
 	/**
 	 * The context in which a trigger may run

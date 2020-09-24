@@ -4,13 +4,14 @@ import java.awt.Color;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
+import com.github.ness.api.Infraction;
 import com.github.ness.api.ViolationTrigger;
 import com.github.ness.api.impl.PlayerPunishEvent;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
 import space.arim.dazzleconf.annote.ConfKey;
+import space.arim.dazzleconf.annote.ConfComment;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultString;
@@ -19,13 +20,18 @@ import org.bukkit.entity.Player;
 
 public interface ViolationTriggerSection {
 
-	@DefaultBoolean(true)
-	boolean enable();
+	default boolean enable() {
+		return violations() != -1;
+	}
+	
+	@ConfComment("The amount of violations of a check after which to trigger this action. (-1 to disable)")
+	int violations();
 	
 	ViolationTrigger toTrigger(ViolationManager manager, NESSAnticheat ness);
 	
 	interface NotifyStaff extends ViolationTriggerSection {
-
+		
+		@Override
 		@DefaultInteger(6)
 		int violations();
 		
@@ -56,15 +62,16 @@ public interface ViolationTriggerSection {
 			return new ViolationTrigger() {
 
 				@Override
-				public void actOn(Player player, Violation violation, int violationCount) {
-					if (violationCount < violations()) {
+				public void trigger(Player player, Infraction infraction) {
+					if (infraction.getCount() < violations()) {
 						return;
 					}
-					String notif = manager.addViolationVariables(notification(), player, violation, violationCount);
+					String notif = manager.addViolationVariables(notification(), player, infraction);
 
 					NessPlayer nessPlayer = ness.getCheckManager().getExistingPlayer(player);
 					if (nessPlayer != null) {
-						nessPlayer.sendWebhook(violation, violationCount);
+						// TODO: Change this to Infraction
+						//nessPlayer.sendWebhook(violation, violationCount);
 					}
 					if (bungeecord()) {
 						ByteArrayDataOutput out = ByteStreams.newDataOutput();
@@ -85,6 +92,7 @@ public interface ViolationTriggerSection {
 	
 	interface ExecuteCommand extends ViolationTriggerSection {
 		
+		@Override
 		@DefaultInteger(20)
 		int violations();
 		
@@ -97,21 +105,49 @@ public interface ViolationTriggerSection {
 			return new ViolationTrigger() {
 
 				@Override
-				public void actOn(Player player, Violation violation, int violationCount) {
-					if (violationCount < violations()) {
+				public void trigger(Player player, Infraction infraction) {
+					if (infraction.getCount() < violations()) {
 						return;
 					}
-					String cmd = manager.addViolationVariables(command(), player, violation, violationCount);
+					String cmd = manager.addViolationVariables(command(), player, infraction);
 					NessPlayer nessPlayer = ness.getCheckManager().getExistingPlayer(player);
 					if (nessPlayer == null) {
 						return;
 					}
-					PlayerPunishEvent event = new PlayerPunishEvent(player, nessPlayer, violation, violationCount, cmd);
+					// TODO: Deprecate PlayerPunishEvent
+					@SuppressWarnings("deprecation")
+					PlayerPunishEvent event = new PlayerPunishEvent(player, nessPlayer,
+							new com.github.ness.api.Violation(infraction.getCheck(), ""), infraction.getCount(), cmd);
 					ness.getServer().getPluginManager().callEvent(event);
 					if (event.isCancelled()) {
 						return;
 					}
 					ness.getServer().dispatchCommand(ness.getServer().getConsoleSender(), cmd);
+				}
+				
+			};
+		}
+		
+	}
+	
+	interface CancelEvent extends ViolationTriggerSection {
+		
+		@Override
+		@DefaultInteger(3)
+		int violations();
+		
+		@Override
+		default ViolationTrigger toTrigger(ViolationManager manager, NESSAnticheat ness) {
+			return new ViolationTrigger() {
+				
+				@Override
+				public SynchronisationContext context() {
+					return SynchronisationContext.EITHER;
+				}
+
+				@Override
+				public void trigger(Player player, Infraction infraction) {
+					
 				}
 				
 			};

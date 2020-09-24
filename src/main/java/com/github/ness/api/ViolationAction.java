@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
  *             synchronisation context of the trigger
  */
 @Deprecated
-public abstract class ViolationAction implements ViolationTrigger {
+public abstract class ViolationAction {
 
 	private final boolean canRunAsync;
 
@@ -43,11 +43,6 @@ public abstract class ViolationAction implements ViolationTrigger {
 		return canRunAsync;
 	}
 
-	@Override
-	public SynchronisationContext context() {
-		return (canRunAsync) ? SynchronisationContext.FORCE_ASYNC : SynchronisationContext.FORCE_SYNC;
-	}
-
 	/**
 	 * Called when a player is detected for cheating. <br>
 	 * The total number of times the player has violated the check in question (from
@@ -58,7 +53,6 @@ public abstract class ViolationAction implements ViolationTrigger {
 	 * @param violationCount the number of times the player has violated the
 	 *                       specific check
 	 */
-	@Override
-	public abstract void actOn(Player player, Violation violation, int violationCount);
+	public abstract void actOn(Player player, @SuppressWarnings("deprecation") Violation violation, int violationCount);
 
 }

@@ -14,12 +14,10 @@ public interface NESSApi {
 	 * See {@link ViolationAction}
 	 *
 	 * @param action the violation action
-	 * @deprecated Use {@link #addViolationTrigger(ViolationTrigger)}
+	 * @deprecated Use {@link #addViolationTrigger(ViolationTrigger)} and {@link ViolationTrigger}
 	 */
 	@Deprecated
-	default void addViolationAction(@SuppressWarnings("deprecation") ViolationAction action) {
-		addViolationTrigger(action);
-	}
+	void addViolationAction(@SuppressWarnings("deprecation") ViolationAction action);
 
 	/**
 	 * Adds a violation trigger which is run when a player is detected for a cheat

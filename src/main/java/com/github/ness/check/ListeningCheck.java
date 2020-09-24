@@ -1,7 +1,9 @@
 package com.github.ness.check;
 
 import com.github.ness.NessPlayer;
+import com.github.ness.violation.ViolationTriggerSection.CancelEvent;
 
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 
 /**
@@ -12,7 +14,7 @@ import org.bukkit.event.Event;
  * @param <E> the event type
  */
 public abstract class ListeningCheck<E extends Event> extends Check {
-
+	
 	protected ListeningCheck(ListeningCheckFactory<?, E> factory, NessPlayer nessPlayer) {
 		super(factory, nessPlayer);
 	}
@@ -31,5 +33,18 @@ public abstract class ListeningCheck<E extends Event> extends Check {
 	 * @param evt        the event
 	 */
 	protected abstract void checkEvent(E evt);
+	
+	/**
+	 * Flags the player for cheating, and cancels the event if the violation count is too high (when configured)
+	 * 
+	 * @param evt the event to cancel
+	 */
+	protected void flagEvent(Cancellable evt) {
+		int violations = flag0();
+		CancelEvent cancelEvent = getFactory().getCheckManager().getNess().getMainConfig().getViolationHandling().cancelEvent();
+		if (cancelEvent.enable() && violations >= cancelEvent.violations()) {
+			evt.setCancelled(true);
+		}
+	}
 
 }

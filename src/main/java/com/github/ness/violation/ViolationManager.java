@@ -3,13 +3,14 @@ package com.github.ness.violation;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
+import com.github.ness.api.Infraction;
 import com.github.ness.api.ViolationTrigger;
 import com.github.ness.api.ViolationTrigger.SynchronisationContext;
 
@@ -31,9 +32,9 @@ public class ViolationManager {
 		}
 	}
 
-	String addViolationVariables(String message, Player player, Violation violation, int violationCount) {
-		String replaced = message.replace("%PLAYER%", player.getName()).replace("%HACK%", violation.getCheck())
-				.replace("%VIOLATIONS%", Integer.toString(violationCount));
+	String addViolationVariables(String message, Player player, Infraction infraction) {
+		String replaced = message.replace("%PLAYER%", player.getName()).replace("%HACK%", infraction.getCheck())
+				.replace("%VIOLATIONS%", Integer.toString(infraction.getCount()));
 		return ChatColor.translateAlternateColorCodes('&', replaced);
 	}
 
@@ -61,26 +62,23 @@ public class ViolationManager {
 	private void initiatePeriodicTask() {
 		ness.getExecutor().scheduleWithFixedDelay(() -> {
 			ness.getCheckManager().forEachPlayer((player) -> {
-				cascadeViolations(player);
+
+				Queue<Infraction> infractions = player.getInfractions();
+				Infraction infraction;
+				while ((infraction = infractions.poll()) != null) {
+					cascadeViolations(player, infraction);
+				}
 			});
 		}, 1L, 1L, TimeUnit.SECONDS);
 	}
 
-	private void cascadeViolations(NessPlayer player) {
-		// Atomicaly get the existing violation and set it to null
-		final Violation previous = player.violation.getAndSet(null);
-		if (previous == null) {
-			return;
-		}
-
-		Map<String, Integer> checkViolationCounts = player.checkViolationCounts;
-		int violationCount = checkViolationCounts.get(previous.getCheck());
+	private void cascadeViolations(NessPlayer nessPlayer, Infraction infraction) {
 
 		Set<ViolationTrigger> syncTriggers = triggers.get(SynchronisationContext.FORCE_SYNC);
 		if (!syncTriggers.isEmpty()) {
 			ness.getServer().getScheduler().runTask(ness, () -> {
 				for (ViolationTrigger trigger : syncTriggers) {
-					trigger.actOn(player.getPlayer(), previous, violationCount);
+					trigger.trigger(nessPlayer.getPlayer(), infraction);
 				}
 			});
 		}
@@ -89,13 +87,13 @@ public class ViolationManager {
 		if (!asyncTriggers.isEmpty()) {
 			ness.getServer().getScheduler().runTaskAsynchronously(ness, () -> {
 				for (ViolationTrigger trigger : asyncTriggers) {
-					trigger.actOn(player.getPlayer(), previous, violationCount);
+					trigger.trigger(nessPlayer.getPlayer(), infraction);
 				}
 			});
 		}
 
 		for (ViolationTrigger anywhere : triggers.get(SynchronisationContext.EITHER)) {
-			anywhere.actOn(player.getPlayer(), previous, violationCount);
+			anywhere.trigger(nessPlayer.getPlayer(), infraction);
 		}
 	}
 
