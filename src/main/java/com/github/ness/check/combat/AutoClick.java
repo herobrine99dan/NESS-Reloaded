@@ -50,7 +50,7 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 		conf = manager().getNess().getMainConfig().getCheckSection().autoClick();
 	}
 	
-	public static interface CheckConf {
+	public interface CheckConf {
 		
 		@ConfKey("total-retention-secs")
 		@ConfComment("Clicks older than this are completely ignored")
