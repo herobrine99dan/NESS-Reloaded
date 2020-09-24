@@ -8,6 +8,7 @@ import space.arim.dazzleconf.annote.ConfDefault.DefaultStrings;
 import java.util.List;
 
 import com.github.ness.antibot.AntiBotConfig;
+import com.github.ness.check.combat.AutoClicker;
 import com.github.ness.violation.ViolationHandling;
 
 import space.arim.dazzleconf.annote.ConfKey;
