@@ -57,6 +57,11 @@ public class Check extends BaseCheck {
 		}
 	}
 	
+	/**
+	 * Flags and gets the violation count
+	 * 
+	 * @return the updated violation count
+	 */
 	int flag0() {
 		int violations = this.violations.getAndIncrement();
 		nessPlayer.getInfractions().add(Infraction.of(getFactory(), violations));
@@ -68,6 +73,10 @@ public class Check extends BaseCheck {
 		PlayerFlagEvent flagEvent = new PlayerFlagEvent(nessPlayer, getFactory());
 		plugin.getServer().getPluginManager().callEvent(flagEvent);
 		return !flagEvent.isCancelled();
+	}
+	
+	int currentViolationCount() {
+		return violations.get();
 	}
 
 }

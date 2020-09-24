@@ -1,5 +1,8 @@
 package com.github.ness.api;
 
+import java.util.Collection;
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 
 /**
@@ -26,13 +29,37 @@ public interface NESSApi {
 	 * @throws NullPointerException if {@code trigger} is null
 	 */
 	void addViolationTrigger(ViolationTrigger trigger);
+	
+	/**
+	 * Gets an immutable copy of all anticheat checks
+	 * 
+	 * @return an immutable collection copy of all anticheat checks
+	 */
+	Collection<? extends AnticheatCheck> getAllChecks();
+	
+	/**
+	 * Gets an immutable copy of all anticheat players
+	 * 
+	 * @return an immutable copy of all anticheat players
+	 */
+	Collection<? extends AnticheatPlayer> getAllPlayers();
+
+	/**
+	 * Gets an anticheat player by UUID
+	 * 
+	 * @param UUID the player UUID
+	 * @return an anticheat player with the UUID
+	 */
+	AnticheatPlayer getPlayer(UUID uuid);
 
 	/**
 	 * Flag a player for a cheat
 	 *
 	 * @param violation the cause
 	 * @param player    the player to flag
+	 * @deprecated Use {@link AnticheatCheck#flagHack(AnticheatPlayer)}
 	 */
-	void flagHack(Violation violation, Player player);
+	@Deprecated
+	void flagHack(@SuppressWarnings("deprecation") Violation violation, Player player);
 
 }

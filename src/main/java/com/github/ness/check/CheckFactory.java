@@ -12,6 +12,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import com.github.ness.NessPlayer;
+import com.github.ness.api.AnticheatPlayer;
+import com.github.ness.api.FlagResult;
 
 /**
  * Check factory for all per player checks
@@ -57,6 +59,10 @@ public class CheckFactory<C extends Check> extends BaseCheckFactory<C> {
 		return checks.values();
 	}
 	
+	/*
+	 * Framework infrastructure
+	 */
+	
 	private void checkAsyncPeriodic() {
 		if (!started()) {
 			return;
@@ -75,6 +81,49 @@ public class CheckFactory<C extends Check> extends BaseCheckFactory<C> {
 	void removeCheck(NessPlayer nessPlayer) {
 		checks.remove(nessPlayer.getUniqueId());
 	}
+	
+	/*
+	 * API methods
+	 */
+	
+	private C getCheck(AnticheatPlayer player) {
+		if (!(player instanceof NessPlayer)) {
+			// Foreign implementation
+			return null;
+		}
+		return checks.get(player.getUniqueId());
+	}
+	
+	@Override
+	public int getViolationCountFor(AnticheatPlayer player) {
+		C check = getCheck(player);
+		if (check == null) {
+			return -1;
+		}
+		return check.currentViolationCount();
+	}
+	
+	@Override
+	public FlagResult flagHack(AnticheatPlayer player) {
+		C check = getCheck(player);
+		if (check == null) {
+			return FlagResult.notTracking();
+		}
+		if (!check.callFlagEvent()) {
+			return FlagResult.eventCancelled();
+		}
+		int violations = check.flag0();
+		return FlagResult.success(violations);
+	}
+	
+	@Override
+	public boolean isTracking(AnticheatPlayer player) {
+		return getCheck(player) != null;
+	}
+	
+	/*
+	 * Start and stop
+	 */
 	
 	@Override
 	protected synchronized void start() {

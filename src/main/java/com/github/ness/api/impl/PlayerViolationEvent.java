@@ -10,6 +10,13 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+/**
+ * Called when a player violates a check
+ * 
+ * @deprecated Use the {@link PlayerFlagEvent} instead
+ */
+@SuppressWarnings("deprecation")
+@Deprecated
 public class PlayerViolationEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();

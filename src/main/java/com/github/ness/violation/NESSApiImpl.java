@@ -1,7 +1,12 @@
 package com.github.ness.violation;
 
+import java.util.Collection;
+import java.util.UUID;
+
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
+import com.github.ness.api.AnticheatCheck;
+import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.NESSApi;
 import com.github.ness.api.ViolationTrigger;
 
@@ -27,13 +32,29 @@ final class NESSApiImpl implements NESSApi {
         ness.getViolationManager().addTrigger(trigger);
     }
 
-    @Override
-    public void flagHack(@SuppressWarnings("deprecation") com.github.ness.api.Violation violation, Player player) {
+    @SuppressWarnings("deprecation")
+	@Override
+    public void flagHack(com.github.ness.api.Violation violation, Player player) {
         NessPlayer nessPlayer = ness.getCheckManager().getExistingPlayer(player);
         if (nessPlayer == null) {
         	return;
         }
         nessPlayer.setViolation(violation);
     }
+
+	@Override
+	public Collection<? extends AnticheatCheck> getAllChecks() {
+		return ness.getCheckManager().getAllChecks();
+	}
+
+	@Override
+	public Collection<? extends AnticheatPlayer> getAllPlayers() {
+		return ness.getCheckManager().getAllPlayers();
+	}
+
+	@Override
+	public AnticheatPlayer getPlayer(UUID uuid) {
+		return ness.getCheckManager().getPlayer(uuid);
+	}
 
 }

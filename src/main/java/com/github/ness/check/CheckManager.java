@@ -2,6 +2,7 @@ package com.github.ness.check;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import com.github.benmanes.caffeine.cache.Scheduler;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
+import com.github.ness.api.NESSApi;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -53,6 +55,50 @@ public class CheckManager {
 		ness.getServer().getPluginManager().registerEvents(coreListener, ness);
 
 		return loadFactories(() -> {});
+	}
+	
+	/**
+	 * Implements {@link NESSApi#getAllChecks()}
+	 * 
+	 * @return all checks
+	 */
+	public Collection<CheckFactory<?>> getAllChecks() {
+		Set<CheckFactory<?>> result = new HashSet<>();
+		for (BaseCheckFactory<?> factory : checkFactories) {
+			if (factory instanceof CheckFactory) {
+				result.add((CheckFactory<?>) factory);
+			}
+		}
+		return Collections.unmodifiableSet(result);
+	}
+	
+	/**
+	 * Implements {@link NESSApi#getAllPlayers()}
+	 * 
+	 * @return all ness players
+	 */
+	public Collection<NessPlayer> getAllPlayers() {
+		Set<NessPlayer> result = new HashSet<>();
+		for (CompletableFuture<NessPlayerData> playerData  : playerCache.asMap().values()) {
+			if (playerData.isDone()) {
+				result.add(playerData.join().getNessPlayer());
+			}
+		}
+		return Collections.unmodifiableSet(result);
+	}
+	
+	/**
+	 * Implements {@link NESSApi#getPlayer(UUID)}
+	 * 
+	 * @param uuid the player UUID
+	 * @return the ness player
+	 */
+	public NessPlayer getPlayer(UUID uuid) {
+		CompletableFuture<NessPlayerData> playerData = playerCache.getIfPresent(uuid);
+		if (playerData.isDone()) {
+			return playerData.join().getNessPlayer();
+		}
+		return null;
 	}
 	
 	public CompletableFuture<?> reload() {

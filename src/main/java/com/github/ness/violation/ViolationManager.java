@@ -49,7 +49,8 @@ public class ViolationManager {
 		addDefaultTriggers();
 		periodicTask = initiatePeriodicTask();
 
-		ness.getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(ness), ness, ServicePriority.Low);
+		ness.getPlugin().getServer().getServicesManager()
+				.register(NESSApi.class, new NESSApiImpl(ness), ness, ServicePriority.Low);
 	}
 
 	private void addDefaultTriggers() {
