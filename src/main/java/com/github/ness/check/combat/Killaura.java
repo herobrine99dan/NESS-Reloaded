@@ -10,6 +10,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
@@ -115,7 +116,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	}
 
 	public void Check4(EntityDamageByEntityEvent e) {
-		if (e.getDamager() instanceof Player) {
+		if (e.getDamager() instanceof Player && e.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
 			if (e.getEntity().getEntityId() == e.getDamager().getEntityId()) {
 				punish(e, (Player) e.getDamager(), "SelfHit");
 			}
