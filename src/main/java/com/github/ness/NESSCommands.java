@@ -30,8 +30,6 @@ class NESSCommands implements CommandExecutor {
 		switch (arg) {
 		case "reload":
 			return "ness.command.reload";
-		case "report":
-			return "ness.command.report";
 		case "violations":
 			return "ness.command.violations";
 		case "clear":
@@ -197,7 +195,6 @@ class NESSCommands implements CommandExecutor {
 		sendMessage(sender, "/ness violations <player> - Show violations for a player");
 		sendMessage(sender, "/ness clear <player> - Clear player violations");
 		sendMessage(sender, "/ness version - View the NESS Reloaded Version");
-		sendMessage(sender, "/ness report <player> <reason> - Send a report to staffers");
 		sendMessage(sender, "/ness gui - Open a gui where you can see violations of players");
 		sendMessage(sender, "/ness debug - Enable / Disable Debug Mode");
 		sendMessage(sender, "&7Authors: " + String.join(", ", ness.getDescription().getAuthors()));
