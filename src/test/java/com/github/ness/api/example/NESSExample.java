@@ -7,19 +7,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.NESSApi;
 import com.github.ness.api.Violation;
-import com.github.ness.api.impl.NESSApiImpl;
 import com.github.ness.api.impl.PlayerPunishEvent;
 import com.github.ness.api.impl.PlayerViolationEvent;
 
 public class NESSExample extends JavaPlugin implements Listener {
-	NESSApi api;
+	private NESSApi api;
 
 	public void onEnable() {
-		api = new NESSApiImpl(NESSAnticheat.getInstance());
+		api = getServer().getServicesManager().load(NESSApi.class);
+
 		Bukkit.getPluginManager().registerEvents(this, this);
 		api.addViolationAction(new CheaterBurner());
 	}
