@@ -1,20 +1,25 @@
 package com.github.ness.violation;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.util.logging.Level;
 
 import com.github.ness.NESSAnticheat;
+import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
+import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
 import com.github.ness.api.ViolationTrigger;
 import com.github.ness.api.impl.PlayerPunishEvent;
+import com.github.ness.utility.DiscordWebhook;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
-import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.annote.ConfComment;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultString;
+import space.arim.dazzleconf.annote.ConfKey;
 
 import org.bukkit.entity.Player;
 
@@ -47,7 +52,7 @@ public interface ViolationTriggerSection {
 		String discordTitle();
 		
 		@ConfKey("discord-description")
-		@DefaultString("%HACKER% maybe is cheating!") // <hacker> is legacy variable
+		@DefaultString("%HACKER% maybe is cheating!")
 		String discordDescription();
 		
 		@ConfKey("discord-color")
@@ -62,28 +67,56 @@ public interface ViolationTriggerSection {
 			return new ViolationTrigger() {
 
 				@Override
-				public void trigger(Player player, Infraction infraction) {
+				public void trigger(AnticheatPlayer player, Infraction infraction) {
 					if (infraction.getCount() < violations()) {
 						return;
 					}
 					String notif = manager.addViolationVariables(notification(), player, infraction);
 
-					NessPlayer nessPlayer = ness.getCheckManager().getExistingPlayer(player);
-					if (nessPlayer != null) {
-						// TODO: Change this to Infraction
-						//nessPlayer.sendWebhook(violation, violationCount);
-					}
+					// Only we can assume implementation details
+					NessPlayer nessPlayer = (NessPlayer) player;
+					sendWebhook(nessPlayer, infraction);
+
 					if (bungeecord()) {
 						ByteArrayDataOutput out = ByteStreams.newDataOutput();
 						out.writeUTF("NESS-Reloaded");
 						out.writeUTF(notif);
-						player.sendPluginMessage(ness, "BungeeCord", out.toByteArray());
+						player.getPlayer().sendPluginMessage(ness, "BungeeCord", out.toByteArray());
 					}
 					for (Player staff : ness.getServer().getOnlinePlayers()) {
 						if (staff.hasPermission("ness.notify")) {
 							staff.sendMessage(notif);
 						}
 					}
+				}
+				
+				private void sendWebhook(NessPlayer nessPlayer, Infraction infraction) {
+
+					final String webhookurl = discordWebHook();
+					if (webhookurl.isEmpty()) {
+						return;
+					}
+					String hackerName = nessPlayer.getPlayer().getName();
+					ness.getServer().getScheduler().runTaskAsynchronously(ness, () -> {
+
+						DiscordWebhook webhook = new DiscordWebhook(webhookurl);
+
+						DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject()
+								.setTitle(discordTitle())
+								.setDescription(discordDescription().replace("%HACKER%", hackerName))
+								.setColor(discordColor())
+								.addField("Cheater", hackerName, true)
+								.addField("Cheat", infraction.getCheck().getCheckName(), true)
+								.addField("Violations", Integer.toString(infraction.getCount()), false);
+
+						webhook.addEmbed(embed);
+
+						try {
+							webhook.execute();
+						} catch (IOException ex) {
+							NessLogger.getLogger(NotifyStaff.class).log(Level.WARNING, "Unable to send discord webhook", ex);
+						}
+					});
 				}
 			};
 		}
@@ -105,17 +138,16 @@ public interface ViolationTriggerSection {
 			return new ViolationTrigger() {
 
 				@Override
-				public void trigger(Player player, Infraction infraction) {
+				public void trigger(AnticheatPlayer player, Infraction infraction) {
 					if (infraction.getCount() < violations()) {
 						return;
 					}
 					String cmd = manager.addViolationVariables(command(), player, infraction);
-					NessPlayer nessPlayer = ness.getCheckManager().getExistingPlayer(player);
-					if (nessPlayer == null) {
-						return;
-					}
 
-					PlayerPunishEvent event = new PlayerPunishEvent(player, nessPlayer,
+					// Only we can assume implementation details
+					NessPlayer nessPlayer = (NessPlayer) player;
+
+					PlayerPunishEvent event = new PlayerPunishEvent(player.getPlayer(), nessPlayer,
 							ViolationMigratorUtil.violationFromInfraction(infraction), infraction.getCount(), cmd);
 					ness.getServer().getPluginManager().callEvent(event);
 					if (event.isCancelled()) {
@@ -145,9 +177,7 @@ public interface ViolationTriggerSection {
 				}
 
 				@Override
-				public void trigger(Player player, Infraction infraction) {
-					
-				}
+				public void trigger(AnticheatPlayer player, Infraction infraction) {}
 				
 			};
 		}

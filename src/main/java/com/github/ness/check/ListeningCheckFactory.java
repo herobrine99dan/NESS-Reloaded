@@ -122,7 +122,7 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 		
 		@Override
 		public UUID apply(E evt) {
-			return ((ReceivedPacketEvent) evt).getNessPlayer().getUUID();
+			return ((ReceivedPacketEvent) evt).getNessPlayer().getUniqueId();
 		}
 		
 	}

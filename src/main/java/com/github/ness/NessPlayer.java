@@ -1,7 +1,6 @@
 package com.github.ness;
 
 import java.awt.Point;
-import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,19 +24,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
 import com.github.ness.api.Violation;
 import com.github.ness.api.impl.PlayerViolationEvent;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.utility.DiscordWebhook;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
 
-public class NessPlayer implements AutoCloseable {
+public class NessPlayer implements AnticheatPlayer, AutoCloseable {
 
 	/**
 	 * Used by ViolationManager to count violations of specific checks. <br>
@@ -64,7 +62,6 @@ public class NessPlayer implements AutoCloseable {
 	/**
 	 * Bukkit Player corresponding to this NESSPlayer
 	 */
-	@Getter
 	private final Player player;
 	@Getter
 	private final boolean devMode;
@@ -103,7 +100,24 @@ public class NessPlayer implements AutoCloseable {
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
 	}
+	
+	@Override
+	public UUID getUniqueId() {
+		return uuid;
+	}
+	
+	@Override
+	public Player getPlayer() {
+		return player;
+	}
 
+	/**
+	 * Gets the UUID of this ness player
+	 * 
+	 * @return the uuid
+	 * @deprecated Use {@link #getUniqueId()}
+	 */
+	@Deprecated
 	public UUID getUUID() {
 		return uuid;
 	}
@@ -267,40 +281,6 @@ public class NessPlayer implements AutoCloseable {
 				}
 			}
 		}.runTask(NESSAnticheat.getInstance());
-	}
-
-	/**
-	 * This method send a webhook with the violation message to Discord
-	 *
-	 * @param violation
-	 * @param violationCount
-	 */
-	public void sendWebhook(Violation violation, int violationCount) {
-		final String webhookurl = NESSAnticheat.getInstance().getNessConfig().getDiscordWebHook();
-		if (webhookurl == null || webhookurl.isEmpty()) {
-			return;
-		}
-		NESSConfig config = NESSAnticheat.getInstance().getNessConfig();
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				DiscordWebhook webhook = new DiscordWebhook(webhookurl);
-				Player hacker = NessPlayer.this.getPlayer();
-				webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle(config.getDiscordTitle())
-						.setDescription(config.getDiscordDescription().replaceFirst("<hacker>", hacker.getName()))
-						.setColor(config.getDiscordColor()).addField("Cheater", hacker.getName(), true)
-						.addField("Cheat", violation.getCheck() + "(module)".replace("module", violation.getDetails()),
-								true)
-						.addField("VL", Integer.toString(violationCount), false));
-				// webhook.addEmbed(new DiscordWebhook.EmbedObject().setDescription("Player
-				// hacker seems to be use cheat(module)".replace("cheat", hack)
-				// .replace("module", module).replace("hacker", hacker.getName())));
-				try {
-					webhook.execute();
-				} catch (IOException e) {
-				}
-			}
-		}.runTaskAsynchronously(NESSAnticheat.getInstance());
 	}
 
 	@Override

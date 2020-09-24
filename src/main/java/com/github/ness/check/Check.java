@@ -4,6 +4,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Infraction;
+import com.github.ness.api.PlayerFlagEvent;
+
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * A check, associated with a player. Includes an optional async task.
@@ -49,13 +52,22 @@ public class Check extends BaseCheck {
 	 * 
 	 */
 	protected void flag() {
-		flag0();
+		if (callFlagEvent()) {
+			flag0();
+		}
 	}
 	
 	int flag0() {
 		int violations = this.violations.getAndIncrement();
 		nessPlayer.getInfractions().add(Infraction.of(getFactory(), violations));
 		return violations;
+	}
+	
+	boolean callFlagEvent() {
+		JavaPlugin plugin = getFactory().getCheckManager().getNess();
+		PlayerFlagEvent flagEvent = new PlayerFlagEvent(nessPlayer, getFactory());
+		plugin.getServer().getPluginManager().callEvent(flagEvent);
+		return !flagEvent.isCancelled();
 	}
 
 }

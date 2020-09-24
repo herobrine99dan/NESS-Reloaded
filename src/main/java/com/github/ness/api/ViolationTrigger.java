@@ -1,7 +1,5 @@
 package com.github.ness.api;
 
-import org.bukkit.entity.Player;
-
 /**
  * An action which is run when a player is detected for a cheat. <br>
  * Usage: <i>Implement</i> and add it using {@link NESSApi#addViolationTrigger(ViolationTrigger)}.
@@ -26,10 +24,10 @@ public interface ViolationTrigger {
 	 * <br>
      * The infraction gives both the name of the check and the amount of times it has been violated
 	 * 
-	 * @param player the player
+	 * @param player the anticheat player involved
 	 * @param infraction the infraction
 	 */
-	void trigger(Player player, Infraction infraction);
+	void trigger(AnticheatPlayer player, Infraction infraction);
 	
 	/**
 	 * The context in which a trigger may run

@@ -1,6 +1,7 @@
 package com.github.ness.check;
 
 import com.github.ness.NessPlayer;
+import com.github.ness.config.NessConfig;
 import com.github.ness.violation.ViolationTriggerSection.CancelEvent;
 
 import org.bukkit.event.Cancellable;
@@ -40,10 +41,13 @@ public abstract class ListeningCheck<E extends Event> extends Check {
 	 * @param evt the event to cancel
 	 */
 	protected void flagEvent(Cancellable evt) {
-		int violations = flag0();
-		CancelEvent cancelEvent = getFactory().getCheckManager().getNess().getMainConfig().getViolationHandling().cancelEvent();
-		if (cancelEvent.enable() && violations >= cancelEvent.violations()) {
-			evt.setCancelled(true);
+		if (callFlagEvent()) {
+			int violations = flag0();
+			NessConfig config = getFactory().getCheckManager().getNess().getMainConfig();
+			CancelEvent cancelEvent = config.getViolationHandling().cancelEvent();
+			if (cancelEvent.enable() && violations >= cancelEvent.violations()) {
+				evt.setCancelled(true);
+			}
 		}
 	}
 

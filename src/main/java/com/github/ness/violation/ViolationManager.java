@@ -6,22 +6,26 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import com.github.ness.NESSAnticheat;
-import com.github.ness.NessPlayer;
+import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
 import com.github.ness.api.NESSApi;
 import com.github.ness.api.ViolationTrigger;
 import com.github.ness.api.ViolationTrigger.SynchronisationContext;
+import com.github.ness.check.CheckManager;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicePriority;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class ViolationManager {
 
 	private final NESSAnticheat ness;
+	
+	private ScheduledFuture<?> periodicTask;
 
 	private final Map<SynchronisationContext, Set<ViolationTrigger>> triggers;
 
@@ -34,16 +38,16 @@ public class ViolationManager {
 		}
 	}
 
-	String addViolationVariables(String message, Player player, Infraction infraction) {
-		String replaced = message.replace("%PLAYER%", player.getName())
+	String addViolationVariables(String message, AnticheatPlayer player, Infraction infraction) {
+		String replaced = message.replace("%PLAYER%", player.getPlayer().getName())
 				.replace("%HACK%", infraction.getCheck().getCheckName())
 				.replace("%VIOLATIONS%", Integer.toString(infraction.getCount()));
 		return ChatColor.translateAlternateColorCodes('&', replaced);
 	}
 
-	public void initiate() {
+	public synchronized void initiate() {
 		addDefaultTriggers();
-		initiatePeriodicTask();
+		periodicTask = initiatePeriodicTask();
 
 		ness.getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(ness), ness, ServicePriority.Low);
 	}
@@ -64,9 +68,10 @@ public class ViolationManager {
 		triggers.get(context).add(trigger);
 	}
 
-	private void initiatePeriodicTask() {
-		ness.getExecutor().scheduleWithFixedDelay(() -> {
-			ness.getCheckManager().forEachPlayer((player) -> {
+	private ScheduledFuture<?> initiatePeriodicTask() {
+		CheckManager checkManager = ness.getCheckManager();
+		return ness.getExecutor().scheduleWithFixedDelay(() -> {
+			checkManager.forEachPlayer((player) -> {
 
 				Queue<Infraction> infractions = player.getInfractions();
 				Infraction infraction;
@@ -77,29 +82,34 @@ public class ViolationManager {
 		}, 1L, 1L, TimeUnit.SECONDS);
 	}
 
-	private void cascadeViolations(NessPlayer nessPlayer, Infraction infraction) {
+	private void cascadeViolations(AnticheatPlayer player, Infraction infraction) {
 
+		JavaPlugin plugin = ness.getPlugin();
 		Set<ViolationTrigger> syncTriggers = triggers.get(SynchronisationContext.FORCE_SYNC);
 		if (!syncTriggers.isEmpty()) {
-			ness.getServer().getScheduler().runTask(ness, () -> {
+			plugin.getServer().getScheduler().runTask(ness, () -> {
 				syncTriggers.forEach((trigger) -> {
-					trigger.trigger(nessPlayer.getPlayer(), infraction);
+					trigger.trigger(player, infraction);
 				});
 			});
 		}
 
 		Set<ViolationTrigger> asyncTriggers = triggers.get(SynchronisationContext.FORCE_ASYNC);
 		if (!asyncTriggers.isEmpty()) {
-			ness.getServer().getScheduler().runTaskAsynchronously(ness, () -> {
+			plugin.getServer().getScheduler().runTaskAsynchronously(ness, () -> {
 				asyncTriggers.forEach((trigger) -> {
-					trigger.trigger(nessPlayer.getPlayer(), infraction);
+					trigger.trigger(player, infraction);
 				});
 			});
 		}
 
 		triggers.get(SynchronisationContext.EITHER).forEach((trigger) -> {
-			trigger.trigger(nessPlayer.getPlayer(), infraction);
+			trigger.trigger(player, infraction);
 		});
+	}
+	
+	public synchronized void close() {
+		periodicTask.cancel(false);
 	}
 
 }

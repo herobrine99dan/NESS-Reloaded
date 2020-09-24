@@ -1,10 +1,9 @@
 package com.github.ness.violation;
 
+import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
 import com.github.ness.api.Violation;
 import com.github.ness.api.ViolationTrigger;
-
-import org.bukkit.entity.Player;
 
 @SuppressWarnings("deprecation")
 final class ViolationMigratorUtil {
@@ -24,8 +23,8 @@ final class ViolationMigratorUtil {
 		}
 
 		@Override
-		public void trigger(Player player, Infraction infraction) {
-			action.actOn(player, violationFromInfraction(infraction), infraction.getCount());
+		public void trigger(AnticheatPlayer player, Infraction infraction) {
+			action.actOn(player.getPlayer(), violationFromInfraction(infraction), infraction.getCount());
 		}
 		
 	}

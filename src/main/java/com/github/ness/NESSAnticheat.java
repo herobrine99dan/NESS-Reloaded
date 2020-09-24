@@ -79,6 +79,16 @@ public class NESSAnticheat extends JavaPlugin {
 		}
 	}
 	
+	/**
+	 * Gets the {@code JavaPlugin} NESS is using. Although this is currently coupled to this class,
+	 * separation may happen in the future.
+	 * 
+	 * @return the java plugin
+	 */
+	public JavaPlugin getPlugin() {
+		return this;
+	}
+	
 	ConfigManager getConfigManager() {
 		return configManager;
 	}

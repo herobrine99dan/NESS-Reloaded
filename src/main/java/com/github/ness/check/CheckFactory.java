@@ -67,13 +67,13 @@ public class CheckFactory<C extends Check> extends BaseCheckFactory<C> {
 	@Override
 	C newCheck(NessPlayer nessPlayer) {
 		C check = instantiator.newCheck(this, nessPlayer);
-		checks.put(nessPlayer.getUUID(), check);
+		checks.put(nessPlayer.getUniqueId(), check);
 		return check;
 	}
 	
 	@Override
 	void removeCheck(NessPlayer nessPlayer) {
-		checks.remove(nessPlayer.getUUID());
+		checks.remove(nessPlayer.getUniqueId());
 	}
 	
 	@Override
