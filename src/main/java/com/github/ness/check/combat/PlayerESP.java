@@ -14,6 +14,8 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.data.ImmutableVector;
 import com.github.ness.utility.Utility;
 
+import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
+
 public class PlayerESP extends Check {
 
 	private final double minangle;
@@ -22,7 +24,12 @@ public class PlayerESP extends Check {
 
 	public PlayerESP(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
-		this.minangle = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("minangle", -0.05);
+		this.minangle = this.ness().getMainConfig().getCheckSection().playerESP().minAngle();
+	}
+	
+	public interface Config {
+		@DefaultDouble(-0.05)
+		double minAngle();
 	}
 
 	@Override

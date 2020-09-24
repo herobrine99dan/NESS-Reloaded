@@ -21,6 +21,9 @@ import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.utility.MathUtils;
 import com.github.ness.utility.Utility;
 
+import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
+import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
+
 public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 
 	double maxYaw;
@@ -32,9 +35,18 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 
 	public Killaura(ListeningCheckFactory<?, EntityDamageByEntityEvent> factory, NessPlayer player) {
 		super(factory, player);
-		this.maxYaw = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("maxyaw", 357);
-		this.minAngle = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("minangle", -0.2);
-		this.maxReach = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("maxreach", 3.4);
+		this.maxYaw = this.ness().getMainConfig().getCheckSection().killaura().maxYaw();
+		this.minAngle = this.ness().getMainConfig().getCheckSection().killaura().minAngle();
+		this.maxReach = this.ness().getMainConfig().getCheckSection().killaura().maxReach();
+	}
+	
+	public interface Config {
+		@DefaultInteger(357)
+		double maxYaw();
+		@DefaultDouble(-0.2)
+		double minAngle();
+		@DefaultDouble(3.4)
+		double maxReach();
 	}
 
 	@Override

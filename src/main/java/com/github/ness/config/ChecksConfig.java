@@ -2,6 +2,8 @@ package com.github.ness.config;
 
 import com.github.ness.check.combat.AutoClick;
 import com.github.ness.check.combat.AutoClicker;
+import com.github.ness.check.combat.Killaura;
+import com.github.ness.check.combat.PlayerESP;
 
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfKey;
@@ -19,6 +21,7 @@ public interface ChecksConfig {
 		"",
 		"Performance impact: Minimal",
 		""})
+	@SubSection
 	AutoClick.CheckConf autoClick();
 	@ConfKey("autoclicker")
 	@ConfComments({
@@ -29,6 +32,28 @@ public interface ChecksConfig {
 		"Performance impact: Minimal", 
 		"Effectiveness: Medium",
 		""})
+	@SubSection
 	AutoClicker.Config autoClicker();
+	@ConfKey("killaura")
+	@ConfComments({
+		"",
+		"Check if a player is using ForceField / ClickAura / Killaura",
+		"This Check detect only some old clients ",
+		"",
+		"Performance impact: low", 
+		"Effectiveness: Medium",
+		""})
+	@SubSection
+	Killaura.Config killaura();
+	@ConfKey("playeresp")
+	@ConfComments({
+		"",
+		"Hide players that a player can't see",
+		"",
+		"Performance impact: Medium", 
+		"Effectiveness: High",
+		""})
+	@SubSection
+	PlayerESP.Config playerESP();
 	
 }

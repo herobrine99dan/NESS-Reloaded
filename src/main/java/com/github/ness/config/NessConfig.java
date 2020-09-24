@@ -1,16 +1,14 @@
 package com.github.ness.config;
 
+import java.util.List;
+
+import com.github.ness.antibot.AntiBotConfig;
+import com.github.ness.violation.ViolationHandling;
+
 import space.arim.dazzleconf.annote.ConfComment;
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultStrings;
-
-import java.util.List;
-
-import com.github.ness.antibot.AntiBotConfig;
-import com.github.ness.check.combat.AutoClicker;
-import com.github.ness.violation.ViolationHandling;
-
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.annote.SubSection;
 

@@ -50,7 +50,6 @@ public class AutoClicker extends ListeningCheck<PlayerInteractEvent> {
 	}
 	
 	public interface Config {
-		@ConfKey("maxCPS")
 		@DefaultInteger(18)
 		int maxCPS();
 	}
