@@ -1,10 +1,8 @@
 package com.github.ness.check;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -166,17 +164,21 @@ public class CheckManager {
 		});
 	}
 	
-	public List<Check> getChecks(UUID uuid) {
-		List<Check> checks = new ArrayList<>();
+	/**
+	 * Do something for each check applying to a player. The iteration is consistently ordered
+	 * 
+	 * @param uuid the player UUID
+	 * @param action what to do
+	 */
+	public void forEachCheck(UUID uuid, Consumer<Check> action) {
 		for (BaseCheckFactory<?> checkFactory : checkFactories) {
 			if (checkFactory instanceof CheckFactory) {
 				Check check = ((CheckFactory<?>) checkFactory).getChecksMap().get(uuid);
 				if (check != null) {
-					checks.add(check);
+					action.accept(check);
 				}
 			}
 		}
-		return checks;
 	}
 
 }

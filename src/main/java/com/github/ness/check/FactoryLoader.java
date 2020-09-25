@@ -4,7 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,8 +27,13 @@ class FactoryLoader {
 		this.enabledCheckNames = enabledCheckNames;
 	}
 
+	/**
+	 * Creates all check factories
+	 * 
+	 * @return an ordered set of all check factories
+	 */
 	Set<BaseCheckFactory<?>> createAllFactories() {
-		Set<BaseCheckFactory<?>> factories = new HashSet<>();
+		Set<BaseCheckFactory<?>> factories = new LinkedHashSet<>();
 
 		factoryLoadLoop:
 		for (String checkName : enabledCheckNames) {

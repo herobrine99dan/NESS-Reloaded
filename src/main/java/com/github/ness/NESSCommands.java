@@ -3,7 +3,6 @@ package com.github.ness;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.github.ness.check.Check;
 import com.github.ness.gui.ViolationGUI;
 
 import org.bukkit.Bukkit;
@@ -159,11 +158,11 @@ class NESSCommands implements CommandExecutor {
 		String body = ness.getMessagesConfig().showViolationsBody();
 
 		sendMessage(sender, header.replace("%TARGET%", name));
-		for (Check check : ness.getCheckManager().getChecks(target.getUniqueId())) {
+		ness.getCheckManager().forEachCheck(target.getUniqueId(), (check) -> {
 			sendMessage(sender,
 					body.replace("%HACK%", check.getFactory().getCheckName())
 						.replace("%VIOLATIONS%", Integer.toString(check.currentViolationCount())));
-		}
+		});
 	}
 	
 	private void clearViolations(CommandSender sender, Player target) {
@@ -176,9 +175,7 @@ class NESSCommands implements CommandExecutor {
 			sendUnknownTarget(sender);
 			return;
 		}
-		for (Check check : ness.getCheckManager().getChecks(target.getUniqueId())) {
-			check.clearViolationCount();
-		}
+		ness.getCheckManager().forEachCheck(target.getUniqueId(), (check) -> check.clearViolationCount());
 		sendMessage(sender, "&7Cleared violations for &e%TARGET%".replace("%TARGET%", target.getName()));
 	}
 	
