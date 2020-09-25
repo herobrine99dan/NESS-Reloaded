@@ -75,7 +75,7 @@ public class Check extends BaseCheck {
 	 * @return the infraction
 	 */
 	Infraction flag0(String details) {
-		int violations = this.violations.getAndIncrement();
+		int violations = this.violations.incrementAndGet();
 		Infraction infraction = new InfractionImpl(this, violations, details);
 		nessPlayer.addInfraction(infraction);
 		return infraction;
