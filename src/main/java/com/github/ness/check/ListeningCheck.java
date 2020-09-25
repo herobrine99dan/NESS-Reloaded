@@ -52,16 +52,12 @@ public abstract class ListeningCheck<E extends Event> extends Check {
 	 */
 	protected final void flagEvent(Cancellable evt, String details) {
 		if (callFlagEvent()) {
-			flagEvent0(evt, details);
-		}
-	}
-	
-	private void flagEvent0(Cancellable evt, String details) {
-		int violations = flag0(details).getCount();
-		NessConfig config = getFactory().getCheckManager().getNess().getMainConfig();
-		CancelEvent cancelEvent = config.getViolationHandling().cancelEvent();
-		if (cancelEvent.enable() && violations >= cancelEvent.violations()) {
-			evt.setCancelled(true);
+			int violations = flag0(details).getCount();
+			NessConfig config = getFactory().getCheckManager().getNess().getMainConfig();
+			CancelEvent cancelEvent = config.getViolationHandling().cancelEvent();
+			if (cancelEvent.enable() && violations >= cancelEvent.violations()) {
+				evt.setCancelled(true);
+			}
 		}
 	}
 
