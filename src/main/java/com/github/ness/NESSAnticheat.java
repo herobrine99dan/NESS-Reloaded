@@ -47,38 +47,47 @@ public class NESSAnticheat extends JavaPlugin {
 	public void onEnable() {
 		main = this;
 
+		// Detect version
+		minecraftVersion = getVersion();
+		if (minecraftVersion > 1152 && minecraftVersion < 1162) {
+			logger.warning("Please use 1.16.2 Spigot Version since 1.16/1.16.1 has a lot of false flags");
+		}
+
+		// Start configuration
 		configManager = new ConfigManager(getDataFolder().toPath());
 		configManager.reload().join();
-
 		logger.fine("Configuration loaded. Initiating checks...");
-		if (this.getVersion() > 1152 && this.getVersion() < 1162) {
-			getLogger().warning("Please use 1.16.2 Spigot Version since 1.16/1.16.1 has a lot of false flags");
-		}
+
+		// Start executor service & commands
 		executor = Executors.newSingleThreadScheduledExecutor();
 		getCommand("ness").setExecutor(new NESSCommands(this));
 
+		// Start checks
 		checkManager = new CheckManager(this);
-		logger.log(Level.FINE, "Starting CheckManager");
+		logger.fine("Starting CheckManager");
 		CompletableFuture<?> future = checkManager.start();
+		getServer().getScheduler().runTaskLater(this, future::join, 1L);
 
+		// Start violation handling
 		violationManager = new ViolationManager(this);
 		violationManager.initiate();
 
+		// Register API implementation
 		getPlugin().getServer().getServicesManager()
 				.register(NESSApi.class, new NESSApiImpl(this), this, ServicePriority.Low);
 
-		getServer().getScheduler().runTaskLater(this, future::join, 1L);
-
+		// Start AntiBot if enabled
 		if (getMainConfig().getAntiBot().enable()) {
 			AntiBot antiBot = new AntiBot(this, getMainConfig().getAntiBot());
 			getServer().getPluginManager().registerEvents(antiBot, this);
 			getServer().getScheduler().runTaskTimer(this, antiBot, 0L, 20L);
 		}
 
-		minecraftVersion = this.getVersion();
+		// Start packet listener except on Glowstone
 		if (!Bukkit.getName().toLowerCase().contains("glowstone")) {
 			getServer().getPluginManager().registerEvents(new PacketListener(), this);
 		}
+		// Start plugin message listener if bungeecord notify-staff hook enabled
 		if (getMainConfig().getViolationHandling().notifyStaff().bungeecord()) {
 			this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 			this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeCordListener());
