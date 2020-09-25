@@ -21,9 +21,9 @@ import org.bukkit.event.player.PlayerVelocityEvent;
 
 public class CoreListener implements Listener {
 
-	private final CheckManager manager;
+	private final PlayerManager manager;
 
-	CoreListener(CheckManager manager) {
+	CoreListener(PlayerManager manager) {
 		this.manager = manager;
 	}
 
@@ -38,7 +38,7 @@ public class CoreListener implements Listener {
 	public void onQuit(PlayerQuitEvent evt) {
 		Player player = evt.getPlayer();
 		final long tenSecondsLater = 20L * 10L;
-		NESSAnticheat ness = manager.getNess();
+		NESSAnticheat ness = manager.getCheckManager().getNess();
 		ness.getServer().getScheduler().runTaskLater(ness, () -> {
 			if (!player.isOnline()) {
 				manager.removePlayer(player);
@@ -65,7 +65,7 @@ public class CoreListener implements Listener {
 			return;
 		}
 		Player player = event.getPlayer();
-		NessPlayer nessPlayer = manager.getExistingPlayer(player);
+		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(player);
 		if (nessPlayer == null) {
 			return;
 		}
@@ -77,7 +77,7 @@ public class CoreListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onVelocity(PlayerVelocityEvent event) {
-		NessPlayer nessPlayer = manager.getExistingPlayer(event.getPlayer());
+		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(event.getPlayer());
 		if (nessPlayer == null) {
 			return;
 		}
@@ -90,7 +90,7 @@ public class CoreListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlace(BlockBreakEvent event) {
-		NessPlayer nessPlayer = manager.getExistingPlayer(event.getPlayer());
+		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(event.getPlayer());
 		if (nessPlayer == null) {
 			return;
 		}
