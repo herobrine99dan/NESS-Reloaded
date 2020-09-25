@@ -83,7 +83,7 @@ public class ViolationManager {
 		JavaPlugin plugin = ness.getPlugin();
 		Set<ViolationTrigger> syncTriggers = triggers.get(SynchronisationContext.FORCE_SYNC);
 		if (!syncTriggers.isEmpty()) {
-			plugin.getServer().getScheduler().runTask(ness, () -> {
+			plugin.getServer().getScheduler().runTask(plugin, () -> {
 				syncTriggers.forEach((trigger) -> {
 					trigger.trigger(player, infraction);
 				});
@@ -92,7 +92,7 @@ public class ViolationManager {
 
 		Set<ViolationTrigger> asyncTriggers = triggers.get(SynchronisationContext.FORCE_ASYNC);
 		if (!asyncTriggers.isEmpty()) {
-			plugin.getServer().getScheduler().runTaskAsynchronously(ness, () -> {
+			plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
 				asyncTriggers.forEach((trigger) -> {
 					trigger.trigger(player, infraction);
 				});

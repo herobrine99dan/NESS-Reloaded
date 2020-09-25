@@ -17,6 +17,7 @@ import com.github.ness.api.NESSApi;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class CheckManager {
 
@@ -46,7 +47,8 @@ public class CheckManager {
 
 	public CompletableFuture<?> start() {
 		logger.log(Level.FINE, "CheckManager starting...");
-		ness.getServer().getPluginManager().registerEvents(playerManager.getListener(), ness);
+		JavaPlugin plugin = ness.getPlugin();
+		plugin.getServer().getPluginManager().registerEvents(playerManager.getListener(), plugin);
 
 		return loadFactories(() -> {});
 	}
@@ -57,8 +59,9 @@ public class CheckManager {
 
 		playerManager.getPlayerCache().synchronous().invalidateAll();
 		return loadFactories(() -> {
-			ness.getServer().getScheduler().runTask(ness, () -> {
-				for (Player player : ness.getServer().getOnlinePlayers()) {
+			JavaPlugin plugin = ness.getPlugin();
+			ness.getPlugin().getServer().getScheduler().runTask(plugin, () -> {
+				for (Player player : plugin.getServer().getOnlinePlayers()) {
 					playerManager.addPlayer(player);
 				}
 			});

@@ -77,13 +77,15 @@ public interface ViolationTriggerSection {
 					NessPlayer nessPlayer = (NessPlayer) player;
 					sendWebhook(nessPlayer, infraction);
 
+					JavaPlugin plugin = ness.getPlugin();
+
 					if (bungeecord()) {
 						ByteArrayDataOutput out = ByteStreams.newDataOutput();
 						out.writeUTF("NESS-Reloaded");
 						out.writeUTF(notif);
-						player.getPlayer().sendPluginMessage(ness, "BungeeCord", out.toByteArray());
+						player.getPlayer().sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
 					}
-					for (Player staff : ness.getServer().getOnlinePlayers()) {
+					for (Player staff : plugin.getServer().getOnlinePlayers()) {
 						if (staff.hasPermission("ness.notify")) {
 							staff.sendMessage(notif);
 						}
@@ -97,7 +99,8 @@ public interface ViolationTriggerSection {
 						return;
 					}
 					String hackerName = nessPlayer.getPlayer().getName();
-					ness.getServer().getScheduler().runTaskAsynchronously(ness, () -> {
+					JavaPlugin plugin = ness.getPlugin();
+					plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
 
 						DiscordWebhook webhook = new DiscordWebhook(webhookurl);
 
@@ -144,7 +147,7 @@ public interface ViolationTriggerSection {
 					}
 					String command = manager.addViolationVariables(command(), player, infraction);
 
-					JavaPlugin plugin = ness;
+					JavaPlugin plugin = ness.getPlugin();
 					// Only we can assume implementation details
 					NessPlayer nessPlayer = (NessPlayer) player;
 					if (!callDeprecatedPlayerPunishEvent(plugin, nessPlayer, infraction, command)) {

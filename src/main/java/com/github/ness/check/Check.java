@@ -71,7 +71,7 @@ public class Check extends BaseCheck {
 	}
 	
 	boolean callFlagEvent() {
-		JavaPlugin plugin = getFactory().getCheckManager().getNess();
+		JavaPlugin plugin = getFactory().getCheckManager().getNess().getPlugin();
 
 		return callEvent(plugin, new PlayerFlagEvent(nessPlayer, getFactory()))
 				&& callDeprecatedPlayerViolationEvent(plugin);

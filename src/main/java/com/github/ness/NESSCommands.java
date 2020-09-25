@@ -11,6 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
 
 class NESSCommands implements CommandExecutor {
 
@@ -79,7 +80,7 @@ class NESSCommands implements CommandExecutor {
 			clearViolations(sender, (args.length >= 2) ? Bukkit.getPlayer(args[1]) : null);
 			break;
 		case "version":
-			sendMessage(sender, "&7NESS Version: " + ness.getDescription().getVersion());
+			sendMessage(sender, "&7NESS Version: " + ness.getPlugin().getDescription().getVersion());
 			break;
 		case "gui":
 			if (sender instanceof Player) {
@@ -188,15 +189,16 @@ class NESSCommands implements CommandExecutor {
 	}
 
 	private void usage(CommandSender sender) {
+		PluginDescriptionFile description = ness.getPlugin().getDescription();
 		sendMessage(sender, "&aNESS Anticheat");
-		sendMessage(sender, "&7Version " + ness.getDescription().getVersion());
+		sendMessage(sender, "&7Version " + description.getVersion());
 		sendMessage(sender, "/ness reload - Reload configuration");
 		sendMessage(sender, "/ness violations <player> - Show violations for a player");
 		sendMessage(sender, "/ness clear <player> - Clear player violations");
 		sendMessage(sender, "/ness version - View the NESS Reloaded Version");
 		sendMessage(sender, "/ness gui - Open a gui where you can see violations of players");
 		sendMessage(sender, "/ness debug - Enable / Disable Debug Mode");
-		sendMessage(sender, "&7Authors: " + String.join(", ", ness.getDescription().getAuthors()));
+		sendMessage(sender, "&7Authors: " + String.join(", ", description.getAuthors()));
 	}
 
 	private void sendMessage(CommandSender sender, String msg) {
