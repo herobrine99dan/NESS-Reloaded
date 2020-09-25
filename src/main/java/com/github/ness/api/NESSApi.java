@@ -17,18 +17,18 @@ public interface NESSApi {
 	 * See {@link ViolationAction}
 	 *
 	 * @param action the violation action
-	 * @deprecated Use {@link #addViolationTrigger(ViolationTrigger)} and {@link ViolationTrigger}
+	 * @deprecated Use {@link #addInfractionTrigger(InfractionTrigger)} and {@link InfractionTrigger}
 	 */
 	@Deprecated
 	void addViolationAction(@SuppressWarnings("deprecation") ViolationAction action);
 
 	/**
-	 * Adds a violation trigger which is run when a player is detected for a cheat
+	 * Adds an infraction trigger which is run when a player is detected for a cheat
 	 * 
 	 * @param trigger the trigger to add
 	 * @throws NullPointerException if {@code trigger} is null
 	 */
-	void addViolationTrigger(ViolationTrigger trigger);
+	void addInfractionTrigger(InfractionTrigger trigger);
 	
 	/**
 	 * Gets an immutable copy of all anticheat checks

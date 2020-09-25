@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import com.github.ness.api.AnticheatCheck;
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.NESSApi;
-import com.github.ness.api.ViolationTrigger;
+import com.github.ness.api.InfractionTrigger;
 import com.github.ness.violation.ViolationMigratorUtil;
 
 import org.bukkit.entity.Player;
@@ -24,11 +24,11 @@ final class NESSApiImpl implements NESSApi {
 	@Deprecated
 	@Override
 	public void addViolationAction(com.github.ness.api.ViolationAction action) {
-		addViolationTrigger(ViolationMigratorUtil.triggerForAction(action));
+		addInfractionTrigger(ViolationMigratorUtil.triggerForAction(action));
 	}
 
 	@Override
-	public void addViolationTrigger(ViolationTrigger trigger) {
+	public void addInfractionTrigger(InfractionTrigger trigger) {
 		ness.getViolationManager().addTrigger(trigger);
 	}
 

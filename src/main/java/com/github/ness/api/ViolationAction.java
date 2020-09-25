@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
  * {@link NESSApi#addViolationAction(ViolationAction)}.
  *
  * @author A248
- * @deprecated It is preferred to use {@link ViolationTrigger}, which is an
+ * @deprecated It is preferred to use {@link InfractionTrigger}, which is an
  *             interface, and has finer control over specifying the
  *             synchronisation context of the trigger
  */

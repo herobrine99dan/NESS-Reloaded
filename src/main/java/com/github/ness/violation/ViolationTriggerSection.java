@@ -9,7 +9,7 @@ import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
-import com.github.ness.api.ViolationTrigger;
+import com.github.ness.api.InfractionTrigger;
 import com.github.ness.utility.DiscordWebhook;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -32,7 +32,7 @@ public interface ViolationTriggerSection {
 	@ConfComment("The amount of violations of a check after which to trigger this action. (-1 to disable)")
 	int violations();
 	
-	ViolationTrigger toTrigger(ViolationManager manager, NESSAnticheat ness);
+	InfractionTrigger toTrigger(ViolationManager manager, NESSAnticheat ness);
 	
 	interface NotifyStaff extends ViolationTriggerSection {
 		
@@ -63,8 +63,8 @@ public interface ViolationTriggerSection {
 		boolean bungeecord();
 		
 		@Override
-		default ViolationTrigger toTrigger(ViolationManager manager, NESSAnticheat ness) {
-			return new ViolationTrigger() {
+		default InfractionTrigger toTrigger(ViolationManager manager, NESSAnticheat ness) {
+			return new InfractionTrigger() {
 
 				@Override
 				public void trigger(AnticheatPlayer player, Infraction infraction) {
@@ -137,8 +137,8 @@ public interface ViolationTriggerSection {
 		String command();
 		
 		@Override
-		default ViolationTrigger toTrigger(ViolationManager manager, NESSAnticheat ness) {
-			return new ViolationTrigger() {
+		default InfractionTrigger toTrigger(ViolationManager manager, NESSAnticheat ness) {
+			return new InfractionTrigger() {
 
 				@Override
 				public void trigger(AnticheatPlayer player, Infraction infraction) {
@@ -182,8 +182,8 @@ public interface ViolationTriggerSection {
 		int violations();
 		
 		@Override
-		default ViolationTrigger toTrigger(ViolationManager manager, NESSAnticheat ness) {
-			return new ViolationTrigger() {
+		default InfractionTrigger toTrigger(ViolationManager manager, NESSAnticheat ness) {
+			return new InfractionTrigger() {
 				
 				@Override
 				public SynchronisationContext context() {

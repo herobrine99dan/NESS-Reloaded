@@ -18,7 +18,7 @@ public class NESSExample extends JavaPlugin implements Listener {
 		api = getServer().getServicesManager().load(NESSApi.class);
 
 		Bukkit.getPluginManager().registerEvents(this, this);
-		api.addViolationTrigger(new CheaterBurner());
+		api.addInfractionTrigger(new CheaterBurner());
 	}
 
 	@EventHandler

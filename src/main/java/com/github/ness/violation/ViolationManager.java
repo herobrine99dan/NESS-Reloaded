@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
-import com.github.ness.api.ViolationTrigger;
-import com.github.ness.api.ViolationTrigger.SynchronisationContext;
+import com.github.ness.api.InfractionTrigger;
+import com.github.ness.api.InfractionTrigger.SynchronisationContext;
 import com.github.ness.check.CheckManager;
 
 import org.bukkit.ChatColor;
@@ -25,7 +25,7 @@ public class ViolationManager {
 	
 	private ScheduledFuture<?> periodicTask;
 
-	private final Map<SynchronisationContext, Set<ViolationTrigger>> triggers;
+	private final Map<SynchronisationContext, Set<InfractionTrigger>> triggers;
 
 	public ViolationManager(NESSAnticheat ness) {
 		this.ness = ness;
@@ -58,7 +58,7 @@ public class ViolationManager {
 		}
 	}
 
-	public void addTrigger(ViolationTrigger trigger) {
+	public void addTrigger(InfractionTrigger trigger) {
 		Objects.requireNonNull(trigger, "trigger");
 		SynchronisationContext context = Objects.requireNonNull(trigger.context(), "context");
 		triggers.get(context).add(trigger);
@@ -81,7 +81,7 @@ public class ViolationManager {
 	private void cascadeViolations(AnticheatPlayer player, Infraction infraction) {
 
 		JavaPlugin plugin = ness.getPlugin();
-		Set<ViolationTrigger> syncTriggers = triggers.get(SynchronisationContext.FORCE_SYNC);
+		Set<InfractionTrigger> syncTriggers = triggers.get(SynchronisationContext.FORCE_SYNC);
 		if (!syncTriggers.isEmpty()) {
 			plugin.getServer().getScheduler().runTask(plugin, () -> {
 				syncTriggers.forEach((trigger) -> {
@@ -90,7 +90,7 @@ public class ViolationManager {
 			});
 		}
 
-		Set<ViolationTrigger> asyncTriggers = triggers.get(SynchronisationContext.FORCE_ASYNC);
+		Set<InfractionTrigger> asyncTriggers = triggers.get(SynchronisationContext.FORCE_ASYNC);
 		if (!asyncTriggers.isEmpty()) {
 			plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
 				asyncTriggers.forEach((trigger) -> {

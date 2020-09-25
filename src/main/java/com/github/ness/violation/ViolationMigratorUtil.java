@@ -4,7 +4,7 @@ import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
 import com.github.ness.api.Violation;
 import com.github.ness.api.ViolationAction;
-import com.github.ness.api.ViolationTrigger;
+import com.github.ness.api.InfractionTrigger;
 
 @SuppressWarnings("deprecation")
 public final class ViolationMigratorUtil {
@@ -27,11 +27,11 @@ public final class ViolationMigratorUtil {
 	 * @param action the violation action
 	 * @return the violation trigger
 	 */
-	public static ViolationTrigger triggerForAction(ViolationAction action) {
+	public static InfractionTrigger triggerForAction(ViolationAction action) {
 		return new ViolationTriggerForAction(action);
 	}
 	
-	private static class ViolationTriggerForAction implements ViolationTrigger {
+	private static class ViolationTriggerForAction implements InfractionTrigger {
 		
 		private final com.github.ness.api.ViolationAction action;
 		

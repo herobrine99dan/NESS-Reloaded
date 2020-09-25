@@ -2,13 +2,13 @@ package com.github.ness.api.example;
 
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
-import com.github.ness.api.ViolationTrigger;
+import com.github.ness.api.InfractionTrigger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-class CheaterBurner implements ViolationTrigger {
+class CheaterBurner implements InfractionTrigger {
 
 	@Override
 	public void trigger(AnticheatPlayer anticheatPlayer, Infraction infraction) {

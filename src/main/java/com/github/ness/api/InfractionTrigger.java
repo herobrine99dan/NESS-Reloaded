@@ -2,12 +2,12 @@ package com.github.ness.api;
 
 /**
  * An action which is run when a player is detected for a cheat. <br>
- * Usage: <i>Implement</i> and add it using {@link NESSApi#addViolationTrigger(ViolationTrigger)}.
+ * Usage: <i>Implement</i> and add it using {@link NESSApi#addInfractionTrigger(ViolationTrigger)}.
  *
  * @author A248
  */
 @FunctionalInterface
-public interface ViolationTrigger {
+public interface InfractionTrigger {
 
 	/**
 	 * Determines the synchronisation context of this trigger. The returned value may be assumed constant

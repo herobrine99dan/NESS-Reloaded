@@ -4,7 +4,7 @@ import com.github.ness.NessPlayer;
 import com.github.ness.api.NESSApi;
 import com.github.ness.api.PlayerFlagEvent;
 import com.github.ness.api.Violation;
-import com.github.ness.api.ViolationTrigger;
+import com.github.ness.api.InfractionTrigger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -21,7 +21,7 @@ import lombok.Setter;
  * @deprecated This event is inherently unstable. When it fires is dependent on arbitrary configuration values;
  * it may be disabled entirely. Which replacement should be used depends on the use case: If code listening to
  * this event intends to perform a callback or trigger after a player is flagged for a violation,
- * {@link NESSApi#addViolationTrigger(ViolationTrigger)} is the recommended way to do that. If it is intended
+ * {@link NESSApi#addInfractionTrigger(InfractionTrigger)} is the recommended way to do that. If it is intended
  * to prevent a player from being punished in certain conditions by cancelling this event, {@link PlayerFlagEvent}
  * should be used.
  *
