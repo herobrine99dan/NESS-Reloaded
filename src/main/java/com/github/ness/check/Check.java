@@ -28,7 +28,7 @@ public class Check extends BaseCheck {
 	}
 	
 	@Override
-	protected CheckFactory<?> getFactory() {
+	public CheckFactory<?> getFactory() {
 		return (CheckFactory<?>) super.getFactory();
 	}
 	
@@ -93,8 +93,12 @@ public class Check extends BaseCheck {
 		return !event.isCancelled();
 	}
 	
-	int currentViolationCount() {
+	public int currentViolationCount() {
 		return violations.get();
+	}
+
+	public void clearViolationCount() {
+		violations.set(0);
 	}
 
 }

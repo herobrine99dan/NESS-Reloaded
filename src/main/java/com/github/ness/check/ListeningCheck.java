@@ -21,7 +21,7 @@ public abstract class ListeningCheck<E extends Event> extends Check {
 	}
 	
 	@Override
-	protected ListeningCheckFactory<?, E> getFactory() {
+	public ListeningCheckFactory<?, E> getFactory() {
 		@SuppressWarnings("unchecked")
 		ListeningCheckFactory<?, E> factory = (ListeningCheckFactory<?, E>) super.getFactory();
 		return factory;

@@ -1,8 +1,10 @@
 package com.github.ness.check;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -162,6 +164,19 @@ public class CheckManager {
 		playerManager.getPlayerCache().synchronous().asMap().values().forEach((playerData) -> {
 			action.accept(playerData.getNessPlayer());
 		});
+	}
+	
+	public List<Check> getChecks(UUID uuid) {
+		List<Check> checks = new ArrayList<>();
+		for (BaseCheckFactory<?> checkFactory : checkFactories) {
+			if (checkFactory instanceof CheckFactory) {
+				Check check = ((CheckFactory<?>) checkFactory).getChecksMap().get(uuid);
+				if (check != null) {
+					checks.add(check);
+				}
+			}
+		}
+		return checks;
 	}
 
 }
