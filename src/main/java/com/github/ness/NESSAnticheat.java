@@ -79,8 +79,7 @@ public class NESSAnticheat extends JavaPlugin {
 		// Start AntiBot if enabled
 		if (getMainConfig().getAntiBot().enable()) {
 			AntiBot antiBot = new AntiBot(this, getMainConfig().getAntiBot());
-			getServer().getPluginManager().registerEvents(antiBot, this);
-			getServer().getScheduler().runTaskTimer(this, antiBot, 0L, 20L);
+			antiBot.initiate();
 		}
 
 		// Start packet listener except on Glowstone
