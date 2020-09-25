@@ -1,14 +1,13 @@
-package com.github.ness.violation;
+package com.github.ness;
 
 import java.util.Collection;
 import java.util.UUID;
 
-import com.github.ness.NESSAnticheat;
-import com.github.ness.NessPlayer;
 import com.github.ness.api.AnticheatCheck;
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.NESSApi;
 import com.github.ness.api.ViolationTrigger;
+import com.github.ness.violation.ViolationMigratorUtil;
 
 import org.bukkit.entity.Player;
 
@@ -24,7 +23,7 @@ final class NESSApiImpl implements NESSApi {
 	@Deprecated
 	@Override
 	public void addViolationAction(com.github.ness.api.ViolationAction action) {
-		addViolationTrigger(new ViolationMigratorUtil.ViolationTriggerForAction(action));
+		addViolationTrigger(ViolationMigratorUtil.triggerForAction(action));
 	}
 	
     @Override

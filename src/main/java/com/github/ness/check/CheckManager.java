@@ -64,6 +64,10 @@ public class CheckManager {
 	 */
 	public Collection<CheckFactory<?>> getAllChecks() {
 		Set<CheckFactory<?>> result = new HashSet<>();
+		Set<BaseCheckFactory<?>> checkFactories = this.checkFactories;
+		if (checkFactories == null) {
+			return Collections.emptySet();
+		}
 		for (BaseCheckFactory<?> factory : checkFactories) {
 			if (factory instanceof CheckFactory) {
 				result.add((CheckFactory<?>) factory);
@@ -95,10 +99,7 @@ public class CheckManager {
 	 */
 	public NessPlayer getPlayer(UUID uuid) {
 		CompletableFuture<NessPlayerData> playerData = playerCache.getIfPresent(uuid);
-		if (playerData.isDone()) {
-			return playerData.join().getNessPlayer();
-		}
-		return null;
+		return (playerData.isDone()) ? playerData.join().getNessPlayer() : null;
 	}
 	
 	public CompletableFuture<?> reload() {

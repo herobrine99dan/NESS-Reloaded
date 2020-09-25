@@ -12,13 +12,11 @@ import java.util.concurrent.TimeUnit;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
-import com.github.ness.api.NESSApi;
 import com.github.ness.api.ViolationTrigger;
 import com.github.ness.api.ViolationTrigger.SynchronisationContext;
 import com.github.ness.check.CheckManager;
 
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ViolationManager {
@@ -48,9 +46,6 @@ public class ViolationManager {
 	public synchronized void initiate() {
 		addDefaultTriggers();
 		periodicTask = initiatePeriodicTask();
-
-		ness.getPlugin().getServer().getServicesManager()
-				.register(NESSApi.class, new NESSApiImpl(ness), ness, ServicePriority.Low);
 	}
 
 	private void addDefaultTriggers() {

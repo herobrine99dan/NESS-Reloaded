@@ -8,9 +8,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ness.antibot.AntiBot;
+import com.github.ness.api.NESSApi;
 import com.github.ness.check.CheckManager;
 import com.github.ness.config.ConfigManager;
 import com.github.ness.config.NessConfig;
@@ -61,6 +63,10 @@ public class NESSAnticheat extends JavaPlugin {
 
 		violationManager = new ViolationManager(this);
 		violationManager.initiate();
+
+		getPlugin().getServer().getServicesManager()
+				.register(NESSApi.class, new NESSApiImpl(this), this, ServicePriority.Low);
+
 		getServer().getScheduler().runTaskLater(this, future::join, 1L);
 
 		if (getMainConfig().getAntiBot().enable()) {

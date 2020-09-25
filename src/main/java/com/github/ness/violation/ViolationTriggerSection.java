@@ -21,7 +21,7 @@ import space.arim.dazzleconf.annote.ConfDefault.DefaultString;
 import space.arim.dazzleconf.annote.ConfKey;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public interface ViolationTriggerSection {
 
@@ -142,22 +142,29 @@ public interface ViolationTriggerSection {
 					if (infraction.getCount() < violations()) {
 						return;
 					}
-					String cmd = manager.addViolationVariables(command(), player, infraction);
+					String command = manager.addViolationVariables(command(), player, infraction);
 
+					JavaPlugin plugin = ness;
 					// Only we can assume implementation details
 					NessPlayer nessPlayer = (NessPlayer) player;
-
-					@SuppressWarnings("deprecation")
-					com.github.ness.api.impl.PlayerPunishEvent event = new com.github.ness.api.impl.PlayerPunishEvent(
-							player.getPlayer(), nessPlayer,
-							ViolationMigratorUtil.violationFromInfraction(infraction),
-							infraction.getCount(), cmd);
-					ness.getServer().getPluginManager().callEvent(event);
-
-					if (((Cancellable) event).isCancelled()) {
+					if (!callDeprecatedPlayerPunishEvent(plugin, nessPlayer, infraction, command)) {
 						return;
 					}
-					ness.getServer().dispatchCommand(ness.getServer().getConsoleSender(), cmd);
+					plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command);
+				}
+				
+				@SuppressWarnings("deprecation")
+				private boolean callDeprecatedPlayerPunishEvent(JavaPlugin plugin, NessPlayer nessPlayer,
+						Infraction infraction, String command) {
+					if (com.github.ness.api.impl.PlayerPunishEvent.getHandlerList().getRegisteredListeners().length == 0) {
+						return true;
+					}
+					com.github.ness.api.impl.PlayerPunishEvent event = new com.github.ness.api.impl.PlayerPunishEvent(
+							nessPlayer.getPlayer(), nessPlayer,
+							ViolationMigratorUtil.violationFromInfraction(infraction),
+							infraction.getCount(), command);
+					plugin.getServer().getPluginManager().callEvent(event);
+					return !event.isCancelled();
 				}
 				
 			};

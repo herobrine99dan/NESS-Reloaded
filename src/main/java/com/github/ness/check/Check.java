@@ -6,6 +6,8 @@ import com.github.ness.NessPlayer;
 import com.github.ness.api.Infraction;
 import com.github.ness.api.PlayerFlagEvent;
 
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -70,9 +72,25 @@ public class Check extends BaseCheck {
 	
 	boolean callFlagEvent() {
 		JavaPlugin plugin = getFactory().getCheckManager().getNess();
-		PlayerFlagEvent flagEvent = new PlayerFlagEvent(nessPlayer, getFactory());
-		plugin.getServer().getPluginManager().callEvent(flagEvent);
-		return !flagEvent.isCancelled();
+
+		return callEvent(plugin, new PlayerFlagEvent(nessPlayer, getFactory()))
+				&& callDeprecatedPlayerViolationEvent(plugin);
+	}
+	
+	@SuppressWarnings("deprecation")
+	private boolean callDeprecatedPlayerViolationEvent(JavaPlugin plugin) {
+		if (com.github.ness.api.impl.PlayerViolationEvent.getHandlerList().getRegisteredListeners().length == 0) {
+			return true;
+		}
+		return callEvent(plugin, new com.github.ness.api.impl.PlayerViolationEvent(
+				nessPlayer.getPlayer(), nessPlayer,
+				new com.github.ness.api.Violation(getFactory().getCheckName(), ""),
+				violations.get()));
+	}
+	
+	private boolean callEvent(JavaPlugin plugin, Cancellable event) {
+		plugin.getServer().getPluginManager().callEvent((Event) event);
+		return !event.isCancelled();
 	}
 	
 	int currentViolationCount() {
