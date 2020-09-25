@@ -3,7 +3,6 @@ package com.github.ness.check;
 import java.lang.reflect.Constructor;
 import java.time.Duration;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
