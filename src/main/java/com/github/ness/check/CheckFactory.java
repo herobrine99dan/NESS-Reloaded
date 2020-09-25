@@ -33,7 +33,7 @@ public class CheckFactory<C extends Check> extends BaseCheckFactory<C> {
 	
 	CheckFactory(Constructor<C> constructor, CheckManager manager, CheckInfo checkInfo) {
 		this(CheckInstantiators.fromFactoryAndPlayerConstructor(constructor),
-				constructor.getDeclaringClass().getSimpleName().toLowerCase(Locale.ROOT),
+				constructor.getDeclaringClass().getSimpleName(),
 				manager, checkInfo);
 	}
 	
