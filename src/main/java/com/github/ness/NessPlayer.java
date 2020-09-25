@@ -15,25 +15,30 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.github.ness.api.AnticheatPlayer;
+import com.github.ness.api.Infraction;
+import com.github.ness.api.Violation;
+import com.github.ness.api.impl.PlayerViolationEvent;
+import com.github.ness.check.Check;
+import com.github.ness.check.ListeningCheck;
+import com.github.ness.data.ImmutableLoc;
+import com.github.ness.data.MovementValues;
+import com.github.ness.data.PlayerAction;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.github.ness.api.AnticheatPlayer;
-import com.github.ness.api.Infraction;
-import com.github.ness.api.Violation;
-import com.github.ness.api.impl.PlayerViolationEvent;
-import com.github.ness.data.ImmutableLoc;
-import com.github.ness.data.MovementValues;
-import com.github.ness.data.PlayerAction;
+import net.md_5.bungee.api.ChatColor;
+
 import lombok.Getter;
 import lombok.Setter;
-import net.md_5.bungee.api.ChatColor;
 
 public class NessPlayer implements AnticheatPlayer, AutoCloseable {
 
@@ -208,7 +213,9 @@ public class NessPlayer implements AnticheatPlayer, AutoCloseable {
 	 * Gets the player's current, latest violation
 	 *
 	 * @return the latest violation
+	 * @deprecated this is no longer how violations are tracked
 	 */
+	@Deprecated
 	public Violation getViolation() {
 		return violation.get();
 	}
@@ -218,7 +225,9 @@ public class NessPlayer implements AnticheatPlayer, AutoCloseable {
 	 *
 	 * @param violation the violation
 	 * @param e         the event (if it is null, this check will not be cancelled)
+	 * @deprecated This is no longer how violations are tracked. Use {@link Check#flag()} or {@link ListeningCheck#flagEvent(Event)}
 	 */
+	@Deprecated
 	public boolean setViolation(Violation violation) {
 		// Bypass permissions
 		if (this.getPlayer().hasPermission("ness.bypass." + violation.getCheck().toLowerCase())
