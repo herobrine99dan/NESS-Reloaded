@@ -191,7 +191,7 @@ public interface ViolationTriggerSection {
 				
 				@Override
 				public SynchronisationContext context() {
-					return SynchronisationContext.EITHER;
+					return SynchronisationContext.ANY;
 				}
 
 				@Override

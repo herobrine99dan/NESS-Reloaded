@@ -45,7 +45,7 @@ public interface InfractionTrigger {
 		 * The trigger may run in any thread context
 		 * 
 		 */
-		EITHER,
+		ANY,
 		/**
 		 * The trigger must run synchronously to the main thread
 		 * 

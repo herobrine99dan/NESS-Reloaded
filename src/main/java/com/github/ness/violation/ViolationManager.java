@@ -95,7 +95,7 @@ public class ViolationManager {
 			});
 		}
 
-		triggers.get(SynchronisationContext.EITHER).forEach((trigger) -> {
+		triggers.get(SynchronisationContext.ANY).forEach((trigger) -> {
 			trigger.trigger(infraction);
 		});
 	}
