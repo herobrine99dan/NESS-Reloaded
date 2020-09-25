@@ -14,7 +14,7 @@
 		<slf4j.version>1.7.30</slf4j.version>
 		<protocollib.version>4.5.0</protocollib.version>
 		<caffeine.version>2.8.5</caffeine.version>
-		<dazzleconf.version>0.3.2</dazzleconf.version>
+		<dazzleconf.version>0.3.3</dazzleconf.version>
 	</properties>
 	
 	<licenses>
