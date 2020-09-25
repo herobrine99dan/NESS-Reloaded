@@ -11,27 +11,18 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
-import com.github.ness.api.Violation;
-import com.github.ness.api.impl.PlayerViolationEvent;
-import com.github.ness.check.Check;
-import com.github.ness.check.ListeningCheck;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -40,23 +31,7 @@ import net.md_5.bungee.api.ChatColor;
 import lombok.Getter;
 import lombok.Setter;
 
-public class NessPlayer implements AnticheatPlayer, AutoCloseable {
-
-	/**
-	 * Used by ViolationManager to count violations of specific checks. <br>
-	 * This map is synchronized and thread safe
-	 * 
-	 * @deprecated This is no longer how infractions are tracked
-	 */
-	@Deprecated
-	public final Map<String, Integer> checkViolationCounts = new ConcurrentHashMap<>();
-	/**
-	 * Player's current violation, package visibility for ViolationManager to use
-	 * 
-	 * @deprecated This is no longer how infractions are tracked
-	 */
-	@Deprecated
-	public final AtomicReference<Violation> violation = new AtomicReference<>();
+public class NessPlayer implements AnticheatPlayer {
 	
 	private final Queue<Infraction> infractions = new ConcurrentLinkedQueue<>();
 
@@ -210,63 +185,6 @@ public class NessPlayer implements AnticheatPlayer, AutoCloseable {
 	}
 
 	/**
-	 * Gets the player's current, latest violation
-	 *
-	 * @return the latest violation
-	 * @deprecated this is no longer how violations are tracked
-	 */
-	@Deprecated
-	public Violation getViolation() {
-		return violation.get();
-	}
-
-	/**
-	 * /** Used to indicate the player was detected for cheating
-	 *
-	 * @param violation the violation
-	 * @param e         the event (if it is null, this check will not be cancelled)
-	 * @deprecated This is no longer how violations are tracked. Use {@link Check#flag()} or {@link ListeningCheck#flagEvent(Event)}
-	 */
-	@Deprecated
-	public boolean setViolation(Violation violation) {
-		// Bypass permissions
-		if (this.getPlayer().hasPermission("ness.bypass." + violation.getCheck().toLowerCase())
-				|| this.getPlayer().hasPermission("ness.bypass.*") || this.getPlayer().isOp()) {
-			return false;
-		}
-		// Violation event
-		PlayerViolationEvent event = new PlayerViolationEvent(this.getPlayer(), this, violation,
-				checkViolationCounts.getOrDefault(violation.getCheck(), 0));
-		Bukkit.getServer().getPluginManager().callEvent(event);
-		if (event.isCancelled()) {
-			return false;
-		}
-		// Cancel method
-		ConfigurationSection cancelsec = NESSAnticheat.main.getNessConfig().getViolationHandling()
-				.getConfigurationSection("cancel");
-		final boolean cancel = checkViolationCounts.getOrDefault(violation.getCheck(), 0) > cancelsec.getInt("vl", 10)
-				&& cancelsec.getBoolean("enable", false);
-		if (cancel) {
-			if (violation.getCheck().equals("Fly") || violation.getCheck().equals("NoFall")
-					|| violation.getCheck().equals("Step") || violation.getCheck().equals("Phase")) {
-				this.dragDown();
-				return false;
-			}
-		}
-		// Main method body
-		this.violation.compareAndSet(null, violation);
-		checkViolationCounts.merge(violation.getCheck(), 1, (c1, c2) -> c1 + c2);
-		if (isDevMode()) {
-			// sendMessage is thread safe
-			if (this.getPlayer().hasPermission("ness.notify.developer")) {
-				player.sendMessage(
-						"Dev mode violation: Check " + violation.getCheck() + ". Details: " + violation.getDetails());
-			}
-		}
-		return cancel;
-	}
-
-	/**
 	 * The new dragDown method will teleport the player down adding his velocity to
 	 * his location
 	 */
@@ -292,8 +210,4 @@ public class NessPlayer implements AnticheatPlayer, AutoCloseable {
 		}.runTask(NESSAnticheat.getInstance());
 	}
 
-	@Override
-	public void close() {
-		checkViolationCounts.clear();
-	}
 }
