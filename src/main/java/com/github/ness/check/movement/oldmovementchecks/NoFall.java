@@ -29,7 +29,7 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 		if (nessPlayer.isTeleported()) {
 			return;
 		}
-		if(player().setViolation(new Violation(cheat, module))) e.setCancelled(true);
+		flag();
 	}
 
 	@Override

@@ -53,13 +53,16 @@ public class ChestStealer extends ListeningCheck<InventoryClickEvent> {
 		if (i1 != i2 && e.getCurrentItem().getType() != Material.AIR) {
 			movedInvItems++;
 			if (movedInvItems > 4) {
-				if(player().setViolation(new Violation("ChestStealer", "movedInventoryItems: " + movedInvItems))) e.setCancelled(true);
+				
+				//if(player().setViolation(new Violation("ChestStealer", "movedInventoryItems: " + movedInvItems))) e.setCancelled(true);
+				flag();
 				movedInvItems = 0;
 			}
 			final long now = System.currentTimeMillis();
 			final long result = now - moveInvItemsLastTime;
 			if (result < 80) {
-				if(player().setViolation(new Violation("ChestStealer", "timeBetweenMovedItems: " + result))) e.setCancelled(true);
+				flag();
+				//if(player().setViolation(new Violation("ChestStealer", "timeBetweenMovedItems: " + result))) e.setCancelled(true);
 			}
 			moveInvItemsLastTime = System.currentTimeMillis();
 		}

@@ -39,7 +39,8 @@ public class AutoClicker extends ListeningCheck<PlayerInteractEvent> {
 			NessPlayer player = this.player();
 			CPS++;
 			if (CPS > maxCPS && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
-				if(player().setViolation(new Violation("AutoClicker", "CPS: " + CPS))) e.setCancelled(true);
+				flag();
+				//if(player().setViolation(new Violation("AutoClicker", "CPS: " + CPS))) e.setCancelled(true);
 			}
 		}
 	}

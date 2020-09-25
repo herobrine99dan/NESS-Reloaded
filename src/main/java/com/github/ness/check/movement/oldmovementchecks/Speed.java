@@ -76,9 +76,10 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 					if (player().isDevMode()) // TODO False Flag to fix (Jumping and Sprinting gives maxSpd = 0.53 and
 												// dist of = 0.57)
 						player().sendDevMessage("Speed amo: " + movementValues.XZDiff);
-					if (player().setViolation(new Violation("Speed",
-							"MaxDistance(OnMove)" + " MaxDist: " + (float) maxSpd + " Dist: " + (float) xDist)))
-						e.setCancelled(true);
+					flag();
+					//if (player().setViolation(new Violation("Speed",
+					//		"MaxDistance(OnMove)" + " MaxDist: " + (float) maxSpd + " Dist: " + (float) xDist)))
+					//	e.setCancelled(true);
 				}
 			}
 		}

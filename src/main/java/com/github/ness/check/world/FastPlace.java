@@ -49,7 +49,8 @@ public class FastPlace extends ListeningCheck<BlockPlaceEvent> {
     public void Check(BlockPlaceEvent e) {
         blockPlace++;
         if (blockPlace > max) {
-			if(player().setViolation(new Violation("FastPlace", "Placing: " + blockPlace))) e.setCancelled(true);
+        	flag();
+			//if(player().setViolation(new Violation("FastPlace", "Placing: " + blockPlace))) e.setCancelled(true);
         }
     }
 

@@ -21,8 +21,9 @@ public class FullBright extends ListeningCheck<BlockPlaceEvent> {
 	protected void checkEvent(BlockPlaceEvent e) {
 		int level = e.getBlockPlaced().getLightLevel();
 		if (level < 3) {
-			if (player().setViolation(new Violation("FullBright", "")))
-				e.setCancelled(true);
+			flag();
+			//if (player().setViolation(new Violation("FullBright", "")))
+			//	e.setCancelled(true);
 		}
 	}
 

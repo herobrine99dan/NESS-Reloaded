@@ -50,7 +50,8 @@ public class NoGround extends ListeningCheck<PlayerMoveEvent> {
 			if (!Utility.groundAround(to.clone().add(0, 2, 0))) {
 				int failed = flags++;
 				if (failed > 3) {
-					if(player().setViolation(new Violation("NoGround", "(OnMove)"))) e.setCancelled(true);
+					flag();
+					//if(player().setViolation(new Violation("NoGround", "(OnMove)"))) e.setCancelled(true);
 				}
 			}
 		}

@@ -42,7 +42,8 @@ public class AntiKb extends ListeningCheck<EntityDamageByEntityEvent> {
 			Location to = player.getLocation();
 			if (to.distanceSquared(from) < 0.3 && !player.getLocation().add(0, 2, 0).getBlock().getType().isSolid()
 					&& !player.getLocation().getBlock().getType().isSolid()) {
-				player().setViolation(new Violation("AntiKb", ""));
+				flag();
+				//player().setViolation(new Violation("AntiKb", ""));
 			}
 		}, durationOfTicks(5));
 	}

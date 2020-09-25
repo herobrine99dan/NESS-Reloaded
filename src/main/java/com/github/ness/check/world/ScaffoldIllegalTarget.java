@@ -37,7 +37,8 @@ public class ScaffoldIllegalTarget extends ListeningCheck<PlayerInteractEvent> {
                     face = blocks.get(1).getFace(blocks.get(0));
                 }
                 if (event.getBlockFace() != face && target.getType().isSolid() && target.getType().isOccluding()) {
-        			if(player().setViolation(new Violation("Scaffold", "IllegalTarget"))) event.setCancelled(true);
+                	flag();
+                	//if(player().setViolation(new Violation("Scaffold", "IllegalTarget"))) event.setCancelled(true);
                 }
             }
         }

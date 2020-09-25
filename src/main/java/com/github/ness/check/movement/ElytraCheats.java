@@ -42,7 +42,8 @@ public class ElytraCheats extends ListeningCheck<PlayerMoveEvent> {
         float yDiff = (float) this.player().getMovementValues().yDiff;
         float xzDiff = (float) this.player().getMovementValues().XZDiff;
         if (xzDiff > maxXZDiff || yDiff > this.maxYDiff) {
-        	if(player().setViolation(new Violation("ElytraCheats", "HighDistance"))) event.setCancelled(true);
+        	flag();
+        	//if(player().setViolation(new Violation("ElytraCheats", "HighDistance"))) event.setCancelled(true);
         }
     }
 

@@ -18,7 +18,7 @@ public class FlyHighDistance extends ListeningCheck<PlayerMoveEvent> {
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
 	int preVL;
-	
+
 	public FlyHighDistance(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 		preVL = 0;
@@ -38,10 +38,10 @@ public class FlyHighDistance extends ListeningCheck<PlayerMoveEvent> {
 		}
 		if (!values.isOnGround && dist > 0.35 && values.yDiff == 0.0
 				&& this.player().getTimeSinceLastWasOnIce() >= 1000) {
-			if(preVL++ > 1) {
-				if(player().setViolation(new Violation("Fly", "HighDistance(OnMove)"))) e.setCancelled(true);
+			if (preVL++ > 1) {
+				flag();
 			}
-		} else if(preVL > 0) {
+		} else if (preVL > 0) {
 			preVL--;
 		}
 	}

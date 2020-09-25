@@ -37,7 +37,8 @@ public class Criticals extends ListeningCheck<EntityDamageByEntityEvent> {
 				NessPlayer np = player();
 				if (np.getMovementValues().getTo().getY() % 1.0D == 0.0D
 						&& player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
-					if(player().setViolation(new Violation("Criticals", ""))) event.setCancelled(true);
+					flag();
+					//if(player().setViolation(new Violation("Criticals", ""))) event.setCancelled(true);
 				}
 			}
 		}

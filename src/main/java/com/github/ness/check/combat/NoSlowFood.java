@@ -33,7 +33,8 @@ public class NoSlowFood extends ListeningCheck<PlayerItemConsumeEvent> {
         distance -= e.getPlayer().getVelocity().getX();
         distance -= e.getPlayer().getVelocity().getZ();
         if (distance > 0.25 || e.getPlayer().isSprinting()) {
-            if(p.setViolation(new Violation("NoSlowDown", ""))) e.setCancelled(true);
+        	flag();
+            //if(p.setViolation(new Violation("NoSlowDown", ""))) e.setCancelled(true);
         }
     }
 }

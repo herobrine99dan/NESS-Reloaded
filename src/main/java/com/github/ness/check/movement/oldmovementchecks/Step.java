@@ -40,10 +40,12 @@ public class Step extends ListeningCheck<PlayerMoveEvent> {
 					boatNear = true;
 			}
 			if (player.getVelocity().getY() < 0.43 && !boatNear) {
-				if(player().setViolation(new Violation("Step", "(OnMove)"))) e.setCancelled(true);
+				flag();
+				//if(player().setViolation(new Violation("Step", "(OnMove)"))) e.setCancelled(true);
 			}
 		} else if (from.getY() - to.getY() > 1.5 && player.getFallDistance() == 0.0 && player.getVelocity().getY() < 0.43) {
-			if(player().setViolation(new Violation("Step", "(OnMove)"))) e.setCancelled(true);
+			flag();
+			//if(player().setViolation(new Violation("Step", "(OnMove)"))) e.setCancelled(true);
 		}
 	}
 

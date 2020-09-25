@@ -41,7 +41,8 @@ public class NoSlowBow extends ListeningCheck<EntityShootBowEvent> {
 		distance -= o.getVelocity().getX();
 		distance -= o.getVelocity().getZ();
 		if (distance > 0.25 || o.isSprinting()) {
-			if(p.setViolation(new Violation("NoSlowDown", ""))) e.setCancelled(true);
+			flag();
+			//if(p.setViolation(new Violation("NoSlowDown", ""))) e.setCancelled(true);
 		}
 	}
 }

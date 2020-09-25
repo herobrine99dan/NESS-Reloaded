@@ -58,7 +58,8 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
             y -= Math.abs(np.velocity.getY());
         }
         if (Math.abs(yresult) > max && !np.isTeleported()) {
-        	if(player().setViolation(new Violation("Fly", "InvalidVelocity: " + yresult))) e.setCancelled(true);
+        	flag();
+        	//if(player().setViolation(new Violation("Fly", "InvalidVelocity: " + yresult))) e.setCancelled(true);
         }
     }
 }

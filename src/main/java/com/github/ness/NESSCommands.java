@@ -3,8 +3,6 @@ package com.github.ness;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.github.ness.gui.ViolationGUI;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -36,8 +34,6 @@ class NESSCommands implements CommandExecutor {
 			return "ness.command.clear";
 		case "debug":
 			return "ness.command.debug";
-		case "gui":
-			return "ness.command.gui";
 		case "debugvelocity":
 			return "ness.command.debugvelocity";
 		default:
@@ -81,11 +77,6 @@ class NESSCommands implements CommandExecutor {
 			break;
 		case "version":
 			sendMessage(sender, "&7NESS Version: " + ness.getPlugin().getDescription().getVersion());
-			break;
-		case "gui":
-			if (sender instanceof Player) {
-				new ViolationGUI(sender).createGUI();
-			}
 			break;
 		case "debug":
 			if (sender instanceof Player) {

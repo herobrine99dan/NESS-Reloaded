@@ -73,8 +73,9 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 					 * likely to be cheating.
 					 */
 					if (!nessPlayer.isTeleported()) {
-						if (player().setViolation(new Violation("Timer", " packets: " + movementsPerTick)))
-							e.setCancelled(true);
+						flag();
+						//if (player().setViolation(new Violation("Timer", " packets: " + movementsPerTick)))
+						//	e.setCancelled(true);
 					}
 				} else if (movementsPerTick > 0.084 && movementsPerTick < 0.9) {
 					double result = Math.abs(lastPacketsPerTicks - movementsPerTick);
@@ -82,9 +83,10 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 						nessPlayer.getPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
 					}
 					if (result < 0.0007) {
-						if (player().setViolation(new Violation("Timer",
-								"[EXPERIMENTAL] Packets: " + movementsPerTick + " Result: " + result)))
-							e.setCancelled(true);
+						flag();
+						//if (player().setViolation(new Violation("Timer",
+						//		"[EXPERIMENTAL] Packets: " + movementsPerTick + " Result: " + result)))
+						//	e.setCancelled(true);
 					}
 				}
 

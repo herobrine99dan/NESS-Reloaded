@@ -26,9 +26,10 @@ public class LiquidInteraction extends ListeningCheck<BlockPlaceEvent> {
 		if (e.getBlockAgainst().isLiquid()) {
 			String type = e.getBlock().getType().name();
 			if (!type.contains("LILY") || !type.contains("SEA")) {
-				if (player().setViolation(new Violation("LiquidInteraction",
-						e.getPlayer().getName() + " isn't a god (Block: " + type + ")")))
-					e.setCancelled(true);
+				flag();
+				//if (player().setViolation(new Violation("LiquidInteraction",
+				//		e.getPlayer().getName() + " isn't a god (Block: " + type + ")")))
+					//e.setCancelled(true);
 			}
 		}
 	}
