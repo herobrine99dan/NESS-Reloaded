@@ -49,7 +49,7 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 			final long difference = System.currentTimeMillis() - lastPacketTime;
 
 			if (difference >= 1000) {
-				final int ping = Utility.getPing(nessPlayer.getPlayer());
+				final int ping = Utility.getPing(nessPlayer.getBukkitPlayer());
 				double maxPackets = MAX_PACKETS_PER_TICK;
 				if (ping > 100 && ping < 300) {
 					float pingresult = ping / 100;
@@ -80,7 +80,7 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 				} else if (movementsPerTick > 0.084 && movementsPerTick < 0.9) {
 					double result = Math.abs(lastPacketsPerTicks - movementsPerTick);
 					if (nessPlayer.isDebugMode()) {
-						nessPlayer.getPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
+						nessPlayer.getBukkitPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
 					}
 					if (result < 0.0007) {
 						flag();

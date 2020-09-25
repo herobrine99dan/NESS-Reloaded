@@ -47,7 +47,7 @@ public class ChestStealer extends ListeningCheck<InventoryClickEvent> {
 			return;
 		final Inventory i1 = e.getWhoClicked().getInventory();
 		final Inventory i2 = e.getInventory();
-		if(nessPlayer.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+		if(nessPlayer.getBukkitPlayer().getGameMode().equals(GameMode.CREATIVE)) {
 			return;
 		}
 		if (i1 != i2 && e.getCurrentItem().getType() != Material.AIR) {

@@ -21,7 +21,7 @@ public class AbilititiesSpoofed extends ListeningCheck<ReceivedPacketEvent> {
 	
     @Override
     protected void checkEvent(ReceivedPacketEvent e) {
-        int ping = Utility.getPing(e.getNessPlayer().getPlayer());
+        int ping = Utility.getPing(e.getNessPlayer().getBukkitPlayer());
     }
 
 }

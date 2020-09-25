@@ -57,7 +57,7 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 			if (result < 0.007) {
 				final double sensitivity = GCDUtils.getSensitivity(gcd);
 				if (player.isDevMode()) {
-					player.getPlayer().sendMessage("Setting Sensitivity to: " + sensitivity);
+					player.getBukkitPlayer().sendMessage("Setting Sensitivity to: " + sensitivity);
 				}
 				player.sensitivity = sensitivity;
 			}

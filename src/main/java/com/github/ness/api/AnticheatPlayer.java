@@ -25,6 +25,6 @@ public interface AnticheatPlayer {
 	 * 
 	 * @return the bukkit player
 	 */
-	Player getPlayer();
+	Player getBukkitPlayer();
 	
 }

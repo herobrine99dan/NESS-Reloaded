@@ -36,7 +36,7 @@ public class NESSExample extends JavaPlugin implements Listener {
 			// this would need to either resynchronise or detect thread-safe permissions plugins
 			hasBypassPermission = false;
 		} else {
-			hasBypassPermission = anticheatPlayer.getPlayer().hasPermission(permission);
+			hasBypassPermission = anticheatPlayer.getBukkitPlayer().hasPermission(permission);
 		}
 		if (hasBypassPermission) {
 			evt.setCancelled(true);

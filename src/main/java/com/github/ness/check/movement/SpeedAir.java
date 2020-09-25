@@ -24,7 +24,7 @@ public class SpeedAir extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	public static float getBaseSpeed(NessPlayer nessPlayer) {
-		Player player = nessPlayer.getPlayer();
+		Player player = nessPlayer.getBukkitPlayer();
 		float max = 0.36f + (Utility.getPotionEffectLevel(player, PotionEffectType.SPEED) * 0.062f)
 				+ ((player.getWalkSpeed() - 0.2f) * 1.6f);
 		if (Utility.getMaterialName(player.getLocation().clone().add(0, -0.6, 0)).contains("ICE")

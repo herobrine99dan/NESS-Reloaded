@@ -88,7 +88,7 @@ public class NessPlayer implements AnticheatPlayer {
 	}
 	
 	@Override
-	public Player getPlayer() {
+	public Player getBukkitPlayer() {
 		return player;
 	}
 
@@ -174,7 +174,7 @@ public class NessPlayer implements AnticheatPlayer {
 	}
 
 	public void sendDevMessage(String message) {
-		this.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Dev> &7" + message));
+		this.getBukkitPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Dev> &7" + message));
 	}
 
 	public void updateMovementValue(MovementValues values) {

@@ -40,7 +40,7 @@ public final class ViolationMigratorUtil {
 
 		@Override
 		public void trigger(Infraction infraction) {
-			action.actOn(infraction.getPlayer().getPlayer(), violationFromInfraction(infraction), infraction.getCount());
+			action.actOn(infraction.getPlayer().getBukkitPlayer(), violationFromInfraction(infraction), infraction.getCount());
 		}
 		
 	}

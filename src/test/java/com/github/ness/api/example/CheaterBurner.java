@@ -12,7 +12,7 @@ class CheaterBurner implements InfractionTrigger {
 	@Override
 	public void trigger(Infraction infraction) {
 		if (infraction.getCount() > 10) {
-			Player player = infraction.getPlayer().getPlayer();
+			Player player = infraction.getPlayer().getBukkitPlayer();
 			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
 					"&c&l" + player.getName() + " was punished for using cheats!"));
 			player.getWorld().strikeLightning(player.getLocation().add(0, -1, 0));

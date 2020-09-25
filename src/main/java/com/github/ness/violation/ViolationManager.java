@@ -37,7 +37,7 @@ public class ViolationManager {
 
 	String addViolationVariables(String message, InfractionImpl infraction) {
 		String replaced = message
-				.replace("%PLAYER%", infraction.getPlayer().getPlayer().getName())
+				.replace("%PLAYER%", infraction.getPlayer().getBukkitPlayer().getName())
 				.replace("%HACK%", infraction.getCheck().getCheckName())
 				.replace("%VIOLATIONS%", Integer.toString(infraction.getCount()));
 		if (ness.getMainConfig().isDevMode()) {

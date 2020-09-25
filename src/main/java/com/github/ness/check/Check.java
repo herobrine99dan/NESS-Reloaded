@@ -94,7 +94,7 @@ public class Check extends BaseCheck {
 			return true;
 		}
 		return callEvent(plugin, new com.github.ness.api.impl.PlayerViolationEvent(
-				nessPlayer.getPlayer(), nessPlayer,
+				nessPlayer.getBukkitPlayer(), nessPlayer,
 				new com.github.ness.api.Violation(getFactory().getCheckName(), ""),
 				violations.get()));
 	}

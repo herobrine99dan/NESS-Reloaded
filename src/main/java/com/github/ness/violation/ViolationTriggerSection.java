@@ -86,7 +86,7 @@ public interface ViolationTriggerSection {
 						ByteArrayDataOutput out = ByteStreams.newDataOutput();
 						out.writeUTF("NESS-Reloaded");
 						out.writeUTF(notification);
-						infractionImpl.getPlayer().getPlayer().sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
+						infractionImpl.getPlayer().getBukkitPlayer().sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
 					}
 					for (Player staff : plugin.getServer().getOnlinePlayers()) {
 						if (staff.hasPermission("ness.notify")) {
@@ -101,7 +101,7 @@ public interface ViolationTriggerSection {
 					if (webhookurl.isEmpty()) {
 						return;
 					}
-					String hackerName = infraction.getPlayer().getPlayer().getName();
+					String hackerName = infraction.getPlayer().getBukkitPlayer().getName();
 					JavaPlugin plugin = ness.getPlugin();
 					plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
 
@@ -167,7 +167,7 @@ public interface ViolationTriggerSection {
 						return true;
 					}
 					com.github.ness.api.impl.PlayerPunishEvent event = new com.github.ness.api.impl.PlayerPunishEvent(
-							nessPlayer.getPlayer(), nessPlayer,
+							nessPlayer.getBukkitPlayer(), nessPlayer,
 							ViolationMigratorUtil.violationFromInfraction(infraction),
 							infraction.getCount(), command);
 					plugin.getServer().getPluginManager().callEvent(event);
