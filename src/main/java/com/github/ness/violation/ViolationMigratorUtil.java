@@ -37,6 +37,11 @@ public final class ViolationMigratorUtil {
 		ViolationTriggerForAction(com.github.ness.api.ViolationAction action) {
 			this.action = action;
 		}
+		
+		@Override
+		public SynchronisationContext context() {
+			return (action.canRunAsync()) ? SynchronisationContext.FORCE_ASYNC : SynchronisationContext.FORCE_SYNC;
+		}
 
 		@Override
 		public void trigger(Infraction infraction) {
