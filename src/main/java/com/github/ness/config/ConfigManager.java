@@ -87,6 +87,7 @@ public class ConfigManager {
 							"The YAML syntax in your configuration is invalid. "
 							+ "Please use a yaml syntax checker such as https://yaml-online-parser.appspot.com/ . "
 							+ "Paste your configuration there and use it to work through errors. "
+							+ "Run /ness reload when done. "
 							+ "For now, NESS will use the default configuration.", ex);
 					return defaults;
 
