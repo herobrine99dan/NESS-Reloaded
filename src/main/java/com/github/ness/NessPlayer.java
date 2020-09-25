@@ -91,17 +91,6 @@ public class NessPlayer implements AnticheatPlayer {
 	public Player getBukkitPlayer() {
 		return player;
 	}
-
-	/**
-	 * Gets the UUID of this ness player
-	 * 
-	 * @return the uuid
-	 * @deprecated Use {@link #getUniqueId()}
-	 */
-	@Deprecated
-	public UUID getUUID() {
-		return uuid;
-	}
 	
 	/**
 	 * Adds an infraction
