@@ -25,7 +25,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -185,31 +184,22 @@ public class NessPlayer implements AnticheatPlayer {
 			this.updateLastWasOnIce();
 		}
 	}
-
-	/**
-	 * The new dragDown method will teleport the player down adding his velocity to
-	 * his location
-	 */
-	public void dragDown() {
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				if (player.isOnline()) {
-					final long current = System.nanoTime() / 1000_000L;
-					if ((current - setBackTicks) > 40) {
-						final Location block = player.getLocation().clone().add(0, player.getVelocity().getY(), 0);
-						if (!block.getBlock().getType().isSolid()) {
-							hasSetback = true;
-							player.teleport(block, TeleportCause.PLUGIN);
-						} else if (!block.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
-							player.teleport(block.add(0, 0.4, 0), TeleportCause.PLUGIN);
-						}
-					}
-					setBackTicks = current;
-					setBackTicks++;
+	
+	public void completeDragDown() {
+		if (player.isOnline()) {
+			final long current = System.nanoTime() / 1000_000L;
+			if ((current - setBackTicks) > 40) {
+				final Location block = player.getLocation().clone().add(0, player.getVelocity().getY(), 0);
+				if (!block.getBlock().getType().isSolid()) {
+					hasSetback = true;
+					player.teleport(block, TeleportCause.PLUGIN);
+				} else if (!block.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
+					player.teleport(block.add(0, 0.4, 0), TeleportCause.PLUGIN);
 				}
 			}
-		}.runTask(NESSAnticheat.getInstance());
+			setBackTicks = current;
+			setBackTicks++;
+		}
 	}
 
 	@Override

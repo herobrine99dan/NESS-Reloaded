@@ -1,5 +1,7 @@
 package com.github.ness.check;
 
+import java.time.Duration;
+
 import com.github.ness.NessPlayer;
 import com.github.ness.config.NessConfig;
 import com.github.ness.violation.ViolationTriggerSection.CancelEvent;
@@ -25,6 +27,16 @@ public abstract class ListeningCheck<E extends Event> extends Check {
 		@SuppressWarnings("unchecked")
 		ListeningCheckFactory<?, E> factory = (ListeningCheckFactory<?, E>) super.getFactory();
 		return factory;
+	}
+	
+	/**
+	 * Whether calls to {@link #flagEvent(Cancellable)} and {@link #flagEvent(Cancellable, String)} should
+	 * drag the player down if they cancel the event. False by default but may be overridden
+	 * 
+	 * @return true to drag down, false otherwise
+	 */
+	protected boolean shouldDragDown() {
+		return false;
 	}
 	
 	/**
@@ -57,6 +69,9 @@ public abstract class ListeningCheck<E extends Event> extends Check {
 			CancelEvent cancelEvent = config.getViolationHandling().cancelEvent();
 			if (cancelEvent.enable() && violations >= cancelEvent.violations()) {
 				evt.setCancelled(true);
+				if (shouldDragDown()) {
+					runTaskLater(player()::completeDragDown, Duration.ZERO);
+				}
 			}
 		}
 	}
