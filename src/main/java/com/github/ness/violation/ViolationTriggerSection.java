@@ -10,7 +10,6 @@ import com.github.ness.NessPlayer;
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
 import com.github.ness.api.ViolationTrigger;
-import com.github.ness.api.impl.PlayerPunishEvent;
 import com.github.ness.utility.DiscordWebhook;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -22,6 +21,7 @@ import space.arim.dazzleconf.annote.ConfDefault.DefaultString;
 import space.arim.dazzleconf.annote.ConfKey;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 
 public interface ViolationTriggerSection {
 
@@ -43,20 +43,20 @@ public interface ViolationTriggerSection {
 		@DefaultString("&8[&b&lNESS&8]&r&7> &c%PLAYER% &7failed &c%HACK%&7. Violations: %VIOLATIONS%")
 		String notification();
 		
-		@ConfKey("discord-webhook")
+		@ConfKey("discord.webhook")
 		@DefaultString("")
 		String discordWebHook();
 		
-		@ConfKey("discord-title")
+		@ConfKey("discord.title")
 		@DefaultString("Anti-Cheat")
 		String discordTitle();
 		
-		@ConfKey("discord-description")
+		@ConfKey("discord.description")
 		@DefaultString("%HACKER% maybe is cheating!")
 		String discordDescription();
 		
-		@ConfKey("discord-color")
-		@DefaultInteger(0) // TODO: Determine java.awt.Color.RED.getRGB()
+		@ConfKey("discord.color")
+		@DefaultString("#FF0000")
 		Color discordColor();
 		
 		@DefaultBoolean(false)
@@ -147,10 +147,14 @@ public interface ViolationTriggerSection {
 					// Only we can assume implementation details
 					NessPlayer nessPlayer = (NessPlayer) player;
 
-					PlayerPunishEvent event = new PlayerPunishEvent(player.getPlayer(), nessPlayer,
-							ViolationMigratorUtil.violationFromInfraction(infraction), infraction.getCount(), cmd);
+					@SuppressWarnings("deprecation")
+					com.github.ness.api.impl.PlayerPunishEvent event = new com.github.ness.api.impl.PlayerPunishEvent(
+							player.getPlayer(), nessPlayer,
+							ViolationMigratorUtil.violationFromInfraction(infraction),
+							infraction.getCount(), cmd);
 					ness.getServer().getPluginManager().callEvent(event);
-					if (event.isCancelled()) {
+
+					if (((Cancellable) event).isCancelled()) {
 						return;
 					}
 					ness.getServer().dispatchCommand(ness.getServer().getConsoleSender(), cmd);
