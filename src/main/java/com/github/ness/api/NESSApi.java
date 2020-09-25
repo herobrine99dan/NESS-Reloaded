@@ -45,10 +45,10 @@ public interface NESSApi {
 	Collection<? extends AnticheatPlayer> getAllPlayers();
 
 	/**
-	 * Gets an anticheat player by UUID
+	 * Gets an anticheat player by UUID, or {@code null} if there is none
 	 * 
 	 * @param UUID the player UUID
-	 * @return an anticheat player with the UUID
+	 * @return an anticheat player with the UUID, or {@code null} for none
 	 */
 	AnticheatPlayer getPlayer(UUID uuid);
 

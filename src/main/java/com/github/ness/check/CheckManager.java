@@ -103,10 +103,8 @@ public class CheckManager {
 	 */
 	public Collection<NessPlayer> getAllPlayers() {
 		Set<NessPlayer> result = new HashSet<>();
-		for (CompletableFuture<NessPlayerData> playerData  : playerManager.getPlayerCache().asMap().values()) {
-			if (playerData.isDone()) {
-				result.add(playerData.join().getNessPlayer());
-			}
+		for (NessPlayerData playerData  : playerManager.getPlayerCache().synchronous().asMap().values()) {
+			result.add(playerData.getNessPlayer());
 		}
 		return Collections.unmodifiableSet(result);
 	}
@@ -118,8 +116,8 @@ public class CheckManager {
 	 * @return the ness player
 	 */
 	public NessPlayer getPlayer(UUID uuid) {
-		CompletableFuture<NessPlayerData> playerData = playerManager.getPlayerCache().getIfPresent(uuid);
-		return (playerData.isDone()) ? playerData.join().getNessPlayer() : null;
+		NessPlayerData playerData = playerManager.getPlayerCache().synchronous().getIfPresent(uuid);
+		return (playerData == null) ? null : playerData.getNessPlayer();
 	}
 	
 	private CompletableFuture<?> loadFactories(Runnable whenComplete) {
@@ -152,8 +150,7 @@ public class CheckManager {
 	 * @return the ness player or {@code null} if not loaded
 	 */
 	public NessPlayer getExistingPlayer(Player player) {
-		NessPlayerData playerData = playerManager.getPlayerCache().synchronous().getIfPresent(player.getUniqueId());
-		return (playerData == null) ? null : playerData.getNessPlayer();
+		return getPlayer(player.getUniqueId());
 	}
 	
 	/**

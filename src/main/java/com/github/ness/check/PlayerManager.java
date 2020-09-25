@@ -1,6 +1,5 @@
 package com.github.ness.check;
 
-import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -15,7 +14,6 @@ import com.github.benmanes.caffeine.cache.AsyncCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.RemovalListener;
-import com.github.benmanes.caffeine.cache.Scheduler;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
@@ -36,8 +34,7 @@ class PlayerManager {
 		this.checkManager = checkManager;
 
 		coreListener = new CoreListener(this);
-		playerCache = Caffeine.newBuilder().expireAfterAccess(Duration.ofMinutes(5L))
-				.removalListener(new PlayerCacheRemovalListener()).scheduler(Scheduler.systemScheduler()).buildAsync();
+		playerCache = Caffeine.newBuilder().removalListener(new PlayerCacheRemovalListener()).buildAsync();
 	}
 	
 	Listener getListener() {
@@ -104,8 +101,7 @@ class PlayerManager {
 	}
 
 	/**
-	 * Forcibly remove a player. This may be used to clear the player's data before
-	 * automatic expiration of the 5 minute cache.
+	 * Forcibly remove a player. Used to clear the player's data
 	 *
 	 * @param player the player to remove
 	 */
