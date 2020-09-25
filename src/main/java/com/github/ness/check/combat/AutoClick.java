@@ -40,7 +40,7 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 	private static final Logger logger = NessLogger.getLogger(AutoClick.class);
 	private final CheckConf conf;
 	private final Set<Long> clickHistory = ConcurrentHashMap.newKeySet();
-
+	
 	public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos
 			.forEventWithAsyncPeriodic(PlayerInteractEvent.class, Duration.ofSeconds(2));
 

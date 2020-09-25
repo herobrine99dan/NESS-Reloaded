@@ -26,6 +26,11 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
         this.maxInvalidVelocity = this.ness().getMainConfig().getCheckSection().fly().maxGravity();
 	}
 	
+	@Override
+	protected boolean shouldDragDown() {
+		return true;
+	}
+	
 	public interface Config {
 		@DefaultDouble(0.9)
 		double maxGravity();
@@ -58,7 +63,7 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
             y -= Math.abs(np.velocity.getY());
         }
         if (Math.abs(yresult) > max && !np.isTeleported()) {
-        	flag();
+        	flagEvent(e, " " + yresult);
         	//if(player().setViolation(new Violation("Fly", "InvalidVelocity: " + yresult))) e.setCancelled(true);
         }
     }

@@ -34,7 +34,7 @@ public class NoWeb extends ListeningCheck<PlayerMoveEvent> {
         }
         if (dist > walkSpeed && Utility.getMaterialName(event.getTo()).contains("WEB")
                 && Utility.getMaterialName(event.getFrom()).contains("WEB") && !Utility.hasflybypass(p) && nessPlayer.nanoTimeDifference(PlayerAction.WEBBREAKED) > 1300) {
-        	flag();
+        	flagEvent(event);
         	//if(player().setViolation(new Violation("NoWeb", "Dist: " + dist))) event.setCancelled(true);
         }
     }

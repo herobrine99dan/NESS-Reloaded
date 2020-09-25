@@ -26,6 +26,11 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	@Override
+	protected boolean shouldDragDown() {
+		return true;
+	}
+	
+	@Override
 	protected void checkEvent(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
 		NessPlayer nessPlayer = this.player();
@@ -42,10 +47,10 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 				&& player.isOnline() && !movementValues.AroundSlime && !player.isInsideVehicle()
 				&& !Utility.specificBlockNear(e.getTo().clone(), "web")) {
 			if (player.isOnGround() && !Utility.groundAround(e.getTo())) {
-				flag();
+				flagEvent(e, " FalseGround");
 	        	//if(player().setViolation(new Violation("Fly", "FalseGround"))) e.setCancelled(true);
 			} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY())) {
-				flag();
+				flagEvent(e, " FalseGround1");
 	        	//if(player().setViolation(new Violation("Fly", "FalseGround1"))) e.setCancelled(true);
 			}
 		}

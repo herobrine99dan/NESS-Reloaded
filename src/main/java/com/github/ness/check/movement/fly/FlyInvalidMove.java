@@ -12,21 +12,27 @@ import com.github.ness.check.ListeningCheckInfo;
 
 public class FlyInvalidMove extends ListeningCheck<PlayerMoveEvent> {
 
-	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
-			.forEvent(PlayerMoveEvent.class);
+	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
 	public FlyInvalidMove(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 
-    @Override
-    protected void checkEvent(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-        if (player.getFallDistance() < 7 && player.getVelocity().getY() < -2.0D && !player.isFlying()) {
-        	flag();
-        	//if(player().setViolation(new Violation("Fly", "InvalidMove" + " FallDist: "
-            //        + player.getFallDistance() + " Velocity: " + (float) player.getVelocity().getY()))) event.setCancelled(true);
-        }
-    }
+	@Override
+	protected boolean shouldDragDown() {
+		return true;
+	}
+
+	@Override
+	protected void checkEvent(PlayerMoveEvent event) {
+		Player player = event.getPlayer();
+		if (player.getFallDistance() < 7 && player.getVelocity().getY() < -2.0D && !player.isFlying()) {
+			flagEvent(event,
+					" FallDist: " + player.getFallDistance() + " Velocity: " + (float) player.getVelocity().getY());
+			// if(player().setViolation(new Violation("Fly", "InvalidMove" + " FallDist: "
+			// + player.getFallDistance() + " Velocity: " + (float)
+			// player.getVelocity().getY()))) event.setCancelled(true);
+		}
+	}
 
 }

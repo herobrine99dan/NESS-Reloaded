@@ -27,7 +27,7 @@ public class Phase extends ListeningCheck<PlayerMoveEvent> {
         if (b.getType().isOccluding() && !event.getPlayer().isInsideVehicle()
                 && Utility.groundAround(event.getTo().clone()) && !nessPlayer.isTeleported()
                 && nessPlayer.getMovementValues().XZDiff > 0.25) {
-        	flag();
+        	flagEvent(event);
         	//if(player().setViolation(new Violation("Phase", ""))) event.setCancelled(true);
         }
     }

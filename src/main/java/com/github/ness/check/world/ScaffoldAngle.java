@@ -31,7 +31,7 @@ public class ScaffoldAngle extends ListeningCheck<BlockPlaceEvent> {
         NessPlayer nessPlayer = player();
         Material material = event.getPlayer().getItemInHand().getType();
         if((event.getBlockPlaced().getType() != material) && material.isSolid() && material.isOccluding()) {
-        	flag();
+        	flagEvent(event);
         	//if(player().setViolation(new Violation("Scaffold", "Impossible"))) event.setCancelled(true);
 
         	return;
@@ -39,7 +39,7 @@ public class ScaffoldAngle extends ListeningCheck<BlockPlaceEvent> {
         final Vector placedVector = new Vector(placedFace.getModX(), placedFace.getModY(), placedFace.getModZ());
         float placedAngle = nessPlayer.getMovementValues().getTo().getDirectionVector().toBukkitVector().angle(placedVector);
         if (placedAngle > MAX_ANGLE) {
-        	flag();
+        	flagEvent(event);
 			//if(player().setViolation(new Violation("Scaffold", "HighAngle"))) event.setCancelled(true);
         }
     }

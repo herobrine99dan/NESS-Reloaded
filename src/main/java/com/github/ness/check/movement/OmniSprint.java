@@ -34,7 +34,7 @@ public class OmniSprint extends ListeningCheck<ReceivedPacketEvent> {
 					.subtract(values.getTo().toBukkitLocation().clone()).toVector();
 			double angle = moving.angle(getDirection(values.getTo()));
 			if (angle < 1.58) {
-				flag();
+				flagEvent(event);
 				//if(player().setViolation(new Violation("OmniSprint", ""))) event.setCancelled(true);
 			}
 		}

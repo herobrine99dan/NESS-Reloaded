@@ -37,7 +37,7 @@ public class ScaffoldFalseTarget extends ListeningCheck<BlockPlaceEvent> {
                     && target.getType().isSolid() && !target.getType().name().toLowerCase().contains("sign")
                     && !target.getType().toString().toLowerCase().contains("fence")
                     && player.getLocation().getY() > event.getBlock().getLocation().getY() && target.getType().isOccluding()) {
-            	flag();
+            	flagEvent(event);
             	//if(player().setViolation(new Violation("Scaffold", "FalseTarget"))) event.setCancelled(true);
             }
         }

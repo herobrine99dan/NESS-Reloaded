@@ -39,7 +39,7 @@ public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
                 && !Utility.hasflybypass(p) && !np.isTeleported()) {
             double distance = np.getMovementValues().yDiff;
             if (distance > 0.155D && p.getVelocity().getY() < 0) {
-            	flag();
+            	flagEvent(event);
             	//if(player().setViolation(new Violation("FastLadder", "Dist: " + distance))) event.setCancelled(true);
             }
         }

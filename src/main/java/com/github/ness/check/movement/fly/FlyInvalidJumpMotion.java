@@ -60,7 +60,7 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 				double yResult = Math.abs(yDiff - player.getVelocity().getY());
 				if (yResult != 0.0 && nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) > 1700
 						&& nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) > 1700) {
-					flag();
+					flagEvent(event, " yResult: " + yResult + "  yDiff: " + yDiff);
 	            	//if(player().setViolation(new Violation("Fly", "InvalidJumpMotion yResult: " + yResult + "  yDiff: " + yDiff))) event.setCancelled(true);
 				}
 			}

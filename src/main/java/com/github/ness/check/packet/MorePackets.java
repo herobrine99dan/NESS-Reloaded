@@ -53,7 +53,7 @@ public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
              * sender.teleport(OldMovementChecks.safeLoc.getOrDefault(sender,
              * sender.getLocation())); } }.runTask(NESSAnticheat.main);
              */
-        	flag();
+        	flagEvent(e);
         	//if(player().setViolation(new Violation("MorePackets", Integer.toString(normalPacketsCounter)))) e.setCancelled(true);
         }
     }

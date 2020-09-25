@@ -23,13 +23,18 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 	public NoFall(ListeningCheckFactory<?,PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
+	
+	@Override
+	protected boolean shouldDragDown() {
+		return true;
+	}
 
 	private void punish(PlayerMoveEvent e, String cheat, String module) {
 		NessPlayer nessPlayer = this.player();
 		if (nessPlayer.isTeleported()) {
 			return;
 		}
-		flag();
+		flagEvent(e);
 	}
 
 	@Override

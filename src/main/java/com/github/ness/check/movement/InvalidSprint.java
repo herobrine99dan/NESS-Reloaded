@@ -26,7 +26,7 @@ public class InvalidSprint extends ListeningCheck<PlayerMoveEvent> {
 		Player player = event.getPlayer();
 		if (player.isSprinting()) {
 			if (player.hasPotionEffect(PotionEffectType.BLINDNESS) || player.getFoodLevel() < 7) {
-				flag();
+				flagEvent(event);
 				//if(player().setViolation(new Violation("Sprint", "ImpossibleActions"))) event.setCancelled(true);
 			}
 		}

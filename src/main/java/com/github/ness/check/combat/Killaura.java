@@ -31,7 +31,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 
 	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfos
 			.forEventWithAsyncPeriodic(EntityDamageByEntityEvent.class, Duration.ofMillis(70));
-
+	
 	public Killaura(ListeningCheckFactory<?, EntityDamageByEntityEvent> factory, NessPlayer player) {
 		super(factory, player);
 		this.maxYaw = this.ness().getMainConfig().getCheckSection().killaura().maxYaw();
@@ -161,7 +161,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	}
 
 	private void punish(EntityDamageByEntityEvent evt, Player p, String module) {
-		flagEvent(evt);
+		flagEvent(evt, module);
 	}
 
 }

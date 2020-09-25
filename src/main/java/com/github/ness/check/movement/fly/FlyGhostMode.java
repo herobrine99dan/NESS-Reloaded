@@ -19,6 +19,11 @@ public class FlyGhostMode extends ListeningCheck<PlayerMoveEvent> {
 	public FlyGhostMode(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
+	
+	@Override
+	protected boolean shouldDragDown() {
+		return true;
+	}
 
     @Override
     protected void checkEvent(PlayerMoveEvent event) {
@@ -26,7 +31,7 @@ public class FlyGhostMode extends ListeningCheck<PlayerMoveEvent> {
         if (player.isDead()) {
             NessPlayer np = this.player();
             if ((np.getMovementValues().XZDiff > 0.3 || np.getMovementValues().yDiff > 0.16) && !np.isTeleported()) {
-            	flag();
+            	flagEvent(event);
             	//if(player().setViolation(new Violation("Fly", "GhostMode"))) event.setCancelled(true);
             }
         }

@@ -73,7 +73,7 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 					 * likely to be cheating.
 					 */
 					if (!nessPlayer.isTeleported()) {
-						flag();
+						flagEvent(e);
 						//if (player().setViolation(new Violation("Timer", " packets: " + movementsPerTick)))
 						//	e.setCancelled(true);
 					}

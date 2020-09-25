@@ -39,7 +39,7 @@ public class FlyHighDistance extends ListeningCheck<PlayerMoveEvent> {
 		if (!values.isOnGround && dist > 0.35 && values.yDiff == 0.0
 				&& this.player().getTimeSinceLastWasOnIce() >= 1000) {
 			if (preVL++ > 1) {
-				flag();
+				flagEvent(e);
 			}
 		} else if (preVL > 0) {
 			preVL--;

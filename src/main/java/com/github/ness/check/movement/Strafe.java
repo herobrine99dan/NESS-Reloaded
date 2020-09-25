@@ -41,7 +41,7 @@ public class Strafe extends ListeningCheck<PlayerMoveEvent> {
         double result = Math.abs(lastStrafeAngle - angle);
         if (lastStrafeAngle != 0 && result > 35 && result < 300 && Math.abs(yawDiff) < 8 && !p.isOnGround()
                 && dist > .19 && !isAgainstBlock(e.getFrom()) && !isAgainstBlock(e.getTo())) {
-        	flag();
+        	flagEvent(e);
         	//if(player().setViolation(new Violation("Strafe", "High Angle Diff: " + Math.abs(lastStrafeAngle - angle)))) e.setCancelled(true);
         }
 

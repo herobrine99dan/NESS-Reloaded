@@ -20,6 +20,11 @@ public class ElytraCheats extends ListeningCheck<PlayerMoveEvent> {
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
 			.forEvent(PlayerMoveEvent.class);
 
+	@Override
+	protected boolean shouldDragDown() {
+		return true;
+	}
+	
 	public ElytraCheats(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
         this.maxYDiff = this.ness().getMainConfig().getCheckSection().elytraCheats().maxYDiff();
@@ -42,7 +47,7 @@ public class ElytraCheats extends ListeningCheck<PlayerMoveEvent> {
         float yDiff = (float) this.player().getMovementValues().yDiff;
         float xzDiff = (float) this.player().getMovementValues().XZDiff;
         if (xzDiff > maxXZDiff || yDiff > this.maxYDiff) {
-        	flag();
+        	flagEvent(event);
         	//if(player().setViolation(new Violation("ElytraCheats", "HighDistance"))) event.setCancelled(true);
         }
     }

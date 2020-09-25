@@ -42,7 +42,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
                 && event.getTo().clone().add(0, 0.01, 0).getBlock().isLiquid()
                 && event.getTo().clone().add(0, -0.01, 0).getBlock().isLiquid() && event.getFrom().getBlock().isLiquid()
                 && !Utility.hasflybypass(p)) {
-        	flag();
+        	flagEvent(event);
         	//if(player().setViolation(new Violation("Jesus", "Dist: " + dist))) event.setCancelled(true);
         }
     }

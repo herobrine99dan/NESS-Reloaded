@@ -41,7 +41,7 @@ public class AimbotGCD extends ListeningCheck<ReceivedPacketEvent> {
 			final double result = Math.abs(gcd - lastGCD);
 			if (result > 512 && result < 100000) {
 				if (preVL++ > 7) {
-					flag();
+					flag(" Diff: " + result);
 					//if(player().setViolation(new Violation("AimbotGCD", "Diff: " + result))) event.setCancelled(true);
 				}
 			} else {

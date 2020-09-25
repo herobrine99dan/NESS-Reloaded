@@ -36,7 +36,7 @@ public class FastSneak extends ListeningCheck<PlayerMoveEvent> {
         if (dist > walkSpeed && p.isSneaking() && !Utility.hasflybypass(p)) {
             if (Math.abs(nessPlayer.getMovementValues().xDiff) > walkSpeed
                     || Math.abs(nessPlayer.getMovementValues().zDiff) > walkSpeed) {
-            	flag();
+            	flagEvent(event);
             	//if(player().setViolation(new Violation("FastSneak", "Dist: " + dist))) event.setCancelled(true);
             }
         }

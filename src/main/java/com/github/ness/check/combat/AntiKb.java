@@ -16,7 +16,7 @@ public class AntiKb extends ListeningCheck<EntityDamageByEntityEvent> {
 
 	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfos
 			.forEvent(EntityDamageByEntityEvent.class);
-
+	
 	public AntiKb(ListeningCheckFactory<?, EntityDamageByEntityEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}

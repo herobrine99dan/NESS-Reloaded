@@ -20,7 +20,7 @@ public class ImpossibleBreak extends ListeningCheck<BlockBreakEvent> {
 	@Override
 	protected void checkEvent(BlockBreakEvent event) {
 		if (event.getBlock().isLiquid()) {
-			flag();
+			flagEvent(event);
 			//if (player().setViolation(new Violation("ImpossibleBreak", event.getPlayer().getName() + " isn't a god")))
 		}
 //		Block target = player.getTargetBlock((Set<Material>) null, 5);

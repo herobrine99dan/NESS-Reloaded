@@ -19,7 +19,7 @@ public class NoSlowBow extends ListeningCheck<EntityShootBowEvent> {
 	public NoSlowBow(ListeningCheckFactory<?, EntityShootBowEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
-
+	
 	@Override
 	protected void checkEvent(EntityShootBowEvent e) {
 		if (player().isNot(e.getEntity()))
@@ -41,7 +41,7 @@ public class NoSlowBow extends ListeningCheck<EntityShootBowEvent> {
 		distance -= o.getVelocity().getX();
 		distance -= o.getVelocity().getZ();
 		if (distance > 0.25 || o.isSprinting()) {
-			flag();
+			flagEvent(e);
 			//if(p.setViolation(new Violation("NoSlowDown", ""))) e.setCancelled(true);
 		}
 	}
