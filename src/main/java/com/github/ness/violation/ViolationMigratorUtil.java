@@ -1,6 +1,5 @@
 package com.github.ness.violation;
 
-import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
 import com.github.ness.api.Violation;
 import com.github.ness.api.ViolationAction;
@@ -40,8 +39,8 @@ public final class ViolationMigratorUtil {
 		}
 
 		@Override
-		public void trigger(AnticheatPlayer player, Infraction infraction) {
-			action.actOn(player.getPlayer(), violationFromInfraction(infraction), infraction.getCount());
+		public void trigger(Infraction infraction) {
+			action.actOn(infraction.getPlayer().getPlayer(), violationFromInfraction(infraction), infraction.getCount());
 		}
 		
 	}

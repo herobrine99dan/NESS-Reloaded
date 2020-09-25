@@ -22,12 +22,11 @@ public interface InfractionTrigger {
 	/**
 	 * Called when a player is detected for cheating. <br>
 	 * <br>
-     * The infraction gives both the name of the check and the amount of times it has been violated
+     * The infraction gives the player detected, the name of the check, and the amount of times it has been violated
 	 * 
-	 * @param player the anticheat player involved
 	 * @param infraction the infraction
 	 */
-	void trigger(AnticheatPlayer player, Infraction infraction);
+	void trigger(Infraction infraction);
 	
 	/**
 	 * The context in which a trigger may run

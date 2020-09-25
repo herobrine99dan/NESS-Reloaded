@@ -12,6 +12,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.Consumer;
 
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
@@ -103,12 +104,24 @@ public class NessPlayer implements AnticheatPlayer {
 	}
 	
 	/**
-	 * Gets the queue of infractions. This should not normally be used
+	 * Adds an infraction
 	 * 
-	 * @return
+	 * @param infraction the infraction
 	 */
-	public Queue<Infraction> getInfractions() {
-		return infractions;
+	public void addInfraction(Infraction infraction) {
+		infractions.offer(infraction);
+	}
+	
+	/**
+	 * Polls and drains all infractions applying the specified action
+	 * 
+	 * @param action the action on each infraction
+	 */
+	public void pollInfractions(Consumer<Infraction> action) {
+		Infraction infraction;
+		while ((infraction = infractions.poll()) != null) {
+			action.accept(infraction);
+		}
 	}
 
 	/*

@@ -1,5 +1,7 @@
 package com.github.ness.api;
 
+import java.util.Objects;
+
 /**
  * The result of calling {@link AnticheatCheck#flagHack(AnticheatPlayer)}
  * 
@@ -9,11 +11,11 @@ package com.github.ness.api;
 public final class FlagResult {
 
 	private final ResultType resultType;
-	private final int violations;
+	private final Infraction infraction;
 	
-	private FlagResult(ResultType resultType, int violations) {
+	private FlagResult(ResultType resultType, Infraction infraction) {
 		this.resultType = resultType;
-		this.violations = violations;
+		this.infraction = infraction;
 	}
 	
 	/**
@@ -26,13 +28,13 @@ public final class FlagResult {
 	}
 	
 	/**
-	 * Gets the new violation count of the player after the flag has been applied. If
-	 * {@link #getResultType()} != {@link ResultType#SUCCESS}, this returns {@code -1}
+	 * Gets the infraction after the flag has been applied. If {@link #getResultType()} != {@link ResultType#SUCCESS},
+	 * this returns {@code null}
 	 * 
-	 * @return the new violation count after flagging or {@code -1} if the result type is a failure
+	 * @return the infraction as a result of flagging or {@code null} if the result type is a failure
 	 */
-	public int getViolations() {
-		return violations;
+	public Infraction getInfraction() {
+		return infraction;
 	}
 	
 	/**
@@ -41,7 +43,7 @@ public final class FlagResult {
 	 * @return the flag result
 	 */
 	public static FlagResult notTracking() {
-		return new FlagResult(ResultType.NOT_TRACKING, -1);
+		return new FlagResult(ResultType.NOT_TRACKING, null);
 	}
 	
 	/**
@@ -50,21 +52,19 @@ public final class FlagResult {
 	 * @return the flag result
 	 */
 	public static FlagResult eventCancelled() {
-		return new FlagResult(ResultType.EVENT_CANCELLED, -1);
+		return new FlagResult(ResultType.EVENT_CANCELLED, null);
 	}
 	
 	/**
-	 * Creates from a violation count
+	 * Creates a successful result from an infraction
 	 * 
-	 * @param violations the violation count
+	 * @param infraction the infraction
 	 * @return the flag result
-	 * @throws IllegalArgumentException if {@code violation} is negative
+	 * @throws NullPointerException if {@code infraction} is null
 	 */
-	public static FlagResult success(int violations) {
-		if (violations < 0) {
-			throw new IllegalArgumentException("Violations must be positive");
-		}
-		return new FlagResult(ResultType.SUCCESS, violations);
+	public static FlagResult success(Infraction infraction) {
+		Objects.requireNonNull(infraction, "infraction");
+		return new FlagResult(ResultType.SUCCESS, infraction);
 	}
 	
 	/**

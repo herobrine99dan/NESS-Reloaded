@@ -1,82 +1,41 @@
 package com.github.ness.api;
 
-import java.util.Objects;
-
 /**
- * Immutable infraction
+ * An infraction of a specific check. Implementations are required to be immutable and thread safe.
  * 
  * @author A248
  *
  */
-public final class Infraction {
+public interface Infraction {
 
-	private final AnticheatCheck check;
-	private final int count;
-	
-	private Infraction(AnticheatCheck check, int count) {
-		Objects.requireNonNull(check, "check");
-		this.check = check;
-		if (count <= 0) {
-			throw new IllegalArgumentException("Count must be positive");
-		}
-		this.count = count;
-	}
+	/**
+	 * Gets the check the infraction is for
+	 * 
+	 * @return the check, never {@code null}
+	 */
+	AnticheatCheck getCheck();
 	
 	/**
-	 * Creates from a check and amount of violations for that check
+	 * Gets the player who flagged the check
 	 * 
-	 * @param check the check
-	 * @param count the violation count
-	 * @return the infraction
-	 * @throws NullPointerException if {@code check} is null
-	 * @throws IllegalArgumentException if {@count} is negative or zero
+	 * @return the player, never {@code null}
 	 */
-	public static Infraction of(AnticheatCheck check, int count) {
-		return new Infraction(check, count);
-	}
+	AnticheatPlayer getPlayer();
 
 	/**
-	 * Gets the check name
+	 * Gets the total amount of infractions of the player with regards to this check, including past infractions
 	 * 
-	 * @return the check name
+	 * @return the total amount of infractions of the player with respect to the check, always positive
 	 */
-	public AnticheatCheck getCheck() {
-		return check;
-	}
-
+	int getCount();
+	
 	/**
-	 * Gets the violation count
+	 * Determines equality with another object consistent with this infraction's details
 	 * 
-	 * @return the violation count
+	 * @param object the other object
+	 * @return true if the object is equal, false otherwise
 	 */
-	public int getCount() {
-		return count;
-	}
-
 	@Override
-	public String toString() {
-		return "Infraction [check=" + check + ", count=" + count + "]";
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + check.hashCode();
-		result = prime * result + count;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object object) {
-		if (this == object) {
-			return true;
-		}
-		if (!(object instanceof Infraction)) {
-			return false;
-		}
-		Infraction other = (Infraction) object;
-		return count == other.count && check.equals(other.check);
-	}
+	boolean equals(Object object);
 	
 }

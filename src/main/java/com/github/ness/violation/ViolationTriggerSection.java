@@ -7,9 +7,9 @@ import java.util.logging.Level;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
-import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
 import com.github.ness.api.InfractionTrigger;
+import com.github.ness.check.InfractionImpl;
 import com.github.ness.utility.DiscordWebhook;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -40,10 +40,12 @@ public interface ViolationTriggerSection {
 		@DefaultInteger(6)
 		int violations();
 		
+		@ConfComment("Notification message. Available details are %HACK% and %VIOLATIONS%")
 		@DefaultString("&8[&b&lNESS&8]&r&7> &c%PLAYER% &7failed &c%HACK%&7. Violations: %VIOLATIONS%")
 		String notification();
 		
 		@ConfKey("discord.webhook")
+		@ConfComment("Discord webhook URL, or \"\" for none")
 		@DefaultString("")
 		String discordWebHook();
 		
@@ -67,38 +69,39 @@ public interface ViolationTriggerSection {
 			return new InfractionTrigger() {
 
 				@Override
-				public void trigger(AnticheatPlayer player, Infraction infraction) {
+				public void trigger(Infraction infraction) {
 					if (infraction.getCount() < violations()) {
 						return;
 					}
-					String notif = manager.addViolationVariables(notification(), player, infraction);
-
 					// Only we can assume implementation details
-					NessPlayer nessPlayer = (NessPlayer) player;
-					sendWebhook(nessPlayer, infraction);
+					InfractionImpl infractionImpl = (InfractionImpl) infraction;
+
+					String notification = manager.addViolationVariables(notification(), infractionImpl);
+
+					sendWebhook(infractionImpl);
 
 					JavaPlugin plugin = ness.getPlugin();
 
 					if (bungeecord()) {
 						ByteArrayDataOutput out = ByteStreams.newDataOutput();
 						out.writeUTF("NESS-Reloaded");
-						out.writeUTF(notif);
-						player.getPlayer().sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
+						out.writeUTF(notification);
+						infractionImpl.getPlayer().getPlayer().sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
 					}
 					for (Player staff : plugin.getServer().getOnlinePlayers()) {
 						if (staff.hasPermission("ness.notify")) {
-							staff.sendMessage(notif);
+							staff.sendMessage(notification);
 						}
 					}
 				}
 				
-				private void sendWebhook(NessPlayer nessPlayer, Infraction infraction) {
+				private void sendWebhook(InfractionImpl infraction) {
 
 					final String webhookurl = discordWebHook();
 					if (webhookurl.isEmpty()) {
 						return;
 					}
-					String hackerName = nessPlayer.getPlayer().getName();
+					String hackerName = infraction.getPlayer().getPlayer().getName();
 					JavaPlugin plugin = ness.getPlugin();
 					plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
 
@@ -141,16 +144,17 @@ public interface ViolationTriggerSection {
 			return new InfractionTrigger() {
 
 				@Override
-				public void trigger(AnticheatPlayer player, Infraction infraction) {
+				public void trigger(Infraction infraction) {
 					if (infraction.getCount() < violations()) {
 						return;
 					}
-					String command = manager.addViolationVariables(command(), player, infraction);
+					// Only we can assume implementation details
+					InfractionImpl infractionImpl = (InfractionImpl) infraction;
+
+					String command = manager.addViolationVariables(command(), infractionImpl);
 
 					JavaPlugin plugin = ness.getPlugin();
-					// Only we can assume implementation details
-					NessPlayer nessPlayer = (NessPlayer) player;
-					if (!callDeprecatedPlayerPunishEvent(plugin, nessPlayer, infraction, command)) {
+					if (!callDeprecatedPlayerPunishEvent(plugin, infractionImpl.getPlayer(), infraction, command)) {
 						return;
 					}
 					plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command);
@@ -191,7 +195,7 @@ public interface ViolationTriggerSection {
 				}
 
 				@Override
-				public void trigger(AnticheatPlayer player, Infraction infraction) {}
+				public void trigger(Infraction infraction) {}
 				
 			};
 		}

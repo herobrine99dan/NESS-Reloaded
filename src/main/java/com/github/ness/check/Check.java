@@ -53,21 +53,32 @@ public class Check extends BaseCheck {
 	 * Flags the player for cheating
 	 * 
 	 */
-	protected void flag() {
+	protected final void flag() {
+		flag("");
+	}
+	
+	/**
+	 * Flags the player for cheating
+	 * 
+	 * @param details debugging details
+	 */
+	protected final void flag(String details) {
 		if (callFlagEvent()) {
-			flag0();
+			flag0(details);
 		}
 	}
 	
 	/**
-	 * Flags and gets the violation count
+	 * Flags and gets the infraction
 	 * 
-	 * @return the updated violation count
+	 * @param details debugging details
+	 * @return the infraction
 	 */
-	int flag0() {
+	Infraction flag0(String details) {
 		int violations = this.violations.getAndIncrement();
-		nessPlayer.getInfractions().add(Infraction.of(getFactory(), violations));
-		return violations;
+		Infraction infraction = new InfractionImpl(this, violations, details);
+		nessPlayer.addInfraction(infraction);
+		return infraction;
 	}
 	
 	boolean callFlagEvent() {

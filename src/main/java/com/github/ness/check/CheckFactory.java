@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.FlagResult;
+import com.github.ness.api.Infraction;
 
 /**
  * Check factory for all per player checks
@@ -112,8 +113,8 @@ public class CheckFactory<C extends Check> extends BaseCheckFactory<C> {
 		if (!check.callFlagEvent()) {
 			return FlagResult.eventCancelled();
 		}
-		int violations = check.flag0();
-		return FlagResult.success(violations);
+		Infraction infraction = check.flag0("");
+		return FlagResult.success(infraction);
 	}
 	
 	@Override

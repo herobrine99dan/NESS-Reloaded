@@ -40,14 +40,28 @@ public abstract class ListeningCheck<E extends Event> extends Check {
 	 * 
 	 * @param evt the event to cancel
 	 */
-	protected void flagEvent(Cancellable evt) {
+	protected final void flagEvent(Cancellable evt) {
+		flagEvent(evt, "");
+	}
+	
+	/**
+	 * Flags the player for cheating, and cancels the event if the violation count is too high (when configured)
+	 * 
+	 * @param evt the event to cancel
+	 * @param details debugging details
+	 */
+	protected final void flagEvent(Cancellable evt, String details) {
 		if (callFlagEvent()) {
-			int violations = flag0();
-			NessConfig config = getFactory().getCheckManager().getNess().getMainConfig();
-			CancelEvent cancelEvent = config.getViolationHandling().cancelEvent();
-			if (cancelEvent.enable() && violations >= cancelEvent.violations()) {
-				evt.setCancelled(true);
-			}
+			flagEvent0(evt, details);
+		}
+	}
+	
+	private void flagEvent0(Cancellable evt, String details) {
+		int violations = flag0(details).getCount();
+		NessConfig config = getFactory().getCheckManager().getNess().getMainConfig();
+		CancelEvent cancelEvent = config.getViolationHandling().cancelEvent();
+		if (cancelEvent.enable() && violations >= cancelEvent.violations()) {
+			evt.setCancelled(true);
 		}
 	}
 
