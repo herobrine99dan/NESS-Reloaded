@@ -91,15 +91,16 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	}
 
 	public void Check1(EntityDamageByEntityEvent e) {
-			Player p = (Player) e.getDamager();
-			final Location loc = p.getLocation();
-			Bukkit.getScheduler().runTaskLater(this.ness(), () -> {
-				Location loc1 = p.getLocation();
-				float grade = loc.getYaw() - loc1.getYaw();
-				if (Math.round(grade) > maxYaw) {
-					punish(e, p, "HighYaw " + grade);
-				}
-			}, 2L);
+		Player p = (Player) e.getDamager();
+		final Location loc = p.getLocation();
+
+		runTaskLater(() -> {
+			Location loc1 = p.getLocation();
+			float grade = loc.getYaw() - loc1.getYaw();
+			if (Math.round(grade) > maxYaw) {
+				punish(e, p, "HighYaw " + grade);
+			}
+		}, durationOfTicks(2));
 	}
 
 	public void Check2(EntityDamageByEntityEvent event) {

@@ -36,28 +36,30 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
      * @param e
      */
     public void Check(InventoryClickEvent e) {
-        if (e.getWhoClicked() instanceof Player) {
-            Player player = (Player) e.getWhoClicked();
-            if(player().nanoTimeDifference(PlayerAction.DAMAGE) < 1500 || player().nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
-            	return;
-            }
-            if (Utility.hasflybypass(player) || this.player().isTeleported()) {
-                return;
-            }
-            if (player.isSprinting() || player.isSneaking() || player.isBlocking() || player.isSleeping()
-                    || player.isConversing()) {
-            	if(player().setViolation(new Violation("InventoryHack", "Impossible"))) e.setCancelled(true);
-            } else {
-                final Location from = player.getLocation();
-                Bukkit.getScheduler().runTaskLater(this.ness(), () -> {
-                    Location to = player.getLocation();
-                    double distance = (Math.abs(to.getX() - from.getX())) + (Math.abs(to.getZ() - from.getZ()));
-                    if (distance > 0.15) {
-                    	if(player().setViolation(new Violation("InventoryHack", "Dist: " + distance))) e.setCancelled(true);
-
-                    }
-                }, 2L);
-            }
+        if (!(e.getWhoClicked() instanceof Player)) {
+        	return;
         }
+        Player player = (Player) e.getWhoClicked();
+        if(player().nanoTimeDifference(PlayerAction.DAMAGE) < 1500 || player().nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
+        	return;
+        }
+        if (Utility.hasflybypass(player) || this.player().isTeleported()) {
+            return;
+        }
+        if (player.isSprinting() || player.isSneaking() || player.isBlocking() || player.isSleeping()
+                || player.isConversing()) {
+        	flagEvent(e);
+        	return;
+
+        }
+        final Location from = player.getLocation();
+
+        runTaskLater(() -> {
+        	Location to = player.getLocation();
+            double distance = (Math.abs(to.getX() - from.getX())) + (Math.abs(to.getZ() - from.getZ()));
+            if (distance > 0.15) {
+            	flagEvent(e);
+            }
+        }, durationOfTicks(2));
     }
 }
