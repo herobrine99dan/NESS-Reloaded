@@ -185,21 +185,26 @@ public class NessPlayer implements AnticheatPlayer {
 		}
 	}
 	
+	/**
+	 * Drags down the player
+	 * 
+	 */
 	public void completeDragDown() {
-		if (player.isOnline()) {
-			final long current = System.nanoTime() / 1000_000L;
-			if ((current - setBackTicks) > 40) {
-				final Location block = player.getLocation().clone().add(0, player.getVelocity().getY(), 0);
-				if (!block.getBlock().getType().isSolid()) {
-					hasSetback = true;
-					player.teleport(block, TeleportCause.PLUGIN);
-				} else if (!block.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
-					player.teleport(block.add(0, 0.4, 0), TeleportCause.PLUGIN);
-				}
-			}
-			setBackTicks = current;
-			setBackTicks++;
+		if (!player.isOnline()) {
+			return;
 		}
+		final long current = System.nanoTime() / 1000_000L;
+		if ((current - setBackTicks) > 40) {
+			final Location block = player.getLocation().clone().add(0, player.getVelocity().getY(), 0);
+			if (!block.getBlock().getType().isSolid()) {
+				hasSetback = true;
+				player.teleport(block, TeleportCause.PLUGIN);
+			} else if (!block.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
+				player.teleport(block.add(0, 0.4, 0), TeleportCause.PLUGIN);
+			}
+		}
+		setBackTicks = current;
+		setBackTicks++;
 	}
 
 	@Override
