@@ -40,7 +40,7 @@ public interface ViolationTriggerSection {
 		@DefaultInteger(6)
 		int violations();
 		
-		@ConfComment("Notification message. Available details are %HACK% and %VIOLATIONS%")
+		@ConfComment("Notification message. Available variables are %HACK% and %VIOLATIONS%")
 		@DefaultString("&8[&b&lNESS&8]&r&7> &c%PLAYER% &7failed &c%HACK%&7. Violations: %VIOLATIONS%")
 		String notification();
 		

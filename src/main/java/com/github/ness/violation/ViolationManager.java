@@ -39,10 +39,8 @@ public class ViolationManager {
 		String replaced = message
 				.replace("%PLAYER%", infraction.getPlayer().getBukkitPlayer().getName())
 				.replace("%HACK%", infraction.getCheck().getCheckName())
-				.replace("%VIOLATIONS%", Integer.toString(infraction.getCount()));
-		if (ness.getMainConfig().isDevMode()) {
-			replaced = replaced.replace("%DETAILS%", infraction.getDetails());
-		}
+				.replace("%VIOLATIONS%", Integer.toString(infraction.getCount()))
+				.replace("%DETAILS%", infraction.getDetails());
 		return ChatColor.translateAlternateColorCodes('&', replaced);
 	}
 
