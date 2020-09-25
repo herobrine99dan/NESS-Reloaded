@@ -13,7 +13,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -161,8 +160,8 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		}
 	}
 
-	private void punish(EntityDamageByEntityEvent e, Player p, String module) {
-		if(player().setViolation(new Violation("Killaura", module))) e.setCancelled(true);
+	private void punish(EntityDamageByEntityEvent evt, Player p, String module) {
+		flagEvent(evt);
 	}
 
 }

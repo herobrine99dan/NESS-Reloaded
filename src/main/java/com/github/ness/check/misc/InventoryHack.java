@@ -1,12 +1,10 @@
 package com.github.ness.check.misc;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
