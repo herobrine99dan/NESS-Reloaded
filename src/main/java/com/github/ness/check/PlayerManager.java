@@ -57,10 +57,9 @@ class PlayerManager {
 
 		@Override
 		public void onRemoval(@Nullable UUID key, @Nullable NessPlayerData playerData, @NonNull RemovalCause cause) {
-			try (NessPlayer nessPlayer = playerData.getNessPlayer()) {
-				for (Check check : playerData.getChecks()) {
-					check.getFactory().removeCheck(nessPlayer);
-				}
+			NessPlayer nessPlayer = playerData.getNessPlayer();
+			for (Check check : playerData.getChecks()) {
+				check.getFactory().removeCheck(nessPlayer);
 			}
 		}
 		
