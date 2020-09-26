@@ -1,9 +1,6 @@
 package com.github.ness;
 
 import java.awt.Point;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +25,7 @@ import com.github.ness.api.Infraction;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.packets.PacketListener;
+import com.github.ness.packets.NetworkReflection;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -83,6 +80,10 @@ public class NessPlayer implements AnticheatPlayer {
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
 	}
+	
+	/*
+	 * API methods
+	 */
 
 	@Override
 	public UUID getUniqueId() {
@@ -93,6 +94,10 @@ public class NessPlayer implements AnticheatPlayer {
 	public Player getBukkitPlayer() {
 		return player;
 	}
+	
+	/*
+	 * Infraction methods
+	 */
 
 	/**
 	 * Adds an infraction
@@ -115,21 +120,6 @@ public class NessPlayer implements AnticheatPlayer {
 		}
 	}
 
-	public void asyncKick() {
-		PacketListener.getChannel(this.getBukkitPlayer()).config().setAutoRead(false);
-		Object networkManager = PacketListener.getNetWorkManager(this.getBukkitPlayer());
-		System.out.println("Kicking async!");
-		try {
-			Field packetQueue = networkManager.getClass().getDeclaredField("packetQueue");
-			packetQueue.setAccessible(true);
-			Method clear = packetQueue.get(networkManager).getClass().getMethod("clear");
-			clear.setAccessible(true);
-			clear.invoke(networkManager);
-		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException ex) {
-			throw new IllegalStateException(ex);
-		}
-	}
-
 	/*
 	 * Convenience methods
 	 */
@@ -148,6 +138,20 @@ public class NessPlayer implements AnticheatPlayer {
 
 	public boolean isNot(Entity entity) {
 		return !is(entity);
+	}
+	
+	/*
+	 * Thread safe disconnection
+	 */
+	
+	/**
+	 * Disconnects the player just as the server would
+	 * 
+	 */
+	public void kickThreadSafe() {
+		Object networkManager = NetworkReflection.getNetworkManager(getBukkitPlayer());
+		NetworkReflection.getChannel(networkManager).config().setAutoRead(false);
+		NetworkReflection.clearPacketQueue(networkManager);
 	}
 
 	/*

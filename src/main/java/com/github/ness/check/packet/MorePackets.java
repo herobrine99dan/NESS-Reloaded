@@ -49,7 +49,7 @@ public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
         // sender.sendMessage("Counter: " + np.getPacketscounter());
         if (normalPacketsCounter++ > maxPackets && np.nanoTimeDifference(PlayerAction.JOIN) > 2500) {
         	if(normalPacketsCounter > 400) {
-        		np.asyncKick();
+        		np.kickThreadSafe();
         	} else {
         		flagEvent(e);
         	}

@@ -5,11 +5,8 @@ import com.github.ness.NessPlayer;
 import com.github.ness.packets.wrappers.PacketPlayInPositionLook;
 import com.github.ness.packets.wrappers.PacketPlayInUseEntity;
 import com.github.ness.packets.wrappers.SimplePacket;
-import com.github.ness.utility.ReflectionUtility;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
+import com.github.ness.utility.UncheckedReflectiveOperationException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,64 +14,22 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
 
 public class PacketListener implements Listener {
-
-    private static final Method getHandleMethod;
-    private static final Field playerConnectionField;
-    private static final Field networkManagerField;
-    private static final Field channelField;
-
-    static {
-        Class<?> craftPlayerClass;
-        try {
-            craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + ReflectionUtility.ver() + ".entity.CraftPlayer");
-            getHandleMethod = craftPlayerClass.getMethod("getHandle");
-            playerConnectionField = getHandleMethod.getReturnType().getDeclaredField("playerConnection");
-            networkManagerField = playerConnectionField.getType().getDeclaredField("networkManager");
-            channelField = networkManagerField.getType().getDeclaredField("channel");
-        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | NoSuchFieldException ex) {
-            throw new ExceptionInInitializerError(ex);
-        }
-    }
 
     /**
      * Gets the netty Channel of a Player
      *
      * @param player the bukkit player
      * @return the channel, never {@code null}
-     * @throws IllegalStateException if reflection failed
+     * @throws UncheckedReflectiveOperationException if reflection failed
      */
-    public static Channel getChannel(Player player) {
-        try {
-            Object handle = getHandleMethod.invoke(player);
-            Object playerConnection = playerConnectionField.get(handle);
-            Object networkManager = networkManagerField.get(playerConnection);
-            return (Channel) channelField.get(networkManager);
-        } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex) {
-            throw new IllegalStateException(ex);
-        }
-    }
-    
-    /**
-     * Gets the network Manager of a Player
-     *
-     * @param player the bukkit player
-     * @return the networkManager, never {@code null}
-     * @throws IllegalStateException if reflection failed
-     */
-    public static Object getNetWorkManager(Player player) {
-        try {
-            Object handle = getHandleMethod.invoke(player);
-            Object playerConnection = playerConnectionField.get(handle);
-            Object networkManager = networkManagerField.get(playerConnection);
-            return networkManager;
-        } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex) {
-            throw new IllegalStateException(ex);
-        }
+    private Channel getChannel(Player player) {
+    	return NetworkReflection.getChannel(NetworkReflection.getNetworkManager(player));
     }
 
     @EventHandler

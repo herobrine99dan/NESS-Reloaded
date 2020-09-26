@@ -6,6 +6,8 @@ import org.bukkit.Bukkit;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import com.github.ness.utility.UncheckedReflectiveOperationException;
+
 public class PacketPlayInPositionLook extends SimplePacket {
 
     private static final boolean is1_8 = Bukkit.getVersion().contains("1.8");
@@ -52,7 +54,7 @@ public class PacketPlayInPositionLook extends SimplePacket {
                 return clazz.getMethod(methodName, double.class);
             }
         } catch (NoSuchMethodException ex) {
-            throw new IllegalStateException(ex);
+            throw new UncheckedReflectiveOperationException(ex);
         }
     }
 
@@ -63,8 +65,8 @@ public class PacketPlayInPositionLook extends SimplePacket {
             } else {
                 return (double) method.invoke(packetObject, 0D);
             }
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            throw new IllegalStateException(ex);
+        } catch (IllegalAccessException | InvocationTargetException ex) {
+            throw new UncheckedReflectiveOperationException(ex);
         }
     }
 
