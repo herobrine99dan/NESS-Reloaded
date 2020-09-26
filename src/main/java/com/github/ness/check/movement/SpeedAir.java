@@ -50,7 +50,7 @@ public class SpeedAir extends ListeningCheck<PlayerMoveEvent> {
 			total -= nessPlayer.velocity.getX();
 			total -= nessPlayer.velocity.getZ();
 		}
-		if (!nessPlayer.getMovementValues().isOnGround) {
+		if (!Utility.isMathematicallyOnGround(event.getTo().getY())) {
 			airTicks++;
 		} else {
 			airTicks = 0;

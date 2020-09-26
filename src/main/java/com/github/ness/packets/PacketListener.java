@@ -48,12 +48,30 @@ public class PacketListener implements Listener {
      * @return the channel, never {@code null}
      * @throws IllegalStateException if reflection failed
      */
-    private static Channel getChannel(Player player) {
+    public static Channel getChannel(Player player) {
         try {
             Object handle = getHandleMethod.invoke(player);
             Object playerConnection = playerConnectionField.get(handle);
             Object networkManager = networkManagerField.get(playerConnection);
             return (Channel) channelField.get(networkManager);
+        } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    /**
+     * Gets the network Manager of a Player
+     *
+     * @param player the bukkit player
+     * @return the networkManager, never {@code null}
+     * @throws IllegalStateException if reflection failed
+     */
+    public static Object getNetWorkManager(Player player) {
+        try {
+            Object handle = getHandleMethod.invoke(player);
+            Object playerConnection = playerConnectionField.get(handle);
+            Object networkManager = networkManagerField.get(playerConnection);
+            return networkManager;
         } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex) {
             throw new IllegalStateException(ex);
         }
@@ -106,7 +124,7 @@ public class PacketListener implements Listener {
                 }
             }
         };
-
+        
         // ChannelPipeline pipeline = ((CraftPlayer)
         // player).getHandle().playerConnection.networkManager.channel
         ChannelPipeline pipeline = getChannel(player).pipeline();

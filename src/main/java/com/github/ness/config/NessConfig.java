@@ -38,6 +38,7 @@ public interface NessConfig {
 		"AutoClicker",
 		/* "AntiUnicode", */
 		"AntiKb",
+		"BlockBreakAction",
 		"Timer",
 		"Criticals",
 		"ChestStealer",
@@ -46,7 +47,6 @@ public interface NessConfig {
 		"FastPlace",
 		/* "ChestESP", */
 		"FlyGhostMode",
-		"FlyInvalidMove",
 		"FlyHighJump",
 		"FlyInvalidJumpMotion",
 		"FlyInvalidGravity",

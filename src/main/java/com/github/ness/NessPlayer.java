@@ -1,6 +1,9 @@
 package com.github.ness;
 
 import java.awt.Point;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,25 +17,25 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 
-import com.github.ness.api.AnticheatPlayer;
-import com.github.ness.api.Infraction;
-import com.github.ness.data.ImmutableLoc;
-import com.github.ness.data.MovementValues;
-import com.github.ness.data.PlayerAction;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
-import net.md_5.bungee.api.ChatColor;
+import com.github.ness.api.AnticheatPlayer;
+import com.github.ness.api.Infraction;
+import com.github.ness.data.ImmutableLoc;
+import com.github.ness.data.MovementValues;
+import com.github.ness.data.PlayerAction;
+import com.github.ness.packets.PacketListener;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.md_5.bungee.api.ChatColor;
 
 public class NessPlayer implements AnticheatPlayer {
-	
+
 	private final Queue<Infraction> infractions = new ConcurrentLinkedQueue<>();
 
 	/**
@@ -80,17 +83,17 @@ public class NessPlayer implements AnticheatPlayer {
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
 	}
-	
+
 	@Override
 	public UUID getUniqueId() {
 		return uuid;
 	}
-	
+
 	@Override
 	public Player getBukkitPlayer() {
 		return player;
 	}
-	
+
 	/**
 	 * Adds an infraction
 	 * 
@@ -99,7 +102,7 @@ public class NessPlayer implements AnticheatPlayer {
 	public void addInfraction(Infraction infraction) {
 		infractions.offer(infraction);
 	}
-	
+
 	/**
 	 * Polls and drains all infractions applying the specified action
 	 * 
@@ -109,6 +112,21 @@ public class NessPlayer implements AnticheatPlayer {
 		Infraction infraction;
 		while ((infraction = infractions.poll()) != null) {
 			action.accept(infraction);
+		}
+	}
+
+	public void asyncKick() {
+		PacketListener.getChannel(this.getBukkitPlayer()).config().setAutoRead(false);
+		Object networkManager = PacketListener.getNetWorkManager(this.getBukkitPlayer());
+		System.out.println("Kicking async!");
+		try {
+			Field packetQueue = networkManager.getClass().getDeclaredField("packetQueue");
+			packetQueue.setAccessible(true);
+			Method clear = packetQueue.get(networkManager).getClass().getMethod("clear");
+			clear.setAccessible(true);
+			clear.invoke(networkManager);
+		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
@@ -184,7 +202,7 @@ public class NessPlayer implements AnticheatPlayer {
 			this.updateLastWasOnIce();
 		}
 	}
-	
+
 	/**
 	 * Drags down the player
 	 * 

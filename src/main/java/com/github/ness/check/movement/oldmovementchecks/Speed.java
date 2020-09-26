@@ -29,7 +29,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		Location to = e.getTo();
 		Location from = e.getFrom();
 		Player player = e.getPlayer();
-		double maxSpd = player.getWalkSpeed();
+		double maxSpd = player.getWalkSpeed() * 3.1;
 		MovementValues movementValues = this.player().getMovementValues();
 		double xDist = Math.abs(movementValues.xDiff);
 		double zDist = Math.abs(movementValues.zDiff);

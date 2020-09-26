@@ -82,8 +82,8 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 					if (nessPlayer.isDebugMode()) {
 						nessPlayer.getBukkitPlayer().sendMessage("Ticks: " + movementsPerTick + " Result: " + result);
 					}
-					if (result < 0.0007) {
-						flag();
+					if (result < 0.0002) {
+						flag(" Experimental");
 						//if (player().setViolation(new Violation("Timer",
 						//		"[EXPERIMENTAL] Packets: " + movementsPerTick + " Result: " + result)))
 						//	e.setCancelled(true);

@@ -29,14 +29,15 @@ public class BlockBreakAction extends ListeningCheck<BlockBreakEvent> {
     	double xDiff = Math.abs(values.getTo().getX() - block.getLocation().getX());
     	double yDiff = Math.abs(values.getTo().getY() - block.getLocation().getY());
     	double zDiff = Math.abs(values.getTo().getZ() - block.getLocation().getZ());
-    	if(xDiff > 5 || yDiff > 5 || zDiff > 5) {
-    		flagEvent(e);
+    	final double max = 5.4;
+    	if(xDiff > max || yDiff > max || zDiff > max) {
+    		flagEvent(e , " HighDistance");
 			//if(player().setViolation(new Violation("BreakActions", "HighDistance"))) e.setCancelled(true);
     	} else {
             final Vector placedVector = new Vector(block.getX(), block.getY(), block.getZ());
             float placedAngle = nessPlayer.getMovementValues().getTo().getDirectionVector().toBukkitVector().angle(placedVector);
             if (placedAngle > MAX_ANGLE) {
-            	flagEvent(e);
+            	flagEvent(e , " Angle: " + placedAngle);
     			//if(player().setViolation(new Violation("BreakActions", "FalseAngle"))) e.setCancelled(true);
             }
     	}
