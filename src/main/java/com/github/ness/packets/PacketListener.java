@@ -1,11 +1,14 @@
 package com.github.ness.packets;
 
 import com.github.ness.NESSAnticheat;
+import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
 import com.github.ness.packets.wrappers.PacketPlayInPositionLook;
 import com.github.ness.packets.wrappers.PacketPlayInUseEntity;
 import com.github.ness.packets.wrappers.SimplePacket;
 import com.github.ness.utility.UncheckedReflectiveOperationException;
+
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -20,6 +23,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 
 public class PacketListener implements Listener {
+	
+	private static final Logger logger = NessLogger.getLogger(PacketListener.class);
 
     /**
      * Gets the netty Channel of a Player
@@ -29,6 +34,9 @@ public class PacketListener implements Listener {
      * @throws UncheckedReflectiveOperationException if reflection failed
      */
     private Channel getChannel(Player player) {
+    	if(!player.isOnline()) {
+    		throw new UncheckedReflectiveOperationException("Player " + player.getName() + " isn't online!", new ReflectiveOperationException());
+    	}
     	return NetworkReflection.getChannel(NetworkReflection.getNetworkManager(player));
     }
 

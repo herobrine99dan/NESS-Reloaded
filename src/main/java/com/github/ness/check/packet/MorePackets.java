@@ -46,10 +46,12 @@ public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
         if (np == null) {
             return;
         }
-        // sender.sendMessage("Counter: " + np.getPacketscounter());
         if (normalPacketsCounter++ > maxPackets && np.nanoTimeDifference(PlayerAction.JOIN) > 2500) {
-        	if(normalPacketsCounter > 400) {
+        	if(normalPacketsCounter > (maxPackets * 3.5)) {
+        		e.setCancelled(true);
         		np.kickThreadSafe();
+        		return;
+        		//np.kickThreadSafe();
         	} else {
         		flagEvent(e);
         	}
