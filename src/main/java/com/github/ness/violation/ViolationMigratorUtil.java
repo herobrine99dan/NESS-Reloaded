@@ -17,7 +17,7 @@ public final class ViolationMigratorUtil {
 	 * @return the deprecated violation
 	 */
 	public static Violation violationFromInfraction(Infraction infraction) {
-		return new com.github.ness.api.Violation(infraction.getCheck().getCheckName(), "");
+		return new Violation(infraction.getCheck().getCheckName(), "");
 	}
 	
 	/**
@@ -32,9 +32,9 @@ public final class ViolationMigratorUtil {
 	
 	private static class ViolationTriggerForAction implements InfractionTrigger {
 		
-		private final com.github.ness.api.ViolationAction action;
+		private final ViolationAction action;
 		
-		ViolationTriggerForAction(com.github.ness.api.ViolationAction action) {
+		ViolationTriggerForAction(ViolationAction action) {
 			this.action = action;
 		}
 		

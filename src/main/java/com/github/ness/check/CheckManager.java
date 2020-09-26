@@ -13,13 +13,14 @@ import java.util.logging.Logger;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
-import com.github.ness.api.NESSApi;
+import com.github.ness.api.ChecksManager;
+import com.github.ness.api.PlayersManager;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class CheckManager {
+public class CheckManager implements ChecksManager {
 
 	private static final Logger logger = NessLogger.getLogger(CheckManager.class);
 
@@ -73,15 +74,7 @@ public class CheckManager {
 		checkFactories.forEach((factory) -> factory.close());
 	}
 	
-	/*
-	 * API methods
-	 */
-	
-	/**
-	 * Implements {@link NESSApi#getAllChecks()}
-	 * 
-	 * @return all checks
-	 */
+	@Override
 	public Collection<CheckFactory<?>> getAllChecks() {
 		Set<CheckFactory<?>> result = new HashSet<>();
 		Set<BaseCheckFactory<?>> checkFactories = this.checkFactories;
@@ -96,28 +89,8 @@ public class CheckManager {
 		return Collections.unmodifiableSet(result);
 	}
 	
-	/**
-	 * Implements {@link NESSApi#getAllPlayers()}
-	 * 
-	 * @return all ness players
-	 */
-	public Collection<NessPlayer> getAllPlayers() {
-		Set<NessPlayer> result = new HashSet<>();
-		for (NessPlayerData playerData  : playerManager.getPlayerCache().synchronous().asMap().values()) {
-			result.add(playerData.getNessPlayer());
-		}
-		return Collections.unmodifiableSet(result);
-	}
-	
-	/**
-	 * Implements {@link NESSApi#getPlayer(UUID)}
-	 * 
-	 * @param uuid the player UUID
-	 * @return the ness player
-	 */
-	public NessPlayer getPlayer(UUID uuid) {
-		NessPlayerData playerData = playerManager.getPlayerCache().synchronous().getIfPresent(uuid);
-		return (playerData == null) ? null : playerData.getNessPlayer();
+	public PlayersManager getPlayersManager() {
+		return playerManager;
 	}
 	
 	private CompletableFuture<?> loadFactories(Runnable whenComplete) {
@@ -150,7 +123,7 @@ public class CheckManager {
 	 * @return the ness player or {@code null} if not loaded
 	 */
 	public NessPlayer getExistingPlayer(Player player) {
-		return getPlayer(player.getUniqueId());
+		return playerManager.getPlayer(player.getUniqueId());
 	}
 	
 	/**

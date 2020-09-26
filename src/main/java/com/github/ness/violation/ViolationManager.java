@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.api.Infraction;
+import com.github.ness.api.InfractionManager;
 import com.github.ness.api.InfractionTrigger;
 import com.github.ness.api.InfractionTrigger.SynchronisationContext;
 import com.github.ness.check.CheckManager;
@@ -18,7 +19,7 @@ import com.github.ness.check.InfractionImpl;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class ViolationManager {
+public class ViolationManager implements InfractionManager {
 
 	private final NESSAnticheat ness;
 	
@@ -59,10 +60,21 @@ public class ViolationManager {
 		}
 	}
 
+	@Override
 	public void addTrigger(InfractionTrigger trigger) {
 		Objects.requireNonNull(trigger, "trigger");
 		SynchronisationContext context = Objects.requireNonNull(trigger.context(), "context");
-		triggers.get(context).add(trigger);
+		boolean added = triggers.get(context).add(trigger);
+		if (!added) {
+			throw new IllegalStateException("Trigger " + trigger + " is already added");
+		}
+	}
+	
+	@Override
+	public boolean removeTrigger(InfractionTrigger trigger) {
+		Objects.requireNonNull(trigger, "trigger");
+		SynchronisationContext context = trigger.context();
+		return triggers.get(context).remove(trigger);
 	}
 
 	private ScheduledFuture<?> initiatePeriodicTask() {

@@ -1,5 +1,7 @@
 package com.github.ness.check;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -17,11 +19,12 @@ import com.github.benmanes.caffeine.cache.RemovalListener;
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
+import com.github.ness.api.PlayersManager;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-class PlayerManager {
+class PlayerManager implements PlayersManager {
 
 	private final CheckManager checkManager;
 	
@@ -51,6 +54,21 @@ class PlayerManager {
 	
 	NESSAnticheat ness() {
 		return checkManager.getNess();
+	}
+	
+	@Override
+	public Collection<NessPlayer> getAllPlayers() {
+		Set<NessPlayer> result = new HashSet<>();
+		for (NessPlayerData playerData  : playerCache.synchronous().asMap().values()) {
+			result.add(playerData.getNessPlayer());
+		}
+		return Collections.unmodifiableSet(result);
+	}
+	
+	@Override
+	public NessPlayer getPlayer(UUID uuid) {
+		NessPlayerData playerData = playerCache.synchronous().getIfPresent(uuid);
+		return (playerData == null) ? null : playerData.getNessPlayer();
 	}
 	
 	private static class PlayerCacheRemovalListener implements RemovalListener<UUID, NessPlayerData> {
