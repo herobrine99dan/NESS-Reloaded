@@ -6,14 +6,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 
-import space.arim.dazzleconf.annote.ConfComment;
-import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
 public class AutoClicker extends ListeningCheck<PlayerInteractEvent> {

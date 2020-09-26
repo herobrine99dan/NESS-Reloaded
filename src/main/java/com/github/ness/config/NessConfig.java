@@ -5,10 +5,10 @@ import java.util.List;
 import com.github.ness.antibot.AntiBotConfig;
 import com.github.ness.violation.ViolationHandling;
 
-import space.arim.dazzleconf.annote.ConfComment;
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultStrings;
+import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.annote.SubSection;
 
@@ -18,10 +18,19 @@ import space.arim.dazzleconf.annote.SubSection;
  * @author A248
  *
  */
+@ConfHeader({
+	"",
+	"",
+	"NESS Reloaded v2 Configuration",
+	"",
+	"Discord: https://discord.gg/63JGnay",
+	"Github: https://github.com/herobrine99dan/NESS-Reloaded",
+	"",
+	""})
 public interface NessConfig {
 
 	@ConfKey("dev-mode")
-	@ConfComment("Enable developer mode")
+	@ConfComments("Enable developer mode")
 	@DefaultBoolean(false)
 	boolean isDevMode();
 	

@@ -14,7 +14,7 @@ import com.github.ness.utility.DiscordWebhook;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
-import space.arim.dazzleconf.annote.ConfComment;
+import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultString;
@@ -29,7 +29,7 @@ public interface ViolationTriggerSection {
 		return violations() != -1;
 	}
 	
-	@ConfComment("The amount of violations of a check after which to trigger this action. (-1 to disable)")
+	@ConfComments("The amount of violations of a check after which to trigger this action. (-1 to disable)")
 	int violations();
 	
 	InfractionTrigger toTrigger(ViolationManager manager, NESSAnticheat ness);
@@ -40,12 +40,12 @@ public interface ViolationTriggerSection {
 		@DefaultInteger(6)
 		int violations();
 		
-		@ConfComment("Notification message. Available variables are %HACK% and %VIOLATIONS%")
+		@ConfComments("Notification message. Available variables are %HACK% and %VIOLATIONS%")
 		@DefaultString("&8[&b&lNESS&8]&r&7> &c%PLAYER% &7failed &c%HACK%&7. Violations: %VIOLATIONS%")
 		String notification();
 		
 		@ConfKey("discord.webhook")
-		@ConfComment("Discord webhook URL, or \"\" for none")
+		@ConfComments("Discord webhook URL, or \"\" for none")
 		@DefaultString("")
 		String discordWebHook();
 		

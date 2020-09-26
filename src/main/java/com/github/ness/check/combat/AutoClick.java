@@ -22,7 +22,6 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 
-import space.arim.dazzleconf.annote.ConfComment;
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultStrings;
@@ -53,7 +52,7 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 	public interface CheckConf {
 		
 		@ConfKey("total-retention-secs")
-		@ConfComment("Clicks older than this are completely ignored")
+		@ConfComments("Clicks older than this are completely ignored")
 		@DefaultInteger(32)
 		int totalRetentionSecs();
 		
@@ -70,7 +69,7 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 		List<HardLimitEntry> hardLimits();
 		
 		@SubSection
-		@ConfComment("# A more advanced consistency check")
+		@ConfComments("# A more advanced consistency check")
 		Constancy constancy();
 		
 		interface Constancy {

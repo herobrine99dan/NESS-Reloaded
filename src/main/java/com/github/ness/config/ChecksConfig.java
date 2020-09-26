@@ -12,9 +12,11 @@ import com.github.ness.check.packet.Timer;
 import com.github.ness.check.world.FastPlace;
 
 import space.arim.dazzleconf.annote.ConfComments;
+import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.annote.SubSection;
 
+@ConfHeader("All configuration relating to specific checks")
 public interface ChecksConfig {
 
 	@ConfKey("autoclick")

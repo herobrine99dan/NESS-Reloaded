@@ -7,7 +7,6 @@ import com.github.ness.violation.ViolationTriggerSection.CancelEvent;
 import com.github.ness.violation.ViolationTriggerSection.ExecuteCommand;
 import com.github.ness.violation.ViolationTriggerSection.NotifyStaff;
 
-import space.arim.dazzleconf.annote.ConfComment;
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.annote.SubSection;
@@ -15,12 +14,12 @@ import space.arim.dazzleconf.annote.SubSection;
 public interface ViolationHandling {
 
 	@ConfKey("notify-staff")
-	@ConfComment("Notify staff members of potential cheating")
+	@ConfComments("Notify staff members of potential cheating")
 	@SubSection
 	NotifyStaff notifyStaff();
 	
 	@ConfKey("execute-command")
-	@ConfComment("Execute a command. Can be used to kick or ban")
+	@ConfComments("Execute a command. Can be used to kick or ban")
 	@SubSection
 	ExecuteCommand executeCommand();
 	
