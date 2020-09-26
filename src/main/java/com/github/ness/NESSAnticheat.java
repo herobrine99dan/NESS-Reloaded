@@ -84,7 +84,7 @@ public class NESSAnticheat extends JavaPlugin {
 
 		// Start packet listener except on Glowstone
 		if (!Bukkit.getName().toLowerCase().contains("glowstone")) {
-			getServer().getPluginManager().registerEvents(new PacketListener(), this);
+			getServer().getPluginManager().registerEvents(new PacketListener(this), this);
 		}
 		// Start plugin message listener if bungeecord notify-staff hook enabled
 		if (getMainConfig().getViolationHandling().notifyStaff().bungeecord()) {

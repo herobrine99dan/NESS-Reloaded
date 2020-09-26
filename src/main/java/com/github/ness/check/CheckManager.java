@@ -123,7 +123,17 @@ public class CheckManager implements ChecksManager {
 	 * @return the ness player or {@code null} if not loaded
 	 */
 	public NessPlayer getExistingPlayer(Player player) {
-		return playerManager.getPlayer(player.getUniqueId());
+		return getExistingPlayer(player.getUniqueId());
+	}
+	
+	/**
+	 * Gets a player by UUID whose ness player is already loaded. The caller must null check the return value
+	 * 
+	 * @param uuid the player UUID
+	 * @return the ness player or {@code null} if not loaded
+	 */
+	public NessPlayer getExistingPlayer(UUID uuid) {
+		return playerManager.getPlayer(uuid);
 	}
 	
 	/**
