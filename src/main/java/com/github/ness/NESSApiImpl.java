@@ -8,10 +8,13 @@ import com.github.ness.api.ChecksManager;
 import com.github.ness.api.InfractionManager;
 import com.github.ness.api.NESSApi;
 import com.github.ness.api.PlayersManager;
+import com.github.ness.api.Violation;
+import com.github.ness.api.ViolationAction;
 import com.github.ness.violation.ViolationMigratorUtil;
 
 import org.bukkit.entity.Player;
 
+@SuppressWarnings("deprecation")
 final class NESSApiImpl implements NESSApi {
 
 	private final NESSAnticheat ness;
@@ -39,13 +42,13 @@ final class NESSApiImpl implements NESSApi {
 
 	@Deprecated
 	@Override
-	public void addViolationAction(com.github.ness.api.ViolationAction action) {
+	public void addViolationAction(ViolationAction action) {
 		getInfractionManager().addTrigger(ViolationMigratorUtil.triggerForAction(action));
 	}
 
-	@SuppressWarnings("deprecation")
+	@Deprecated
 	@Override
-	public void flagHack(com.github.ness.api.Violation violation, Player player) {
+	public void flagHack(Violation violation, Player player) {
 		LoggerHolder.logger.warning(
 				"Caller is extremely discouraged from using the deprecated flagHack(Violation, Player) method");
 		AnticheatPlayer anticheatPlayer = getPlayersManager().getPlayer(player.getUniqueId());
