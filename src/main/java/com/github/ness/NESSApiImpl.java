@@ -37,7 +37,6 @@ final class NESSApiImpl implements NESSApi {
 	
 	// Deprecated API
 
-	@SuppressWarnings("deprecation")
 	@Deprecated
 	@Override
 	public void addViolationAction(com.github.ness.api.ViolationAction action) {

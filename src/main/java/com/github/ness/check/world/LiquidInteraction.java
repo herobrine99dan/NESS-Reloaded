@@ -1,11 +1,8 @@
 package com.github.ness.check.world;
 
-import java.util.List;
-
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;

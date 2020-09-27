@@ -3,7 +3,6 @@ package com.github.ness.check.world;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;

@@ -33,7 +33,6 @@ public class AutoClicker extends ListeningCheck<PlayerInteractEvent> {
 	private void check(PlayerInteractEvent e) {
 		Action action = e.getAction();
 		if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-			NessPlayer player = this.player();
 			CPS++;
 			if (CPS > maxCPS && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
 				flagEvent(e, " CPS: " + CPS);

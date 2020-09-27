@@ -8,7 +8,6 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.packets.ReceivedPacketEvent;
-import com.github.ness.utility.Utility;
 
 public class AbilititiesSpoofed extends ListeningCheck<ReceivedPacketEvent> {
     
@@ -21,7 +20,7 @@ public class AbilititiesSpoofed extends ListeningCheck<ReceivedPacketEvent> {
 	
     @Override
     protected void checkEvent(ReceivedPacketEvent e) {
-        int ping = Utility.getPing(e.getNessPlayer().getBukkitPlayer());
+       //int ping = Utility.getPing(e.getNessPlayer().getBukkitPlayer());
     }
 
 }

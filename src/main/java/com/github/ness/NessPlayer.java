@@ -19,7 +19,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
@@ -28,7 +27,6 @@ import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.NetworkReflection;
 
-import io.netty.channel.Channel;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
