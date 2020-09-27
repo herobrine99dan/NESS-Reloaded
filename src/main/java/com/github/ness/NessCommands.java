@@ -12,8 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import com.github.ness.gui.ViolationGUI;
-
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -86,11 +84,6 @@ public class NessCommands implements CommandExecutor {
 					break;
 				case "report":
 					reportCommand(sender, args);
-					break;
-				case "gui":
-					if (sender instanceof Player) {
-						new ViolationGUI(sender).createGUI();
-					}
 					break;
 				case "debug":
 					if (sender instanceof Player) {
