@@ -19,7 +19,7 @@ public class BungeeCordListener implements PluginMessageListener {
 		if (subchannel.equals("NESS-Reloaded")) {
 			final String notify = in.readUTF();
 			for (Player staff : Bukkit.getOnlinePlayers()) {
-				if (staff.hasPermission("ness.notify") || staff.hasPermission("ness.notify.hacks")) {
+				if (staff.hasPermission("ness.notify")) {
 					staff.sendMessage(notify);
 				}
 			}

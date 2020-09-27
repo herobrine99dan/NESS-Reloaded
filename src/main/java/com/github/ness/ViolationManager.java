@@ -45,8 +45,7 @@ public class ViolationManager {
 
 						@Override
 						public void actOn(Player player, Violation violation, int violationCount) {
-							if (player.hasPermission("ness.bypass.*")
-									|| player.hasPermission("ness.bypass." + violation.getCheck().toLowerCase())) {
+							if (player.hasPermission("ness.bypass." + violation.getCheck().toLowerCase())) {
 								return;
 							}
 							if (violationCount > (notifyStaff.getInt("vl") - 1)) {
@@ -59,8 +58,7 @@ public class ViolationManager {
 									player.sendPluginMessage(ness, "BungeeCord", out.toByteArray());
 								}
 								for (Player staff : Bukkit.getOnlinePlayers()) {
-									if (staff.hasPermission("ness.notify")
-											|| staff.hasPermission("ness.notify.hacks")) {
+									if (staff.hasPermission("ness.notify")) {
 										staff.sendMessage(notif);
 									}
 								}
