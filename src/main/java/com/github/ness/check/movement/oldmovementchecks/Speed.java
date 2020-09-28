@@ -13,6 +13,7 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
+import com.github.ness.utility.Utility;
 
 public class Speed extends ListeningCheck<PlayerMoveEvent> {
 
@@ -34,6 +35,14 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		if (to.getY() < from.getY())
 			hozDist = dist - (from.getY() - to.getY());
 		double maxSpd = 0.4209;
+		if (player().nanoTimeDifference(PlayerAction.VELOCITY) < 1600) {
+			hozDist -= Math.abs(player().velocity.getX());
+			hozDist -= Math.abs(player().velocity.getZ());
+		}
+		if (player.hasPotionEffect(PotionEffectType.SPEED)) {
+			final int level = Utility.getPotionEffectLevel(player, PotionEffectType.SPEED);
+			hozDist = (float) (hozDist - hozDist / 100.0D * level * 20.0D);
+		}
 		Material mat = null;
 		for (int x = -1; x < 1; x++) {
 			for (int z = -1; z < 1; z++) {
@@ -48,9 +57,8 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		}
 		if (player.isInsideVehicle() && player.getVehicle().getType().name().contains("BOAT"))
 			maxSpd = 2.787;
-		if (hozDist > maxSpd && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED)
-				&& !player.getAllowFlight() && nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) >= 2000
-				&& !nessPlayer.isTeleported()) {
+		if (hozDist > maxSpd && !player.isFlying() && !player.getAllowFlight()
+				&& nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) >= 2000 && !nessPlayer.isTeleported()) {
 			if (nessPlayer.getMovementValues().groundAround) {
 				if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000) {
 					if (!player.isInsideVehicle()
