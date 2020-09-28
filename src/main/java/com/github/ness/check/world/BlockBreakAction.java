@@ -10,6 +10,7 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
+import com.github.ness.utility.Utility;
 
 public class BlockBreakAction extends ListeningCheck<BlockBreakEvent> {
 	private static final double MAX_ANGLE = Math.toRadians(90);
@@ -33,8 +34,7 @@ public class BlockBreakAction extends ListeningCheck<BlockBreakEvent> {
     		flagEvent(e , " HighDistance");
 			//if(player().setViolation(new Violation("BreakActions", "HighDistance"))) e.setCancelled(true);
     	} else {
-            final Vector placedVector = new Vector(block.getX(), block.getY(), block.getZ());
-            float placedAngle = nessPlayer.getMovementValues().getTo().getDirectionVector().toBukkitVector().angle(placedVector);
+    		final double placedAngle = Utility.getAngle(e.getPlayer(), block.getLocation(), values.getDirection());
             if (placedAngle > MAX_ANGLE) {
             	flagEvent(e , " Angle: " + placedAngle);
     			//if(player().setViolation(new Violation("BreakActions", "FalseAngle"))) e.setCancelled(true);

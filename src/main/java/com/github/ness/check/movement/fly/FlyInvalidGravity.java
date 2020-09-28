@@ -8,6 +8,7 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
@@ -50,8 +51,9 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
         Player p = e.getPlayer();
         double y = np.getMovementValues().yDiff;
         double yresult = y - p.getVelocity().getY();
-        if (Utility.hasflybypass(p) || Utility.hasBlock(p, "slime") || p.getAllowFlight()
-                || Utility.specificBlockNear(e.getTo().clone().add(0, -0.3, 0), "lily") || p.isInsideVehicle()) {
+        MovementValues values = np.getMovementValues();
+        if (Utility.hasflybypass(p) || values.AroundSlime || p.getAllowFlight()
+                || values.AroundLily || p.isInsideVehicle() || Utility.hasVehicleNear(p, 3)) {
             return;
         }
         double max = maxInvalidVelocity;

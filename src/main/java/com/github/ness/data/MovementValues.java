@@ -50,9 +50,11 @@ public class MovementValues {
 	public final boolean AroundLadders;
 	public final boolean AroundLily;
 	public final boolean AroundCarpet;
-	public final boolean isOnGround;
+	public final boolean groundAround;
 	public final boolean isSprinting;
 	public final ImmutableVector serverVelocity;
+	@Getter
+	private final boolean insideVehicle;
 	@Getter
 	ImmutableLoc to;
 	@Getter
@@ -111,7 +113,8 @@ public class MovementValues {
 			AroundSlime = slime;
 			AroundIce = ice;
 			AroundLily = lily;
-			isOnGround = ground;
+			groundAround = ground;
+			insideVehicle = p.isInsideVehicle();
 			AroundCarpet = carpet;
 			AroundLiquids = liquids;
 		} else {
@@ -121,9 +124,10 @@ public class MovementValues {
 			isSprinting = false;
 			AroundCarpet = false;
 			AroundLadders = false;
-			isOnGround = false;
-			AroundSnow = false;
+			groundAround = false;
 			AroundLily = false;
+			AroundSnow = false;
+			insideVehicle = false;
 			AroundLiquids = false;
 			AroundSlime = false;
 			AroundStairs = false;

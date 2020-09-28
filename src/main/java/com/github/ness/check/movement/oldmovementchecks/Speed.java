@@ -13,7 +13,6 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.utility.Utility;
 
 public class Speed extends ListeningCheck<PlayerMoveEvent> {
 
@@ -28,60 +27,45 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		Location to = e.getTo();
 		Location from = e.getFrom();
 		Player player = e.getPlayer();
-		double maxSpd = player.getWalkSpeed() * 3.1;
+		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = this.player().getMovementValues();
-		double xDist = Math.abs(movementValues.xDiff);
-		double zDist = Math.abs(movementValues.zDiff);
-		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
-				|| player().isTeleported()) {
-			return;
-		}
-		// Handling Velocity From other Plugins
-		if (player().nanoTimeDifference(PlayerAction.VELOCITY) < 1600) {
-			xDist -= Math.abs(player().velocity.getX());
-			zDist -= Math.abs(player().velocity.getZ());
-		}
-		if(!Utility.isMathematicallyOnGround(to.getY())) {
-			maxSpd *= 3.1;
-		}
-		// Handling Stairs
-		if (movementValues.AroundStairs) {
-			maxSpd *= 2.5;
-		}
-		// Handling Ice Speed
-		if (player().getTimeSinceLastWasOnIce() < 1300) {
-			maxSpd *= 1.6;
-			if (Utility.groundAround(to.clone().add(0, 2, 0))) {
-				maxSpd *= 1.65;
+		final double dist = from.distance(to);
+		double hozDist = dist - (to.getY() - from.getY());
+		if (to.getY() < from.getY())
+			hozDist = dist - (from.getY() - to.getY());
+		double maxSpd = 0.4209;
+		Material mat = null;
+		for (int x = -1; x < 1; x++) {
+			for (int z = -1; z < 1; z++) {
+				mat = from.getWorld()
+						.getBlockAt(from.getBlockX() + x, player.getEyeLocation().getBlockY() + 1, from.getBlockZ() + z)
+						.getType();
+				if (mat.isSolid()) {
+					maxSpd = 0.50602;
+					break;
+				}
 			}
 		}
-		// Handling Soul Sand
-		if (to.clone().add(0, -0.15, 0).getBlock().getType().name().contains("SOUL")) {
-			maxSpd = player.getWalkSpeed() * 1.1;
-		}
-		// Handling Speed Potion Effect
-		if (player.hasPotionEffect(PotionEffectType.SPEED)) {
-			final int level = Utility.getPotionEffectLevel(player, PotionEffectType.SPEED);
-			xDist = (float) (xDist - xDist / 100.0D * level * 20.0D);
-			zDist = (float) (zDist - zDist / 100.0D * level * 20.0D);
-		}
-		// MSG.tell(player, "&9Dev> &7Speed Dist: " + maxSpd);
-		if ((xDist > maxSpd || zDist > maxSpd) && player().nanoTimeDifference(PlayerAction.DAMAGE) >= 2000) {
-			if (Utility.groundAround(player.getLocation()) && !player.isInsideVehicle()) {
-				Material small = player.getWorld().getBlockAt(player.getLocation().subtract(0, .1, 0)).getType();
-				if (!player.getWorld().getBlockAt(from).getType().isSolid()
-						&& !player.getWorld().getBlockAt(to).getType().isSolid()
-						&& !small.name().toLowerCase().contains("trap")) {
-					if (player().isDevMode()) // TODO False Flag to fix (Jumping and Sprinting gives maxSpd = 0.53 and
-												// dist of = 0.57)
-						player().sendDevMessage("Speed amo: " + movementValues.XZDiff);
-					flagEvent(e, " MaxDist: " + (float) maxSpd + " Dist: " + (float) xDist);
-					//if (player().setViolation(new Violation("Speed",
-					//		"MaxDistance(OnMove)" + " MaxDist: " + (float) maxSpd + " Dist: " + (float) xDist)))
-					//	e.setCancelled(true);
+		if (player.isInsideVehicle() && player.getVehicle().getType().name().contains("BOAT"))
+			maxSpd = 2.787;
+		if (hozDist > maxSpd && !player.isFlying() && !player.hasPotionEffect(PotionEffectType.SPEED)
+				&& !player.getAllowFlight() && nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) >= 2000
+				&& !nessPlayer.isTeleported()) {
+			if (nessPlayer.getMovementValues().groundAround) {
+				if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000) {
+					if (!player.isInsideVehicle()
+							|| (player.isInsideVehicle() && !player.getVehicle().getType().name().contains("HORSE"))) {
+						Material small = player.getWorld().getBlockAt(player.getLocation().subtract(0, .1, 0))
+								.getType();
+						if (!player.getWorld().getBlockAt(from).getType().isSolid()
+								&& !player.getWorld().getBlockAt(to).getType().isSolid()) {
+							if (!small.name().contains("TRAPDOOR")) {
+								this.flagEvent(e, maxSpd + " Dist: " + hozDist);
+							}
+						}
+					}
 				}
 			}
 		}
 	}
-
 }

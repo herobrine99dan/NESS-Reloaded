@@ -1,6 +1,5 @@
 package com.github.ness;
 
-import java.awt.Point;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +46,6 @@ public class NessPlayer implements AnticheatPlayer {
 	private final boolean devMode;
 	public double sensitivity; // The Player Sensitivity
 	final public Map<PlayerAction, Long> actionTime;
-	public List<Point> mouseRecordValues;
 	public ImmutableLoc velocity;
 	public Set<Integer> attackedEntities;
 	public boolean hasSetback;
@@ -71,7 +69,6 @@ public class NessPlayer implements AnticheatPlayer {
 		this.player = player;
 		this.teleported = false;
 		this.setBackTicks = 0;
-		this.mouseRecordValues = new ArrayList<Point>();
 		this.actionTime = Collections.synchronizedMap(new EnumMap<>(PlayerAction.class));
 		this.sensitivity = 0;
 		this.devMode = devMode;

@@ -11,11 +11,13 @@ import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.Utility;
 
+import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
 public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
 
-	int maxPackets;
+	private int maxPackets;
+	private int serverCrasherMaxPackets;
 
 	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos
 			.forEventWithAsyncPeriodic(ReceivedPacketEvent.class, Duration.ofSeconds(1));
@@ -24,12 +26,18 @@ public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
 	public MorePackets(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
 		super(factory, player);
 		this.maxPackets = this.ness().getMainConfig().getCheckSection().morePackets().maxPackets();
+		this.serverCrasherMaxPackets = this.ness().getMainConfig().getCheckSection().morePackets().serverCrasherMaxPackets();
 		normalPacketsCounter = -5;
 	}
 
 	public interface Config {
 		@DefaultInteger(65)
 		int maxPackets();
+
+		@DefaultInteger(230)
+		@ConfComments({ "NESS Reloaded can async kick players (using Netty, NESS Reloaded can disable the autoRead config option)",
+			"This feature is experimental, to disable set this to -1, else change this number to something bigger (A normal PLayer sends at most 100 packets per second" })
+		int serverCrasherMaxPackets();
 	}
 
 	@Override
@@ -38,22 +46,25 @@ public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
 	}
 
 	@Override
-    protected void checkEvent(ReceivedPacketEvent e) {
-        int ping = Utility.getPing(e.getNessPlayer().getBukkitPlayer());
-        int maxPackets = this.maxPackets + ((ping / 100) * 6);
-        NessPlayer np = e.getNessPlayer();
-        if (np == null) {
-            return;
-        }
-        if (normalPacketsCounter++ > maxPackets && np.nanoTimeDifference(PlayerAction.JOIN) > 2500) {
-        	if(normalPacketsCounter > (maxPackets * 3.5)) {
-        		e.setCancelled(true);
-        		np.kickThreadSafe();
-        		return;
-        		//np.kickThreadSafe();
-        	} else {
-        		flagEvent(e);
-        	}
-        }
-    }
+	protected void checkEvent(ReceivedPacketEvent e) {
+		int ping = Utility.getPing(e.getNessPlayer().getBukkitPlayer());
+		int maxPackets = this.maxPackets + ((ping / 100) * 6);
+		NessPlayer np = e.getNessPlayer();
+		if (np == null) {
+			return;
+		}
+		if(np.getMovementValues().isInsideVehicle()) {
+			return;
+		}
+		if (normalPacketsCounter++ > maxPackets && np.nanoTimeDifference(PlayerAction.JOIN) > 2500) {
+			if (normalPacketsCounter > serverCrasherMaxPackets) {
+				e.setCancelled(true);
+				np.kickThreadSafe();
+				return;
+				// np.kickThreadSafe();
+			} else {
+				flagEvent(e);
+			}
+		}
+	}
 }

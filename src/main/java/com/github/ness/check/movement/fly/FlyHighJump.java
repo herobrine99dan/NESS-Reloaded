@@ -45,7 +45,7 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(e.getTo().clone().add(0, 0.5, 0)))
 						.contains("scaffolding")
 				|| movementValues.AroundSnow
-				|| movementValues.AroundLadders || nessPlayer.isTeleported()) {
+				|| movementValues.AroundLadders || nessPlayer.isTeleported() || p.isInsideVehicle() || Utility.hasVehicleNear(p, 3)) {
 			flyYSum = 0;
 			return;
 		}

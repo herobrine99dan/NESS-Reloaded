@@ -108,26 +108,6 @@ class NESSCommands implements CommandExecutor {
 				mustBePlayer(sender);
 			}
 			break;
-		case "mouserecord":
-			if (sender instanceof Player) {
-				NessPlayer np = ness.getCheckManager().getExistingPlayer((Player) sender);
-				if (np == null) {
-					// This shouldn't happen, but just in case
-					sendMessage(sender, "Your NESSPlayer isn't loaded");
-					return;
-				}
-				if (np.isMouseRecord()) {
-					this.sendMessage(sender, "&7You've stopped the Mouse Record Process!");
-					np.mouseRecordValues.clear();
-					np.setMouseRecord(false);
-				} else {
-					this.sendMessage(sender, "&7Recording Mouse Movements");
-					np.setMouseRecord(true);
-				}
-			} else {
-				mustBePlayer(sender);
-			}
-			break;
 		default:
 			usage(sender);
 			break;

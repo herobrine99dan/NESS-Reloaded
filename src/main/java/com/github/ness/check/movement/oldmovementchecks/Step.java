@@ -32,7 +32,7 @@ public class Step extends ListeningCheck<PlayerMoveEvent> {
 				|| player().isTeleported()) {
 			return;
 		}
-		if (to.getY() - from.getY() > 0.6 && values.isOnGround && !values.AroundSlime) {
+		if (to.getY() - from.getY() > 0.6 && values.groundAround && !values.AroundSlime) {
 			boolean boatNear = false;
 			for (Entity ent : player.getNearbyEntities(2, 2, 2)) {
 				if (ent instanceof Boat)
