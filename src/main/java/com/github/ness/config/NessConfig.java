@@ -51,6 +51,7 @@ public interface NessConfig {
 		"Timer",
 		"Criticals",
 		"ChestStealer",
+		"EntityFly",
 		/* "FastEat", */
 		"FastLadder",
 		"FastPlace",
@@ -73,6 +74,8 @@ public interface NessConfig {
 		"NoGround",
 		"NoFall",
 		"Speed",
+		"SpeedAir",
+		"Jesus",
 		"Step",
 		"Phase",
 		"ImpossibleBreak",
