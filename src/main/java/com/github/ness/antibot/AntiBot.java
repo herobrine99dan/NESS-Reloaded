@@ -1,70 +1,71 @@
 package com.github.ness.antibot;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.time.Duration;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.Scheduler;
+
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent.Result;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.ness.NESSAnticheat;
+public class AntiBot {
 
-public class AntiBot implements Listener, Runnable {
+	private final JavaPlugin plugin;
+	private final AntiBotConfig config;
+	private final int maxPlayersPerSecond;
+	private final String kickMessage;
+	
+	private final Cache<UUID, Boolean> whitelist;
+	private final AtomicLong counter = new AtomicLong();
 
-	Set<String> whitelistbypass = new HashSet<String>();
-	int neededSeconds = 10;
-	NESSAnticheat ness;
-	int maxPlayers;
-	int playerCounter = 0;
-	String message;
+	public AntiBot(JavaPlugin plugin, AntiBotConfig config) {
+		this.plugin = plugin;
+		this.config = config;
 
-	public AntiBot(NESSAnticheat ness) {
-		this.ness = ness;
-		ConfigurationSection config = this.ness.getNessConfig().getConfig().getConfigurationSection("antibot");
-		this.neededSeconds = config.getInt("minimumseconds", 10);
-		message = config.getString("message", "BotAttack Detected! By NESS Reloaded");
-		maxPlayers = config.getInt("maxplayers", 15);
+		maxPlayersPerSecond = config.maxPlayersPerSecond();
+		kickMessage = ChatColor.translateAlternateColorCodes('&', config.kickMessage());
+
+		whitelist = Caffeine.newBuilder().maximumSize(1200L).expireAfterAccess(Duration.ofDays(4L))
+				.scheduler(Scheduler.systemScheduler()).build();
 	}
-
-	@EventHandler
-	public void Check(AsyncPlayerPreLoginEvent e) {
-		playerCounter++;
-		if (playerCounter > maxPlayers && !whitelistbypass.contains(e.getName())) {
-			e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_WHITELIST, message);
-		} else {
-			e.allow();
-		}
+	
+	public void initiate() {
+		plugin.getServer().getPluginManager().registerEvents(new ListenerImpl(), plugin);
+		plugin.getServer().getScheduler().runTaskTimer(plugin, () -> counter.set(0L), 0L, 20L);
 	}
+	
+	/*
+	 * This class being public improves some of Paper's optimisations with event handlers
+	 */
+	public class ListenerImpl implements Listener {
 
-	@EventHandler
-	public void Check(PlayerJoinEvent e) {
-		Player p = e.getPlayer();
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				if (p.isOnline()) {
-					whitelistbypass.add(p.getName());
-				}
+		@EventHandler(priority = EventPriority.LOWEST)
+		public void interceptLogins(AsyncPlayerPreLoginEvent event) {
+			if (counter.incrementAndGet() > maxPlayersPerSecond
+					&& whitelist.getIfPresent(event.getUniqueId()) != null) {
+				event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, kickMessage);
 			}
-		}.runTaskLater(this.ness, neededSeconds * 20L);
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (p != player) {
-                if (p.getName().equalsIgnoreCase(player.getName()) || player.getName().equalsIgnoreCase(p.getName())) {
-                    p.kickPlayer("You are already joined!");
-                }
-            }
-        }
-	}
+		}
 
-	@Override
-	public void run() {
-		this.playerCounter = 0;
+		@EventHandler
+		public void onJoin(PlayerJoinEvent e) {
+			Player player = e.getPlayer();
+			plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+
+				if (player.isOnline()) {
+					whitelist.put(player.getUniqueId(), Boolean.TRUE);
+				}
+			}, config.timeUntilTrusted() * 20L);
+		}
 	}
 
 }

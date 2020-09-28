@@ -1,6 +1,8 @@
 package com.github.ness.utility;
 
-import com.github.ness.data.ImmutableVector;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,10 +15,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
+import com.github.ness.data.ImmutableVector;
 
 public class Utility {
 
@@ -43,20 +42,6 @@ public class Utility {
         Vector toEntity = target.toVector().subtract(eye.toVector());
         double dot = toEntity.normalize().dot(direction.toBukkitVector());
         return dot;// dot > 0.99D
-    }
-
-    public static String getStackTrace(Throwable throwable) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw, true);
-        throwable.printStackTrace(pw);
-        return sw.getBuffer().toString();
-    }
-    
-    public static String booleanToColoredString(boolean b) {
-        if (b) {
-            return "&aTrue&r";
-        }
-        return "&cFalse&r";
     }
 
     /**
@@ -105,8 +90,15 @@ public class Utility {
         return p.getLocation().add(0, -0.7, 0).getBlock();
     }
 
-    
-    public static int getPing(final Player player) {
+    /**
+     * Gets the ping of a player reflectively
+     * 
+     * @param player the player
+     * @return the ping
+     * @deprecated Handles reflective operation exceptions badly.
+     */
+    @Deprecated
+	public static int getPing(final Player player) {
         int ping = 76;
         try {
             final Object entityPlayer = player.getClass().getMethod("getHandle", new Class[0]).invoke(player
@@ -117,13 +109,21 @@ public class Utility {
         return ping;
     }
 
+    /**
+     * Sets the player's ping reflectively
+     * 
+     * @param player the player
+     * @param ping the ping
+     * @deprecated Evil! Never call this method
+     */
+    @Deprecated
     public static void setPing(Player player, int ping) {
         try {
             Class<?> craftPlayerClass = Class.forName("org.bukkit.craftbukkit."
                     + Bukkit.getServer().getClass().getPackage().getName().substring(23) + ".entity.CraftPlayer");
             Object handle = craftPlayerClass.getMethod("getHandle", new Class[0]).invoke(craftPlayerClass.cast(player)
             );
-            handle.getClass().getDeclaredField("ping").set(handle, Integer.valueOf(50));
+            handle.getClass().getDeclaredField("ping").set(handle, ping);
         } catch (Exception exception) {
 
         }
@@ -257,7 +257,13 @@ public class Utility {
         return m.name().contains("WATER");
     }
 
-    @Deprecated //Bad Coded
+    @Deprecated 
+    /**
+     * This check if the player has air around
+     * This needs a recode
+     * @param player
+     * @return
+     */
     public static boolean hasKbBypass(Player player) {
         if (!player.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().getType().isSolid())
             return true;

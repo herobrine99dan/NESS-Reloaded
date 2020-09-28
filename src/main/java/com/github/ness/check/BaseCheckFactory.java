@@ -1,6 +1,7 @@
 package com.github.ness.check;
 
 import com.github.ness.NessPlayer;
+import com.github.ness.api.AnticheatCheck;
 
 /**
  * Base class for
@@ -8,7 +9,7 @@ import com.github.ness.NessPlayer;
  * @author A248
  *
  */
-public abstract class BaseCheckFactory<C extends BaseCheck> {
+public abstract class BaseCheckFactory<C extends BaseCheck> implements AnticheatCheck {
 
 	private final String checkName;
 	private final CheckManager manager;
@@ -26,7 +27,8 @@ public abstract class BaseCheckFactory<C extends BaseCheck> {
 		return manager;
 	}
 	
-	String getCheckName() {
+	@Override
+	public String getCheckName() {
 		return checkName;
 	}
 	

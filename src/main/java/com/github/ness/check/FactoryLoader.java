@@ -4,7 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,8 +27,13 @@ class FactoryLoader {
 		this.enabledCheckNames = enabledCheckNames;
 	}
 
+	/**
+	 * Creates all check factories
+	 * 
+	 * @return an ordered set of all check factories
+	 */
 	Set<BaseCheckFactory<?>> createAllFactories() {
-		Set<BaseCheckFactory<?>> factories = new HashSet<>();
+		Set<BaseCheckFactory<?>> factories = new LinkedHashSet<>();
 
 		factoryLoadLoop:
 		for (String checkName : enabledCheckNames) {
@@ -116,7 +121,7 @@ class FactoryLoader {
 			throw new IllegalStateException("Unable to find check constructor");
 		}
 		
-		private CheckInfo<?> getCheckInfo(Class<C> checkClass) {
+		private CheckInfo getCheckInfo(Class<C> checkClass) {
 			Field checkInfoField;
 			try {
 				checkInfoField = checkClass.getDeclaredField("checkInfo");
@@ -125,7 +130,7 @@ class FactoryLoader {
 						"Check " + checkClass + " must declare checkInfo or use its own factory", ex);
 			}
 			try {
-				return (CheckInfo<?>) checkInfoField.get(null);
+				return (CheckInfo) checkInfoField.get(null);
 			} catch (IllegalAccessException ex) {
 				throw new UncheckedReflectiveOperationException("CheckInfo not accessible", ex);
 			}
@@ -153,7 +158,7 @@ class FactoryLoader {
 			/*
 			 * Subclassed check, standard factory
 			 */
-			CheckInfo<?> checkInfo = getCheckInfo(checkClass);
+			CheckInfo checkInfo = getCheckInfo(checkClass);
 			Constructor<C> constructor = getCheckConstructor(checkClass);
 
 			if (checkInfo instanceof ListeningCheckInfo) {
@@ -185,11 +190,11 @@ class FactoryLoader {
 		// CheckFactory
 		
 		@SuppressWarnings("unchecked")
-		private <L extends Check> BaseCheckFactory<C> create(Constructor<C> constructor, CheckInfo<?> checkInfo) {
+		private <L extends Check> BaseCheckFactory<C> create(Constructor<C> constructor, CheckInfo checkInfo) {
 			return (BaseCheckFactory<C>) create0((Constructor<L>) constructor, checkInfo);
 		}
 		
-		private <L extends Check> CheckFactory<L> create0(Constructor<L> constructor, CheckInfo<?> checkInfo) {
+		private <L extends Check> CheckFactory<L> create0(Constructor<L> constructor, CheckInfo checkInfo) {
 			return new CheckFactory<>(constructor, manager, checkInfo);
 		}
 		

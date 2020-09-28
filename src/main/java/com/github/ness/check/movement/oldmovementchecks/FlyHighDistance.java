@@ -4,7 +4,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -18,7 +17,7 @@ public class FlyHighDistance extends ListeningCheck<PlayerMoveEvent> {
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
 	int preVL;
-	
+
 	public FlyHighDistance(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 		preVL = 0;
@@ -36,12 +35,12 @@ public class FlyHighDistance extends ListeningCheck<PlayerMoveEvent> {
 		if (player().nanoTimeDifference(PlayerAction.VELOCITY) < 1600) {
 			dist -= Math.abs(player().velocity.getX()) + Math.abs(player().velocity.getZ());
 		}
-		if (!values.isOnGround && dist > 0.35 && values.yDiff == 0.0
+		if (!values.groundAround && dist > 0.35 && values.yDiff == 0.0
 				&& this.player().getTimeSinceLastWasOnIce() >= 1000) {
-			if(preVL++ > 1) {
-				if(player().setViolation(new Violation("Fly", "HighDistance(OnMove)"))) e.setCancelled(true);
+			if (preVL++ > 1) {
+				flagEvent(e);
 			}
-		} else if(preVL > 0) {
+		} else if (preVL > 0) {
 			preVL--;
 		}
 	}

@@ -5,7 +5,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -34,7 +33,8 @@ public class NoWeb extends ListeningCheck<PlayerMoveEvent> {
         }
         if (dist > walkSpeed && Utility.getMaterialName(event.getTo()).contains("WEB")
                 && Utility.getMaterialName(event.getFrom()).contains("WEB") && !Utility.hasflybypass(p) && nessPlayer.nanoTimeDifference(PlayerAction.WEBBREAKED) > 1300) {
-        	if(player().setViolation(new Violation("NoWeb", "Dist: " + dist))) event.setCancelled(true);
+        	flagEvent(event);
+        	//if(player().setViolation(new Violation("NoWeb", "Dist: " + dist))) event.setCancelled(true);
         }
     }
 

@@ -6,7 +6,6 @@ import java.nio.charset.StandardCharsets;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -28,7 +27,8 @@ public class AntiUnicode extends ListeningCheck<AsyncPlayerChatEvent> {
          * Check if player send Unicode message
          */
         if (!asciiEncoder.get().canEncode(e.getMessage())) {
-        	if(player().setViolation(new Violation("AntiUnicode",""))) e.setCancelled(true);
+        	flagEvent(e);
+        	//if(player().setViolation(new Violation("AntiUnicode",""))) e.setCancelled(true);
         }
     }
 

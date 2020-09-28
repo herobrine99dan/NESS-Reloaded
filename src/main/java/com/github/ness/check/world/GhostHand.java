@@ -1,6 +1,5 @@
 package com.github.ness.check.world;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -8,7 +7,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -49,8 +47,8 @@ public class GhostHand extends ListeningCheck<PlayerInteractEvent> {
 				&& p.getMovementValues().XZDiff < 0.15 && !targetBlock.equals(event.getClickedBlock())) {
 			Location block = event.getClickedBlock().getLocation().add(event.getBlockFace().getModX(),
 					event.getBlockFace().getModY(), event.getBlockFace().getModZ());
-			Bukkit.getScheduler().runTaskLater(this.ness(), () -> {
 
+			runTaskLater(() -> {
 				Location loc1 = player.getLocation();
 				float grade = Math.abs(loc.getYaw() - loc1.getYaw()) + Math.abs(loc.getPitch() - loc1.getPitch());
 
@@ -58,10 +56,9 @@ public class GhostHand extends ListeningCheck<PlayerInteractEvent> {
 					return;
 				}
 				if (block.getBlock().getType().isSolid() || !targetBlock.equals(event.getClickedBlock())) {
-					if (player().setViolation(new Violation("GhostHand", "")))
-						event.setCancelled(true);
+					flagEvent(event);
 				}
-			}, 2L);
+			}, durationOfTicks(2));
 		}
 	}
 

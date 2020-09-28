@@ -1,6 +1,5 @@
 package com.github.ness.check;
 
-import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
@@ -18,12 +17,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class CoreListener implements Listener {
 
-	private final CheckManager manager;
+	private final PlayerManager manager;
 
-	CoreListener(CheckManager manager) {
+	CoreListener(PlayerManager manager) {
 		this.manager = manager;
 	}
 
@@ -38,8 +38,9 @@ public class CoreListener implements Listener {
 	public void onQuit(PlayerQuitEvent evt) {
 		Player player = evt.getPlayer();
 		final long tenSecondsLater = 20L * 10L;
-		NESSAnticheat ness = manager.getNess();
-		ness.getServer().getScheduler().runTaskLater(ness, () -> {
+
+		JavaPlugin plugin = manager.getCheckManager().getNess().getPlugin();
+		plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
 			if (!player.isOnline()) {
 				manager.removePlayer(player);
 			}
@@ -65,7 +66,7 @@ public class CoreListener implements Listener {
 			return;
 		}
 		Player player = event.getPlayer();
-		NessPlayer nessPlayer = manager.getExistingPlayer(player);
+		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(player);
 		if (nessPlayer == null) {
 			return;
 		}
@@ -77,7 +78,7 @@ public class CoreListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onVelocity(PlayerVelocityEvent event) {
-		NessPlayer nessPlayer = manager.getExistingPlayer(event.getPlayer());
+		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(event.getPlayer());
 		if (nessPlayer == null) {
 			return;
 		}
@@ -90,7 +91,7 @@ public class CoreListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlace(BlockBreakEvent event) {
-		NessPlayer nessPlayer = manager.getExistingPlayer(event.getPlayer());
+		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(event.getPlayer());
 		if (nessPlayer == null) {
 			return;
 		}

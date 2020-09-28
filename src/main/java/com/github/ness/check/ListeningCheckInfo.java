@@ -12,7 +12,7 @@ import org.bukkit.event.Event;
  *
  * @param <E>
  */
-public class ListeningCheckInfo<E extends Event> extends CheckInfo<Object> {
+public class ListeningCheckInfo<E extends Event> extends CheckInfo {
 
     /**
      * Event to listen to

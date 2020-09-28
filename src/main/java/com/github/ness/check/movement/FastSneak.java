@@ -5,7 +5,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -36,7 +35,8 @@ public class FastSneak extends ListeningCheck<PlayerMoveEvent> {
         if (dist > walkSpeed && p.isSneaking() && !Utility.hasflybypass(p)) {
             if (Math.abs(nessPlayer.getMovementValues().xDiff) > walkSpeed
                     || Math.abs(nessPlayer.getMovementValues().zDiff) > walkSpeed) {
-            	if(player().setViolation(new Violation("FastSneak", "Dist: " + dist))) event.setCancelled(true);
+            	flagEvent(event);
+            	//if(player().setViolation(new Violation("FastSneak", "Dist: " + dist))) event.setCancelled(true);
             }
         }
     }

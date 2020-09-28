@@ -6,7 +6,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -26,12 +25,17 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	@Override
+	protected boolean shouldDragDown() {
+		return true;
+	}
+	
+	@Override
 	protected void checkEvent(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
 		if (Bukkit.getVersion().contains("1.8") || movementValues.AroundLily || movementValues.AroundCarpet
-				|| movementValues.AroundSnow || NESSAnticheat.getInstance().getVersion() > 1152 || ReflectionUtility.getBlockName(player, ImmutableLoc.of(player.getLocation().clone().add(0, -0.5, 0)))
+				|| movementValues.AroundSnow || NESSAnticheat.getInstance().getMinecraftVersion() > 1152 || ReflectionUtility.getBlockName(player, ImmutableLoc.of(player.getLocation().clone().add(0, -0.5, 0)))
 				.contains("scaffolding")) {
 			return;
 		}
@@ -42,9 +46,11 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 				&& player.isOnline() && !movementValues.AroundSlime && !player.isInsideVehicle()
 				&& !Utility.specificBlockNear(e.getTo().clone(), "web")) {
 			if (player.isOnGround() && !Utility.groundAround(e.getTo())) {
-	        	if(player().setViolation(new Violation("Fly", "FalseGround"))) e.setCancelled(true);
+				flagEvent(e, " FalseGround");
+	        	//if(player().setViolation(new Violation("Fly", "FalseGround"))) e.setCancelled(true);
 			} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY())) {
-	        	if(player().setViolation(new Violation("Fly", "FalseGround1"))) e.setCancelled(true);
+				flagEvent(e, " FalseGround1");
+	        	//if(player().setViolation(new Violation("Fly", "FalseGround1"))) e.setCancelled(true);
 			}
 		}
 	}

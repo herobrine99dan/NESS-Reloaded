@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -50,7 +49,8 @@ public class NoGround extends ListeningCheck<PlayerMoveEvent> {
 			if (!Utility.groundAround(to.clone().add(0, 2, 0))) {
 				int failed = flags++;
 				if (failed > 3) {
-					if(player().setViolation(new Violation("NoGround", "(OnMove)"))) e.setCancelled(true);
+					flagEvent(e);
+					//if(player().setViolation(new Violation("NoGround", "(OnMove)"))) e.setCancelled(true);
 				}
 			}
 		}

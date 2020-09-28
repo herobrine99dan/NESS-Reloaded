@@ -13,7 +13,7 @@ class ScalableRegisteredListener<E extends Event> extends RegisteredListener {
 	
 	ScalableRegisteredListener(CheckManager manager, ListeningCheckFactory<?, E> checkFactory) {
 		super(HandlerListUtils.DummyListener.INSTANCE, HandlerListUtils.DummyEventExecutor.INSTANCE,
-				EventPriority.LOW, manager.getNess(), false);
+				EventPriority.LOW, manager.getNess().getPlugin(), false);
 		this.checkFactory = checkFactory;
 	}
 	

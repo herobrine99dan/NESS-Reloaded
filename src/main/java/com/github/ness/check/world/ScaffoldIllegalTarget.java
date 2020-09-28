@@ -9,7 +9,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -37,7 +36,8 @@ public class ScaffoldIllegalTarget extends ListeningCheck<PlayerInteractEvent> {
                     face = blocks.get(1).getFace(blocks.get(0));
                 }
                 if (event.getBlockFace() != face && target.getType().isSolid() && target.getType().isOccluding()) {
-        			if(player().setViolation(new Violation("Scaffold", "IllegalTarget"))) event.setCancelled(true);
+                	flagEvent(event);
+                	//if(player().setViolation(new Violation("Scaffold", "IllegalTarget"))) event.setCancelled(true);
                 }
             }
         }

@@ -1,7 +1,5 @@
 package com.github.ness;
 
-import java.awt.Point;
-import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,42 +7,32 @@ import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.Consumer;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import com.github.ness.api.Violation;
-import com.github.ness.api.impl.PlayerViolationEvent;
+import com.github.ness.api.AnticheatPlayer;
+import com.github.ness.api.Infraction;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.utility.DiscordWebhook;
+import com.github.ness.packets.NetworkReflection;
 
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
 
-public class NessPlayer implements AutoCloseable {
+public class NessPlayer implements AnticheatPlayer {
 
-	/**
-	 * Used by ViolationManager to count violations of specific checks. <br>
-	 * This map is synchronized and thread safe
-	 */
-	public final Map<String, Integer> checkViolationCounts = new ConcurrentHashMap<>();
-	/**
-	 * Player's current violation, package visibility for ViolationManager to use
-	 */
-	public final AtomicReference<Violation> violation = new AtomicReference<>();
+	private final Queue<Infraction> infractions = new ConcurrentLinkedQueue<>();
 
 	/**
 	 * Player UUID
@@ -53,13 +41,11 @@ public class NessPlayer implements AutoCloseable {
 	/**
 	 * Bukkit Player corresponding to this NESSPlayer
 	 */
-	@Getter
 	private final Player player;
 	@Getter
 	private final boolean devMode;
 	public double sensitivity; // The Player Sensitivity
 	final public Map<PlayerAction, Long> actionTime;
-	public List<Point> mouseRecordValues;
 	public ImmutableLoc velocity;
 	public Set<Integer> attackedEntities;
 	public boolean hasSetback;
@@ -83,7 +69,6 @@ public class NessPlayer implements AutoCloseable {
 		this.player = player;
 		this.teleported = false;
 		this.setBackTicks = 0;
-		this.mouseRecordValues = new ArrayList<Point>();
 		this.actionTime = Collections.synchronizedMap(new EnumMap<>(PlayerAction.class));
 		this.sensitivity = 0;
 		this.devMode = devMode;
@@ -92,9 +77,44 @@ public class NessPlayer implements AutoCloseable {
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
 	}
+	
+	/*
+	 * API methods
+	 */
 
-	public UUID getUUID() {
+	@Override
+	public UUID getUniqueId() {
 		return uuid;
+	}
+
+	@Override
+	public Player getBukkitPlayer() {
+		return player;
+	}
+	
+	/*
+	 * Infraction methods
+	 */
+
+	/**
+	 * Adds an infraction
+	 * 
+	 * @param infraction the infraction
+	 */
+	public void addInfraction(Infraction infraction) {
+		infractions.offer(infraction);
+	}
+
+	/**
+	 * Polls and drains all infractions applying the specified action
+	 * 
+	 * @param action the action on each infraction
+	 */
+	public void pollInfractions(Consumer<Infraction> action) {
+		Infraction infraction;
+		while ((infraction = infractions.poll()) != null) {
+			action.accept(infraction);
+		}
 	}
 
 	/*
@@ -115,6 +135,20 @@ public class NessPlayer implements AutoCloseable {
 
 	public boolean isNot(Entity entity) {
 		return !is(entity);
+	}
+	
+	/*
+	 * Thread safe disconnection
+	 */
+	
+	/**
+	 * Disconnects the player just as the server would
+	 * 
+	 */
+	public void kickThreadSafe() {
+		Object networkManager = NetworkReflection.getNetworkManager(getBukkitPlayer());
+		NetworkReflection.getChannel(networkManager).config().setAutoRead(false);
+		//NetworkReflection.clearPacketQueue(networkManager);
 	}
 
 	/*
@@ -147,7 +181,7 @@ public class NessPlayer implements AutoCloseable {
 	}
 
 	public void sendDevMessage(String message) {
-		this.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Dev> &7" + message));
+		this.getBukkitPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Dev> &7" + message));
 	}
 
 	public void updateMovementValue(MovementValues values) {
@@ -171,120 +205,45 @@ public class NessPlayer implements AutoCloseable {
 	}
 
 	/**
-	 * Gets the player's current, latest violation
-	 *
-	 * @return the latest violation
+	 * Drags down the player
+	 * 
 	 */
-	public Violation getViolation() {
-		return violation.get();
-	}
-
-	/**
-	 * /** Used to indicate the player was detected for cheating
-	 *
-	 * @param violation the violation
-	 * @param e         the event (if it is null, this check will not be cancelled)
-	 */
-	public boolean setViolation(Violation violation) {
-		// Bypass permissions
-		if (this.getPlayer().hasPermission("ness.bypass." + violation.getCheck().toLowerCase())
-				|| this.getPlayer().hasPermission("ness.bypass.*") || this.getPlayer().isOp()) {
-			return false;
-		}
-		// Violation event
-		PlayerViolationEvent event = new PlayerViolationEvent(this.getPlayer(), this, violation,
-				checkViolationCounts.getOrDefault(violation.getCheck(), 0));
-		Bukkit.getServer().getPluginManager().callEvent(event);
-		if (event.isCancelled()) {
-			return false;
-		}
-		// Cancel method
-		ConfigurationSection cancelsec = NESSAnticheat.main.getNessConfig().getViolationHandling()
-				.getConfigurationSection("cancel");
-		final boolean cancel = checkViolationCounts.getOrDefault(violation.getCheck(), 0) > cancelsec.getInt("vl", 10)
-				&& cancelsec.getBoolean("enable", false);
-		if (cancel) {
-			if (violation.getCheck().equals("Fly") || violation.getCheck().equals("NoFall")
-					|| violation.getCheck().equals("Step") || violation.getCheck().equals("Phase")) {
-				this.dragDown();
-				return false;
-			}
-		}
-		// Main method body
-		this.violation.compareAndSet(null, violation);
-		checkViolationCounts.merge(violation.getCheck(), 1, (c1, c2) -> c1 + c2);
-		if (isDevMode()) {
-			// sendMessage is thread safe
-			if (this.getPlayer().hasPermission("ness.notify.developer")) {
-				player.sendMessage(
-						"Dev mode violation: Check " + violation.getCheck() + ". Details: " + violation.getDetails());
-			}
-		}
-		return cancel;
-	}
-
-	/**
-	 * The new dragDown method will teleport the player down adding his velocity to
-	 * his location
-	 */
-	public void dragDown() {
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				if (player.isOnline()) {
-					final long current = System.nanoTime() / 1000_000L;
-					if ((current - setBackTicks) > 40) {
-						final Location block = player.getLocation().clone().add(0, player.getVelocity().getY(), 0);
-						if (!block.getBlock().getType().isSolid()) {
-							hasSetback = true;
-							player.teleport(block, TeleportCause.PLUGIN);
-						} else if (!block.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
-							player.teleport(block.add(0, 0.4, 0), TeleportCause.PLUGIN);
-						}
-					}
-					setBackTicks = current;
-					setBackTicks++;
-				}
-			}
-		}.runTask(NESSAnticheat.getInstance());
-	}
-
-	/**
-	 * This method send a webhook with the violation message to Discord
-	 *
-	 * @param violation
-	 * @param violationCount
-	 */
-	public void sendWebhook(Violation violation, int violationCount) {
-		final String webhookurl = NESSAnticheat.getInstance().getNessConfig().getDiscordWebHook();
-		if (webhookurl == null || webhookurl.isEmpty()) {
+	public void completeDragDown() {
+		if (!player.isOnline()) {
 			return;
 		}
-		NESSConfig config = NESSAnticheat.getInstance().getNessConfig();
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				DiscordWebhook webhook = new DiscordWebhook(webhookurl);
-				Player hacker = NessPlayer.this.getPlayer();
-				webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle(config.getDiscordTitle())
-						.setDescription(config.getDiscordDescription().replaceFirst("<hacker>", hacker.getName()))
-						.setColor(config.getDiscordColor()).addField("Cheater", hacker.getName(), true)
-						.addField("Cheat", violation.getCheck() + "(module)".replace("module", violation.getDetails()),
-								true)
-						.addField("VL", Integer.toString(violationCount), false));
-				// webhook.addEmbed(new DiscordWebhook.EmbedObject().setDescription("Player
-				// hacker seems to be use cheat(module)".replace("cheat", hack)
-				// .replace("module", module).replace("hacker", hacker.getName())));
-				try {
-					webhook.execute();
-				} catch (IOException e) {
-				}
+		final long current = System.nanoTime() / 1000_000L;
+		if ((current - setBackTicks) > 40) {
+			final Location block = player.getLocation().clone().add(0, player.getVelocity().getY(), 0);
+			if (!block.getBlock().getType().isSolid()) {
+				hasSetback = true;
+				player.teleport(block, TeleportCause.PLUGIN);
+			} else if (!block.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
+				player.teleport(block.add(0, 0.4, 0), TeleportCause.PLUGIN);
 			}
-		}.runTaskAsynchronously(NESSAnticheat.getInstance());
+		}
+		setBackTicks = current;
+		setBackTicks++;
 	}
 
 	@Override
-	public void close() {
-		checkViolationCounts.clear();
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + uuid.hashCode();
+		return result;
 	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (!(object instanceof NessPlayer)) {
+			return false;
+		}
+		NessPlayer other = (NessPlayer) object;
+		return uuid.equals(other.uuid);
+	}
+
 }

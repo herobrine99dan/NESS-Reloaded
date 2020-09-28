@@ -1,7 +1,6 @@
 package com.github.ness.check.combat;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -41,7 +40,8 @@ public class AimbotGCD extends ListeningCheck<ReceivedPacketEvent> {
 			final double result = Math.abs(gcd - lastGCD);
 			if (result > 512 && result < 100000) {
 				if (preVL++ > 7) {
-					if(player().setViolation(new Violation("AimbotGCD", "Diff: " + result))) event.setCancelled(true);
+					flag(" Diff: " + result);
+					//if(player().setViolation(new Violation("AimbotGCD", "Diff: " + result))) event.setCancelled(true);
 				}
 			} else {
 				if (preVL > 0) {

@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -23,13 +22,18 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 	public NoFall(ListeningCheckFactory<?,PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
+	
+	@Override
+	protected boolean shouldDragDown() {
+		return true;
+	}
 
 	private void punish(PlayerMoveEvent e, String cheat, String module) {
 		NessPlayer nessPlayer = this.player();
 		if (nessPlayer.isTeleported()) {
 			return;
 		}
-		if(player().setViolation(new Violation(cheat, module))) e.setCancelled(true);
+		flagEvent(e);
 	}
 
 	@Override
@@ -64,8 +68,8 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 			nessPlayer.sendDevMessage(
 					"&7hozDist: &e" + hozDist + " &7vertDist: &e" + vertDist + " &7fallDist: &e" + fallDist);
 			nessPlayer.sendDevMessage("&7below: &e" + below.name());
-			nessPlayer.sendDevMessage("&7groundAround: &e" + Utility.booleanToColoredString(groundAround)
-					+ " &7onGround: " + Utility.booleanToColoredString(player.isOnGround()));
+			nessPlayer.sendDevMessage("&7groundAround: &e" + groundAround
+					+ " &7onGround: " + player.isOnGround());
 		}
 		if (to.getY() != from.getY()) {
 			if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().contains("WATER")

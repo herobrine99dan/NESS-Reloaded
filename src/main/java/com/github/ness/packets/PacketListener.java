@@ -5,58 +5,41 @@ import com.github.ness.NessPlayer;
 import com.github.ness.packets.wrappers.PacketPlayInPositionLook;
 import com.github.ness.packets.wrappers.PacketPlayInUseEntity;
 import com.github.ness.packets.wrappers.SimplePacket;
-import com.github.ness.utility.ReflectionUtility;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
-import org.bukkit.Bukkit;
+import com.github.ness.utility.UncheckedReflectiveOperationException;
+
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
 
 public class PacketListener implements Listener {
 
-    private static final Method getHandleMethod;
-    private static final Field playerConnectionField;
-    private static final Field networkManagerField;
-    private static final Field channelField;
-
-    static {
-        Class<?> craftPlayerClass;
-        try {
-            craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + ReflectionUtility.ver() + ".entity.CraftPlayer");
-            getHandleMethod = craftPlayerClass.getMethod("getHandle");
-            playerConnectionField = getHandleMethod.getReturnType().getDeclaredField("playerConnection");
-            networkManagerField = playerConnectionField.getType().getDeclaredField("networkManager");
-            channelField = networkManagerField.getType().getDeclaredField("channel");
-        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | NoSuchFieldException ex) {
-            throw new ExceptionInInitializerError(ex);
-        }
-    }
-
+	private final NESSAnticheat ness;
+	
+	public PacketListener(NESSAnticheat ness) {
+		this.ness = ness;
+	}
+	
     /**
      * Gets the netty Channel of a Player
      *
      * @param player the bukkit player
      * @return the channel, never {@code null}
-     * @throws IllegalStateException if reflection failed
+     * @throws UncheckedReflectiveOperationException if reflection failed
      */
-    private static Channel getChannel(Player player) {
-        try {
-            Object handle = getHandleMethod.invoke(player);
-            Object playerConnection = playerConnectionField.get(handle);
-            Object networkManager = networkManagerField.get(playerConnection);
-            return (Channel) channelField.get(networkManager);
-        } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex) {
-            throw new IllegalStateException(ex);
-        }
+    private Channel getChannel(Player player) {
+    	if(!player.isOnline()) {
+    		throw new UncheckedReflectiveOperationException("Player " + player.getName() + " isn't online!", new ReflectiveOperationException());
+    	}
+    	return NetworkReflection.getChannel(NetworkReflection.getNetworkManager(player));
     }
 
     @EventHandler
@@ -89,28 +72,38 @@ public class PacketListener implements Listener {
      * @param player the player
      */
     private void injectPlayer(Player player) {
-        ChannelDuplexHandler channelDuplexHandler = new ChannelDuplexHandler() {
-            @Override
-            public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
-                // We can drop the packet disabling this super method!
-            	NessPlayer nessPlayer = NESSAnticheat.getInstance().getCheckManager().getExistingPlayer(player);
-            	if (nessPlayer == null) {
-            		return;
-            	}
-                ReceivedPacketEvent event = new ReceivedPacketEvent(
-                        nessPlayer,
-                        PacketListener.this.getPacketObject(packet));
-                Bukkit.getPluginManager().callEvent(event);
-                if (!event.isCancelled()) {
-                    super.channelRead(channelHandlerContext, packet);
-                }
-            }
-        };
+        ChannelDuplexHandler channelDuplexHandler = new ChannelDuplexHandlerImpl(player);
 
-        // ChannelPipeline pipeline = ((CraftPlayer)
-        // player).getHandle().playerConnection.networkManager.channel
         ChannelPipeline pipeline = getChannel(player).pipeline();
         pipeline.addBefore("packet_handler", player.getName() + "NESSListener", channelDuplexHandler);
+    }
+    
+    private class ChannelDuplexHandlerImpl extends ChannelDuplexHandler {
+    	
+    	private final UUID uuid;
+    	
+    	ChannelDuplexHandlerImpl(Player player) {
+    		uuid = player.getUniqueId();
+    	}
+    	
+        @Override
+        public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
+        	if (shouldContinue(packet)) {
+        		super.channelRead(channelHandlerContext, packet);
+        	}
+        }
+        
+        private boolean shouldContinue(Object packet) {
+        	NessPlayer nessPlayer = ness.getCheckManager().getExistingPlayer(uuid);
+        	if (nessPlayer == null) {
+        		return true;
+        	}
+            ReceivedPacketEvent event = new ReceivedPacketEvent(
+                    nessPlayer,
+                    getPacketObject(packet));
+            ness.getPlugin().getServer().getPluginManager().callEvent(event);
+            return !event.isCancelled();
+        }
     }
 
     private SimplePacket getPacketObject(Object p) {

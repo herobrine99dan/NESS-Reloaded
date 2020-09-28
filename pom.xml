@@ -10,10 +10,11 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<junit.version>5.6.2</junit.version>
+		<junit.version>5.7.0</junit.version>
 		<slf4j.version>1.7.30</slf4j.version>
 		<protocollib.version>4.5.0</protocollib.version>
 		<caffeine.version>2.8.5</caffeine.version>
+		<dazzleconf.version>0.4.0</dazzleconf.version>
 	</properties>
 	
 	<licenses>
@@ -75,6 +76,10 @@
 				<version>3.0.0-M5</version>
 				<configuration>
 					<trimStackTrace>false</trimStackTrace>
+					<argLine>-Xverify:none -XX:TieredStopAtLevel=1 -XX:-TieredCompilation</argLine>
+					<systemPropertyVariables>
+						<java.util.logging.config.file>src/test/resources/logging.properties</java.util.logging.config.file>
+					</systemPropertyVariables>
 				</configuration>
 				<dependencies>
 					<dependency>
@@ -99,12 +104,17 @@
 							<artifactSet>
 								<includes>
 									<include>com.github.ben-manes.caffeine:caffeine</include>
+									<include>space.arim.dazzleconf:*</include>
 								</includes>
 							</artifactSet>
 							<relocations>
 								<relocation>
 									<pattern>com.github.benmanes.caffeine</pattern>
 									<shadedPattern>com.github.ness.shaded.com.github.benmanes.caffeine</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>space.arim.dazzleconf</pattern>
+									<shadedPattern>com.github.ness.shaded.space.arim.dazzleconf</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>
@@ -115,18 +125,23 @@
 	</build>
 	
 	<dependencies>
+		<!-- Implementation dependencies, 'optional' is used to limit transitivity -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>1.18.12</version>
-			<!-- Used to limit transitivity of this dependency -->
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.github.ben-manes.caffeine</groupId>
 			<artifactId>caffeine</artifactId>
 			<version>${caffeine.version}</version>
-			<!-- Used to limit transitivity of this dependency -->
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>space.arim.dazzleconf</groupId>
+			<artifactId>dazzleconf-ext-snakeyaml</artifactId>
+			<version>${dazzleconf.version}</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- Testing -->
@@ -144,7 +159,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
+			<artifactId>slf4j-jdk14</artifactId>
 			<version>${slf4j.version}</version>
 			<scope>test</scope>
 		</dependency>
@@ -176,6 +191,10 @@
 		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
+			<id>arim-mvn-lgpl3</id>
+			<url>https://mvn-repo.arim.space/lesser-gpl3/</url>
 		</repository>
 	</repositories>
 </project>

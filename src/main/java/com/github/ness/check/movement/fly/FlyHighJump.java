@@ -5,7 +5,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -25,6 +24,11 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 	public FlyHighJump(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
+	
+	@Override
+	protected boolean shouldDragDown() {
+		return true;
+	}
 
 	@Override
 	protected void checkEvent(PlayerMoveEvent e) {
@@ -41,7 +45,7 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(e.getTo().clone().add(0, 0.5, 0)))
 						.contains("scaffolding")
 				|| movementValues.AroundSnow
-				|| movementValues.AroundLadders || nessPlayer.isTeleported()) {
+				|| movementValues.AroundLadders || nessPlayer.isTeleported() || p.isInsideVehicle() || Utility.hasVehicleNear(p, 3)) {
 			flyYSum = 0;
 			return;
 		}
@@ -54,7 +58,8 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 			double jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
 			max += jumpBoost * (max / 2);
 			if (flyYSum > max && p.getVelocity().getY() < 0) {
-	        	if(player().setViolation(new Violation("Fly", "HighJump ySum: " + flyYSum))) e.setCancelled(true);
+				flagEvent(e , " ySum: " + flyYSum);
+	        	//if(player().setViolation(new Violation("Fly", "HighJump ySum: " + flyYSum))) e.setCancelled(true);
 			}
 		}
 	}

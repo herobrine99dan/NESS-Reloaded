@@ -3,7 +3,6 @@ package com.github.ness.check.movement;
 import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -14,15 +13,10 @@ import com.github.ness.packets.ReceivedPacketEvent;
 
 public class OmniSprint extends ListeningCheck<ReceivedPacketEvent> {
 
-	double maxXZDiff;
-	double maxYDiff;
-
 	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos.forEvent(ReceivedPacketEvent.class);
 
 	public OmniSprint(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
 		super(factory, player);
-		this.maxYDiff = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("maxxzdiff", 1.5);
-		this.maxXZDiff = this.ness().getNessConfig().getCheck(this.getClass()).getDouble("maxydiff", 1);
 	}
 
 	@Override
@@ -39,7 +33,8 @@ public class OmniSprint extends ListeningCheck<ReceivedPacketEvent> {
 					.subtract(values.getTo().toBukkitLocation().clone()).toVector();
 			double angle = moving.angle(getDirection(values.getTo()));
 			if (angle < 1.58) {
-				if(player().setViolation(new Violation("OmniSprint", ""))) event.setCancelled(true);
+				flagEvent(event);
+				//if(player().setViolation(new Violation("OmniSprint", ""))) event.setCancelled(true);
 			}
 		}
 	}

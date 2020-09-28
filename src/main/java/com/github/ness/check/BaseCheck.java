@@ -4,6 +4,8 @@ import java.time.Duration;
 
 import com.github.ness.NESSAnticheat;
 
+import org.bukkit.plugin.java.JavaPlugin;
+
 public class BaseCheck {
 
 	private final BaseCheckFactory<?> factory;
@@ -35,7 +37,8 @@ public class BaseCheck {
 	 * @param duration the delay
 	 */
 	protected void runTaskLater(Runnable command, Duration duration) {
-		manager().getNess().getServer().getScheduler().runTaskLater(manager().getNess(), command, duration.toMillis() / 50L);
+		JavaPlugin plugin = manager().getNess().getPlugin();
+		plugin.getServer().getScheduler().runTaskLater(plugin, command, duration.toMillis() / 50L);
 	}
 	
 	protected Duration durationOfTicks(int ticks) {

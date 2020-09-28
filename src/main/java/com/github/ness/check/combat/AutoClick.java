@@ -8,23 +8,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.IntBinaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
-import com.github.ness.check.CheckManager;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+
+import space.arim.dazzleconf.annote.ConfComments;
+import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
+import space.arim.dazzleconf.annote.ConfDefault.DefaultStrings;
+import space.arim.dazzleconf.annote.ConfKey;
+import space.arim.dazzleconf.annote.ConfSerialiser;
+import space.arim.dazzleconf.annote.SubSection;
+import space.arim.dazzleconf.error.BadValueException;
+import space.arim.dazzleconf.serialiser.ValueSerialiser;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -32,45 +37,124 @@ import lombok.EqualsAndHashCode;
 public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 
 	private static final Logger logger = NessLogger.getLogger(AutoClick.class);
-	private final List<HardLimitEntry> hardLimits = new ArrayList<>();
-	private final Set<DeviationEntry> deviationRequirements = new HashSet<>();
-	private final Set<DeviationEntry> superDeviationRequirements = new HashSet<>();
-	private final int totalRetentionSecs;
+	private final CheckConf conf;
 	private final Set<Long> clickHistory = ConcurrentHashMap.newKeySet();
-
+	
 	public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos
 			.forEventWithAsyncPeriodic(PlayerInteractEvent.class, Duration.ofSeconds(2));
 
 	public AutoClick(ListeningCheckFactory<?, PlayerInteractEvent> factory, NessPlayer player) {
 		super(factory, player);
 
-		CheckManager manager = manager();
-		ConfigurationSection section = manager.getNess().getNessConfig().getCheck(AutoClick.class);
-
-		totalRetentionSecs = section.getInt("total-retention-secs", 32);
-
-		List<String> hardLimitList = section.getStringList("hard-limit.cps-and-required-span");
-		if (hardLimitList == null) {
-			makeDefaultHardLimits(hardLimits);
-		} else {
-			parseHardLimits(hardLimitList, hardLimits);
+		conf = manager().getNess().getMainConfig().getCheckSection().autoClick();
+	}
+	
+	public interface CheckConf {
+		
+		@ConfKey("total-retention-secs")
+		@ConfComments("Clicks older than this are completely ignored")
+		@DefaultInteger(32)
+		int totalRetentionSecs();
+		
+		@ConfKey("hard-limit.cps-and-required-span")
+		@ConfComments({
+			"These are pairs of CPS limits and required time spans",
+			"",
+			"If the player's CPS measured over the time span is greater than the CPS limit, a violation is triggered.",
+			"",
+			"      # For example, '16:3' means that if the player's clicks in the past 3 seconds average 16 CPS, ",
+			"trigger a violation."})
+		@ConfSerialiser(HardLimitSerialiser.class)
+		@DefaultStrings({"35:2"})
+		List<HardLimitEntry> hardLimits();
+		
+		@SubSection
+		@ConfComments("# A more advanced consistency check")
+		Constancy constancy();
+		
+		interface Constancy {
+			
+			@ConfKey("deviation-and-sample")
+			@ConfComments({
+				"These are pairs of standard deviation percentages and sample counts",
+				"",
+				"The standard deviation is calculated based on the interval between clicks in the sample.",
+				"The second number in the pair determines the sample size.",
+				"Then, the standard deviation percentage is calculated as the standard deviation as percent of the average.",
+				"If this percent is less than the first number in the pair, a violation is triggered.",
+				"",
+				"For example, '30:8' means that if the standard deviation in the interval between clicks over a sample",
+				"of 8 intervals, divided by the average interval, is greater than 30%, trigger a violation."
+			})
+			@ConfSerialiser(DeviationEntrySerialiser.class)
+			@DefaultStrings({"30:10"})
+			List<DeviationEntry> deviationRequirements();
+			
+			@ConfKey("superdeviation-and-supersample")
+			@ConfComments({
+				"These are pairs of standard deviation percentages and sample counts",
+				"",
+				"These are conceptually similar to the previous. However, this measures the standard deviations between",
+				"the standard deviations. Thus, it is called the \"super deviation\"."
+			})
+			@ConfSerialiser(DeviationEntrySerialiser.class)
+			@DefaultStrings({"60:10"})
+			List<DeviationEntry> superDeviationRequirements();
+			
 		}
-		hardLimits.sort(null);
+		
+	}
+	
+	private static abstract class IntPairSerialiser<T> implements ValueSerialiser<T> {
 
-		List<String> deviationRequirementList = section.getStringList("constancy.deviation-and-sample");
-		if (deviationRequirementList == null) {
-			makeDefaultDeviationRequirements(deviationRequirements);
-		} else {
-			parseDeviationRequirements(deviationRequirementList, deviationRequirements);
+		@Override
+		public T deserialise(String key, Object value) throws BadValueException {
+			String[] info = value.toString().split(":", 2);
+			try {
+				return fromInts(Integer.parseInt(info[0]), Integer.parseInt(info[1]));
+			} catch (NumberFormatException ex) {
+				throw new BadValueException.Builder().key(key).cause(ex).build();
+			}
 		}
 
-		List<String> superDeviationRequirementList = section.getStringList("constancy.superdeviation-and-supersample");
-		if (superDeviationRequirementList == null) {
-			makeDefaultSuperDeviationRequirements(superDeviationRequirements);
-		} else {
-			parseDeviationRequirements(superDeviationRequirementList, superDeviationRequirements);
+		@Override
+		public Object serialise(T value) {
+			int[] toInts = toInts(value);
+			return toInts[0] + ":" + toInts[1];
 		}
-		logger.log(Level.FINEST, "Configuration: {0}", this);
+		
+		abstract T fromInts(int value1, int value2);
+		
+		abstract int[] toInts(T value);
+		
+	}
+	
+	public static class HardLimitSerialiser extends IntPairSerialiser<HardLimitEntry> {
+
+		@Override
+		HardLimitEntry fromInts(int value1, int value2) {
+			return new HardLimitEntry(value1, value2);
+		}
+
+		@Override
+		int[] toInts(HardLimitEntry value) {
+			return new int[] {value.maxCps, value.retentionSecs};
+		}
+		
+	}
+	
+	public static class DeviationEntrySerialiser extends IntPairSerialiser<DeviationEntry> {
+
+		@Override
+		DeviationEntry fromInts(int value1, int value2) {
+			return new DeviationEntry(value1, value2);
+		}
+
+		@Override
+		int[] toInts(DeviationEntry value) {
+			return new int[] {value.deviationPercentage, value.sampleCount};
+		}
+		
 	}
 
 	private static long monotonicMillis() {
@@ -116,56 +200,11 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 
 	@Override
 	public String toString() {
-		return "AutoClick [hardLimits=" + hardLimits + ", deviationRequirements=" + deviationRequirements
-				+ ", superDeviationRequirements=" + superDeviationRequirements + ", totalRetentionSecs="
-				+ totalRetentionSecs + "]";
-	}
-
-	private void makeDefaultHardLimits(List<HardLimitEntry> listToMutate) {
-		listToMutate.add(new HardLimitEntry(16, 3));
-		listToMutate.add(new HardLimitEntry(20, 4));
-	}
-
-	private void parseIntegerPairStringList(List<String> configValues, IntBinaryOperator whenParsed) {
-		for (String str : configValues) {
-			String[] info = str.split(":");
-			if (info.length == 2) {
-				try {
-					whenParsed.applyAsInt(Integer.parseInt(info[0]), Integer.parseInt(info[1]));
-				} catch (NumberFormatException ignored) {
-					logger.log(Level.FINE, "Cannot format {0}:{1} to integers", new Object[] { info[0], info[1] });
-				}
-			} else {
-				logger.log(Level.FINE, "Cannot format illegal entry length of {0}", info.length);
-			}
-		}
-	}
-
-	private void parseHardLimits(List<String> configValues, List<HardLimitEntry> listToMutate) {
-		parseIntegerPairStringList(configValues, (i1, i2) -> {
-			listToMutate.add(new HardLimitEntry(i1, i2));
-			return 0;
-		});
-	}
-
-	private void makeDefaultDeviationRequirements(Set<DeviationEntry> setToMutate) {
-		setToMutate.add(new DeviationEntry(30, 8));
-		setToMutate.add(new DeviationEntry(15, 16));
-	}
-
-	private void makeDefaultSuperDeviationRequirements(Set<DeviationEntry> setToMutate) {
-		setToMutate.add(new DeviationEntry(10, 8));
-	}
-
-	private void parseDeviationRequirements(List<String> configValues, Set<DeviationEntry> setToMutate) {
-		parseIntegerPairStringList(configValues, (i1, i2) -> {
-			setToMutate.add(new DeviationEntry(i1, i2));
-			return 0;
-		});
+		return "AutoClick [conf=" + conf + "]";
 	}
 
 	private long totalRetentionMillis() {
-		return totalRetentionSecs * 1_000L;
+		return conf.totalRetentionSecs() * 1_000L;
 	}
 
 	@Override
@@ -186,7 +225,7 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 
 		// Hard limit checks
 
-		for (HardLimitEntry hardLimitEntry : hardLimits) {
+		for (HardLimitEntry hardLimitEntry : conf.hardLimits()) {
 			long now2 = monotonicMillis();
 			int span = hardLimitEntry.retentionSecs * 1_000;
 			copy1.removeIf((time) -> time - now2 > span);
@@ -195,7 +234,7 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 			int maxCps = hardLimitEntry.maxCps;
 			logger.log(Level.FINE, "Clicks Per Second: {0}. Limit: {1}", new Object[] { cps, maxCps });
 			if (cps > maxCps) {
-				player().setViolation(new Violation("AutoClick", Integer.toString(cps)));
+				flag();
 				return;
 			}
 		}
@@ -231,7 +270,7 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 		Map<DeviationEntry, List<Long>> standardDeviationMap = new HashMap<>();
 		for (int n = 0; n < periods.size(); n++) {
 
-			for (DeviationEntry deviationRequirement : deviationRequirements) {
+			for (DeviationEntry deviationRequirement : conf.constancy().deviationRequirements()) {
 				for (int m = n; m < periods.size() && subPeriods.size() < deviationRequirement.sampleCount; m++) {
 					subPeriods.add(periods.get(m));
 				}
@@ -240,7 +279,7 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 				if (subPeriods.size() == deviationRequirement.sampleCount) {
 					int stdDevPercent = getStdDevPercent(subPeriods);
 					if (stdDevPercent < deviationRequirement.deviationPercentage) {
-						player().setViolation(new Violation("AutoClick", "StdDevPercent: " + stdDevPercent));
+						flag();
 						return;
 					}
 					List<Long> deviations = standardDeviationMap.computeIfAbsent(deviationRequirement,
@@ -252,13 +291,13 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 		}
 		for (List<Long> standardDeviations : standardDeviationMap.values()) {
 			logger.log(Level.FINEST, "StandardDeviations are {0}", standardDeviations);
-			for (DeviationEntry superDeviationRequirement : superDeviationRequirements) {
+			for (DeviationEntry superDeviationRequirement : conf.constancy().superDeviationRequirements()) {
 				if (standardDeviations.size() < superDeviationRequirement.sampleCount) {
 					continue;
 				}
 				int superStdDevPercent = getStdDevPercent(standardDeviations);
 				if (superStdDevPercent < superDeviationRequirement.deviationPercentage) {
-					player().setViolation(new Violation("AutoClick", "SuperStdDevPercent: " + superStdDevPercent));
+					flag();
 					return;
 				}
 			}

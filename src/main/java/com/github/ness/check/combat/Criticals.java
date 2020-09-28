@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -37,7 +36,8 @@ public class Criticals extends ListeningCheck<EntityDamageByEntityEvent> {
 				NessPlayer np = player();
 				if (np.getMovementValues().getTo().getY() % 1.0D == 0.0D
 						&& player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
-					if(player().setViolation(new Violation("Criticals", ""))) event.setCancelled(true);
+					flagEvent(event);
+					//if(player().setViolation(new Violation("Criticals", ""))) event.setCancelled(true);
 				}
 			}
 		}

@@ -1,7 +1,6 @@
 package com.github.ness.check.misc;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -9,7 +8,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -48,19 +46,22 @@ public class ChestStealer extends ListeningCheck<InventoryClickEvent> {
 			return;
 		final Inventory i1 = e.getWhoClicked().getInventory();
 		final Inventory i2 = e.getInventory();
-		if(nessPlayer.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+		if(nessPlayer.getBukkitPlayer().getGameMode().equals(GameMode.CREATIVE) || e.getCurrentItem() == null) {
 			return;
 		}
 		if (i1 != i2 && e.getCurrentItem().getType() != Material.AIR) {
 			movedInvItems++;
 			if (movedInvItems > 4) {
-				if(player().setViolation(new Violation("ChestStealer", "movedInventoryItems: " + movedInvItems))) e.setCancelled(true);
+				
+				//if(player().setViolation(new Violation("ChestStealer", "movedInventoryItems: " + movedInvItems))) e.setCancelled(true);
+				flagEvent(e, " movedInventoryItems: " + movedInvItems);
 				movedInvItems = 0;
 			}
 			final long now = System.currentTimeMillis();
 			final long result = now - moveInvItemsLastTime;
 			if (result < 80) {
-				if(player().setViolation(new Violation("ChestStealer", "timeBetweenMovedItems: " + result))) e.setCancelled(true);
+				flagEvent(e, " timeBetweenMovedItems: " + result);
+				//if(player().setViolation(new Violation("ChestStealer", "timeBetweenMovedItems: " + result))) e.setCancelled(true);
 			}
 			moveInvItemsLastTime = System.currentTimeMillis();
 		}

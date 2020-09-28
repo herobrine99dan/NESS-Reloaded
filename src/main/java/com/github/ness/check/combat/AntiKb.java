@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -16,7 +15,7 @@ public class AntiKb extends ListeningCheck<EntityDamageByEntityEvent> {
 
 	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfos
 			.forEvent(EntityDamageByEntityEvent.class);
-
+	
 	public AntiKb(ListeningCheckFactory<?, EntityDamageByEntityEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
@@ -42,7 +41,8 @@ public class AntiKb extends ListeningCheck<EntityDamageByEntityEvent> {
 			Location to = player.getLocation();
 			if (to.distanceSquared(from) < 0.3 && !player.getLocation().add(0, 2, 0).getBlock().getType().isSolid()
 					&& !player.getLocation().getBlock().getType().isSolid()) {
-				player().setViolation(new Violation("AntiKb", ""));
+				flag();
+				//player().setViolation(new Violation("AntiKb", ""));
 			}
 		}, durationOfTicks(5));
 	}

@@ -4,7 +4,6 @@ import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -27,7 +26,8 @@ public class Phase extends ListeningCheck<PlayerMoveEvent> {
         if (b.getType().isOccluding() && !event.getPlayer().isInsideVehicle()
                 && Utility.groundAround(event.getTo().clone()) && !nessPlayer.isTeleported()
                 && nessPlayer.getMovementValues().XZDiff > 0.25) {
-        	if(player().setViolation(new Violation("Phase", ""))) event.setCancelled(true);
+        	flagEvent(event);
+        	//if(player().setViolation(new Violation("Phase", ""))) event.setCancelled(true);
         }
     }
 }

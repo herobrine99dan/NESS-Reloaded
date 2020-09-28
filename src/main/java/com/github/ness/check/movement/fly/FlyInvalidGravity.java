@@ -4,13 +4,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
+
+import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 
 public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
 
@@ -21,8 +23,17 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
 
 	public FlyInvalidGravity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
-        this.maxInvalidVelocity = this.ness().getNessConfig().getCheck(this.getClass())
-                .getDouble("maxinvalidvelocity", 0.9);
+        this.maxInvalidVelocity = this.ness().getMainConfig().getCheckSection().fly().maxGravity();
+	}
+	
+	@Override
+	protected boolean shouldDragDown() {
+		return true;
+	}
+	
+	public interface Config {
+		@DefaultDouble(0.9)
+		double maxGravity();
 	}
 
     @Override
@@ -40,8 +51,9 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
         Player p = e.getPlayer();
         double y = np.getMovementValues().yDiff;
         double yresult = y - p.getVelocity().getY();
-        if (Utility.hasflybypass(p) || Utility.hasBlock(p, "slime") || p.getAllowFlight()
-                || Utility.specificBlockNear(e.getTo().clone().add(0, -0.3, 0), "lily") || p.isInsideVehicle()) {
+        MovementValues values = np.getMovementValues();
+        if (Utility.hasflybypass(p) || values.AroundSlime || p.getAllowFlight()
+                || values.AroundLily || p.isInsideVehicle() || Utility.hasVehicleNear(p, 3)) {
             return;
         }
         double max = maxInvalidVelocity;
@@ -52,7 +64,8 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
             y -= Math.abs(np.velocity.getY());
         }
         if (Math.abs(yresult) > max && !np.isTeleported()) {
-        	if(player().setViolation(new Violation("Fly", "InvalidVelocity: " + yresult))) e.setCancelled(true);
+        	flagEvent(e, " " + yresult);
+        	//if(player().setViolation(new Violation("Fly", "InvalidVelocity: " + yresult))) e.setCancelled(true);
         }
     }
 }

@@ -5,12 +5,13 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.utility.Utility;
+
+import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 
 public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
 
@@ -21,8 +22,12 @@ public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
 
 	public FastLadder(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
-        this.maxDist = this.ness().getNessConfig().getCheck(this.getClass())
-                .getDouble("maxdist", 0.201D);
+        this.maxDist = this.ness().getMainConfig().getCheckSection().fastLadder().maxDist();
+	}
+	
+	public interface Config {
+		@DefaultDouble(0.21)
+		double maxDist();
 	}
 
     @Override
@@ -33,7 +38,8 @@ public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
                 && !Utility.hasflybypass(p) && !np.isTeleported()) {
             double distance = np.getMovementValues().yDiff;
             if (distance > 0.155D && p.getVelocity().getY() < 0) {
-            	if(player().setViolation(new Violation("FastLadder", "Dist: " + distance))) event.setCancelled(true);
+            	flagEvent(event);
+            	//if(player().setViolation(new Violation("FastLadder", "Dist: " + distance))) event.setCancelled(true);
             }
         }
     }

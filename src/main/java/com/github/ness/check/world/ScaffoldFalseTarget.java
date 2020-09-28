@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -37,7 +36,8 @@ public class ScaffoldFalseTarget extends ListeningCheck<BlockPlaceEvent> {
                     && target.getType().isSolid() && !target.getType().name().toLowerCase().contains("sign")
                     && !target.getType().toString().toLowerCase().contains("fence")
                     && player.getLocation().getY() > event.getBlock().getLocation().getY() && target.getType().isOccluding()) {
-    			if(player().setViolation(new Violation("Scaffold", "FalseTarget"))) event.setCancelled(true);
+            	flagEvent(event);
+            	//if(player().setViolation(new Violation("Scaffold", "FalseTarget"))) event.setCancelled(true);
             }
         }
     }

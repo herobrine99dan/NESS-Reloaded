@@ -6,7 +6,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -41,7 +40,8 @@ public class Strafe extends ListeningCheck<PlayerMoveEvent> {
         double result = Math.abs(lastStrafeAngle - angle);
         if (lastStrafeAngle != 0 && result > 35 && result < 300 && Math.abs(yawDiff) < 8 && !p.isOnGround()
                 && dist > .19 && !isAgainstBlock(e.getFrom()) && !isAgainstBlock(e.getTo())) {
-        	if(player().setViolation(new Violation("Strafe", "High Angle Diff: " + Math.abs(lastStrafeAngle - angle)))) e.setCancelled(true);
+        	flagEvent(e);
+        	//if(player().setViolation(new Violation("Strafe", "High Angle Diff: " + Math.abs(lastStrafeAngle - angle)))) e.setCancelled(true);
         }
 
         lastStrafeAngle = angle;

@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -33,17 +32,19 @@ public class Step extends ListeningCheck<PlayerMoveEvent> {
 				|| player().isTeleported()) {
 			return;
 		}
-		if (to.getY() - from.getY() > 0.6 && values.isOnGround && !values.AroundSlime) {
+		if (to.getY() - from.getY() > 0.6 && values.groundAround && !values.AroundSlime) {
 			boolean boatNear = false;
 			for (Entity ent : player.getNearbyEntities(2, 2, 2)) {
 				if (ent instanceof Boat)
 					boatNear = true;
 			}
 			if (player.getVelocity().getY() < 0.43 && !boatNear) {
-				if(player().setViolation(new Violation("Step", "(OnMove)"))) e.setCancelled(true);
+				flagEvent(e);
+				//if(player().setViolation(new Violation("Step", "(OnMove)"))) e.setCancelled(true);
 			}
 		} else if (from.getY() - to.getY() > 1.5 && player.getFallDistance() == 0.0 && player.getVelocity().getY() < 0.43) {
-			if(player().setViolation(new Violation("Step", "(OnMove)"))) e.setCancelled(true);
+			flagEvent(e);
+			//if(player().setViolation(new Violation("Step", "(OnMove)"))) e.setCancelled(true);
 		}
 	}
 

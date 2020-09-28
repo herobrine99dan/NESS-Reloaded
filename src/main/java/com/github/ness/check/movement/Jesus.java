@@ -6,7 +6,6 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -42,7 +41,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
                 && event.getTo().clone().add(0, 0.01, 0).getBlock().isLiquid()
                 && event.getTo().clone().add(0, -0.01, 0).getBlock().isLiquid() && event.getFrom().getBlock().isLiquid()
                 && !Utility.hasflybypass(p)) {
-        	if(player().setViolation(new Violation("Jesus", "Dist: " + dist))) event.setCancelled(true);
+        	flagEvent(event);
         }
     }
 
