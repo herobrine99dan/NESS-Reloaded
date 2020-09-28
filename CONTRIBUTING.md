@@ -30,8 +30,8 @@ Most checks will follow this approach.
 1. Extend `Check` or `ListeningCheck` depending on whether the check needs to listen to an event.
 2. Declare a constructor with the same signature as the superconstructor of the class you extended.
 3. Declare a `public static final CheckInfo checkInfo` field. Use one of the static factory methods in `CheckInfos` to get an instance.
-    * The check info should match which base class was extended. ListeningCheckInfo corresponds to ListeningCheck, for example.
-    * Also note CheckInfo may be written without the generic parameter as the parameter on CheckInfo is only kept for compatibility with existing checks (i.e., uses of AbstractCheck).
+
+The check info should match which base class was extended. ListeningCheckInfo corresponds to ListeningCheck, for example. Depending on the check extended, you will have to implement some methods. Note that if your check info contains a periodic async task, you must override `checkAsyncPeriodic()`. Use `@Override` for readability purposes.
 
 Now your check may look like this:
 
@@ -75,7 +75,9 @@ When implementing `BaseCheckFactory#newCheck(NessPlayer)`, the returned check is
 
 CheckInfos.forEvent(PlayerInteractEvent.class) - your check will be called every time the PlayerInteractEvent is fired. You must extend ListeningCheck<PlayerInteractEvent> and override `checkEvent`.
 
-CheckInfos.asyncPeriodic(Duration) - your check's `checkAsyncPeriodic` method will be called periodic with the given interval of time between executions.
+CheckInfos.asyncPeriodic(Duration.ofSeconds(1L)) - your check's `checkAsyncPeriodic` method will be called every second. This method needs to be overridden.
+
+CheckInfos.forEventWithAsyncPeriodic(PlayerInteractEvent.class, Duration.ofSeconds(1L)) - both `checkEvent` and `checkAsyncPeriodic` need to be overridden.
 
 **A Note of Caution on Listening Checks**
 
