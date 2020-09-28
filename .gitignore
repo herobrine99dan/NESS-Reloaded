@@ -1,4 +1,4 @@
-## Mac ##
+### Mac ###
 .DS_Store
 
 ### Maven ###
@@ -6,6 +6,14 @@
 target/
 dependency-reduced-pom.xml
 pom.xml.versionsBackup
+
+### Intellij ###
+.idea/
+*.iws
+out/
+*.iml
+.idea_modules/
+atlassian-ide-plugin.xml
 
 ### Eclipse ###
 
@@ -27,9 +35,6 @@ local.properties
 ## EXTERNAL TOOLS ##
 
 .externalToolBuilders/
-
-# Surefire log
-logs/
 
 # Locally stored "Eclipse launch configurations"
 *.launch
