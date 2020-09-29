@@ -18,13 +18,13 @@ import org.bukkit.event.Event;
 class FactoryLoader {
 
 	private final CheckManager manager;
-	private final Collection<String> enabledCheckNames;
+	private final Set<String> enabledCheckNames;
 	
 	private static final Logger logger = NessLogger.getLogger(FactoryLoader.class);
 	
 	FactoryLoader(CheckManager manager, Collection<String> enabledCheckNames) {
 		this.manager = manager;
-		this.enabledCheckNames = enabledCheckNames;
+		this.enabledCheckNames = new LinkedHashSet<>(enabledCheckNames);
 	}
 
 	/**
