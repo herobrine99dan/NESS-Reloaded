@@ -79,7 +79,7 @@ public interface NessConfig {
 		"Step",
 		"Phase",
 		"ImpossibleBreak",
-		/* "SpeedAir", */
+		"SpeedAir",
 		"ScaffoldFalseTarget",
 		"ScaffoldIllegalTarget",
 		"ScaffoldAngle"})
