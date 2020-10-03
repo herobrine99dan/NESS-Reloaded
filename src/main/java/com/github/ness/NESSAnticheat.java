@@ -36,6 +36,13 @@ public class NESSAnticheat {
 	private final CheckManager checkManager;
 	private final ViolationManager violationManager;
 
+	/**
+	 * Gets ness as a singleton
+	 * 
+	 * @return the single instance of ness
+	 * @deprecated Pass the instance rather than relying on this static getter
+	 */
+	@Deprecated
 	public static NESSAnticheat getInstance() {
 		return NESSAnticheat.main;
 	}
