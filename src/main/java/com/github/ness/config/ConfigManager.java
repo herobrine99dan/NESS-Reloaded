@@ -44,7 +44,7 @@ public class ConfigManager {
 		messagesPath = folder.resolve("messages.yml");
 
 		ConfigurationOptions configOptions = new ConfigurationOptions.Builder()
-				.addSerialiser(java.awt.Color.class, new ColorSerialiser()).build();
+				.addSerialiser(new ColorSerialiser()).build();
 		SnakeYamlOptions yamlOptions = new SnakeYamlOptions.Builder().useCommentingWriter(true).build();
 		configFactory = new SnakeYamlConfigurationFactory<>(NessConfig.class, configOptions, yamlOptions);
 		messagesFactory = new SnakeYamlConfigurationFactory<>(NessMessages.class, configOptions, yamlOptions);

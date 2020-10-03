@@ -26,9 +26,10 @@ import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultStrings;
 import space.arim.dazzleconf.annote.ConfKey;
-import space.arim.dazzleconf.annote.ConfSerialiser;
+import space.arim.dazzleconf.annote.ConfSerialisers;
 import space.arim.dazzleconf.annote.SubSection;
 import space.arim.dazzleconf.error.BadValueException;
+import space.arim.dazzleconf.serialiser.FlexibleType;
 import space.arim.dazzleconf.serialiser.ValueSerialiser;
 
 import lombok.AllArgsConstructor;
@@ -49,6 +50,7 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 		conf = manager().getNess().getMainConfig().getCheckSection().autoClick();
 	}
 	
+	@ConfSerialisers(HardLimitSerialiser.class)
 	public interface CheckConf {
 		
 		@ConfKey("total-retention-secs")
@@ -64,7 +66,6 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 			"",
 			"      # For example, '16:3' means that if the player's clicks in the past 3 seconds average 16 CPS, ",
 			"trigger a violation."})
-		@ConfSerialiser(HardLimitSerialiser.class)
 		@DefaultStrings({"35:2"})
 		List<HardLimitEntry> hardLimits();
 		
@@ -72,6 +73,7 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 		@ConfComments("# A more advanced consistency check")
 		Constancy constancy();
 		
+		@ConfSerialisers(DeviationEntrySerialiser.class)
 		interface Constancy {
 			
 			@ConfKey("deviation-and-sample")
@@ -86,7 +88,6 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 				"For example, '30:8' means that if the standard deviation in the interval between clicks over a sample",
 				"of 8 intervals, divided by the average interval, is greater than 30%, trigger a violation."
 			})
-			@ConfSerialiser(DeviationEntrySerialiser.class)
 			@DefaultStrings({"30:10"})
 			List<DeviationEntry> deviationRequirements();
 			
@@ -97,7 +98,6 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 				"These are conceptually similar to the previous. However, this measures the standard deviations between",
 				"the standard deviations. Thus, it is called the \"super deviation\"."
 			})
-			@ConfSerialiser(DeviationEntrySerialiser.class)
 			@DefaultStrings({"60:10"})
 			List<DeviationEntry> superDeviationRequirements();
 			
@@ -108,12 +108,12 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 	private static abstract class IntPairSerialiser<T> implements ValueSerialiser<T> {
 
 		@Override
-		public T deserialise(String key, Object value) throws BadValueException {
-			String[] info = value.toString().split(":", 2);
+		public T deserialise(FlexibleType flexibleType) throws BadValueException {
+			String[] info = flexibleType.getString().split(":", 2);
 			try {
 				return fromInts(Integer.parseInt(info[0]), Integer.parseInt(info[1]));
 			} catch (NumberFormatException ex) {
-				throw new BadValueException.Builder().key(key).cause(ex).build();
+				throw new BadValueException.Builder().key(flexibleType.getAssociatedKey()).cause(ex).build();
 			}
 		}
 
@@ -140,6 +140,11 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 		int[] toInts(HardLimitEntry value) {
 			return new int[] {value.maxCps, value.retentionSecs};
 		}
+
+		@Override
+		public Class<HardLimitEntry> getTargetClass() {
+			return HardLimitEntry.class;
+		}
 		
 	}
 	
@@ -153,6 +158,11 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 		@Override
 		int[] toInts(DeviationEntry value) {
 			return new int[] {value.deviationPercentage, value.sampleCount};
+		}
+
+		@Override
+		public Class<DeviationEntry> getTargetClass() {
+			return DeviationEntry.class;
 		}
 		
 	}
