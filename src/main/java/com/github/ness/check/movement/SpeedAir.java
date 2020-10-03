@@ -44,9 +44,9 @@ public class SpeedAir extends ListeningCheck<PlayerMoveEvent> {
 		NessPlayer nessPlayer = this.player();
 		double xDiff = nessPlayer.getMovementValues().xDiff;
 		double zDiff = nessPlayer.getMovementValues().zDiff;
-		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 2000) {
-			xDiff -= nessPlayer.velocity.getX();
-			zDiff -= nessPlayer.velocity.getZ();
+		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 2200) {
+			xDiff -= Math.abs(nessPlayer.velocity.getX());
+			zDiff -= Math.abs(nessPlayer.velocity.getZ());
 		}
 		if (!Utility.isMathematicallyOnGround(event.getTo().getY())) {
 			airTicks++;

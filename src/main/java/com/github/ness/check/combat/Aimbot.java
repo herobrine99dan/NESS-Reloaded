@@ -14,15 +14,17 @@ import com.github.ness.utility.Utility;
 
 public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 
-	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos.forEvent(ReceivedPacketEvent.class);
+	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos
+			.forEvent(ReceivedPacketEvent.class);
 
 	private float lastYaw;
 	private List<Float> pitchDiff;
 	private double lastGCD = 0;
+
 	public Aimbot(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
 		super(factory, player);
 		lastYaw = 0;
-        this.pitchDiff = new ArrayList<Float>();
+		this.pitchDiff = new ArrayList<Float>();
 	}
 
 	@Override
@@ -60,6 +62,9 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 				}
 				player.sensitivity = sensitivity;
 			}
+			if (result > 0.001D || gcd < 1.0E-4D) {
+				//flagEvent(event);
+			}
 			pitchDiff.clear();
 			lastGCD = gcd;
 		}
@@ -82,7 +87,8 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 		// TODO Fixing Smooth Camera
 		if (x > 0.1 && x < 0.95) {
 			flag(" " + x);
-			//if(player().setViolation(new Violation("Aimbot", "ImpossibleRotation: " + x))) e.setCancelled(true);
+			// if(player().setViolation(new Violation("Aimbot", "ImpossibleRotation: " +
+			// x))) e.setCancelled(true);
 		}
 		lastYaw = (float) np.getMovementValues().yawDiff;
 	}
@@ -96,11 +102,13 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 		float pitchChange = (float) Math.abs(player.getMovementValues().pitchDiff);
 		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {
 			flag(" PerfectAura");
-			//if(player().setViolation(new Violation("Aimbot", "PerfectAura"))) e.setCancelled(true);
+			// if(player().setViolation(new Violation("Aimbot", "PerfectAura")))
+			// e.setCancelled(true);
 			return true;
 		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {
 			flag(" PerfectAura1");
-			//if(player().setViolation(new Violation("Aimbot", "PerfectAura1"))) e.setCancelled(true);
+			// if(player().setViolation(new Violation("Aimbot", "PerfectAura1")))
+			// e.setCancelled(true);
 			return true;
 		}
 		return false;
@@ -114,7 +122,8 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 		float yawChange = (float) Math.abs(player.getMovementValues().yawDiff);
 		if (yawChange > 1.0f && Utility.round(yawChange, 100) * 0.1f == yawChange) {
 			flag(" PerfectAura2");
-			//if(player().setViolation(new Violation("Aimbot", "[Experimental] PerfectAura3"))) e.setCancelled(true);
+			// if(player().setViolation(new Violation("Aimbot", "[Experimental]
+			// PerfectAura3"))) e.setCancelled(true);
 		}
 	}
 }
