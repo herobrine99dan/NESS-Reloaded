@@ -44,7 +44,7 @@ public class ConfigManager {
 		messagesPath = folder.resolve("messages.yml");
 
 		ConfigurationOptions configOptions = new ConfigurationOptions.Builder()
-				.addSerialiser(java.awt.Color.class, new ColorSerialiser()).build();
+				.addSerialiser(new ColorSerialiser()).build();
 		SnakeYamlOptions yamlOptions = new SnakeYamlOptions.Builder().useCommentingWriter(true).build();
 		configFactory = new SnakeYamlConfigurationFactory<>(NessConfig.class, configOptions, yamlOptions);
 		messagesFactory = new SnakeYamlConfigurationFactory<>(NessMessages.class, configOptions, yamlOptions);
@@ -73,43 +73,9 @@ public class ConfigManager {
 
 			C defaults = factory.loadDefaults();
 
-			if (Files.exists(path)) {
+			if (!Files.exists(path)) {
+				// Copy and use default configuration
 
-				C config;
-				try (FileChannel fileChannel = FileChannel.open(path, StandardOpenOption.READ)) {
-
-					config = factory.load(fileChannel, defaults);
-				} catch (IOException ex) {
-					throw new UncheckedIOException("Cannot read config from file", ex);
-
-				} catch (ConfigFormatSyntaxException ex) {
-					logger.log(Level.WARNING,
-							"The YAML syntax in your configuration is invalid. "
-							+ "Please use a yaml syntax checker such as https://yaml-online-parser.appspot.com/ . "
-							+ "Paste your configuration there and use it to work through errors. "
-							+ "Run /ness reload when done. "
-							+ "For now, NESS will use the default configuration.", ex);
-					return defaults;
-
-				} catch (InvalidConfigException ex) {
-					logger.log(Level.WARNING,
-							"The values in your configuration are invalid. "
-							+ "Please correct the issue and run /ness reload. "
-							+ "For now, NESS will use the default configuration.", ex);
-					return defaults;
-				}
-				if (config instanceof AuxiliaryKeys) {
-					try (FileChannel fileChannel = FileChannel.open(path,
-							StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING)) {
-
-						factory.write(config, fileChannel);
-					} catch (IOException ex) {
-						throw new UncheckedIOException("Unable to update configuration", ex);
-					}
-				}
-				return config;
-
-			} else {
 				try (FileChannel fileChannel = FileChannel.open(path,
 						StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
 
@@ -119,6 +85,41 @@ public class ConfigManager {
 				}
 				return defaults;
 			}
+			C config;
+			// Load existing configuration
+			try (FileChannel fileChannel = FileChannel.open(path, StandardOpenOption.READ)) {
+
+				config = factory.load(fileChannel, defaults);
+			} catch (IOException ex) {
+				throw new UncheckedIOException("Cannot read config from file", ex);
+
+			} catch (ConfigFormatSyntaxException ex) {
+				logger.log(Level.WARNING,
+						"The YAML syntax in your configuration is invalid. "
+						+ "Please use a yaml syntax checker such as https://yaml-online-parser.appspot.com/ . "
+						+ "Paste your configuration there and use it to work through errors. "
+						+ "Run /ness reload when done. "
+						+ "For now, NESS will use the default configuration.", ex);
+				return defaults;
+
+			} catch (InvalidConfigException ex) {
+				logger.log(Level.WARNING,
+						"The values in your configuration are invalid. "
+						+ "Please correct the issue and run /ness reload. "
+						+ "For now, NESS will use the default configuration.", ex);
+				return defaults;
+			}
+			if (config instanceof AuxiliaryKeys) {
+				// Update existing configuration with missing keys
+				try (FileChannel fileChannel = FileChannel.open(path,
+						StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING)) {
+
+					factory.write(config, fileChannel);
+				} catch (IOException ex) {
+					throw new UncheckedIOException("Unable to update configuration", ex);
+				}
+			}
+			return config;
 		});
 	}
 	

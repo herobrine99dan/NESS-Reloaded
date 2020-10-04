@@ -4,7 +4,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
-import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
@@ -28,7 +27,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
         NessPlayer nessPlayer = this.player();
         float dist = (float) nessPlayer.getMovementValues().XZDiff; // Our XZ Distance
         double walkSpeed = p.getWalkSpeed() * 0.7;
-        if (NESSAnticheat.getInstance().getMinecraftVersion() > 1122) {
+        if (ness().getMinecraftVersion() > 1122) {
             walkSpeed = p.getWalkSpeed() * 0.9;
         }
         dist -= (dist / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);

@@ -5,7 +5,6 @@ import java.time.Duration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
 import com.github.ness.check.CheckFactory;
@@ -41,9 +40,9 @@ public class PlayerESP extends Check {
 					if ((Utility.getAngle(cheater, tohide.getLocation(), direction) < minangle
 							|| !cheater.hasLineOfSight(tohide))
 							&& cheater.getLocation().distance(tohide.getLocation()) > 13) {
-						cheater.hidePlayer(NESSAnticheat.getInstance(), tohide);
+						cheater.hidePlayer(ness().getPlugin(), tohide);
 					} else {
-						cheater.showPlayer(NESSAnticheat.getInstance(), tohide);
+						cheater.showPlayer(ness().getPlugin(), tohide);
 					}
 				}
 			}
