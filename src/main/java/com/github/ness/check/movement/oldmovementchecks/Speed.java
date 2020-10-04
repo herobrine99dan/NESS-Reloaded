@@ -35,7 +35,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		if (to.getY() < from.getY())
 			hozDist = dist - (from.getY() - to.getY());
 		double maxSpd = 0.4209;
-		if (player().nanoTimeDifference(PlayerAction.VELOCITY) < 1600) {
+		if (player().nanoTimeDifference(PlayerAction.VELOCITY) < 1800) {
 			hozDist -= Math.abs(player().velocity.getX());
 			hozDist -= Math.abs(player().velocity.getZ());
 		}

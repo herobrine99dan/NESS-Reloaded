@@ -83,23 +83,23 @@ public class MovementValues {
 				if (b.getType().isSolid()) { // Doing all things in a single for loop is better than 12 loops
 					ground = true;
 				}
-				if (name.contains("ice")) {
+				if (name.contains("ICE")) {
 					ice = true;
-				} else if (name.contains("slime")) {
+				} else if (name.contains("SLIME")) {
 					slime = true;
-				} else if (name.contains("stair")) {
+				} else if (name.contains("STAIR")) {
 					stairs = true;
-				} else if (name.contains("slab")) {
+				} else if (name.contains("SLAB")) {
 					slab = true;
-				} else if (name.contains("ladder")) {
+				} else if (name.contains("LADDER")) {
 					ladder = true;
-				} else if (name.contains("vine")) {
+				} else if (name.contains("VINE")) {
 					ladder = true;
-				} else if (name.contains("snow")) {
+				} else if (name.contains("SNOW")) {
 					snow = true;
-				} else if (name.contains("lily")) {
+				} else if (name.contains("LILY")) {
 					lily = true;
-				} else if (name.contains("carpet")) {
+				} else if (name.contains("CARPET")) {
 					carpet = true;
 				}
 			}
@@ -108,7 +108,7 @@ public class MovementValues {
 			AroundSlabs = slab;
 			AroundStairs = stairs;
 			if (!slime) {
-				slime = Utility.hasBlock(p, "slime");
+				slime = Utility.hasBlock(p, "SLIME");
 			}
 			AroundSlime = slime;
 			AroundIce = ice;
