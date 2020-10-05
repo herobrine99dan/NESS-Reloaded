@@ -1,5 +1,5 @@
 name: NESS
-main: com.github.ness.NESSAnticheat
+main: com.github.ness.NessPlugin
 version: ${project.version}
 authors: [herobrine99dan, A248]
 softdepend: [ProtocolLib]

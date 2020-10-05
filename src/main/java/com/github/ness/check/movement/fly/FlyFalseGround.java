@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import com.github.ness.NESSAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
@@ -35,7 +34,8 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
 		if (Bukkit.getVersion().contains("1.8") || movementValues.AroundLily || movementValues.AroundCarpet
-				|| movementValues.AroundSnow || NESSAnticheat.getInstance().getMinecraftVersion() > 1152 || ReflectionUtility.getBlockName(player, ImmutableLoc.of(player.getLocation().clone().add(0, -0.5, 0)))
+				|| movementValues.AroundSnow || ness().getMinecraftVersion() > 1152
+				|| ReflectionUtility.getBlockName(player, ImmutableLoc.of(player.getLocation().clone().add(0, -0.5, 0)))
 				.contains("scaffolding")) {
 			return;
 		}
