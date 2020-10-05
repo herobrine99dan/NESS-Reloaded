@@ -13,6 +13,8 @@ import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
+import lombok.Getter;
+
 public class Jesus extends ListeningCheck<PlayerMoveEvent> {
     
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
@@ -26,18 +28,21 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
     protected void checkEvent(PlayerMoveEvent event) {
         Player p = event.getPlayer();
         NessPlayer nessPlayer = this.player();
-        float dist = (float) nessPlayer.getMovementValues().XZDiff; // Our XZ Distance
+        double xDist = nessPlayer.getMovementValues().xDiff;
+        double zDist = nessPlayer.getMovementValues().zDiff;
         double walkSpeed = p.getWalkSpeed() * 0.7;
-        if (NESSAnticheat.getInstance().getMinecraftVersion() > 1122) {
+        if (ness().getMinecraftVersion() > 1122) {
             walkSpeed = p.getWalkSpeed() * 0.9;
         }
-        dist -= (dist / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);
+        xDist -= (xDist / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);
+        zDist -= (zDist / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);
         if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1300) {
-            dist -= Math.abs(nessPlayer.velocity.getX()) + Math.abs(nessPlayer.velocity.getZ());
+        	xDist -= Math.abs(nessPlayer.velocity.getX());
+        	zDist -= Math.abs(nessPlayer.velocity.getZ());
         }
         final double yVelocity = Math.abs(p.getVelocity().getY()) * 0.30;
         walkSpeed += yVelocity;
-        if (dist > walkSpeed && event.getTo().getBlock().isLiquid()
+        if ((xDist > walkSpeed || zDist > walkSpeed) && event.getTo().getBlock().isLiquid()
                 && event.getTo().clone().add(0, 0.01, 0).getBlock().isLiquid()
                 && event.getTo().clone().add(0, -0.01, 0).getBlock().isLiquid() && event.getFrom().getBlock().isLiquid()
                 && !Utility.hasflybypass(p)) {
