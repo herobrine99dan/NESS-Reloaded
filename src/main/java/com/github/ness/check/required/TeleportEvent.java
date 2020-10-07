@@ -42,10 +42,10 @@ public class TeleportEvent extends ListeningCheck<PlayerTeleportEvent> {
 		}
 		e.setTo(result);
 		NessPlayer nessPlayer = this.player();
-		if (!nessPlayer.hasSetback) {
+		if (!nessPlayer.isHasSetback()) {
 			nessPlayer.setTeleported(true);
 		}
-		nessPlayer.hasSetback = false;
+		nessPlayer.setHasSetback(false);
 	}
 
 }
