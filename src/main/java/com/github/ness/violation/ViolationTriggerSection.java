@@ -78,8 +78,6 @@ public interface ViolationTriggerSection {
 
 					String notification = manager.addViolationVariables(notification(), infractionImpl);
 
-					sendWebhook(infractionImpl);
-
 					JavaPlugin plugin = ness.getPlugin();
 
 					if (bungeecord()) {
@@ -88,13 +86,13 @@ public interface ViolationTriggerSection {
 						out.writeUTF(notification);
 						infractionImpl.getPlayer().getBukkitPlayer().sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
 					}
+					sendWebhook(infractionImpl);
 					for (Player staff : plugin.getServer().getOnlinePlayers()) {
 						if (staff.hasPermission("ness.notify")) {
 							staff.sendMessage(notification);
 						}
 					}
 				}
-				
 				private void sendWebhook(InfractionImpl infraction) {
 
 					final String webhookurl = discordWebHook();
