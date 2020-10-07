@@ -1,11 +1,9 @@
 package com.github.ness;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -45,11 +43,15 @@ public class NessPlayer implements AnticheatPlayer {
 	@Getter
 	private final boolean devMode;
 	public double sensitivity; // The Player Sensitivity
-	final public Map<PlayerAction, Long> actionTime;
+	public final Map<PlayerAction, Long> actionTime = Collections.synchronizedMap(new EnumMap<>(PlayerAction.class));
 	public ImmutableLoc velocity;
-	public Set<Integer> attackedEntities;
-	public boolean hasSetback;
-	long setBackTicks;
+	public final Set<Integer> attackedEntities = new HashSet<Integer>();
+	
+	@Getter
+	@Setter
+	private boolean hasSetback;
+	
+	private long setBackTicks;
 	@Getter
 	@Setter
 	private boolean teleported;
@@ -67,12 +69,7 @@ public class NessPlayer implements AnticheatPlayer {
 	public NessPlayer(Player player, boolean devMode) {
 		uuid = player.getUniqueId();
 		this.player = player;
-		this.teleported = false;
-		this.setBackTicks = 0;
-		this.actionTime = Collections.synchronizedMap(new EnumMap<>(PlayerAction.class));
-		this.sensitivity = 0;
 		this.devMode = devMode;
-		this.attackedEntities = new HashSet<Integer>();
 		this.movementValues = new MovementValues(player,
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
