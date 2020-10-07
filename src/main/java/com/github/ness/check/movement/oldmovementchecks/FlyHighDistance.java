@@ -33,7 +33,7 @@ public class FlyHighDistance extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		if (player().nanoTimeDifference(PlayerAction.VELOCITY) < 1600) {
-			dist -= Math.abs(player().velocity.getX()) + Math.abs(player().velocity.getZ());
+			dist -= Math.abs(player().getLastVelocity().getX()) + Math.abs(player().getLastVelocity().getZ());
 		}
 		if (!values.groundAround && dist > 0.35 && values.yDiff == 0.0
 				&& this.player().getTimeSinceLastWasOnIce() >= 1000) {

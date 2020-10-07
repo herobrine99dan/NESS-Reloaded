@@ -61,7 +61,7 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
         float toAdd = pingresult / 6;
         max += toAdd;
         if (np.nanoTimeDifference(PlayerAction.VELOCITY) < 2500) {
-            y -= Math.abs(np.velocity.getY());
+            y -= Math.abs(np.getLastVelocity().getY());
         }
         if (Math.abs(yresult) > max && !np.isTeleported()) {
         	flagEvent(e, " " + yresult);

@@ -31,7 +31,7 @@ public class CoreListener implements Listener {
 	public void onJoin(PlayerJoinEvent evt) {
 		NessPlayer nessPlayer = manager.addPlayer(evt.getPlayer());
 		
-		nessPlayer.actionTime.put(PlayerAction.JOIN, System.nanoTime());
+		nessPlayer.setPlayerAction(PlayerAction.JOIN);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -82,10 +82,10 @@ public class CoreListener implements Listener {
 		if (nessPlayer == null) {
 			return;
 		}
-		nessPlayer.velocity = ImmutableLoc.of(event.getVelocity().toLocation(event.getPlayer().getWorld()));
-		nessPlayer.actionTime.put(PlayerAction.VELOCITY, System.nanoTime());
+		nessPlayer.setLastVelocity(ImmutableLoc.of(event.getVelocity().toLocation(event.getPlayer().getWorld())));
+		nessPlayer.setPlayerAction(PlayerAction.VELOCITY);
 		if (nessPlayer.isDevMode()) {
-			event.getPlayer().sendMessage("Velocity: " + nessPlayer.velocity);
+			event.getPlayer().sendMessage("Velocity: " + nessPlayer.getLastVelocity());
 		}
 	}
 
@@ -96,7 +96,7 @@ public class CoreListener implements Listener {
 			return;
 		}
 		if (Utility.getMaterialName(event.getBlock().getLocation()).contains("WEB")) {
-			nessPlayer.actionTime.put(PlayerAction.WEBBREAKED, System.nanoTime());
+			nessPlayer.setPlayerAction(PlayerAction.WEBBREAKED);
 		}
 	}
 

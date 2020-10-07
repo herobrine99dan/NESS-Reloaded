@@ -36,8 +36,8 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 			hozDist = dist - (from.getY() - to.getY());
 		double maxSpd = 0.4209;
 		if (player().nanoTimeDifference(PlayerAction.VELOCITY) < 1800) {
-			hozDist -= Math.abs(player().velocity.getX());
-			hozDist -= Math.abs(player().velocity.getZ());
+			hozDist -= Math.abs(player().getLastVelocity().getX());
+			hozDist -= Math.abs(player().getLastVelocity().getZ());
 		}
 		if (player.hasPotionEffect(PotionEffectType.SPEED)) {
 			final int level = Utility.getPotionEffectLevel(player, PotionEffectType.SPEED);

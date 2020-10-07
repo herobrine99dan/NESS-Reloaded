@@ -42,10 +42,15 @@ public class NessPlayer implements AnticheatPlayer {
 	private final Player player;
 	@Getter
 	private final boolean devMode;
-	public double sensitivity; // The Player Sensitivity
-	public final Map<PlayerAction, Long> actionTime = Collections.synchronizedMap(new EnumMap<>(PlayerAction.class));
-	public ImmutableLoc velocity;
-	public final Set<Integer> attackedEntities = new HashSet<Integer>();
+	@Getter
+	@Setter
+	private double sensitivity; // The Player Sensitivity
+	private final Map<PlayerAction, Long> actionTime = Collections.synchronizedMap(new EnumMap<>(PlayerAction.class));
+	@Getter
+	@Setter
+	private ImmutableLoc lastVelocity;
+	@Getter
+	private final Set<Integer> attackedEntities = new HashSet<Integer>();
 	
 	@Getter
 	@Setter
@@ -100,6 +105,18 @@ public class NessPlayer implements AnticheatPlayer {
 	 */
 	public void addInfraction(Infraction infraction) {
 		infractions.offer(infraction);
+	}
+	
+	public void addEntityToAttackedEntities(int id) {
+		this.attackedEntities.add(id);
+	}
+	
+	/**
+	 * Set the Time of an Action for a player
+	 * @param action
+	 */
+	public void setPlayerAction(PlayerAction action) {
+		actionTime.put(action, System.nanoTime());
 	}
 
 	/**

@@ -27,7 +27,7 @@ public class FastSneak extends ListeningCheck<PlayerMoveEvent> {
         NessPlayer nessPlayer = this.player();
         float dist = (float) Math.abs(nessPlayer.getMovementValues().XZDiff); // Our XZ Distance
         if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1300) {
-            dist -= Math.abs(nessPlayer.velocity.getX()) + Math.abs(nessPlayer.velocity.getZ());
+            dist -= Math.abs(nessPlayer.getLastVelocity().getX()) + Math.abs(nessPlayer.getLastVelocity().getZ());
         }
         double walkSpeed = p.getWalkSpeed() * 0.85;
         dist -= (dist / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);

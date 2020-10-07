@@ -50,7 +50,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 
 	@Override
 	protected void checkAsyncPeriodic() {
-		this.player().attackedEntities.clear();
+		this.player().getAttackedEntities().clear();
 	}
 
 	@Override
@@ -137,9 +137,9 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 			return;
 		}
 		NessPlayer nessPlayer = player();
-		nessPlayer.attackedEntities.add(eventt.getEntity().getEntityId());
-		if (nessPlayer.attackedEntities.size() > 2) {
-			punish(eventt, "MultiAura Entities: " + nessPlayer.attackedEntities.size());
+		nessPlayer.addEntityToAttackedEntities(eventt.getEntity().getEntityId());
+		if (nessPlayer.getAttackedEntities().size() > 2) {
+			punish(eventt, "MultiAura Entities: " + nessPlayer.getAttackedEntities().size());
 		}
 	}
 

@@ -39,7 +39,7 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 				.contains("scaffolding")) {
 			return;
 		}
-		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1500 && nessPlayer.velocity.getY() > 0.35) {
+		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1500 && nessPlayer.getLastVelocity().getY() > 0.35) {
 			return;
 		}
 		if (!nessPlayer.isTeleported() && player.getNearbyEntities(2, 2, 2).isEmpty() && !Utility.hasflybypass(player)

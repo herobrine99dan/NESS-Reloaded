@@ -60,7 +60,7 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 				if (player.isDevMode()) {
 					player.getBukkitPlayer().sendMessage("Setting Sensitivity to: " + sensitivity);
 				}
-				player.sensitivity = sensitivity;
+				player.setSensitivity(sensitivity);
 			}
 			if (result > 0.001D || gcd < 1.0E-4D) {
 				//flagEvent(event);
@@ -73,13 +73,13 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 	@SuppressWarnings("unused")
 	private void Check1(ReceivedPacketEvent e) {
 		NessPlayer np = e.getNessPlayer();
-		if (np.sensitivity == 0) {
+		if (np.getSensitivity() == 0) {
 			return;
 		}
 		if (np.getMovementValues().yawDiff < 1) {
 			return;
 		}
-		double firstvar = np.sensitivity * 0.6F + 0.2F;
+		double firstvar = np.getSensitivity() * 0.6F + 0.2F;
 		float secondvar = (float) (Math.pow(firstvar, 3f));
 		double yawResult = np.getMovementValues().yawDiff - lastYaw;
 		float thirdvar = (float) yawResult / (secondvar * 1.2f);

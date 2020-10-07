@@ -50,7 +50,7 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
-			y -= Math.abs(nessPlayer.velocity.getY());
+			y -= Math.abs(nessPlayer.getLastVelocity().getY());
 		}
 		if (y > 0) {
 			flyYSum += y;

@@ -36,8 +36,8 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
         xDist -= (xDist / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);
         zDist -= (zDist / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);
         if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
-        	xDist -= Math.abs(nessPlayer.velocity.getX());
-        	zDist -= Math.abs(nessPlayer.velocity.getZ());
+        	xDist -= Math.abs(nessPlayer.getLastVelocity().getX());
+        	zDist -= Math.abs(nessPlayer.getLastVelocity().getZ());
         }
         final double yVelocity = Math.abs(p.getVelocity().getY()) * 0.32;
         walkSpeed += yVelocity;

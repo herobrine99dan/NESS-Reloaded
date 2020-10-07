@@ -50,7 +50,7 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1300) {
-			yDiff -= Math.abs(nessPlayer.velocity.getY());
+			yDiff -= Math.abs(nessPlayer.getLastVelocity().getY());
 		}
 		// !player.getNearbyEntities(4, 4, 4).isEmpty()
 		if (yDiff > 0 && !player.isInsideVehicle()) {
