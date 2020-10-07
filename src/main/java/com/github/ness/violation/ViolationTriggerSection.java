@@ -89,10 +89,8 @@ public interface ViolationTriggerSection {
 						infractionImpl.getPlayer().getBukkitPlayer().sendPluginMessage(plugin, "BungeeCord",
 								out.toByteArray());
 					}
-					if ((System.nanoTime() - lastWebHookTime) / 1e+6 > 1400) {
-						sendWebhook(infractionImpl);
-					}
-					lastWebHookTime = System.nanoTime();
+					sendWebhook(infractionImpl);
+
 					for (Player staff : plugin.getServer().getOnlinePlayers()) {
 						if (staff.hasPermission("ness.notify")) {
 							staff.sendMessage(notification);
@@ -101,32 +99,39 @@ public interface ViolationTriggerSection {
 				}
 
 				private void sendWebhook(InfractionImpl infraction) {
-
-					final String webhookurl = discordWebHook();
-					if (webhookurl.isEmpty()) {
+					final long currentTime = System.nanoTime();
+					if ((currentTime - lastWebHookTime) / 1e+6 > 1400) {
+						
+						lastWebHookTime = currentTime;
+					}
+					final String webHookUrl = discordWebHook();
+					if (webHookUrl.isEmpty()) {
 						return;
 					}
-					String hackerName = infraction.getPlayer().getBukkitPlayer().getName();
+					String name = infraction.getPlayer().getBukkitPlayer().getName();
 					JavaPlugin plugin = ness.getPlugin();
 					plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-
-						DiscordWebhook webhook = new DiscordWebhook(webhookurl);
-
-						DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject().setTitle(discordTitle())
-								.setDescription(discordDescription().replace("%HACKER%", hackerName))
-								.setColor(discordColor()).addField("Cheater", hackerName, true)
-								.addField("Cheat", infraction.getCheck().getCheckName(), true)
-								.addField("Violations", Integer.toString(infraction.getCount()), false);
-
-						webhook.addEmbed(embed);
-
-						try {
-							webhook.execute();
-						} catch (IOException ex) {
-							NessLogger.getLogger(NotifyStaff.class).log(Level.WARNING, "Unable to send discord webhook",
-									ex);
-						}
+						sendWebHook0(webHookUrl, name, infraction);
 					});
+				}
+				
+				private void sendWebHook0(String url, String name, InfractionImpl infraction) {
+					DiscordWebhook webhook = new DiscordWebhook(url);
+
+					DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject().setTitle(discordTitle())
+							.setDescription(discordDescription().replace("%HACKER%", name))
+							.setColor(discordColor()).addField("Cheater", name, true)
+							.addField("Cheat", infraction.getCheck().getCheckName(), true)
+							.addField("Violations", Integer.toString(infraction.getCount()), false);
+
+					webhook.addEmbed(embed);
+
+					try {
+						webhook.execute();
+					} catch (IOException ex) {
+						NessLogger.getLogger(NotifyStaff.class).log(Level.WARNING, "Unable to send discord webhook",
+								ex);
+					}
 				}
 			};
 		}
