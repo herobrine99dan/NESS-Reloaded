@@ -67,6 +67,8 @@ public interface ViolationTriggerSection {
 		@Override
 		default InfractionTrigger toTrigger(ViolationManager manager, NESSAnticheat ness) {
 			return new InfractionTrigger() {
+				
+				private long lastWebHookTime = System.nanoTime();
 
 				@Override
 				public void trigger(Infraction infraction) {
@@ -87,10 +89,10 @@ public interface ViolationTriggerSection {
 						infractionImpl.getPlayer().getBukkitPlayer().sendPluginMessage(plugin, "BungeeCord",
 								out.toByteArray());
 					}
-					if ((System.nanoTime() - manager.lastWebHookTime) / 1e+6 > 1400) {
+					if ((System.nanoTime() - lastWebHookTime) / 1e+6 > 1400) {
 						sendWebhook(infractionImpl);
 					}
-					manager.lastWebHookTime = System.nanoTime();
+					lastWebHookTime = System.nanoTime();
 					for (Player staff : plugin.getServer().getOnlinePlayers()) {
 						if (staff.hasPermission("ness.notify")) {
 							staff.sendMessage(notification);

@@ -22,7 +22,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class ViolationManager implements InfractionManager {
 
 	private final NESSAnticheat ness;
-	long lastWebHookTime = System.nanoTime();
 	
 	private ScheduledFuture<?> periodicTask;
 
