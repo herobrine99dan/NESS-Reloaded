@@ -100,10 +100,10 @@ public interface ViolationTriggerSection {
 
 				private void sendWebhook(InfractionImpl infraction) {
 					final long currentTime = System.nanoTime();
-					if ((currentTime - lastWebHookTime) / 1e+6 > 1400) {
-						
-						lastWebHookTime = currentTime;
+					if ((currentTime - lastWebHookTime) / 1e+6 < 1400) {
+						return;
 					}
+					lastWebHookTime = currentTime;
 					final String webHookUrl = discordWebHook();
 					if (webHookUrl.isEmpty()) {
 						return;
