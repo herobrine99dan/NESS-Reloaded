@@ -29,6 +29,7 @@ import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.annote.ConfSerialisers;
 import space.arim.dazzleconf.annote.SubSection;
 import space.arim.dazzleconf.error.BadValueException;
+import space.arim.dazzleconf.serialiser.Decomposer;
 import space.arim.dazzleconf.serialiser.FlexibleType;
 import space.arim.dazzleconf.serialiser.ValueSerialiser;
 
@@ -113,12 +114,12 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 			try {
 				return fromInts(Integer.parseInt(info[0]), Integer.parseInt(info[1]));
 			} catch (NumberFormatException ex) {
-				throw new BadValueException.Builder().key(flexibleType.getAssociatedKey()).cause(ex).build();
+				throw flexibleType.badValueExceptionBuilder().cause(ex).build();
 			}
 		}
 
 		@Override
-		public Object serialise(T value) {
+		public Object serialise(T value, Decomposer decomposer) {
 			int[] toInts = toInts(value);
 			return toInts[0] + ":" + toInts[1];
 		}
