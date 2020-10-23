@@ -66,7 +66,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 						Material small = player.getWorld().getBlockAt(player.getLocation().subtract(0, .1, 0))
 								.getType();
 						if (!player.getWorld().getBlockAt(from).getType().isSolid()
-								&& !player.getWorld().getBlockAt(to).getType().isSolid()) {
+								&& !player.getWorld().getBlockAt(to).getType().isSolid() && nessPlayer.nanoTimeDifference(PlayerAction.BLOCKPLACED) > 1000) {
 							if (!small.name().contains("TRAPDOOR")) {
 								this.flagEvent(e, maxSpd + " Dist: " + hozDist);
 							}
