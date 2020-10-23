@@ -10,7 +10,8 @@ import com.github.ness.utility.MathUtils;
 
 public class AimbotGCD extends ListeningCheck<ReceivedPacketEvent> {
 
-	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos.forEvent(ReceivedPacketEvent.class);
+	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos
+			.forEvent(ReceivedPacketEvent.class);
 
 	private double lastPitch = 0;
 	private double lastGCD = 0;
@@ -27,26 +28,25 @@ public class AimbotGCD extends ListeningCheck<ReceivedPacketEvent> {
 		if (!player().equals(player)) {
 			return;
 		}
-		if (!event.getPacket().getName().toLowerCase().contains("LOOK") || player.isTeleported()) {
+		if (!event.getPacket().getName().contains("Look") || player.isTeleported()) {
 			return;
 		}
 		float pitch = (float) Math.abs(player.getMovementValues().pitchDiff);
-		final double gcd = MathUtils.gcd(pitch * MULTIPLIER, lastPitch * MULTIPLIER);
+		final double gcd = MathUtils.getGCD(pitch, lastPitch);
 		if (Math.abs(pitch) > 9 || Math.abs(pitch) < 0.05 || pitch == 0.0
 				|| Math.abs(player.getMovementValues().getTo().getPitch()) == 90) {
 			return;
 		}
-		if (player.isDevMode()) {
-			final double result = Math.abs(gcd - lastGCD);
-			if (result > 512 && result < 100000) {
-				if (preVL++ > 7) {
-					flag(" Diff: " + result);
-					//if(player().setViolation(new Violation("AimbotGCD", "Diff: " + result))) event.setCancelled(true);
-				}
-			} else {
-				if (preVL > 0) {
-					preVL--;
-				}
+		final double result = Math.abs(gcd - lastGCD);
+		if (result > 512 && result < 100000) {
+			if (preVL++ > 6) {
+				flag(" Diff: " + result);
+				// if(player().setViolation(new Violation("AimbotGCD", "Diff: " + result)))
+				// event.setCancelled(true);
+			}
+		} else {
+			if (preVL > 0) {
+				preVL--;
 			}
 		}
 		lastPitch = pitch;
