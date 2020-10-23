@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.Consumer;
 
 import org.bukkit.Location;
@@ -30,7 +30,7 @@ import net.md_5.bungee.api.ChatColor;
 
 public class NessPlayer implements AnticheatPlayer {
 
-	private final Queue<Infraction> infractions = new ConcurrentLinkedQueue<>();
+	private final Queue<Infraction> infractions = new ArrayBlockingQueue<>(2);
 
 	/**
 	 * Player UUID
@@ -99,12 +99,13 @@ public class NessPlayer implements AnticheatPlayer {
 	 */
 
 	/**
-	 * Adds an infraction
+	 * Adds an infraction. If this player has too many infractions, {@code false} is returned
 	 * 
 	 * @param infraction the infraction
+	 * @return true if the infraction was added, false if the queue size was reached
 	 */
-	public void addInfraction(Infraction infraction) {
-		infractions.offer(infraction);
+	public boolean addInfraction(Infraction infraction) {
+		return infractions.offer(infraction);
 	}
 	
 	public void addEntityToAttackedEntities(int id) {
