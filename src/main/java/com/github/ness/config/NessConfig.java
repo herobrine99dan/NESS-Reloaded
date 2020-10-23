@@ -71,7 +71,6 @@ public interface NessConfig {
 		"NoSlowFood",
 		"NoWeb",
 		"NoGround",
-		"NoGround",
 		"NoFall",
 		"Speed",
 		"SpeedAir",
@@ -79,7 +78,6 @@ public interface NessConfig {
 		"Step",
 		"Phase",
 		"ImpossibleBreak",
-		"SpeedAir",
 		"ScaffoldFalseTarget",
 		"ScaffoldIllegalTarget",
 		"ScaffoldAngle"})

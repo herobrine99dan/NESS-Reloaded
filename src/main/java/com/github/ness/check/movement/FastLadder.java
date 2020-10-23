@@ -26,7 +26,7 @@ public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
 	}
 	
 	public interface Config {
-		@DefaultDouble(0.21)
+		@DefaultDouble(0.156)
 		double maxDist();
 	}
 
