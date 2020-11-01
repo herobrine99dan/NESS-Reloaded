@@ -31,7 +31,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
         double zDist = nessPlayer.getMovementValues().zDiff;
         double walkSpeed = p.getWalkSpeed() * 0.7;
         if (ness().getMinecraftVersion() > 1122) {
-            walkSpeed = p.getWalkSpeed() * 0.9;
+            walkSpeed = p.getWalkSpeed() * 1.3;
         }
         xDist -= (xDist / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);
         zDist -= (zDist / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);
