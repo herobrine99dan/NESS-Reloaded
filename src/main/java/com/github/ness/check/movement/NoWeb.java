@@ -28,11 +28,11 @@ public class NoWeb extends ListeningCheck<PlayerMoveEvent> {
         float dist = (float) nessPlayer.getMovementValues().XZDiff; // Our XZ Distance
         final double walkSpeed = p.getWalkSpeed() * 0.85;
         dist -= (dist / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);
-        if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1300) {
+        if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1300) {
             dist -= Math.abs(nessPlayer.getLastVelocity().getX()) + Math.abs(nessPlayer.getLastVelocity().getZ());
         }
         if (dist > walkSpeed && Utility.getMaterialName(event.getTo()).contains("WEB")
-                && Utility.getMaterialName(event.getFrom()).contains("WEB") && !Utility.hasflybypass(p) && nessPlayer.nanoTimeDifference(PlayerAction.WEBBREAKED) > 1300) {
+                && Utility.getMaterialName(event.getFrom()).contains("WEB") && !Utility.hasflybypass(p) && nessPlayer.milliSecondTimeDifference(PlayerAction.WEBBREAKED) > 1300) {
         	flagEvent(event);
         	//if(player().setViolation(new Violation("NoWeb", "Dist: " + dist))) event.setCancelled(true);
         }

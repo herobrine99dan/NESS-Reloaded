@@ -52,7 +52,7 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		Double vertDist = values.yDiff;
-		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
+		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500) {
 			hozDist -= Math.abs(nessPlayer.getLastVelocity().getX()) + Math.abs(nessPlayer.getLastVelocity().getZ());
 			vertDist -= Math.abs(nessPlayer.getLastVelocity().getY());
 		}

@@ -64,7 +64,7 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 				 * per tick.
 				 */
 				final double movementsPerTick = ((double) movementPackets / ((double) difference / 1000.0)) / 20.0;
-				if (movementsPerTick > maxPackets && nessPlayer.nanoTimeDifference(PlayerAction.JOIN) > 1900) {
+				if (movementsPerTick > maxPackets && nessPlayer.milliSecondTimeDifference(PlayerAction.JOIN) > 1900) {
 					// The player is sending more packets than allowed.
 
 					/*

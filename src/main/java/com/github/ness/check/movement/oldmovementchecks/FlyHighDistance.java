@@ -32,7 +32,7 @@ public class FlyHighDistance extends ListeningCheck<PlayerMoveEvent> {
 				|| player().isTeleported()) {
 			return;
 		}
-		if (player().nanoTimeDifference(PlayerAction.VELOCITY) < 1600) {
+		if (player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 1600) {
 			dist -= Math.abs(player().getLastVelocity().getX()) + Math.abs(player().getLastVelocity().getZ());
 		}
 		if (!values.groundAround && dist > 0.35 && values.yDiff == 0.0

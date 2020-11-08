@@ -49,7 +49,7 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 				|| movementValues.AroundIce || movementValues.AroundSlime || Utility.hasflybypass(player)) {
 			return;
 		}
-		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1300) {
+		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1300) {
 			yDiff -= Math.abs(nessPlayer.getLastVelocity().getY());
 		}
 		// !player.getNearbyEntities(4, 4, 4).isEmpty()
@@ -57,8 +57,8 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 			if (player.getVelocity().getY() == 0.42f && !Utility.isMathematicallyOnGround(event.getTo().getY())
 					&& Utility.isMathematicallyOnGround(event.getFrom().getY())) {
 				double yResult = Math.abs(yDiff - player.getVelocity().getY());
-				if (yResult != 0.0 && nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) > 1700
-						&& nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) > 1700) {
+				if (yResult != 0.0 && nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) > 1700
+						&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 1700) {
 					flagEvent(event, " yResult: " + yResult + "  yDiff: " + yDiff);
 	            	//if(player().setViolation(new Violation("Fly", "InvalidJumpMotion yResult: " + yResult + "  yDiff: " + yDiff))) event.setCancelled(true);
 				}

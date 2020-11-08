@@ -186,7 +186,7 @@ public class NessPlayer implements AnticheatPlayer {
 		lastWasOnIce = System.nanoTime();
 	}
 
-	public long nanoTimeDifference(PlayerAction action) {
+	public long milliSecondTimeDifference(PlayerAction action) {
 		return (System.nanoTime() - this.actionTime.getOrDefault(action, (long) 0)) / 1000_000L;
 	}
 
@@ -229,7 +229,11 @@ public class NessPlayer implements AnticheatPlayer {
 		}
 		final long current = System.nanoTime() / 1000_000L;
 		if ((current - setBackTicks) > 40) {
-			final Location block = player.getLocation().clone().add(0, player.getVelocity().getY(), 0);
+			double ytoAdd = player.getVelocity().getY();
+			if(ytoAdd < 0.5) {
+				ytoAdd = -0.5;
+			}
+			final Location block = player.getLocation().clone().add(0, ytoAdd, 0);
 			if (!block.getBlock().getType().isSolid()) {
 				hasSetback = true;
 				player.teleport(block, TeleportCause.PLUGIN);

@@ -45,11 +45,11 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(e.getTo().clone().add(0, 0.5, 0)))
 						.contains("scaffolding")
 				|| movementValues.AroundSnow
-				|| movementValues.AroundLadders || nessPlayer.isTeleported() || p.isInsideVehicle() || Utility.hasVehicleNear(p, 3) || nessPlayer.nanoTimeDifference(PlayerAction.BLOCKPLACED) < 1000) {
+				|| movementValues.AroundLadders || nessPlayer.isTeleported() || p.isInsideVehicle() || Utility.hasVehicleNear(p, 3) || nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 1000) {
 			flyYSum = 0;
 			return;
 		}
-		if (nessPlayer.nanoTimeDifference(PlayerAction.VELOCITY) < 1500) {
+		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500) {
 			y -= Math.abs(nessPlayer.getLastVelocity().getY());
 		}
 		if (y > 0) {

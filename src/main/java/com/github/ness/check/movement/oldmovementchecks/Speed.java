@@ -35,7 +35,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		if (to.getY() < from.getY())
 			hozDist = dist - (from.getY() - to.getY());
 		double maxSpd = 0.4209;
-		if (player().nanoTimeDifference(PlayerAction.VELOCITY) < 1800) {
+		if (player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 1800) {
 			hozDist -= Math.abs(player().getLastVelocity().getX());
 			hozDist -= Math.abs(player().getLastVelocity().getZ());
 		}
@@ -55,10 +55,13 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 				}
 			}
 		}
+		if(movementValues.AroundSlabs) {
+			maxSpd += 0.1;
+		}
 		if (player.isInsideVehicle() && player.getVehicle().getType().name().contains("BOAT"))
 			maxSpd = 2.787;
 		if (hozDist > maxSpd && !player.isFlying() && !player.getAllowFlight()
-				&& nessPlayer.nanoTimeDifference(PlayerAction.DAMAGE) >= 2000 && !nessPlayer.isTeleported()) {
+				&& nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) >= 2000 && !nessPlayer.isTeleported()) {
 			if (nessPlayer.getMovementValues().groundAround) {
 				if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000) {
 					if (!player.isInsideVehicle()
@@ -66,7 +69,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 						Material small = player.getWorld().getBlockAt(player.getLocation().subtract(0, .1, 0))
 								.getType();
 						if (!player.getWorld().getBlockAt(from).getType().isSolid()
-								&& !player.getWorld().getBlockAt(to).getType().isSolid() && nessPlayer.nanoTimeDifference(PlayerAction.BLOCKPLACED) > 1000) {
+								&& !player.getWorld().getBlockAt(to).getType().isSolid() && nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) > 1000) {
 							if (!small.name().contains("TRAPDOOR")) {
 								this.flagEvent(e, maxSpd + " Dist: " + hozDist);
 							}

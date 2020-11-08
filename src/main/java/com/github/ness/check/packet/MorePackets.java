@@ -56,7 +56,7 @@ public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
 		if(np.getMovementValues().isInsideVehicle()) {
 			return;
 		}
-		if (normalPacketsCounter++ > maxPackets && np.nanoTimeDifference(PlayerAction.JOIN) > 2500) {
+		if (normalPacketsCounter++ > maxPackets && np.milliSecondTimeDifference(PlayerAction.JOIN) > 2500) {
 			if (normalPacketsCounter > serverCrasherMaxPackets) {
 				e.setCancelled(true);
 				np.kickThreadSafe();
