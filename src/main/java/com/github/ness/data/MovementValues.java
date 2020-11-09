@@ -1,12 +1,14 @@
 package com.github.ness.data;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import com.github.ness.utility.Utility;
 
 import lombok.Getter;
+
 //Need a refactor, we should move some fields to NessPlayer
 public class MovementValues {
 
@@ -59,6 +61,12 @@ public class MovementValues {
 	ImmutableLoc to;
 	@Getter
 	ImmutableLoc from;
+	@Getter
+	private final GameMode gamemode;
+	@Getter
+	private final boolean isFlying;
+	@Getter
+	private final boolean ableFly;
 
 	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from) {
 		if (Bukkit.isPrimaryThread()) {
@@ -74,6 +82,9 @@ public class MovementValues {
 			boolean ground = false;
 			serverVelocity = new ImmutableVector(p.getVelocity().getX(), p.getVelocity().getY(),
 					p.getVelocity().getZ());
+			gamemode = p.getGameMode();
+			isFlying = p.isFlying();
+			ableFly = p.getAllowFlight();
 			isSprinting = p.isSprinting();
 			for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 2)) {
 				String name = b.getType().name();
@@ -128,6 +139,9 @@ public class MovementValues {
 			AroundLily = false;
 			AroundSnow = false;
 			insideVehicle = false;
+			gamemode = GameMode.SURVIVAL;
+			isFlying = false;
+			ableFly = false;
 			AroundLiquids = false;
 			AroundSlime = false;
 			AroundStairs = false;
@@ -141,9 +155,9 @@ public class MovementValues {
 		this.to = to;
 		this.from = from;
 	}
-	
+
 	public void doCalculations() {
-		
+
 	}
 
 	public ImmutableVector getDirection() {

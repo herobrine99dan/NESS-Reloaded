@@ -26,44 +26,33 @@ import com.github.ness.violation.ViolationManager;
 public class NESSAnticheat {
 
 	private static final Logger logger = NessLogger.getLogger(NESSAnticheat.class);
-	private static NESSAnticheat main;
 
 	private final JavaPlugin plugin;
-	private final int minecraftVersion;
+	private final static int minecraftVersion;
 	private final ScheduledExecutorService executor;
 
 	private final ConfigManager configManager;
 	private final CheckManager checkManager;
 	private final ViolationManager violationManager;
 
-	/**
-	 * Gets ness as a singleton
-	 * 
-	 * @return the single instance of ness
-	 * @deprecated Pass the instance rather than relying on this static getter
-	 */
-	@Deprecated
-	public static NESSAnticheat getInstance() {
-		return NESSAnticheat.main;
+	static {
+		minecraftVersion = getVersion();
 	}
 
 	NESSAnticheat(JavaPlugin plugin, Path folder) {
 		this.plugin = plugin;
-		minecraftVersion = getVersion();
 		executor = Executors.newSingleThreadScheduledExecutor();
 
 		configManager = new ConfigManager(folder);
 		checkManager = new CheckManager(this);
 		violationManager = new ViolationManager(this);
-
-		main = this;
 	}
 
 	private static int getVersion() {
 		String first = Bukkit.getVersion().substring(Bukkit.getVersion().indexOf("(MC: "));
 		return Integer.valueOf(first.replace("(MC: ", "").replace(")", "").replace(" ", "").replace(".", ""));
 	}
-	
+
 	void start() {
 		// Detect version
 		if (minecraftVersion > 1152 && minecraftVersion < 1162) {
@@ -83,8 +72,8 @@ public class NESSAnticheat {
 		violationManager.initiate();
 
 		// Register API implementation
-		getPlugin().getServer().getServicesManager()
-				.register(NESSApi.class, new NESSApiImpl(this), plugin, ServicePriority.Low);
+		getPlugin().getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(this), plugin,
+				ServicePriority.Low);
 
 		// Start AntiBot if enabled
 		if (getMainConfig().getAntiBot().enable()) {
@@ -103,7 +92,7 @@ public class NESSAnticheat {
 			messenger.registerIncomingPluginChannel(plugin, "BungeeCord", new BungeeCordListener());
 		}
 	}
-	
+
 	/**
 	 * Gets the {@code JavaPlugin} NESS is using
 	 * 
@@ -112,36 +101,36 @@ public class NESSAnticheat {
 	public JavaPlugin getPlugin() {
 		return plugin;
 	}
-	
+
 	/**
 	 * Gets the detected minecraft version number, e.g. '1162'
 	 * 
 	 * @return the version number
 	 */
-	public int getMinecraftVersion() {
+	public static int getMinecraftVersion() {
 		return minecraftVersion;
 	}
-	
+
 	public ScheduledExecutorService getExecutor() {
 		return executor;
 	}
-	
+
 	ConfigManager getConfigManager() {
 		return configManager;
 	}
-	
+
 	public CheckManager getCheckManager() {
 		return checkManager;
 	}
-	
+
 	public ViolationManager getViolationManager() {
 		return violationManager;
 	}
-	
+
 	public NessConfig getMainConfig() {
 		return configManager.getConfig();
 	}
-	
+
 	public NessMessages getMessagesConfig() {
 		return configManager.getMessages();
 	}
