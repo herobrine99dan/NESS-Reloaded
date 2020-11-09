@@ -18,22 +18,15 @@ import space.arim.dazzleconf.annote.SubSection;
  * @author A248
  *
  */
-@ConfHeader({
-	"",
-	"",
-	"NESS Reloaded v2 Configuration",
-	"",
-	"Discord: https://discord.gg/63JGnay",
-	"Github: https://github.com/herobrine99dan/NESS-Reloaded",
-	"",
-	""})
+@ConfHeader({ "", "", "NESS Reloaded v2 Configuration", "", "Discord: https://discord.gg/63JGnay",
+		"Github: https://github.com/herobrine99dan/NESS-Reloaded", "", "" })
 public interface NessConfig {
 
 	@ConfKey("dev-mode")
 	@ConfComments("Enable developer mode")
 	@DefaultBoolean(false)
 	boolean isDevMode();
-	
+
 	@ConfKey("enabled-checks")
 	@ConfComments({
 		"",
@@ -63,6 +56,7 @@ public interface NessConfig {
 		"FlyInvalidGravity",
 		"FlyFalseGround",
 		"FlyHighDistance",
+		"Freecam",
 		"GhostHand",
 		"LiquidInteraction",
 		"InventoryHack",
@@ -83,30 +77,19 @@ public interface NessConfig {
 		"ScaffoldIllegalTarget",
 		"ScaffoldAngle"})
 	List<String> getEnabledChecks();
-	
+
 	@ConfKey("antibot")
-	@ConfComments({
-		"",
-		"AntiBot",
-		"",
-		"Blocks Bot Attacks which sends a lot of players",
-		""})
+	@ConfComments({ "", "AntiBot", "", "Blocks Bot Attacks which sends a lot of players", "" })
 	@SubSection
 	AntiBotConfig getAntiBot();
-	
+
 	@ConfKey("violation-handling")
-	@ConfComments({
-		"",
-		"Violation handling",
-		"",
-		"What to do when a player is detected for cheats",
-		""
-	})
+	@ConfComments({ "", "Violation handling", "", "What to do when a player is detected for cheats", "" })
 	@SubSection
 	ViolationHandling getViolationHandling();
-	
+
 	@ConfKey("checks")
 	@SubSection
 	ChecksConfig getCheckSection();
-	
+
 }

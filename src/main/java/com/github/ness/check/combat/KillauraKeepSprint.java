@@ -32,6 +32,9 @@ public class KillauraKeepSprint extends ListeningCheck<ReceivedPacketEvent> {
 		if (!e.getPacket().getName().toLowerCase().contains("position") || e.getNessPlayer().isTeleported()) {
 			return;
 		}
+		if(e.getNessPlayer().getLastEntityAttacked() == null) {
+			return;
+		}
 		MovementValues values = e.getNessPlayer().getMovementValues();
         final double deltaXZ = Math.hypot(values.xDiff, values.yDiff);
 

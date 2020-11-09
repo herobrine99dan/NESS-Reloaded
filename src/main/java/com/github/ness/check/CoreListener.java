@@ -100,7 +100,7 @@ public class CoreListener implements Listener {
 				return;
 			}
 			nessPlayer.setPlayerAction(PlayerAction.ATTACK);
-			nessPlayer.setLastEntityAttacked(event.getDamager().getUniqueId());
+			nessPlayer.setLastEntityAttacked(event.getEntity().getUniqueId());
 		}
 		if(event.getEntity() instanceof Player) {
 			NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer((Player) event.getEntity());
