@@ -70,6 +70,11 @@ public class NessPlayer implements AnticheatPlayer {
 	private boolean mouseRecord; // Is the player recording?
 	private long lastWasOnGround = System.nanoTime() - Duration.ofHours(1L).toNanos();
 	private long lastWasOnIce = lastWasOnGround;
+	@Getter
+	private boolean sprinting;
+	@Getter
+	@Setter
+	private UUID lastEntityAttacked;
 
 	public NessPlayer(Player player, boolean devMode) {
 		uuid = player.getUniqueId();
@@ -78,6 +83,7 @@ public class NessPlayer implements AnticheatPlayer {
 		this.movementValues = new MovementValues(player,
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
+		this.sprinting = false;
 	}
 	
 	/*
@@ -87,6 +93,10 @@ public class NessPlayer implements AnticheatPlayer {
 	@Override
 	public UUID getUniqueId() {
 		return uuid;
+	}
+	
+	public void updateSprint(boolean sprint) {
+		this.sprinting = sprint;
 	}
 
 	@Override

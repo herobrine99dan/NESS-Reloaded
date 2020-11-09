@@ -36,16 +36,16 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		final MovementValues movementValues = nessPlayer.getMovementValues();
 		double y = movementValues.yDiff;
-		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || Utility.hasflybypass(p) || movementValues.AroundSlime
-				|| p.getAllowFlight() || Utility.isInWater(p) || movementValues.AroundLily
-				|| Utility.specificBlockNear(e.getTo().clone(), "sea") || movementValues.AroundSlabs
+		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || Utility.hasflybypass(p) || movementValues.isAroundSlime()
+				|| p.getAllowFlight() || Utility.isInWater(p) || movementValues.isAroundLily()
+				|| Utility.specificBlockNear(e.getTo().clone(), "sea") || movementValues.isAroundSlabs()
 				|| movementValues.AroundStairs || movementValues.AroundLiquids
 				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(e.getTo().clone().add(0, -0.5, 0)))
 						.contains("scaffolding")
 				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(e.getTo().clone().add(0, 0.5, 0)))
 						.contains("scaffolding")
-				|| movementValues.AroundSnow
-				|| movementValues.AroundLadders || nessPlayer.isTeleported() || p.isInsideVehicle() || Utility.hasVehicleNear(p, 3) || nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 1000) {
+				|| movementValues.isAroundSnow()
+				|| movementValues.isAroundLadders() || nessPlayer.isTeleported() || p.isInsideVehicle() || Utility.hasVehicleNear(p, 3) || nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 1000) {
 			flyYSum = 0;
 			return;
 		}

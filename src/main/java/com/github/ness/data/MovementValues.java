@@ -46,15 +46,22 @@ public class MovementValues {
 	/**
 	 * Utility.specificBlockNear(to, "slime"); or Utility.hasBlock(p, "slime");
 	 */
-	public final boolean AroundSlime;
-	public final boolean AroundSlabs;
-	public final boolean AroundSnow;
-	public final boolean AroundLadders;
-	public final boolean AroundLily;
-	public final boolean AroundCarpet;
-	public final boolean groundAround;
-	public final boolean isSprinting;
-	public final ImmutableVector serverVelocity;
+	@Getter
+	private final boolean AroundSlime;
+	@Getter
+	private final boolean AroundSlabs;
+	@Getter
+	private final boolean AroundSnow;
+	@Getter
+	private final boolean AroundLadders;
+	@Getter
+	private final boolean AroundLily;
+	@Getter
+	private final boolean AroundCarpet;
+	@Getter
+	private final boolean groundAround;
+	@Getter
+	private final ImmutableVector serverVelocity;
 	@Getter
 	private final boolean insideVehicle;
 	@Getter
@@ -85,7 +92,6 @@ public class MovementValues {
 			gamemode = p.getGameMode();
 			isFlying = p.isFlying();
 			ableFly = p.getAllowFlight();
-			isSprinting = p.isSprinting();
 			for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 2)) {
 				String name = b.getType().name();
 				if (b.isLiquid()) {
@@ -132,7 +138,6 @@ public class MovementValues {
 			AroundIce = false;
 			AroundSlabs = false;
 			serverVelocity = new ImmutableVector(0, 0, 0);
-			isSprinting = false;
 			AroundCarpet = false;
 			AroundLadders = false;
 			groundAround = false;

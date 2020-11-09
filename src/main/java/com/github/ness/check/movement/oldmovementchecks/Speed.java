@@ -55,14 +55,14 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 				}
 			}
 		}
-		if(movementValues.AroundSlabs) {
+		if(movementValues.isAroundSlabs()) {
 			maxSpd += 0.1;
 		}
 		if (player.isInsideVehicle() && player.getVehicle().getType().name().contains("BOAT"))
 			maxSpd = 2.787;
 		if (hozDist > maxSpd && !player.isFlying() && !player.getAllowFlight()
 				&& nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) >= 2000 && !nessPlayer.isTeleported()) {
-			if (nessPlayer.getMovementValues().groundAround) {
+			if (nessPlayer.getMovementValues().isGroundAround()) {
 				if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000) {
 					if (!player.isInsideVehicle()
 							|| (player.isInsideVehicle() && !player.getVehicle().getType().name().contains("HORSE"))) {

@@ -42,7 +42,7 @@ public interface NessConfig {
 		"",
 		"Comment out a check to disable",
 		""})
-	@DefaultStrings({"AbilititiesSpoofed","Aimbot",
+	@DefaultStrings({"#AbilititiesSpoofed","Aimbot",
 		"AimbotGCD",
 		"AutoClicker",
 		/* "AntiUnicode", */

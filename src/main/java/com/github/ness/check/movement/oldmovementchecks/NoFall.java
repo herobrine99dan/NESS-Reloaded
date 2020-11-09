@@ -80,7 +80,7 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 						if ((!player.isInsideVehicle()
 								|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))
 								&& !player.isFlying() && to.getY() > 0) {
-							if (!movementValues.AroundSlime && !Utility.hasBlock(player, "water")
+							if (!movementValues.isAroundSlime() && !Utility.hasBlock(player, "water")
 									&& !Utility.isInWater(player) && !movementValues.AroundLiquids
 									&& !Utility.specificBlockNear(event.getTo(), "fire")
 									&& !Utility.getMaterialName(event.getTo()).contains("FIRE") && !Utility

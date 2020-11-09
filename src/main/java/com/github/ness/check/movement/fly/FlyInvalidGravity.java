@@ -52,8 +52,8 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
         double y = np.getMovementValues().yDiff;
         double yresult = y - p.getVelocity().getY();
         MovementValues values = np.getMovementValues();
-        if (Utility.hasflybypass(p) || values.AroundSlime || p.getAllowFlight()
-                || values.AroundLily || p.isInsideVehicle() || Utility.hasVehicleNear(p, 3)) {
+        if (Utility.hasflybypass(p) || values.isAroundSlime() || p.getAllowFlight()
+                || values.isAroundLily() || p.isInsideVehicle() || Utility.hasVehicleNear(p, 3)) {
             return;
         }
         double max = maxInvalidVelocity;

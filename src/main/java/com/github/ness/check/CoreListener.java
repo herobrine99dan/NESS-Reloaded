@@ -7,9 +7,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,7 +33,7 @@ public class CoreListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void onJoin(PlayerJoinEvent evt) {
 		NessPlayer nessPlayer = manager.addPlayer(evt.getPlayer());
-		
+
 		nessPlayer.setPlayerAction(PlayerAction.JOIN);
 	}
 
@@ -91,6 +93,34 @@ public class CoreListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
+	public void onVelocity(EntityDamageByEntityEvent event) {
+		if (event.getDamager() instanceof Player) {
+			NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer((Player) event.getDamager());
+			if (nessPlayer == null) {
+				return;
+			}
+			nessPlayer.setPlayerAction(PlayerAction.ATTACK);
+			nessPlayer.setLastEntityAttacked(event.getDamager().getUniqueId());
+		}
+		if(event.getEntity() instanceof Player) {
+			NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer((Player) event.getEntity());
+			if (nessPlayer == null) {
+				return;
+			}
+			nessPlayer.setPlayerAction(PlayerAction.DAMAGE);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onSprint(PlayerToggleSprintEvent event) {
+		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer((Player) event.getPlayer());
+		if (nessPlayer == null) {
+			return;
+		}
+		nessPlayer.updateSprint(event.isSprinting());
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onBreak(BlockBreakEvent event) {
 		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(event.getPlayer());
 		if (nessPlayer == null) {
@@ -101,7 +131,7 @@ public class CoreListener implements Listener {
 			nessPlayer.setPlayerAction(PlayerAction.WEBBREAKED);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlace(BlockPlaceEvent event) {
 		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(event.getPlayer());
