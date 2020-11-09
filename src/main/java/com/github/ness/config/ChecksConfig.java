@@ -7,6 +7,7 @@ import com.github.ness.check.combat.PlayerESP;
 import com.github.ness.check.movement.ElytraCheats;
 import com.github.ness.check.movement.FastLadder;
 import com.github.ness.check.movement.fly.FlyInvalidGravity;
+import com.github.ness.check.packet.Freecam;
 import com.github.ness.check.packet.MorePackets;
 import com.github.ness.check.packet.Timer;
 import com.github.ness.check.world.FastPlace;
@@ -124,5 +125,7 @@ public interface ChecksConfig {
 		""})
 	@SubSection
 	Timer.Config timer();
-	
+	@ConfKey("freecam")
+	@SubSection
+	Freecam.Config freecam();
 }
