@@ -51,11 +51,11 @@ public class NessPlayer implements AnticheatPlayer {
 	private ImmutableLoc lastVelocity;
 	@Getter
 	private final Set<Integer> attackedEntities = new HashSet<Integer>();
-	
+
 	@Getter
 	@Setter
 	private boolean hasSetback;
-	
+
 	private long setBackTicks;
 	@Getter
 	@Setter
@@ -85,7 +85,7 @@ public class NessPlayer implements AnticheatPlayer {
 				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
 		this.sprinting = false;
 	}
-	
+
 	/*
 	 * API methods
 	 */
@@ -94,7 +94,7 @@ public class NessPlayer implements AnticheatPlayer {
 	public UUID getUniqueId() {
 		return uuid;
 	}
-	
+
 	public void updateSprint(boolean sprint) {
 		this.sprinting = sprint;
 	}
@@ -103,13 +103,14 @@ public class NessPlayer implements AnticheatPlayer {
 	public Player getBukkitPlayer() {
 		return player;
 	}
-	
+
 	/*
 	 * Infraction methods
 	 */
 
 	/**
-	 * Adds an infraction. If this player has too many infractions, {@code false} is returned
+	 * Adds an infraction. If this player has too many infractions, {@code false} is
+	 * returned
 	 * 
 	 * @param infraction the infraction
 	 * @return true if the infraction was added, false if the queue size was reached
@@ -117,13 +118,14 @@ public class NessPlayer implements AnticheatPlayer {
 	public boolean addInfraction(Infraction infraction) {
 		return infractions.offer(infraction);
 	}
-	
+
 	public void addEntityToAttackedEntities(int id) {
 		this.attackedEntities.add(id);
 	}
-	
+
 	/**
 	 * Set the Time of an Action for a player
+	 * 
 	 * @param action
 	 */
 	public void setPlayerAction(PlayerAction action) {
@@ -161,11 +163,11 @@ public class NessPlayer implements AnticheatPlayer {
 	public boolean isNot(Entity entity) {
 		return !is(entity);
 	}
-	
+
 	/*
 	 * Thread safe disconnection
 	 */
-	
+
 	/**
 	 * Disconnects the player just as the server would
 	 * 
@@ -173,7 +175,7 @@ public class NessPlayer implements AnticheatPlayer {
 	public void kickThreadSafe() {
 		Object networkManager = NetworkReflection.getNetworkManager(getBukkitPlayer());
 		NetworkReflection.getChannel(networkManager).config().setAutoRead(false);
-		//NetworkReflection.clearPacketQueue(networkManager);
+		// NetworkReflection.clearPacketQueue(networkManager);
 	}
 
 	/*
@@ -233,24 +235,25 @@ public class NessPlayer implements AnticheatPlayer {
 	 * Drags down the player
 	 * 
 	 */
+	//TODO Implement damage, using proportions
 	public void completeDragDown() {
 		if (!player.isOnline()) {
 			return;
 		}
 		final long current = System.nanoTime() / 1000_000L;
+		double ytoAdd = player.getVelocity().getY();
+		final Location block = player.getLocation().clone().add(0, ytoAdd, 0);
 		if ((current - setBackTicks) > 40) {
-			double ytoAdd = player.getVelocity().getY();
-			if(ytoAdd < 0.5) {
-				ytoAdd = -0.5;
-			}
-			final Location block = player.getLocation().clone().add(0, ytoAdd, 0);
-			if (!block.getBlock().getType().isSolid()) {
-				hasSetback = true;
-				player.teleport(block, TeleportCause.PLUGIN);
-			} else if (!block.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
-				player.teleport(block.add(0, 0.4, 0), TeleportCause.PLUGIN);
+			for (int i = 0; i < 10; i++) {
+				if (block.getBlock().getType().isSolid()) {
+					block.add(0, 0.1, 0);
+				} else {
+					break;
+				}
 			}
 		}
+		hasSetback = true;
+		player.teleport(block, TeleportCause.PLUGIN);
 		setBackTicks = current;
 		setBackTicks++;
 	}

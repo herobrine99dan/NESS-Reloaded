@@ -1,7 +1,9 @@
 package com.github.ness.utility;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -18,6 +20,16 @@ import org.bukkit.util.Vector;
 import com.github.ness.data.ImmutableVector;
 
 public class Utility {
+	
+	public final static Set<Material> occludingMaterials = new HashSet<Material>();
+	
+	static {
+		for(Material m : Material.values()) {
+			if(m.isBlock() && m.isOccluding()) {
+				occludingMaterials.add(m);
+			}
+		}
+	}
 
     /**
      * Round a value
@@ -41,7 +53,7 @@ public class Utility {
         Location eye = player.getEyeLocation();
         Vector toEntity = target.toVector().subtract(eye.toVector());
         double dot = toEntity.normalize().dot(direction.toBukkitVector());
-        return dot;// dot > 0.99D
+        return dot;
     }
 
     /**

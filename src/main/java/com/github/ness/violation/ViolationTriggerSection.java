@@ -40,8 +40,8 @@ public interface ViolationTriggerSection {
 		@DefaultInteger(6)
 		int violations();
 
-		@ConfComments("Notification message. Available variables are %HACK% and %VIOLATIONS%")
-		@DefaultString("&8[&b&lNESS&8]&r&7> &c%PLAYER% &7failed &c%HACK%&7. Violations: %VIOLATIONS%")
+		@ConfComments("Notification message. Available variables are %HACK%, %VIOLATIONS% and %DETAILS%")
+		@DefaultString("&8[&b&lNESS&8]&r&7> &c%PLAYER% &7failed &c%HACK%&7. Violations: %VIOLATIONS% Details: %DETAILS%")
 		String notification();
 
 		@ConfKey("discord.webhook")

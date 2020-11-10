@@ -13,6 +13,7 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.ReceivedPacketEvent;
 
 import space.arim.dazzleconf.annote.ConfComments;
@@ -41,7 +42,7 @@ public class Freecam extends ListeningCheck<ReceivedPacketEvent> {
 
 	@Override
 	protected void checkAsyncPeriodic() {
-		if ((System.nanoTime() - lastPosition) / 1e+6 > maxDelay) {
+		if ((System.nanoTime() - lastPosition) / 1e+6 > maxDelay && player().milliSecondTimeDifference(PlayerAction.JOIN) > 1000) {
 			runTaskLater(() -> {
 				player().getBukkitPlayer().teleport(player().getBukkitPlayer().getLocation().clone().add(0, 0.00001, 0),
 						TeleportCause.PLUGIN);

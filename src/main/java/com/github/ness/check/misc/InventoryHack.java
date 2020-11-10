@@ -44,6 +44,10 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 				|| this.player().isTeleported()) {
 			return;
 		}
+		if (nessPlayer.isDevMode()) {
+			nessPlayer.sendDevMessage("BlockPlaced:" + nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED)
+					+ " BlockBroked: " + nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKBROKED));
+		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 90
 				|| nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKBROKED) < 90) {
 			flagEvent(e);
