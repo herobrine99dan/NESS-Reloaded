@@ -1,7 +1,7 @@
 package com.github.ness.check.misc;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
@@ -9,24 +9,21 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 
-public class TestCheck extends ListeningCheck<PlayerInteractEvent> {
+public class TestCheck extends ListeningCheck<PlayerMoveEvent> {
 
-	public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos
-			.forEvent(PlayerInteractEvent.class);
-	long lastClick;
+	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
+			.forEvent(PlayerMoveEvent.class);
 
-	public TestCheck(ListeningCheckFactory<?, PlayerInteractEvent> factory, NessPlayer player) {
+	public TestCheck(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
-		lastClick = System.nanoTime() / 1000_000L;
 	}
 
     @Override
-    protected void checkEvent(PlayerInteractEvent event) {
+    protected void checkEvent(PlayerMoveEvent event) {
     	Player player = event.getPlayer();
-    	final long currentMS = System.nanoTime() / 1000_000L;
-    	final long subtraction = currentMS - lastClick;
-    	player.sendMessage("Delay: " + subtraction);
-    	lastClick = currentMS;
+    	if(Math.abs(player.getVelocity().getY()) > 0.0784) {
+    		player.sendMessage("Velocity: " + (float) player.getVelocity().getY());
+    	}
     }
 
 }

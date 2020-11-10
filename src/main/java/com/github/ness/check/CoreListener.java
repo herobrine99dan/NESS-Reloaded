@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -139,6 +140,15 @@ public class CoreListener implements Listener {
 			return;
 		}
 		nessPlayer.setPlayerAction(PlayerAction.BLOCKPLACED);
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlace(PlayerAnimationEvent event) {
+		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(event.getPlayer());
+		if (nessPlayer == null) {
+			return;
+		}
+		nessPlayer.setPlayerAction(PlayerAction.ANIMATION);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
