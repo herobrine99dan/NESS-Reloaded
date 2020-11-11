@@ -55,7 +55,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 				}
 			}
 		}
-		if(movementValues.isAroundSlabs()) {
+		if(movementValues.isAroundSlabs() || movementValues.isAroundStairs()) {
 			maxSpd += 0.1;
 		}
 		if (player.isInsideVehicle() && player.getVehicle().getType().name().contains("BOAT"))

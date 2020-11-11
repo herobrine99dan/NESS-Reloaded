@@ -30,13 +30,13 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
 		if (Utility.getMaterialName(event.getTo().clone().add(0, -0.3, 0)).contains("SLAB")
-				|| event.getTo().getBlock().isLiquid() || movementValues.AroundLiquids || movementValues.isAroundSnow()
+				|| event.getTo().getBlock().isLiquid() || movementValues.isAroundLiquids() || movementValues.isAroundSnow()
 				|| Utility.groundAround(to.clone().add(0, 1.8, 0))
 				|| Utility.specificBlockNear(to.clone(), "chest")
 				|| Utility.specificBlockNear(to.clone(), "ladder")
 				|| Utility.specificBlockNear(to.clone(), "pot")
 				|| Utility.specificBlockNear(to.clone(), "bed")
-				|| Utility.specificBlockNear(to.clone(), "detector") || movementValues.AroundStairs
+				|| Utility.specificBlockNear(to.clone(), "detector") || movementValues.isAroundStairs()
 				|| Utility.getMaterialName(to.clone().add(0, 1.8, 0)).contains("CHORUS")
 				|| Utility.getMaterialName(from.clone().add(0, 1.6, 0)).contains("CHORUS")
 				|| Utility.getMaterialName(to).contains("LADDER")
@@ -46,7 +46,7 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 				|| Utility.getMaterialName(to.clone().add(0, 0.3, 0)).contains("SEA")
 				|| Utility.getMaterialName(to.clone().add(0, -0.2, 0)).contains("SEA")
 				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).contains("LADDER")
-				|| movementValues.AroundIce || movementValues.isAroundSlime() || Utility.hasflybypass(player)) {
+				|| movementValues.isAroundIce() || movementValues.isAroundSlime() || Utility.hasflybypass(player)) {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1300) {

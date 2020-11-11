@@ -36,13 +36,15 @@ public class MovementValues {
 	 * XZ Difference Math.abs(xDiff) + Math.abs(zDiff);
 	 */
 	public final double XZDiff;
-	public final boolean AroundIce;
+	@Getter
+	private final boolean AroundIce;
 	/**
 	 * Liquids= Lava and Water
 	 */
-	public final boolean AroundLiquids;
-
-	public final boolean AroundStairs;
+	@Getter
+	private final boolean AroundLiquids;
+	@Getter
+	private final boolean AroundStairs;
 	/**
 	 * Utility.specificBlockNear(to, "slime"); or Utility.hasBlock(p, "slime");
 	 */

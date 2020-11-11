@@ -39,7 +39,7 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || Utility.hasflybypass(p) || movementValues.isAroundSlime()
 				|| p.getAllowFlight() || Utility.isInWater(p) || movementValues.isAroundLily()
 				|| Utility.specificBlockNear(e.getTo().clone(), "sea") || movementValues.isAroundSlabs()
-				|| movementValues.AroundStairs || movementValues.AroundLiquids
+				|| movementValues.isAroundStairs() || movementValues.isAroundLiquids()
 				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(e.getTo().clone().add(0, -0.5, 0)))
 						.contains("scaffolding")
 				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(e.getTo().clone().add(0, 0.5, 0)))
