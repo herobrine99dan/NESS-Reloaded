@@ -42,7 +42,7 @@ public class KillauraKeepSprint extends ListeningCheck<ReceivedPacketEvent> {
 
         final long swingDelay = e.getNessPlayer().milliSecondTimeDifference(PlayerAction.ATTACK);
 
-        final boolean sprinting = e.getNessPlayer().isSprinting();
+        final boolean sprinting = e.getNessPlayer().milliSecondTimeDifference(PlayerAction.SPRINT) < 200;
 
         final boolean validTarget = Bukkit.getEntity(e.getNessPlayer().getLastEntityAttacked()) instanceof Player;
 

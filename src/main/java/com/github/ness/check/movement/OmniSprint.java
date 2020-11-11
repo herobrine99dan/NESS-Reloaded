@@ -9,6 +9,7 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
+import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.ReceivedPacketEvent;
 
 public class OmniSprint extends ListeningCheck<ReceivedPacketEvent> {
@@ -25,7 +26,7 @@ public class OmniSprint extends ListeningCheck<ReceivedPacketEvent> {
 		// Vector result =
 		// event.getTo().toVector().subtract(event.getFrom().toVector());
 		MovementValues values = nessPlayer.getMovementValues();
-		if (nessPlayer.isSprinting()) {
+		if (nessPlayer.milliSecondTimeDifference(PlayerAction.SPRINT) < 100) {
 			if (values.getServerVelocity().getY() > 0.0 || nessPlayer.getMovementValues().yawDiff > 10) {
 				return;
 			}

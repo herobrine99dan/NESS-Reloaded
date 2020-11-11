@@ -118,7 +118,7 @@ public class CoreListener implements Listener {
 		if (nessPlayer == null) {
 			return;
 		}
-		nessPlayer.updateSprint(event.isSprinting());
+		nessPlayer.setPlayerAction(PlayerAction.SPRINT);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)

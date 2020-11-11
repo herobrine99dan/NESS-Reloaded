@@ -26,14 +26,18 @@ public class SpeedAir extends ListeningCheck<PlayerMoveEvent> {
 		Player player = nessPlayer.getBukkitPlayer();
 		float max = 0.36f + (Utility.getPotionEffectLevel(player, PotionEffectType.SPEED) * 0.062f)
 				+ ((player.getWalkSpeed() - 0.2f) * 1.6f);
-		if (Utility.getMaterialName(player.getLocation().clone().add(0, -0.6, 0)).contains("ICE")
-				|| Utility.specificBlockNear(player.getLocation().clone(), "ice")
+		if (nessPlayer.getMovementValues().AroundIce
 				|| nessPlayer.getTimeSinceLastWasOnIce() < 1500) {
 			max *= 1.4;
 		}
-		if (Utility.getMaterialName(player.getLocation().clone().add(0, -0.6, 0)).contains("SLIME")
-				|| Utility.specificBlockNear(player.getLocation().clone(), "slime")) {
+		if (nessPlayer.getMovementValues().isAroundSlime()) {
 			max *= 1.2;
+		}
+		if (nessPlayer.getMovementValues().isAroundSnow()) {
+			max *= 1.15;
+		}
+		if (nessPlayer.getMovementValues().isAroundSlabs()) {
+			max *= 1.15;
 		}
 		return max;
 	}
