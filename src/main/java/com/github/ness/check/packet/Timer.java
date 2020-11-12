@@ -48,8 +48,9 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 			return;
 		}
 		final long current = System.nanoTime();
+		delay.remove(0);
 		delay.add((long) ((current - lastDelay) / 1e+6));
-		if (delay.size() > 15) {
+		if (delay.size() > 39) {
 			final long average = this.getAverage();
 			final float speed = 50.0f / (float) average;
 			if (speed > MAX_PACKETS_PER_TICK) {
@@ -60,7 +61,6 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 			if (nessPlayer.isDevMode()) {
 				nessPlayer.sendDevMessage("Timer: " + speed + " Average: " + average);
 			}
-			delay.clear();
 		}
 		this.lastDelay = current;
 	}
