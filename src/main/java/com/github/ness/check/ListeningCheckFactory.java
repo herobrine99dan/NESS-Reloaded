@@ -132,7 +132,7 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 		
 		ReflectionGetPlayerUUIDFunction(Method getPlayerMethod) {
 			try {
-				getPlayerHandle = MethodHandles.publicLookup().unreflect(getPlayerMethod);
+				getPlayerHandle = MethodHandles.lookup().unreflect(getPlayerMethod);
 			} catch (IllegalAccessException ex) {
 				throw new UncheckedReflectiveOperationException(ex);
 			}
