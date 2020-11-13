@@ -12,7 +12,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerEvent;
 
 import com.github.ness.packets.ReceivedPacketEvent;
-import com.github.ness.utility.HandlerListUtils;
 import com.github.ness.utility.UncheckedReflectiveOperationException;
 
 /**
@@ -61,14 +60,14 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 	
 	@Override
 	protected synchronized void start() {
-		HandlerListUtils.getEventListeners(eventClass).register(scalableListener);
+		new HandlerListSearch<>(eventClass).search().register(scalableListener);
 
 		super.start();
 	}
 	
 	@Override
 	protected synchronized void close() {
-		HandlerListUtils.getEventListeners(eventClass).unregister(scalableListener);
+		new HandlerListSearch<>(eventClass).search().unregister(scalableListener);
 
 		super.close();
 	}
