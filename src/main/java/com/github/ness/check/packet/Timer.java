@@ -32,7 +32,7 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 		@DefaultDouble(1.07)
 		double maxpackets();
 
-		@DefaultBoolean(true)
+		@DefaultBoolean(false)
 		boolean negativetimer();
 	}
 
@@ -47,6 +47,10 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 		}
 		final long current = System.nanoTime();
 		delay.add((long) ((current - lastDelay) / 1e+6));
+		if (delay.size() < 40) {
+			return;
+		}
+
 		final long average = delay.average();
 		final float speed = 50.0f / (float) average;
 		if (speed > MAX_PACKETS_PER_TICK) {
@@ -54,7 +58,7 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 		} else if ((speed > 0.2 && speed < 0.9) && negativeTimerEnabled) {
 			this.flagEvent(e, "NegativeTimer " + Utility.round(speed, 100));
 		}
-		if (nessPlayer.isDevMode()) {
+		if (nessPlayer.isDebugMode()) {
 			nessPlayer.sendDevMessage("Timer: " + speed + " Average: " + average);
 		}
 		this.lastDelay = current;

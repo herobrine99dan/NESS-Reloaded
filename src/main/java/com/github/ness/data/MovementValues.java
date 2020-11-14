@@ -76,6 +76,8 @@ public class MovementValues {
 	private final boolean isFlying;
 	@Getter
 	private final boolean ableFly;
+	@Getter
+	private final boolean sprinting;
 
 	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from) {
 		if (Bukkit.isPrimaryThread()) {
@@ -126,6 +128,7 @@ public class MovementValues {
 			AroundLadders = ladder;
 			AroundSlabs = slab;
 			AroundStairs = stairs;
+			sprinting = p.isSprinting();
 			if (!slime) {
 				slime = Utility.hasBlock(p, "SLIME");
 			}
@@ -143,6 +146,7 @@ public class MovementValues {
 			AroundCarpet = false;
 			AroundLadders = false;
 			groundAround = false;
+			sprinting = false;
 			AroundLily = false;
 			AroundSnow = false;
 			insideVehicle = false;

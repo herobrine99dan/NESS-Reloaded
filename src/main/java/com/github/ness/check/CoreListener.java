@@ -111,15 +111,6 @@ public class CoreListener implements Listener {
 			nessPlayer.setPlayerAction(PlayerAction.DAMAGE);
 		}
 	}
-	
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onSprint(PlayerToggleSprintEvent event) {
-		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer((Player) event.getPlayer());
-		if (nessPlayer == null) {
-			return;
-		}
-		nessPlayer.setPlayerAction(PlayerAction.SPRINT);
-	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onBreak(BlockBreakEvent event) {

@@ -45,37 +45,40 @@ public class MathUtils {
 
 	/**
 	 * Calculate the Greatest Common Divisor from two double values
+	 * 
 	 * @author Frap (or Frappay)
 	 */
 	public static double getGCD(double a, double b) {
+		a = Math.abs(a);
+		b = Math.abs(b);
 		if (a < b) {
 			return getGCD(b, a);
 		}
-		a = Math.abs(a);
-		b = Math.abs(b);
 		if (b < 0.001) {
 			return a;
 		} else {
 			return getGCD(b, a - Math.floor(a / b) * b);
 		}
 	}
-	
+
 	/**
-	 * From https://www.spigotmc.org/threads/determining-a-players-sensitivity.468373/
+	 * From
+	 * https://www.spigotmc.org/threads/determining-a-players-sensitivity.468373/
+	 * 
 	 * @param gcd
 	 * @return
 	 */
 	public static double getSensitivity(double gcd) {
 		return (1.655 * Math.cbrt(0.8333 * gcd)) - 0.3333;
 	}
-	
-    public static double gcdRational(List<Double> numbers) {
-        double result = numbers.get(0);
-        for (int i = 1; i < numbers.size(); i++) {
-            result = getGCD(numbers.get(i), result);
-        }
-        return result;
-    }
+
+	public static double gcdRational(List<Double> numbers) {
+		double result = numbers.get(0);
+		for (int i = 1; i < numbers.size(); i++) {
+			result = getGCD(numbers.get(i), result);
+		}
+		return result;
+	}
 
 	public static float yawTo180F(float flub) {
 		if ((flub %= 360.0f) >= 180.0f) {

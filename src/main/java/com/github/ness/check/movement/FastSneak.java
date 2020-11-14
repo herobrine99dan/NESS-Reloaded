@@ -33,9 +33,6 @@ public class FastSneak extends ListeningCheck<PlayerMoveEvent> {
 		double walkSpeed = p.getWalkSpeed() * 0.85;
 		xDiff -= (xDiff / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);
 		zDiff -= (zDiff / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);
-		if(nessPlayer.milliSecondTimeDifference(PlayerAction.SPRINT) < 600) {
-			walkSpeed += 0.3;
-		}
 		if ((xDiff > walkSpeed || zDiff > walkSpeed) && p.isSneaking() && !Utility.hasflybypass(p)) {
 			if (Math.abs(nessPlayer.getMovementValues().xDiff) > walkSpeed
 					|| Math.abs(nessPlayer.getMovementValues().zDiff) > walkSpeed) {
