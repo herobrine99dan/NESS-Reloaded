@@ -24,8 +24,7 @@ class HandlerListSearch<E extends Event> {
 	 */
 	HandlerList search() {
 		try {
-			Method getHandlerListMethod;
-			getHandlerListMethod = getGetHandlerListMethod(eventClass);
+			Method getHandlerListMethod = getGetHandlerListMethod(eventClass);
 			getHandlerListMethod.setAccessible(true);
 			return (HandlerList) getHandlerListMethod.invoke(null);
 		} catch (IllegalAccessException | InvocationTargetException ex) {
@@ -35,13 +34,12 @@ class HandlerListSearch<E extends Event> {
 
 	private static Method getGetHandlerListMethod(Class<? extends Event> clazz) {
 		try {
-			Method getHandlerListMethod = clazz.getDeclaredMethod("getHandlerList");
-			return getHandlerListMethod;
+			return clazz.getDeclaredMethod("getHandlerList");
 
 		} catch (NoSuchMethodException ex) {
 			Class<?> superClass;
 			if ((superClass = clazz.getSuperclass()) != null && superClass != Event.class) {
-				return getGetHandlerListMethod(clazz.getSuperclass().asSubclass(Event.class));
+				return getGetHandlerListMethod(superClass.asSubclass(Event.class));
 			} else {
 				throw new IllegalStateException("Unable to find getHandlerList for event " + clazz.getName(), ex);
 			}
