@@ -3,6 +3,7 @@ package com.github.ness.check;
 public enum ChecksPackage {
 
 	COMBAT("combat"),
+	AUTOCLICK("combat.autoclick"),
 	MOVEMENT("movement"),
 	FLYCHEAT("movement.fly"),
 	PACKET("packet"),

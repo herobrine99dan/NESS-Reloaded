@@ -1,9 +1,9 @@
 package com.github.ness.config;
 
-import com.github.ness.check.combat.AutoClick;
 import com.github.ness.check.combat.AutoClicker;
 import com.github.ness.check.combat.Killaura;
 import com.github.ness.check.combat.PlayerESP;
+import com.github.ness.check.combat.autoclick.AutoClickConfig;
 import com.github.ness.check.movement.ElytraCheats;
 import com.github.ness.check.movement.FastLadder;
 import com.github.ness.check.movement.fly.FlyInvalidGravity;
@@ -21,17 +21,9 @@ import space.arim.dazzleconf.annote.SubSection;
 public interface ChecksConfig {
 
 	@ConfKey("autoclick")
-	@ConfComments({
-		"",
-		"AutoClick",
-		"Caps clicks per second (CPS) at a hard limit, also calculates",
-		"the variance in the user's clicks (constancy) and the variance",
-		"in the variance (constancy super).",
-		"",
-		"Performance impact: Minimal",
-		""})
 	@SubSection
-	AutoClick.CheckConf autoClick();
+	AutoClickConfig autoClick();
+	
 	@ConfKey("autoclicker")
 	@ConfComments({
 		"",
@@ -128,4 +120,5 @@ public interface ChecksConfig {
 	@ConfKey("freecam")
 	@SubSection
 	Freecam.Config freecam();
+
 }
