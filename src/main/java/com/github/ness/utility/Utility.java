@@ -77,6 +77,12 @@ public class Utility {
         return block.contains("LADDER") || block.contains("VINE");
     }
 
+    /**
+     * Check if a player has Vehicles near
+     * @param p
+     * @param range
+     * @return
+     */
     public static boolean hasVehicleNear(Player p, int range) {
         if (p.isInsideVehicle()) {
             return true;
@@ -120,27 +126,6 @@ public class Utility {
         }
         return ping;
     }
-
-    /**
-     * Sets the player's ping reflectively
-     * 
-     * @param player the player
-     * @param ping the ping
-     * @deprecated Evil! Never call this method
-     */
-    @Deprecated
-    public static void setPing(Player player, int ping) {
-        try {
-            Class<?> craftPlayerClass = Class.forName("org.bukkit.craftbukkit."
-                    + Bukkit.getServer().getClass().getPackage().getName().substring(23) + ".entity.CraftPlayer");
-            Object handle = craftPlayerClass.getMethod("getHandle", new Class[0]).invoke(craftPlayerClass.cast(player)
-            );
-            handle.getClass().getDeclaredField("ping").set(handle, ping);
-        } catch (Exception exception) {
-
-        }
-    }
-
     
     public static double getDistanceFromGround(final Location loc) {
 		double dTG = 0; // Distance to ground

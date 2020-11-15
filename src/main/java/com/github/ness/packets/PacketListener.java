@@ -1,12 +1,5 @@
 package com.github.ness.packets;
 
-import com.github.ness.NESSAnticheat;
-import com.github.ness.NessPlayer;
-import com.github.ness.packets.wrappers.PacketPlayInPositionLook;
-import com.github.ness.packets.wrappers.PacketPlayInUseEntity;
-import com.github.ness.packets.wrappers.SimplePacket;
-import com.github.ness.utility.UncheckedReflectiveOperationException;
-
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
@@ -14,6 +7,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import com.github.ness.NESSAnticheat;
+import com.github.ness.NessPlayer;
+import com.github.ness.packets.wrappers.SimplePacket;
+import com.github.ness.packets.wrappers.WrappedInFlyingPacket;
+import com.github.ness.packets.wrappers.WrappedInUseEntityPacket;
+import com.github.ness.utility.UncheckedReflectiveOperationException;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
@@ -93,7 +93,7 @@ public class PacketListener implements Listener {
         	}
         }
         
-        private boolean shouldContinue(Object packet) {
+        private boolean shouldContinue(Object packet) throws IllegalArgumentException, IllegalAccessException {
         	NessPlayer nessPlayer = ness.getCheckManager().getExistingPlayer(uuid);
         	if (nessPlayer == null) {
         		return true;
@@ -106,16 +106,17 @@ public class PacketListener implements Listener {
         }
     }
 
-    private SimplePacket getPacketObject(Object p) {
+    private SimplePacket getPacketObject(Object p) throws IllegalArgumentException, IllegalAccessException {
         String packetname = p.getClass().getSimpleName().toLowerCase();
         SimplePacket packet;
-        if (packetname.contains("position")) {
-            packet = new PacketPlayInPositionLook(p);
-        } else if (packetname.contains("useentity")) {
-            packet = new PacketPlayInUseEntity(p);
+        if (packetname.contains("flying")) {
+            packet = new WrappedInFlyingPacket(p);
+        } else if(packetname.contains("useentity")){
+            packet = new WrappedInUseEntityPacket(p);
         } else {
             packet = new SimplePacket(p);
         }
+        packet.process();
         return packet;
     }
 

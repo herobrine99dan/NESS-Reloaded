@@ -1,56 +1,54 @@
 package com.github.ness.packets.wrappers;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.github.ness.utility.ReflectionUtility;
 
 public class SimplePacket {
-    private final Object packet;
+	private final Object packet;
 
-    public SimplePacket(Object packet) {
-        this.packet = packet;
-    }
+	public SimplePacket(Object packet) {
+		this.packet = packet;
+	}
 
-    public String getName() {
-        return this.packet.getClass().getSimpleName();
-    }
+	public String getName() {
+		return this.packet.getClass().getSimpleName();
+	}
 
-    public Object getPacket() {
-        return this.packet;
-    }
+	public Object getPacket() {
+		return this.packet;
+	}
 
-    /**
-     * This method cast this object to the PacketPlayInPositionLook Object
-     * Return Null if this object isn't a PacketPlayInPositionLook Object
-     *
-     * @return
-     */
-    public PacketPlayInPositionLook getPositionPacket() {
-        if (this instanceof PacketPlayInPositionLook) {
-            return (PacketPlayInPositionLook) this;
-        } else {
-            return null;
-        }
-    }
+	Object getField(String field) {
+		return ReflectionUtility.getField(packet, field);
+	}
 
-    /**
-     * This method cast this object to the PacketPlayInUseEntity Object
-     * Return Null if this object isn't a PacketPlayInUseEntity Object
-     *
-     * @return
-     */
-    public PacketPlayInUseEntity getUseEntity() {
-        if (this instanceof PacketPlayInUseEntity) {
-            return (PacketPlayInUseEntity) this;
-        } else {
-            return null;
-        }
-    }
+	<T> Field getField(Class<?> target, Class<T> fieldType, int index) {
+		List<Field> fields = new ArrayList<Field>();
+		fields.addAll(Arrays.asList(target.getDeclaredFields()));
+		fields.addAll(Arrays.asList(target.getFields()));
+		for(Field f : fields) {
+			if (fieldType.isAssignableFrom(f.getType()) && index-- <= 0) {
+				f.setAccessible(true);
+				return f;
+			}
+		}
+		// We Search in parent classes
+		if (target.getSuperclass() != null)
+			return getField(target.getSuperclass(),fieldType, index);
 
-    public Object getField(String field) {
-        return ReflectionUtility.getField(packet, field);
-    }
+		throw new IllegalArgumentException("Cannot find field with type " + fieldType);
+	}
+	
+	public void process() throws IllegalArgumentException, IllegalAccessException {
+		return;
+	}
 
-    public Object getDeclaredField(String field) {
-        return ReflectionUtility.getDeclaredField(packet, field);
-    }
+	Object getDeclaredField(String field) {
+		return ReflectionUtility.getDeclaredField(packet, field);
+	}
 
 }

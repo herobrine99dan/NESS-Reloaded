@@ -40,23 +40,6 @@ public class ReflectionUtility {
         return loc.toBukkitLocation().getBlock().getType().name().toLowerCase();
     }
 
-    /**
-     * Gets a color by field name
-     * 
-     * @param name the name of the color
-     * @return the color or null
-     * @deprecated this method handles exceptions poorly
-     */
-    @Deprecated
-    public static Color getColorByName(String name) {
-        try {
-            return (Color) Color.class.getField(name.toUpperCase()).get(null);
-        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public static Class<?> wrapperToPrimitive(Class<?> clazz) {
         if (clazz == Boolean.class)
             return boolean.class;
