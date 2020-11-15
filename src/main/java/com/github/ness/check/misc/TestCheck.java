@@ -11,19 +11,16 @@ import com.github.ness.check.ListeningCheckInfo;
 
 public class TestCheck extends ListeningCheck<PlayerMoveEvent> {
 
-	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
-			.forEvent(PlayerMoveEvent.class);
+	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
 	public TestCheck(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 
-    @Override
-    protected void checkEvent(PlayerMoveEvent event) {
-    	Player player = event.getPlayer();
-    	if(Math.abs(player.getVelocity().getY()) > 0.0784) {
-    		player.sendMessage("Velocity: " + (float) player.getVelocity().getY());
-    	}
-    }
+	@Override
+	protected void checkEvent(PlayerMoveEvent event) {
+		player().sendDevMessage("Hypot: " + (float) player().getMovementValues().getXZHypot() + " XZDiff: "
+				+ (float) player().getMovementValues().XZDiff);
+	}
 
 }

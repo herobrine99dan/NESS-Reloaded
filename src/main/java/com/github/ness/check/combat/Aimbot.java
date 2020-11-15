@@ -57,12 +57,13 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 			if (result < 0.007) {
 				final double sensitivity = MathUtils.getSensitivity(gcd);
 				if (player.isDevMode()) {
-					player.sendDevMessage("GCD: " + Utility.round(gcd, 100) + "Sensitivity: " + Math.round(MathUtils.getSensitivity(gcd)*200));
+					player.sendDevMessage("GCD: " + Utility.round(gcd, 100) + "Sensitivity: "
+							+ Math.round(MathUtils.getSensitivity(gcd) * 200));
 				}
 				player.setSensitivity(sensitivity);
 			}
 			if (result > 0.001D || gcd < 1.0E-4D) {
-				//flagEvent(event);
+				// flagEvent(event);
 			}
 			pitchDiff.clear();
 			lastGCD = gcd;
@@ -95,21 +96,16 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 	/**
 	 * Check for some Aimbot Pattern
 	 */
-	private boolean Check2(ReceivedPacketEvent e) {
+	private void Check2(ReceivedPacketEvent e) {
 		NessPlayer player = e.getNessPlayer();
 		float yawChange = (float) Math.abs(player.getMovementValues().yawDiff);
 		float pitchChange = (float) Math.abs(player.getMovementValues().pitchDiff);
 		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {
 			flag(" PerfectAura");
-			// if(player().setViolation(new Violation("Aimbot", "PerfectAura")))
-			// e.setCancelled(true);
-			return true;
 		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {
 			flag(" PerfectAura1");
-			// if(player().setViolation(new Violation("Aimbot", "PerfectAura1")))
-			// e.setCancelled(true);
-			return true;
+		} else if (MathUtils.isExponentiallySmall(pitchChange) && yawChange > .5f) {
+			flag(" PerfectAura2");
 		}
-		return false;
 	}
 }

@@ -9,7 +9,7 @@ import com.github.ness.utility.Utility;
 
 import lombok.Getter;
 
-//Need a refactor, we should move some fields to NessPlayer
+//Need a refactor
 public class MovementValues {
 
 	/**
@@ -36,6 +36,8 @@ public class MovementValues {
 	 * XZ Difference Math.abs(xDiff) + Math.abs(zDiff);
 	 */
 	public final double XZDiff;
+	@Getter
+	private final double XZHypot;
 	@Getter
 	private final boolean AroundIce;
 	/**
@@ -78,6 +80,7 @@ public class MovementValues {
 	private final boolean ableFly;
 	@Getter
 	private final boolean sprinting;
+	private final boolean blockUnderHead;
 
 	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from) {
 		if (Bukkit.isPrimaryThread()) {
@@ -125,6 +128,7 @@ public class MovementValues {
 				}
 			}
 			AroundSnow = snow;
+			blockUnderHead = Utility.groundAround(to.toBukkitLocation().add(0, 1.8, 0));
 			AroundLadders = ladder;
 			AroundSlabs = slab;
 			AroundStairs = stairs;
@@ -148,6 +152,7 @@ public class MovementValues {
 			groundAround = false;
 			sprinting = false;
 			AroundLily = false;
+			blockUnderHead = false;
 			AroundSnow = false;
 			insideVehicle = false;
 			gamemode = GameMode.SURVIVAL;
@@ -163,8 +168,13 @@ public class MovementValues {
 		yDiff = to.getY() - from.getY();
 		zDiff = to.getZ() - from.getZ();
 		XZDiff = Math.abs(xDiff) + Math.abs(zDiff);
+		XZHypot = Math.hypot(xDiff, zDiff);
 		this.to = to;
 		this.from = from;
+	}
+	
+	public boolean hasBlockNearHead() {
+		return blockUnderHead;
 	}
 
 	public void doCalculations() {

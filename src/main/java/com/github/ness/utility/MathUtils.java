@@ -1,5 +1,6 @@
 package com.github.ness.utility;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MathUtils {
@@ -20,6 +21,10 @@ public class MathUtils {
 	 */
 	public static final double sin(double f) {
 		return table[(int) (f * 10430.378F) & '\uffff'];
+	}
+
+	public static boolean isExponentiallySmall(double d) {
+		return d < .0001 && d > 0;
 	}
 
 	/**
@@ -70,6 +75,18 @@ public class MathUtils {
 	 */
 	public static double getSensitivity(double gcd) {
 		return (1.655 * Math.cbrt(0.8333 * gcd)) - 0.3333;
+	}
+
+	public static double getStandardDeviation(ArrayList<Double> numberArray) {
+		double sum = 0.0, deviation = 0.0;
+		int length = numberArray.size();
+		for (double num : numberArray)
+			sum += num;
+		double mean = sum / length;
+		for (double num : numberArray)
+			deviation += Math.pow(num - mean, 2);
+
+		return Math.sqrt(deviation / length);
 	}
 
 	public static double gcdRational(List<Double> numbers) {

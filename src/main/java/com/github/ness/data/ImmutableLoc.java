@@ -62,7 +62,7 @@ public class ImmutableLoc {
 
 	private void makeDirection() {
 		double rotX = yaw;
-		double rotY = 3;
+		double rotY = pitch;
 		double y = -MathUtils.sin(Math.toRadians(rotY));
 		double xz = MathUtils.cos(Math.toRadians(rotY));
 		double x = -xz * MathUtils.sin(Math.toRadians(rotX));

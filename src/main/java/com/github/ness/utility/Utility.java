@@ -225,7 +225,7 @@ public class Utility {
     public static boolean specificBlockNear(Location loc, String m) {
     	m = m.toUpperCase();
         for (Block b : Utility.getBlocksAround(loc, 2)) {
-            if (m.equals("liquid")) {
+            if (m.equals("LIQUID")) {
                 if (b.isLiquid()) {
                     return true;
                 }
