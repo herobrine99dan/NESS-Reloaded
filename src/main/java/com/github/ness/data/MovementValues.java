@@ -65,6 +65,8 @@ public class MovementValues {
 	@Getter
 	private final boolean groundAround;
 	@Getter
+	private final boolean AroundWeb;
+	@Getter
 	private final ImmutableVector serverVelocity;
 	@Getter
 	private final boolean insideVehicle;
@@ -94,6 +96,7 @@ public class MovementValues {
 			boolean lily = false;
 			boolean carpet = false;
 			boolean ground = false;
+			boolean web = false;
 			serverVelocity = new ImmutableVector(p.getVelocity().getX(), p.getVelocity().getY(),
 					p.getVelocity().getZ());
 			gamemode = p.getGameMode();
@@ -125,12 +128,15 @@ public class MovementValues {
 					lily = true;
 				} else if (name.contains("CARPET")) {
 					carpet = true;
+				} else if (name.contains("WEB")) {
+					web = true;
 				}
 			}
 			AroundSnow = snow;
 			blockUnderHead = Utility.groundAround(to.toBukkitLocation().add(0, 1.8, 0));
 			AroundLadders = ladder;
 			AroundSlabs = slab;
+			AroundWeb = web;
 			AroundStairs = stairs;
 			sprinting = p.isSprinting();
 			if (!slime) {
@@ -152,6 +158,7 @@ public class MovementValues {
 			groundAround = false;
 			sprinting = false;
 			AroundLily = false;
+			AroundWeb = false;
 			blockUnderHead = false;
 			AroundSnow = false;
 			insideVehicle = false;

@@ -24,6 +24,9 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	@Override
+	/**
+	 * Simple Friction Check Made with help of Frap
+	 */
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		NessPlayer nessPlayer = this.player();

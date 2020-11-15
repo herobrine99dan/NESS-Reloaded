@@ -47,7 +47,7 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		}
 		if (!nessPlayer.isTeleported() && player.getNearbyEntities(2, 2, 2).isEmpty() && !Utility.hasflybypass(player)
 				&& player.isOnline() && !movementValues.isAroundSlime() && !player.isInsideVehicle()
-				&& !Utility.specificBlockNear(e.getTo().clone(), "web")) {
+				&& !player().getMovementValues().isAroundWeb()) {
 			if (player.isOnGround() && !Utility.groundAround(e.getTo()) && !movementValues.isAroundLadders()) {
 				flagEvent(e, " FalseGround");
 				// if(player().setViolation(new Violation("Fly", "FalseGround")))

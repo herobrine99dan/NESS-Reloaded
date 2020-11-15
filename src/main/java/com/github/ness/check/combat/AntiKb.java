@@ -33,7 +33,7 @@ public class AntiKb extends ListeningCheck<EntityDamageByEntityEvent> {
 	private void checkPlayerMovesABit(Player player) {
 
 		final Location from = player.getLocation();
-		if (Utility.isClimbableBlock(from.getBlock()) || Utility.specificBlockNear(from.clone(), "web")
+		if (Utility.isClimbableBlock(from.getBlock()) || player().getMovementValues().isAroundWeb()
 				|| Utility.hasKbBypass(player)) {
 			return;
 		}
