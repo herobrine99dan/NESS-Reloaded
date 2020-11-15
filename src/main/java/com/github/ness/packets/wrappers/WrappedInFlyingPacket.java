@@ -35,9 +35,9 @@ public class WrappedInFlyingPacket extends SimplePacket {
 
 	@Override
 	public void process() throws IllegalArgumentException, IllegalAccessException {
-		String name = this.getName();
-		pos = name.contains("Position");
-		look = name.contains("Look");
+		String name = this.getName().toLowerCase();
+		pos = name.contains("position");
+		look = name.contains("look");
 		if (pos) {
 			x = fieldX.getDouble(this.getPacket());
 			y = fieldY.getDouble(this.getPacket());

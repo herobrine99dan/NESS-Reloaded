@@ -31,7 +31,7 @@ public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
 	}
 
 	public interface Config {
-		@DefaultInteger(65)
+		@DefaultInteger(80)
 		int maxPackets();
 
 		@DefaultInteger(230)

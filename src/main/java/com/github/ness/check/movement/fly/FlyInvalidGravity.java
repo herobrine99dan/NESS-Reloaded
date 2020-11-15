@@ -32,7 +32,7 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
 	}
 	
 	public interface Config {
-		@DefaultDouble(0.9)
+		@DefaultDouble(0.95)
 		double maxGravity();
 	}
 

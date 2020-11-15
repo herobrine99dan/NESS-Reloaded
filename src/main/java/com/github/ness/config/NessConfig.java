@@ -51,7 +51,7 @@ public interface NessConfig {
 		/* "ChestESP", */
 		"FlyGhostMode",
 		"FlyHighJump",
-		"FastSneak",
+		//"FastSneak",
 		"FlyInvalidJumpMotion",
 		"FlyInvalidGravity",
 		"FlyFalseGround",
@@ -68,7 +68,8 @@ public interface NessConfig {
 		"NoGround",
 		"NoFall",
 		"Speed",
-		"SpeedAir",
+		"SpeedAir", 
+		"SpeedFriction",
 		"Jesus",
 		"Step",
 		"Phase",

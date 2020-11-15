@@ -27,9 +27,7 @@ public class SimplePacket {
 	}
 
 	<T> Field getField(Class<?> target, Class<T> fieldType, int index) {
-		List<Field> fields = new ArrayList<Field>();
-		fields.addAll(Arrays.asList(target.getDeclaredFields()));
-		fields.addAll(Arrays.asList(target.getFields()));
+		List<Field> fields = Arrays.asList(target.getDeclaredFields());
 		for(Field f : fields) {
 			if (fieldType.isAssignableFrom(f.getType()) && index-- <= 0) {
 				f.setAccessible(true);

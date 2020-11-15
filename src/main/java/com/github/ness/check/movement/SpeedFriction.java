@@ -18,6 +18,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 
 	int airTicks;
 	double lastDeltaXZ;
+	int buffer;
 
 	public SpeedFriction(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
@@ -48,11 +49,16 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		} else {
 			airTicks = 0;
 		}
-		if (airTicks > 1) { //TODO Add a buffer that starts from 2
+		if (airTicks > 1) {
 			final double prediction = lastDeltaXZ * 0.91f + (player.isSprinting() ? 0.026 : 0.02);
 			final double difference = xzDiff - prediction;
 			if (difference > 1e-5) {
-				nessPlayer.sendDevMessage("CHEATS!");
+				buffer++;
+				if(buffer > 3) {
+					this.flagEvent(event);
+				}
+			} else if(buffer > 0) {
+				buffer--;
 			}
 		}
 		this.lastDeltaXZ = xzDiff;
