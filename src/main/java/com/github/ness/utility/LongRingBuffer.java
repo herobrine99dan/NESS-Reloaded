@@ -3,8 +3,8 @@ package com.github.ness.utility;
 import java.util.Arrays;
 
 /**
- * A ring buffer of {@code long} values which can grow to its maximum size. When the buffer
- * is full, additions remove the oldest entry. <br>
+ * A ring buffer of {@code long} values which can grow to its maximum size. When
+ * the buffer is full, additions remove the oldest entry. <br>
  * <br>
  * Not synchronized and not thread safe.
  * 
@@ -19,7 +19,7 @@ public class LongRingBuffer {
 	 */
 	private int writerIndex;
 	private boolean full;
-	
+
 	/**
 	 * Creates from a fixed buffer size
 	 * 
@@ -32,7 +32,7 @@ public class LongRingBuffer {
 		}
 		values = new long[capacity];
 	}
-	
+
 	/**
 	 * Gets the capacity this buffer was created with
 	 * 
@@ -41,7 +41,7 @@ public class LongRingBuffer {
 	public int getCapacity() {
 		return values.length;
 	}
-	
+
 	private int nextWriterIndex() {
 		int writerIndex = this.writerIndex;
 		writerIndex++;
@@ -51,7 +51,7 @@ public class LongRingBuffer {
 		}
 		return writerIndex;
 	}
-	
+
 	/**
 	 * Adds a value. If full, removes/overwrites the oldest value
 	 * 
@@ -61,11 +61,12 @@ public class LongRingBuffer {
 		values[writerIndex] = value;
 		writerIndex = nextWriterIndex();
 	}
-	
+
 	/**
 	 * Clears and resets. <br>
 	 * <br>
-	 * This object will be in the same state as when it was created when this method returns
+	 * This object will be in the same state as when it was created when this method
+	 * returns
 	 * 
 	 */
 	public void clear() {
@@ -73,7 +74,7 @@ public class LongRingBuffer {
 		writerIndex = 0;
 		full = false;
 	}
-	
+
 	/**
 	 * Determines whether the buffer is empty
 	 * 
@@ -82,7 +83,7 @@ public class LongRingBuffer {
 	public boolean isEmpty() {
 		return !full && writerIndex == 0;
 	}
-	
+
 	/**
 	 * Gets the amount of values in the buffer
 	 * 
@@ -94,7 +95,7 @@ public class LongRingBuffer {
 		}
 		return writerIndex;
 	}
-	
+
 	/**
 	 * Computes the average value
 	 * 
@@ -107,7 +108,95 @@ public class LongRingBuffer {
 		}
 		return sum() / size;
 	}
+
+	/**
+	 * Get the highest value
+	 * 
+	 * @return the highest value
+	 */
+	public long biggestValue() {
+		long max = values[0];
+		for (long value : values) {
+			if (value > max) {
+				max = value;
+			}
+		}
+		return max;
+	}
+
+	/**
+	 * Get the smallest value
+	 * 
+	 * @return the smallest value
+	 */
+	public long smallestValue() {
+		long min = values[0];
+		for (long value : values) {
+			if (value < min) {
+				min = value;
+			}
+		}
+		return min;
+	}
+
+	/**
+	 * Get the median beetween values
+	 * 
+	 * @return the median
+	 */
+	public long median() {
+		Arrays.sort(values);
+		long median;
+		if (values.length % 2 == 0) {
+			median = (values[values.length / 2] + values[values.length / 2 + 1]) / 2;
+		} else {
+			median = values[values.length / 2];
+		}
+		return median;
+	}
+
+	/**
+	 * Get the range of variation beetween values
+	 * 
+	 * @return the range of variation
+	 */
+	public long variationRange() {
+		return this.biggestValue() - this.smallestValue();
+	}
 	
+	/**
+	 * Get the simple average waste
+	 * 
+	 * @return the simple average waste
+	 */
+	public long simpleAverageWaste() {
+		long number = 0;
+
+		long mean = average();
+
+		for (long num : values) {
+			number += Math.abs(num - mean);
+		}
+		return number/this.values.length;
+	}
+
+	/**
+	 * Get standard Deviation beetween values
+	 * 
+	 * @return the standard Deviation
+	 */
+	public long standardDeviation() {
+		long standardDeviation = 0;
+
+		long mean = average();
+
+		for (long num : values) {
+			standardDeviation += Math.pow(num - mean, 2);
+		}
+
+		return (long) Math.sqrt(standardDeviation / values.length);
+	}
+
 	/**
 	 * Computes the sum of all the values
 	 * 
@@ -120,5 +209,5 @@ public class LongRingBuffer {
 		}
 		return sum;
 	}
-	
+
 }
