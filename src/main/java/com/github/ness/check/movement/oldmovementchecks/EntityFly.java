@@ -27,7 +27,7 @@ public class EntityFly extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues values = player().getMovementValues();
 		if (player.isInsideVehicle()) {
 			if(!player.getVehicle().getType().name().contains("HORSE")) {
-				if(values.yDiff > 0.1 && values.XZDiff > 0.1) {
+				if(values.yDiff > 0.1 && values.getXZDiff() > 0.1) {
 					this.flagEvent(e, player.getVehicle().getType().name());
 				}
 			}

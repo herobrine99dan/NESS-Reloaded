@@ -44,7 +44,7 @@ public class GhostHand extends ListeningCheck<PlayerInteractEvent> {
 		}
 		if ((event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
 				&& targetBlock.getType().isSolid() && targetBlock.getType().isOccluding()
-				&& p.getMovementValues().XZDiff < 0.15 && !targetBlock.equals(event.getClickedBlock())) {
+				&& p.getMovementValues().getXZDiff() < 0.2 && !targetBlock.equals(event.getClickedBlock())) {
 			Location block = event.getClickedBlock().getLocation().add(event.getBlockFace().getModX(),
 					event.getBlockFace().getModY(), event.getBlockFace().getModZ());
 

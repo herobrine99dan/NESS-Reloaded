@@ -27,7 +27,7 @@ public class FlyHighDistance extends ListeningCheck<PlayerMoveEvent> {
 	protected void checkEvent(PlayerMoveEvent e) {
 		MovementValues values = player().getMovementValues();
 		Player player = e.getPlayer();
-		double dist = values.XZDiff;
+		double dist = values.getXZDiff();
 		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
 				|| player().isTeleported()) {
 			return;

@@ -29,7 +29,7 @@ public class NoSlowFood extends ListeningCheck<PlayerItemConsumeEvent> {
             return;
         }
         NessPlayer p = player();
-        double distance = p.getMovementValues().XZDiff;
+        double distance = p.getMovementValues().getXZDiff();
         distance -= e.getPlayer().getVelocity().getX();
         distance -= e.getPlayer().getVelocity().getZ();
         if (distance > 0.25 || e.getPlayer().isSprinting()) {

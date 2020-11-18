@@ -33,7 +33,7 @@ public class NoSlowBow extends ListeningCheck<EntityShootBowEvent> {
 			return;
 		}
 		NessPlayer p = player();
-		double distance = p.getMovementValues().XZDiff;
+		double distance = p.getMovementValues().getXZDiff();
 		/*
 		 * if (o.isSprinting() || failed==1) { e.setCancelled(true);
 		 * checkfailed(o.getName()); }

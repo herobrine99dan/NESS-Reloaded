@@ -44,7 +44,7 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 		final boolean debugMode = nessPlayer.isDebugMode();
 		Location from = event.getFrom(), to = event.getTo();
 		MovementValues values = nessPlayer.getMovementValues();
-		Double hozDist = values.XZDiff;
+		Double hozDist = values.getXZDiff();
 		Double fallDist = (double) player.getFallDistance();
 		MovementValues movementValues = nessPlayer.getMovementValues();
 		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)

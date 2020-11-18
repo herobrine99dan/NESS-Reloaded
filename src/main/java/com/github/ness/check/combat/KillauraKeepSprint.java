@@ -39,7 +39,7 @@ public class KillauraKeepSprint extends ListeningCheck<ReceivedPacketEvent> {
 		}
 		NessPlayer player = e.getNessPlayer();
 		MovementValues values = player.getMovementValues();
-		final double deltaXZ = values.getXZHypot();
+		final double deltaXZ = values.getXZDiff();
 
 		final double acceleration = Math.abs(deltaXZ - lastDeltaXZ);
 

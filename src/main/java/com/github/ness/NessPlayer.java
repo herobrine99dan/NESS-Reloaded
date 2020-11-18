@@ -234,9 +234,9 @@ public class NessPlayer implements AnticheatPlayer {
 			return;
 		}
 		final long current = System.nanoTime() / 1000_000L;
-		double ytoAdd = player.getVelocity().getY();
-		final Location block = player.getLocation().clone().add(0, ytoAdd, 0);
 		if ((current - setBackTicks) > 40) {
+			double ytoAdd = player.getVelocity().getY();
+			final Location block = player.getLocation().clone().add(0, ytoAdd, 0);
 			for (int i = 0; i < 10; i++) {
 				if (block.getBlock().getType().isSolid()) {
 					block.add(0, 0.1, 0);
@@ -244,9 +244,9 @@ public class NessPlayer implements AnticheatPlayer {
 					break;
 				}
 			}
+			player.teleport(block, TeleportCause.PLUGIN);
 		}
 		hasSetback = true;
-		player.teleport(block, TeleportCause.PLUGIN);
 		setBackTicks = current;
 		setBackTicks++;
 	}

@@ -1,25 +1,27 @@
 package com.github.ness.check.misc;
 
+import org.bukkit.event.player.PlayerMoveEvent;
+
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
-import com.github.ness.data.ImmutableVector;
-import com.github.ness.packets.ReceivedPacketEvent;
-import com.github.ness.utility.Utility;
+import com.github.ness.data.MovementValues;
 
-public class TestCheck extends ListeningCheck<ReceivedPacketEvent> {
+public class TestCheck extends ListeningCheck<PlayerMoveEvent> {
 
-	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos
-			.forEvent(ReceivedPacketEvent.class);
+	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
+			.forEvent(PlayerMoveEvent.class);
 
-	public TestCheck(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
+	public TestCheck(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 
 	@Override
-	protected void checkEvent(ReceivedPacketEvent event) {
+	protected void checkEvent(PlayerMoveEvent event) {
+		MovementValues values = player().getMovementValues();
+		player().sendDevMessage("xzDiff: " + (float) values.getXZDiff());
 	}
 
 }

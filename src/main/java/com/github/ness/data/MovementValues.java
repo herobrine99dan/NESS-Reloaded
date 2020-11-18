@@ -32,12 +32,8 @@ public class MovementValues {
 	 * Z Difference (to.getZ() - from.getZ());
 	 */
 	public final double zDiff;
-	/**
-	 * XZ Difference Math.abs(xDiff) + Math.abs(zDiff);
-	 */
-	public final double XZDiff;
 	@Getter
-	private final double XZHypot;
+	private final double XZDiff;
 	@Getter
 	private final boolean AroundIce;
 	/**
@@ -174,8 +170,7 @@ public class MovementValues {
 		xDiff = to.getX() - from.getX();
 		yDiff = to.getY() - from.getY();
 		zDiff = to.getZ() - from.getZ();
-		XZDiff = Math.abs(xDiff) + Math.abs(zDiff);
-		XZHypot = Math.hypot(xDiff, zDiff);
+		XZDiff = Math.hypot(xDiff, zDiff);
 		this.to = to;
 		this.from = from;
 	}

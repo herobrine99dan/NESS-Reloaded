@@ -35,6 +35,11 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 		@DefaultBoolean(false)
 		boolean negativetimer();
 	}
+	
+	@Override
+	protected boolean shouldDragDown() {
+		return true;
+	}
 
 	/**
 	 * Thanks to GladUrBad for a small hint
