@@ -14,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.Messenger;
 
 import com.github.ness.antibot.AntiBot;
-import com.github.ness.api.NessApi;
+import com.github.ness.api.NESSApi;
 import com.github.ness.check.CheckManager;
 import com.github.ness.config.ConfigManager;
 import com.github.ness.config.NessConfig;
@@ -72,7 +72,7 @@ public class NessAnticheat {
 		violationManager.initiate();
 
 		// Register API implementation
-		getPlugin().getServer().getServicesManager().register(NessApi.class, new NessApiImpl(this), plugin,
+		getPlugin().getServer().getServicesManager().register(NESSApi.class, new NessApiImpl(this), plugin,
 				ServicePriority.Low);
 
 		// Start AntiBot if enabled

@@ -8,14 +8,14 @@ import com.github.ness.api.AnticheatCheck;
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.ChecksManager;
 import com.github.ness.api.InfractionManager;
-import com.github.ness.api.NessApi;
+import com.github.ness.api.NESSApi;
 import com.github.ness.api.PlayersManager;
 import com.github.ness.api.Violation;
 import com.github.ness.api.ViolationAction;
 import com.github.ness.violation.ViolationMigratorUtil;
 
 @SuppressWarnings("deprecation")
-final class NessApiImpl implements NessApi {
+final class NessApiImpl implements NESSApi {
 
 	private final NessAnticheat ness;
 
