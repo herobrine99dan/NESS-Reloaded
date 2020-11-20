@@ -2,7 +2,7 @@ package com.github.ness.check;
 
 import java.time.Duration;
 
-import com.github.ness.NESSAnticheat;
+import com.github.ness.NessAnticheat;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,7 +26,7 @@ public class BaseCheck {
 		return getFactory().getCheckManager();
 	}
 	
-	protected NESSAnticheat ness() {
+	protected NessAnticheat ness() {
 		return manager().getNess();
 	}
 	

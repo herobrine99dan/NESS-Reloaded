@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
  *
  * @author A248
  */
-public interface NESSApi {
+public interface NessApi {
 	
 	/**
 	 * Gets the infraction manager

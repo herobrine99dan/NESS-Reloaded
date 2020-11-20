@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.github.ness.NESSAnticheat;
+import com.github.ness.NessAnticheat;
 import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.ChecksManager;
@@ -24,17 +24,17 @@ public class CheckManager implements ChecksManager {
 
 	private static final Logger logger = NessLogger.getLogger(CheckManager.class);
 
-	private final NESSAnticheat ness;
+	private final NessAnticheat ness;
 	private final PlayerManager playerManager;
 	
 	private volatile Set<BaseCheckFactory<?>> checkFactories;
 
-	public CheckManager(NESSAnticheat ness) {
+	public CheckManager(NessAnticheat ness) {
 		this.ness = ness;
 		playerManager = new PlayerManager(this);
 	}
 
-	public NESSAnticheat getNess() {
+	public NessAnticheat getNess() {
 		return ness;
 	}
 	

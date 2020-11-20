@@ -11,13 +11,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 
-class NESSCommands implements CommandExecutor {
+class NessCommands implements CommandExecutor {
 
-	private static final Logger logger = NessLogger.getLogger(NESSCommands.class);
+	private static final Logger logger = NessLogger.getLogger(NessCommands.class);
 	
-	private final NESSAnticheat ness;
+	private final NessAnticheat ness;
 	
-	NESSCommands(NESSAnticheat ness) {
+	NessCommands(NessAnticheat ness) {
 		this.ness = ness;
 	}
 

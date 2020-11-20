@@ -1,16 +1,15 @@
 package com.github.ness.api.impl;
 
-import com.github.ness.NessPlayer;
-import com.github.ness.api.NESSApi;
-import com.github.ness.api.PlayerFlagEvent;
-import com.github.ness.api.Violation;
-import com.github.ness.api.InfractionTrigger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+
+import com.github.ness.NessPlayer;
+import com.github.ness.api.InfractionTrigger;
+import com.github.ness.api.PlayerFlagEvent;
+import com.github.ness.api.Violation;
 
 import lombok.Getter;
 import lombok.Setter;

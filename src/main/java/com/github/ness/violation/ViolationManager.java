@@ -8,7 +8,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import com.github.ness.NESSAnticheat;
+import com.github.ness.NessAnticheat;
 import com.github.ness.api.Infraction;
 import com.github.ness.api.InfractionManager;
 import com.github.ness.api.InfractionTrigger;
@@ -21,13 +21,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class ViolationManager implements InfractionManager {
 
-	private final NESSAnticheat ness;
+	private final NessAnticheat ness;
 	
 	private ScheduledFuture<?> periodicTask;
 
 	private final Map<SynchronisationContext, Set<InfractionTrigger>> triggers;
 
-	public ViolationManager(NESSAnticheat ness) {
+	public ViolationManager(NessAnticheat ness) {
 		this.ness = ness;
 
 		triggers = new EnumMap<>(SynchronisationContext.class);

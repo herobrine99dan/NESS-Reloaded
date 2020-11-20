@@ -2,24 +2,24 @@ package com.github.ness;
 
 import java.util.logging.Logger;
 
+import org.bukkit.entity.Player;
+
 import com.github.ness.api.AnticheatCheck;
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.ChecksManager;
 import com.github.ness.api.InfractionManager;
-import com.github.ness.api.NESSApi;
+import com.github.ness.api.NessApi;
 import com.github.ness.api.PlayersManager;
 import com.github.ness.api.Violation;
 import com.github.ness.api.ViolationAction;
 import com.github.ness.violation.ViolationMigratorUtil;
 
-import org.bukkit.entity.Player;
-
 @SuppressWarnings("deprecation")
-final class NESSApiImpl implements NESSApi {
+final class NessApiImpl implements NessApi {
 
-	private final NESSAnticheat ness;
+	private final NessAnticheat ness;
 
-	NESSApiImpl(NESSAnticheat ness) {
+	NessApiImpl(NessAnticheat ness) {
 		this.ness = ness;
 	}
 	
@@ -64,7 +64,7 @@ final class NESSApiImpl implements NESSApi {
 	}
 	
 	private static class LoggerHolder {
-		static final Logger logger = NessLogger.getLogger(NESSApiImpl.class);
+		static final Logger logger = NessLogger.getLogger(NessApiImpl.class);
 	}
 
 }

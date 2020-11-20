@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.logging.Level;
 
-import com.github.ness.NESSAnticheat;
+import com.github.ness.NessAnticheat;
 import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Infraction;
@@ -32,7 +32,7 @@ public interface ViolationTriggerSection {
 	@ConfComments("The amount of violations of a check after which to trigger this action. (-1 to disable)")
 	int violations();
 
-	InfractionTrigger toTrigger(ViolationManager manager, NESSAnticheat ness);
+	InfractionTrigger toTrigger(ViolationManager manager, NessAnticheat ness);
 
 	interface NotifyStaff extends ViolationTriggerSection {
 
@@ -65,7 +65,7 @@ public interface ViolationTriggerSection {
 		boolean bungeecord();
 
 		@Override
-		default InfractionTrigger toTrigger(ViolationManager manager, NESSAnticheat ness) {
+		default InfractionTrigger toTrigger(ViolationManager manager, NessAnticheat ness) {
 			return new InfractionTrigger() {
 				
 				private long lastWebHookTime = System.nanoTime();
@@ -149,7 +149,7 @@ public interface ViolationTriggerSection {
 		String command();
 
 		@Override
-		default InfractionTrigger toTrigger(ViolationManager manager, NESSAnticheat ness) {
+		default InfractionTrigger toTrigger(ViolationManager manager, NessAnticheat ness) {
 			return new InfractionTrigger() {
 
 				@Override
@@ -195,7 +195,7 @@ public interface ViolationTriggerSection {
 		int violations();
 
 		@Override
-		default InfractionTrigger toTrigger(ViolationManager manager, NESSAnticheat ness) {
+		default InfractionTrigger toTrigger(ViolationManager manager, NessAnticheat ness) {
 			return new InfractionTrigger() {
 
 				@Override

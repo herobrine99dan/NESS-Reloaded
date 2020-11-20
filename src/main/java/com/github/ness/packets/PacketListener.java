@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.github.ness.NESSAnticheat;
+import com.github.ness.NessAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.packets.wrappers.SimplePacket;
 import com.github.ness.packets.wrappers.WrappedInFlyingPacket;
@@ -22,9 +22,9 @@ import io.netty.channel.ChannelPipeline;
 
 public class PacketListener implements Listener {
 
-	private final NESSAnticheat ness;
+	private final NessAnticheat ness;
 	
-	public PacketListener(NESSAnticheat ness) {
+	public PacketListener(NessAnticheat ness) {
 		this.ness = ness;
 	}
 	

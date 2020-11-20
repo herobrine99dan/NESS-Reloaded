@@ -16,7 +16,7 @@ import com.github.benmanes.caffeine.cache.AsyncCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.RemovalListener;
-import com.github.ness.NESSAnticheat;
+import com.github.ness.NessAnticheat;
 import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.PlayersManager;
@@ -52,7 +52,7 @@ class PlayerManager implements PlayersManager {
 		return checkManager;
 	}
 	
-	NESSAnticheat ness() {
+	NessAnticheat ness() {
 		return checkManager.getNess();
 	}
 	

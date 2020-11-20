@@ -1,6 +1,6 @@
 package com.github.ness.utility;
 
-import com.github.ness.NESSAnticheat;
+import com.github.ness.NessAnticheat;
 import com.github.ness.data.ImmutableLoc;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -29,7 +29,7 @@ public class ReflectionUtility {
 
     //TODO To Optimize this
     public static String getBlockName(Player p, ImmutableLoc loc) {
-        if (NESSAnticheat.getMinecraftVersion() > 1132) {
+        if (NessAnticheat.getMinecraftVersion() > 1132) {
             Object entityPlayer = ReflectionUtility.getHandle(p);
             Object world = ReflectionUtility.callMethod(entityPlayer, "getWorld");
             Object position = ReflectionUtility.callConstructor(ReflectionUtility.getNMSClass("BlockPosition"), loc.getX(), loc.getY(), loc.getZ());

@@ -14,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.Messenger;
 
 import com.github.ness.antibot.AntiBot;
-import com.github.ness.api.NESSApi;
+import com.github.ness.api.NessApi;
 import com.github.ness.check.CheckManager;
 import com.github.ness.config.ConfigManager;
 import com.github.ness.config.NessConfig;
@@ -23,9 +23,9 @@ import com.github.ness.listener.BungeeCordListener;
 import com.github.ness.packets.PacketListener;
 import com.github.ness.violation.ViolationManager;
 
-public class NESSAnticheat {
+public class NessAnticheat {
 
-	private static final Logger logger = NessLogger.getLogger(NESSAnticheat.class);
+	private static final Logger logger = NessLogger.getLogger(NessAnticheat.class);
 
 	private final JavaPlugin plugin;
 	private final static int minecraftVersion;
@@ -39,7 +39,7 @@ public class NESSAnticheat {
 		minecraftVersion = getVersion();
 	}
 
-	NESSAnticheat(JavaPlugin plugin, Path folder) {
+	NessAnticheat(JavaPlugin plugin, Path folder) {
 		this.plugin = plugin;
 		executor = Executors.newSingleThreadScheduledExecutor();
 
@@ -72,7 +72,7 @@ public class NESSAnticheat {
 		violationManager.initiate();
 
 		// Register API implementation
-		getPlugin().getServer().getServicesManager().register(NESSApi.class, new NESSApiImpl(this), plugin,
+		getPlugin().getServer().getServicesManager().register(NessApi.class, new NessApiImpl(this), plugin,
 				ServicePriority.Low);
 
 		// Start AntiBot if enabled
