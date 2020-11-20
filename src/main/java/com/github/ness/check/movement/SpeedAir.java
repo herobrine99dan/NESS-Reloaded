@@ -39,6 +39,9 @@ public class SpeedAir extends ListeningCheck<PlayerMoveEvent> {
 		if (nessPlayer.getMovementValues().isAroundSlabs()) {
 			max *= 1.15;
 		}
+		if (nessPlayer.getMovementValues().isAroundLiquids()) {
+			max *= 1.2;
+		}
 		return max;
 	}
 
@@ -61,8 +64,6 @@ public class SpeedAir extends ListeningCheck<PlayerMoveEvent> {
 		if (airTicks > 4 && (Math.abs(xDiff) > maxDist || Math.abs(zDiff) > maxDist) && !Utility.hasflybypass(player)
 				&& !player.getAllowFlight() && !player.isInsideVehicle()) {
 			flagEvent(event);
-			//if (player().setViolation(new Violation("SpeedAir", "Dist: " + total)))
-			//	event.setCancelled(true);
 		}
 	}
 

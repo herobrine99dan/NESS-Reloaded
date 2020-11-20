@@ -1,6 +1,5 @@
 package com.github.ness.utility;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MathUtils {
@@ -70,25 +69,13 @@ public class MathUtils {
 	 * From
 	 * https://www.spigotmc.org/threads/determining-a-players-sensitivity.468373/
 	 * 
-	 * @param gcd
-	 * @return
+	 * @param double gcd
+	 * @return the sensitivity
 	 */
 	public static double getSensitivity(double gcd) {
 		return (1.655 * Math.cbrt(0.8333 * gcd)) - 0.3333;
 	}
-
-	public static double getStandardDeviation(ArrayList<Double> numberArray) {
-		double sum = 0.0, deviation = 0.0;
-		int length = numberArray.size();
-		for (double num : numberArray)
-			sum += num;
-		double mean = sum / length;
-		for (double num : numberArray)
-			deviation += Math.pow(num - mean, 2);
-
-		return Math.sqrt(deviation / length);
-	}
-
+	
 	public static double gcdRational(List<Double> numbers) {
 		double result = numbers.get(0);
 		for (int i = 1; i < numbers.size(); i++) {

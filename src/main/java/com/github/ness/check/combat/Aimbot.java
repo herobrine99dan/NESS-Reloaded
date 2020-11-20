@@ -48,7 +48,7 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 			return;
 		}
 		pitchDiff.add(pitch);
-		if (pitchDiff.size() >= 20) {
+		if (pitchDiff.size() >= 15) {
 			final double gcd = MathUtils.gcdRational(pitchDiff);
 			if (lastGCD == 0.0) {
 				lastGCD = gcd;
