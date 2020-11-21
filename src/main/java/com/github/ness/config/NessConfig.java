@@ -61,6 +61,7 @@ public interface NessConfig {
 		"LiquidInteraction",
 		"InventoryHack",
 		"Killaura",
+		"KillauraKeepSprint",
 		"MorePackets",
 		"NoSlowBow",
 		"NoSlowFood",
@@ -76,6 +77,7 @@ public interface NessConfig {
 		"ImpossibleBreak",
 		"ScaffoldFalseTarget",
 		"ScaffoldIllegalTarget",
+		"ScaffoldDownWard",
 		"ScaffoldAngle"})
 	List<String> getEnabledChecks();
 

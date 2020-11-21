@@ -35,14 +35,12 @@ public class Freecam extends ListeningCheck<ReceivedPacketEvent> {
 	
 	public interface Config {
 		@DefaultInteger(550)
-		@ConfComments({ "NESS Reloaded can async kick players (using Netty, NESS Reloaded can disable the autoRead config option)",
-			"This feature is experimental, to disable set this to -1, else change this number to something bigger (A normal Player sends at most 100 packets per second" })
 		int maxDelay();
 	}
 
 	@Override
 	protected void checkAsyncPeriodic() {
-		if ((System.nanoTime() - lastPosition) / 1e+6 > maxDelay && player().milliSecondTimeDifference(PlayerAction.JOIN) > 1000) {
+		if ((System.nanoTime() - lastPosition) / 1e+6 > maxDelay && player().milliSecondTimeDifference(PlayerAction.JOIN) > 2000) {
 			runTaskLater(() -> {
 				player().getBukkitPlayer().teleport(player().getBukkitPlayer().getLocation().clone().add(0, 0.00001, 0),
 						TeleportCause.PLUGIN);
