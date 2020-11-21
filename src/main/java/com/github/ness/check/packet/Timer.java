@@ -52,7 +52,7 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 		}
 		final long current = System.nanoTime();
 		delay.add((long) ((current - lastDelay) / 1e+6));
-		if (delay.size() < 40) {
+		if (delay.size() < 40 || nessPlayer.isTeleported()) {
 			return;
 		}
 
