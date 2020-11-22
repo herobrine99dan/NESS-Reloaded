@@ -48,9 +48,6 @@ public class KillauraKeepSprint extends ListeningCheck<ReceivedPacketEvent> {
 		final boolean sprinting = values.isSprinting();
 
 		final boolean validTarget = Bukkit.getEntity(player.getLastEntityAttacked()) instanceof Player;
-		if (swingDelay < 150) {
-			player.sendDevMessage(Boolean.toString(acceleration < .0025) + " " + Boolean.toString(deltaXZ > .22));
-		}
 		final boolean invalid = acceleration < .0025 && sprinting && deltaXZ > .22 && swingDelay < 150 && validTarget;
 		if (invalid) {
 			if (++bufferViolation > 4) {

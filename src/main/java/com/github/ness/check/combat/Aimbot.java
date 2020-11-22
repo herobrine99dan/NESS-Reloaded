@@ -104,8 +104,6 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 			flag(" PerfectAura");
 		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {
 			flag(" PerfectAura1");
-		} else if (MathUtils.isExponentiallySmall(pitchChange) && yawChange > .5f) {
-			flag(" PerfectAura2");
 		}
 	}
 }
