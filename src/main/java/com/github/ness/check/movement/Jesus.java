@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
+import com.github.ness.NessAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
@@ -12,15 +13,21 @@ import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
-import lombok.Getter;
+import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 
 public class Jesus extends ListeningCheck<PlayerMoveEvent> {
     
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
 			.forEvent(PlayerMoveEvent.class);
-
+	double distmultiplier = 0.75;
 	public Jesus(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
+		this.distmultiplier = this.ness().getMainConfig().getCheckSection().jesus().distmultiplier();
+	}
+	
+	public interface Config {
+		@DefaultDouble(0.7)
+		double distmultiplier();
 	}
 
     @Override
@@ -29,8 +36,8 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
         NessPlayer nessPlayer = this.player();
         double xDist = nessPlayer.getMovementValues().xDiff;
         double zDist = nessPlayer.getMovementValues().zDiff;
-        double walkSpeed = p.getWalkSpeed() * 0.7;
-        if (ness().getMinecraftVersion() > 1122) {
+        double walkSpeed = p.getWalkSpeed() * distmultiplier;
+		if (NessAnticheat.getMinecraftVersion() > 1122) {
             walkSpeed = p.getWalkSpeed() * 1.3;
         }
         xDist -= (xDist / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);

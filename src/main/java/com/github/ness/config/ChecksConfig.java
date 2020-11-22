@@ -6,6 +6,7 @@ import com.github.ness.check.combat.PlayerESP;
 import com.github.ness.check.combat.autoclick.AutoClickConfig;
 import com.github.ness.check.movement.ElytraCheats;
 import com.github.ness.check.movement.FastLadder;
+import com.github.ness.check.movement.Jesus;
 import com.github.ness.check.movement.fly.FlyInvalidGravity;
 import com.github.ness.check.packet.Freecam;
 import com.github.ness.check.packet.MorePackets;
@@ -107,18 +108,19 @@ public interface ChecksConfig {
 		""})
 	@SubSection
 	FlyInvalidGravity.Config fly();
-	@ConfKey("timer")
-	@ConfComments({
-		"",
-		"Check if a player sends too many position packets.",
-		"",
-		"Performance impact: low", 
-		"Effectiveness: High",
-		""})
-	@SubSection
 	Timer.Config timer();
 	@ConfKey("freecam")
 	@SubSection
 	Freecam.Config freecam();
-
+	@ConfKey("jesus")
+	@ConfComments({
+		"",
+		"Check the speed of a player in Water.",
+		"Use 1 to have GeyserMC Compatibility, if you have only Java Edition players use 0.75",
+		"",
+		"Performance impact: low", 
+		"Effectiveness: Medium",
+		""})
+	@SubSection
+	Jesus.Config jesus();
 }

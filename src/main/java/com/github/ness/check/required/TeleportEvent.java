@@ -26,21 +26,6 @@ public class TeleportEvent extends ListeningCheck<PlayerTeleportEvent> {
 	}
 
 	protected void checkEvent(PlayerTeleportEvent e) {
-		Location result = e.getTo().clone();
-		if (e.getTo().getPitch() == Math.round(e.getTo().getPitch())) {
-			if (e.getTo().getPitch() > 89) {
-				result.setPitch(e.getTo().getPitch() - 0.01f);
-			} else {
-				result.setPitch(e.getTo().getPitch() + 0.01f);
-			}
-		} else if (e.getTo().getYaw() == Math.round(e.getTo().getYaw())) {
-			if (e.getTo().getYaw() > 360) {
-				result.setYaw(e.getTo().getYaw() - 0.01f);
-			} else {
-				result.setYaw(e.getTo().getYaw() + 0.01f);
-			}
-		}
-		e.setTo(result);
 		NessPlayer nessPlayer = this.player();
 		if (!nessPlayer.isHasSetback()) {
 			nessPlayer.setTeleported(true);

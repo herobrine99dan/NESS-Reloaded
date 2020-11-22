@@ -70,6 +70,7 @@ public interface NessConfig {
 		"NoFall",
 		"Speed",
 		"SpeedAir", 
+		"InvalidSprint",
 		"SpeedFriction",
 		"Jesus",
 		"Step",

@@ -40,7 +40,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	}
 	
 	public interface Config {
-		@DefaultInteger(357)
+		@DefaultInteger(360)
 		double maxYaw();
 		@DefaultDouble(-0.2)
 		double minAngle();
