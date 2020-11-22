@@ -18,8 +18,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import com.github.ness.data.ImmutableVector;
-
 public class Utility {
 
 	public final static Set<Material> occludingMaterials = new HashSet<Material>();
@@ -48,13 +46,16 @@ public class Utility {
 	 * 
 	 * @param player
 	 * @param target
-	 * @param direction
+	 * @param direction (if it is null, will be replaced with player direction)
 	 * @return the angle in radians
 	 */
-	public static double getAngle(Player player, Location target, ImmutableVector direction) {
+	public static double getAngle(Player player, Location target, Vector direction) {
 		Location eye = player.getEyeLocation();
+		if(direction == null) {
+			direction = player.getLocation().getDirection();
+		}
 		Vector toEntity = target.toVector().subtract(eye.toVector());
-		double dot = toEntity.normalize().dot(direction.toBukkitVector());
+		double dot = toEntity.normalize().dot(direction);
 		return dot;
 	}
 

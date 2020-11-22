@@ -11,12 +11,14 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.data.ImmutableVector;
 import com.github.ness.utility.MathUtils;
 import com.github.ness.utility.Utility;
 
@@ -31,19 +33,21 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 
 	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfos
 			.forEventWithAsyncPeriodic(EntityDamageByEntityEvent.class, Duration.ofMillis(70));
-	
+
 	public Killaura(ListeningCheckFactory<?, EntityDamageByEntityEvent> factory, NessPlayer player) {
 		super(factory, player);
 		this.maxYaw = this.ness().getMainConfig().getCheckSection().killaura().maxYaw();
 		this.minAngle = this.ness().getMainConfig().getCheckSection().killaura().minAngle();
 		this.maxReach = this.ness().getMainConfig().getCheckSection().killaura().maxReach();
 	}
-	
+
 	public interface Config {
 		@DefaultInteger(360)
 		double maxYaw();
+
 		@DefaultDouble(-0.2)
 		double minAngle();
+
 		@DefaultDouble(3.4)
 		double maxReach();
 	}
@@ -76,8 +80,8 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		if (player.getGameMode().equals(GameMode.CREATIVE)) {
 			maxReach = 5.5D;
 		}
-		if (Utility.specificBlockNear(eventt.getDamager().getLocation(), "water") || MathUtils
-				.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
+		if (Utility.specificBlockNear(eventt.getDamager().getLocation(), "water")
+				|| MathUtils.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
 			maxReach += 0.4D;
 		}
 		maxReach += (Utility.getPing(player) / 100) / 15;
@@ -148,11 +152,24 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 			return;
 		}
 		NessPlayer nessPlayer = player();
-		double angle = Utility.getAngle((Player) event.getDamager(), event.getEntity().getLocation(),
-				nessPlayer.getMovementValues().getTo().getDirectionVector());
+		Player player = (Player) event.getDamager();
+		float angle = (float) Utility.getAngle(player, event.getEntity().getLocation(), makeDirection(nessPlayer));
 		if (angle < -0.4) {
 			punish(event, "HitBox");
+		} else {
+			final float vectorAngle = player.getLocation().toVector().angle(event.getEntity().getLocation().toVector());
+			nessPlayer.sendDevMessage("Angle: " + angle + " VectorAngle: " + vectorAngle);
 		}
+	}
+
+	private Vector makeDirection(NessPlayer player) {
+		double rotX = player.getMovementValues().getTo().getYaw();
+		double rotY = 3;
+		double y = -MathUtils.sin(Math.toRadians(rotY));
+		double xz = MathUtils.cos(Math.toRadians(rotY));
+		double x = -xz * MathUtils.sin(Math.toRadians(rotX));
+		double z = xz * MathUtils.cos(Math.toRadians(rotX));
+		return new Vector(x, y, z);
 	}
 
 	private void punish(EntityDamageByEntityEvent event, String module) {

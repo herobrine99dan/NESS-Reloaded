@@ -26,7 +26,8 @@ public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
 	public MorePackets(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
 		super(factory, player);
 		this.maxPackets = this.ness().getMainConfig().getCheckSection().morePackets().maxPackets();
-		this.serverCrasherMaxPackets = this.ness().getMainConfig().getCheckSection().morePackets().serverCrasherMaxPackets();
+		this.serverCrasherMaxPackets = this.ness().getMainConfig().getCheckSection().morePackets()
+				.serverCrasherMaxPackets();
 		normalPacketsCounter = -5;
 	}
 
@@ -35,8 +36,9 @@ public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
 		int maxPackets();
 
 		@DefaultInteger(230)
-		@ConfComments({ "NESS Reloaded can async kick players (using Netty, NESS Reloaded can disable the autoRead config option)",
-			"This feature is experimental, to disable set this to -1, else change this number to something bigger (A normal PLayer sends at most 100 packets per second" })
+		@ConfComments({
+				"NESS Reloaded can async kick players (using Netty, NESS Reloaded can disable the autoRead config option)",
+				"This feature is experimental, to disable set this to -1, else change this number to something bigger (A normal PLayer sends at most 100 packets per second" })
 		int serverCrasherMaxPackets();
 	}
 
@@ -53,10 +55,10 @@ public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
 		if (np == null) {
 			return;
 		}
-		if(np.getMovementValues().isInsideVehicle()) {
+		if (np.getMovementValues().isInsideVehicle()) {
 			return;
 		}
-		if (normalPacketsCounter++ > maxPackets && np.milliSecondTimeDifference(PlayerAction.JOIN) > 2500) {
+		if (normalPacketsCounter++ > maxPackets && np.milliSecondTimeDifference(PlayerAction.JOIN) > 5000) {
 			if (normalPacketsCounter > serverCrasherMaxPackets) {
 				e.setCancelled(true);
 				np.kickThreadSafe();

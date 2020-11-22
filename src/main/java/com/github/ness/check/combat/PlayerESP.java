@@ -35,9 +35,8 @@ public class PlayerESP extends Check {
 	protected void checkAsyncPeriodic() {
 		runTaskLater(() -> {
 			for (Player cheater : Bukkit.getOnlinePlayers()) {
-				ImmutableVector direction = player().getMovementValues().getTo().getDirectionVector();
 				for (Player tohide : Bukkit.getOnlinePlayers()) {
-					if ((Utility.getAngle(cheater, tohide.getLocation(), direction) < minangle
+					if ((Utility.getAngle(cheater, tohide.getLocation(), null) < minangle
 							|| !cheater.hasLineOfSight(tohide))
 							&& cheater.getLocation().distance(tohide.getLocation()) > 13) {
 						cheater.hidePlayer(ness().getPlugin(), tohide);

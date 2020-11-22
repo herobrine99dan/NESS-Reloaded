@@ -27,9 +27,14 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 		this.delay = new LongRingBuffer(40);
 		this.negativeTimerEnabled = this.ness().getMainConfig().getCheckSection().timer().negativetimer();
 	}
+	
+	@Override
+	protected boolean shouldDragDown() {
+		return true;
+	}
 
 	public interface Config {
-		@DefaultDouble(1.07)
+		@DefaultDouble(1.1)
 		double maxpackets();
 
 		@DefaultBoolean(false)

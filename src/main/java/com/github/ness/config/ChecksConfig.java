@@ -108,7 +108,6 @@ public interface ChecksConfig {
 		""})
 	@SubSection
 	FlyInvalidGravity.Config fly();
-	Timer.Config timer();
 	@ConfKey("freecam")
 	@SubSection
 	Freecam.Config freecam();
@@ -123,4 +122,14 @@ public interface ChecksConfig {
 		""})
 	@SubSection
 	Jesus.Config jesus();
+	@ConfKey("timer")
+	@ConfComments({
+		"",
+		"Check how many packets a player sends e",
+		"",
+		"Performance impact: low", 
+		"Effectiveness: High",
+		""})
+	@SubSection
+	Timer.Config timer();
 }
