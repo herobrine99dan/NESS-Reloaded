@@ -1,261 +1,226 @@
-#
-#
-# NESS Reloaded v2 Configuration
-#
-#
-
-#
-#
-# General settings
-#
-dev-mode: false
-
-#
-#
-# Violation handling
-#
-# What to do when a player is detected
-#
+ # 
+ # 
+ # NESS Reloaded v2 Configuration
+ # 
+ # Discord: https://discord.gg/63JGnay
+ # Github: https://github.com/herobrine99dan/NESS-Reloaded
+ # 
+ # 
+ # 
+ # Violation handling
+ # 
+ # What to do when a player is detected for cheats
+ # 
 violation-handling:
-  notify-staff:
-    enable: true
-    vl: 6
-    discord-webhook: ''
-    discord-title: 'Anti-Cheat'
-    discord-description: '<hacker> maybe is cheating!'
-    discord-color: 'RED'
-    bungeecord: false
-    notification: '&8[&b&lNESS&8]&r&7> &c%PLAYER% &7failed &c%HACK%&7. VL %VL% Details: %DETAILS%'
-  cancel:
-    enable: true
-    vl: 3
+   # Execute a command. Can be used to kick or ban
   execute-command:
-    enable: true
-    vl: 20
-    command: 'kick %PLAYER% Please Do not use Cheats! If you think this is an error, contact staff'
-
-#
-#
-# Enabled checks
-#
-# Comment out a check to disable
-#
-enabled-checks:
-  - 'Aimbot'
-  - 'AimbotGCD'
-  - 'AutoClicker'
-#  - 'AntiUnicode'
-  - 'AntiKb'
-  - 'Timer'
-  - 'Criticals'
-  - 'ChestStealer'
-#  - 'FastEat'
-  - 'FastLadder'
-  - 'FastPlace'
-#  - 'ChestESP'
-  - 'FlyGhostMode'
-  - 'FlyInvalidMove'
-  - 'FlyHighJump'
-  - 'FlyInvalidJumpMotion'
-  - 'FlyInvalidGravity'
-  - 'FlyFalseGround'
-  - 'FlyHighDistance'
-  - 'GhostHand'
-  - 'LiquidInteraction'
-  - 'InventoryHack'
-  - 'Killaura'
-  - 'MorePackets'
-  - 'NoSlowBow'
-  - 'NoSlowFood'
-  - 'NoWeb'
-  - 'NoGround'
-  - 'NoGround'
-  - 'NoFall'
-  - 'Speed'
-  - 'Step'
-  - 'Phase'
-  - 'ImpossibleBreak'
-#  - 'SpeedAir'
-  - 'ScaffoldFalseTarget'
-  - 'ScaffoldIllegalTarget'
-  - 'ScaffoldAngle'
-
-#
-# AntiBot
-#
-# Blocks Bot Attacks which sends a lot of players
-#
-# Performance impact: Minimal (Use Async Events)
-# Effectiveness: High
-#
+    command: 'kick %PLAYER% Please do not cheat. Detected for: %HACK% %VIOLATIONS% times. If you think this is an error, contact a staff member.'
+    violations: 20
+   # Notify staff members of potential cheating
+  notify-staff:
+     # Notification message. Available variables are %HACK%, %VIOLATIONS% and %DETAILS%
+    notification: '&8[&b&lNESS&8]&r&7> &c%PLAYER% &7failed &c%HACK%&7. Violations: %VIOLATIONS% Details: %DETAILS%'
+    bungeecord: false
+    discord:
+      title: 'Anti-Cheat'
+      description: '%HACKER% maybe is cheating!'
+      color: '#FF0000'
+       # Discord webhook URL, or "" for none
+      webhook: ''
+    violations: 6
+   # Cancels the event involved with the cheat.
+   # For example, the speed check will cancel movement.
+  cancel:
+    violations: 3
+ # 
+ # AntiBot
+ # 
+ # Blocks Bot Attacks which sends a lot of players
+ # 
 antibot:
-   enable: true
-   maxplayers: 15 #Max Players to join in one second
-   message: 'Bot Attack Detected! By NESS Reloaded' #The Kick message
-   minimumseconds: 10 #Add A Player to the NESS Reloaded Whitelist, so during a bot attack, this player will not be kicked
-    
-#
-# Check name
-#
-# Description
-#
-# Performance impact: minimal, low, medium, high
-# Effectiveness: medium, high, very high
-#
-
+  enable: true
+   # Maximum players able to join in one second
+  max-players-per-second: 15
+   # The play time, in seconds, after which a player will not be denied joining if he or she rejoins during a bot attack
+  time-until-trusted: 10
+   # The kick message
+  kick-message: 'Bot Attack Detected! By NESS Reloaded'
+ # Enable developer mode
+dev-mode: false
+ # 
+ # 
+ # Enabled checks
+ # 
+ # Comment out a check to disable
+ # 
+enabled-checks:
+  -  '#AbilititiesSpoofed'
+  -  'Aimbot'
+  -  'AimbotGCD'
+  -  'AutoClicker'
+  -  'AntiKb'
+  -  'BlockBreakAction'
+  -  'Timer'
+  -  'Criticals'
+  -  'ChestStealer'
+  -  'EntityFly'
+  -  'FastLadder'
+  -  'FastPlace'
+  -  'FlyGhostMode'
+  -  'FlyHighJump'
+  -  'FlyInvalidJumpMotion'
+  -  'FlyInvalidGravity'
+  -  'FlyFalseGround'
+  -  'FlyHighDistance'
+  -  'Freecam'
+  -  'GhostHand'
+  -  'LiquidInteraction'
+  -  'InventoryHack'
+  -  'Killaura'
+  -  'KillauraKeepSprint'
+  -  'MorePackets'
+  -  'NoSlowBow'
+  -  'NoSlowFood'
+  -  'NoWeb'
+  -  'NoGround'
+  -  'NoFall'
+  -  'Speed'
+  -  'SpeedAir'
+  -  'SpeedFriction'
+  -  'Jesus'
+  -  'Step'
+  -  'Phase'
+  -  'ImpossibleBreak'
+  -  'ScaffoldFalseTarget'
+  -  'ScaffoldIllegalTarget'
+  -  'ScaffoldDownWard'
+  -  'ScaffoldAngle'
+ # All configuration relating to specific checks
 checks:
-
-#
-# AutoClick
-#
-# Caps clicks per second (CPS) at a hard limit, also calculates
-# the variance in the user's clicks (constancy) and the variance
-# in the variance (constancy super).
-#
-# Performance impact: Minimal
-# Effectiveness: untested
-#
-  autoclick:
-      # Clicks older than this are completely ignored
-    total-retention-secs: 32
-    # A basic CPS cap
-    hard-limit:
-      # These are pairs of CPS limits and required time spans
-      #
-      # If the player's CPS measured over the time span is greater than the CPS limit, a violation is triggered.
-      #
-      # For example, '16:3' means that if the player's clicks in the past 3 seconds average 16 CPS, trigger a violation.
-      cps-and-required-span:
-        - '35:2'
-    # A more advanced consistency check
-    constancy:
-      # These are pairs of standard deviation percentages and sample counts
-      #
-      # The standard deviation is calculated based on the interval between clicks in the sample.
-      # The second number in the pair determines the sample size.
-      # Then, the standard deviation percentage is calculated as the standard deviation as percent of the average.
-      # If this percent is less than the first number in the pair, a violation is triggered.
-      #
-      # For example, '30:8' means that if the standard deviation in the interval between clicks over a sample
-      # of 8 intervals, divided by the average interval, is greater than 30%, trigger a violation.
-      deviation-and-sample:
-        - '30:10'
-      # These are pairs of standard deviation percentages and sample counts
-      #
-      # These are conceptually similar to the previous. However, this measures the standard deviations between
-      # the standard deviations. Thus, it is called the "super deviation".
-      superdeviation-and-supersample:
-        - '60:10'
-      span-millis: 800
-
-#
-# LiquidInteraction
-#
-# Checks to see if a player placed a block against water.
-#
-# Performance impact: Minimal
-# Effectiveness: High
-#
-  liquidinteraction:
-    whitelisted-materials:
-      - 'WATER_LILY'
-#
-# AutoClicker
-#
-# A Simple Max CPS Check
-#
-# Performance impact: Minimal
-# Effectiveness: Medium
-#
+   # 
+   # Check if a player sends too many position packets.
+   # 
+   # Performance impact: low
+   # Effectiveness: High
+   # 
+  timer:
+    maxpackets: 1.07
+    negativetimer: false
+   # 
+   # Check if a player sends too many packets.
+   # This blocks some Regen, Nuker and some ServerCrasher exploits
+   # 
+   # Performance impact: low
+   # Effectiveness: High
+   # 
+  morepackets:
+     # NESS Reloaded can async kick players (using Netty, NESS Reloaded can disable the autoRead config option)
+     # This feature is experimental, to disable set this to -1, else change this number to something bigger (A normal PLayer sends at most 100 packets per second
+    serverCrasherMaxPackets: 230
+    maxPackets: 80
+   # 
+   # AutoClicker
+   # A Simple Max CPS Check
+   # 
+   # Performance impact: Minimal
+   # Effectiveness: Medium
+   # 
   autoclicker:
     maxCPS: 18
-#
-# BadPackets
-#
-# Check if a player sends too many position packets
-#
-# Performance impact: low
-# Effectiveness: High
-#
-  timer:
-    maxpackets: 1.12
-#
-# ElytraCheats
-#
-# Check if a player fly too quickly with elytra
-#
-# Performance impact: low
-# Effectiveness: High
-#
-  elytracheats:
-    maxxzdiff: 1.5
-    maxydiff: 1
-#
-# FastLadder
-#
-# Check if a player is climing a ladder/vine too fast
-#
-# Performance impact: low
-# Effectiveness: High
-#
+   # 
+   # Check if a player is editing gravity.
+   # 
+   # Performance impact: low
+   # Effectiveness: High
+   # 
+  gravity-fly:
+    maxGravity: 0.95
+   # 
+   # Check if a player is climing a ladder/vine too fast
+   # Use 0.21 to have GeyserMC Compatibility, if you have only Java Edition players use 0.155
+   # 
+   # Performance impact: low
+   # Effectiveness: High
+   # 
   fastladder:
-    maxdist: 0.21
-#
-# FastPlace
-#
-# Check if a player place too many blocks in a seconds
-#
-# Performance impact: low
-# Effectiveness: Medium
-#
-  fastplace:
-    maxblockplaced: 10
-#
-# Fly
-#
-# Check if a player is floating / walking/ flying in air
-#
-# Performance impact: low
-# Effectiveness: High
-#
-  flyinvalidgravity:
-    maxinvalidvelocity: 0.9
-#
-# InventoryHack
-#
-# Check if a player click an inventory item while he walks
-#
-# Performance impact: low
-# Effectiveness: Very High
-#
-  inventoryhack:
-    maxdist: 0.1
-#
-# Killaura
-#
-# Check if a player is using ForceField / ClickAura / Killaura
-# This Check detect only some old clients 
-#
-# Performance impact: low
-# Effectiveness: Medium
-#
+    maxDist: 0.156
+   # 
+   # Check if a player fly too quickly with elytra
+   # 
+   # Performance impact: low
+   # Effectiveness: High
+   # 
+  elytracheats:
+    maxYDiff: 1.0
+    maxXZDiff: 1.5
+   # 
+   # Check if a player is using ForceField / ClickAura / Killaura
+   # This Check detect only some old clients 
+   # 
+   # Performance impact: low
+   # Effectiveness: Medium
+   # 
   killaura:
-    maxyaw: 357
-    minangle: -0.2
-    maxreach: 3.6
-#
-# MorePackets
-#
-# Check if a player sends too many packets.
-# This blocks some Regen, Nuker and some ServerCrasher exploits
-#
-# Performance impact: low
-# Effectiveness: High
-#
-  morepackets:
-    maxpackets: 68
+    maxReach: 3.4
+    minAngle: -0.2
+    maxYaw: 357.0
+  freecam:
+    maxDelay: 550
+   # 
+   # AutoClick
+   # Caps clicks per second (CPS) at a hard limit, also calculates
+   # the variance in the user's clicks (deviation) and the variance
+   # in the variance (super deviation).
+   # 
+   # Performance impact: Minimal
+   # 
+  autoclick:
+     # Clicks older than this are completely ignored
+    total-retention-secs: 32
+    hard-limit:
+       # These are pairs of CPS limits and required time spans
+       # 
+       # If the player's CPS measured over the time span is greater than the CPS limit, a violation is triggered.
+       # 
+       #       # For example, '16:3' means that if the player's clicks in the past 3 seconds average 16 CPS, 
+       # trigger a violation.
+      cps-and-required-span:
+        -  '35:2'
+     # # A more advanced consistency check
+    constancy:
+       # These are pairs of standard deviation percentages and sample counts
+       # 
+       # The first number is a deviation percentage, and the second number is the sample count.
+       # 
+       # The standard deviation is calculated based on the interval between clicks in the sample.
+       # Then, the standard deviation percentage is calculated as the standard deviation as percent of the average.
+       # 
+       # If there are enough samples, and the deviation percent is less than the required deviation,
+       # a violation is triggered.
+       # 
+       # For example, '30:8' means that if the standard deviation in the intervals between clicks in a sample
+       # divided by the average interval, is less than 30%, trigger a violation if the sample size is at least 8.
+      deviation-and-sample:
+        -  '30:10'
+       # These are pairs of standard deviation percentages and sample counts
+       # 
+       # These are conceptually similar to the previous. However, this measures the standard deviations between
+       # the standard deviations. Thus, it is called the "super deviation".
+      superdeviation-and-supersample:
+        -  '60:10'
+   # 
+   # Hide players that a player can't see
+   # 
+   # Performance impact: Medium
+   # Effectiveness: High
+   # 
   playeresp:
-    minangle: -0.05
-
-# If you change this, you will receive warnings in console
-config-version: 1
+    minAngle: -0.05
+   # 
+   # Check if a player place too many blocks in a seconds
+   # 
+   # Performance impact: low
+   # Effectiveness: Medium
+   # 
+  fastplace:
+    max: 10

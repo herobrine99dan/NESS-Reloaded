@@ -16,6 +16,11 @@ public class Timer extends Check {
     private long lastDelay;
     private LongRingBuffer delay;
     
+    @Override
+    public void checkAsyncPeriodic() {
+        
+    }
+    
     /**
      * Thanks to GladUrBad for a small hint
      */

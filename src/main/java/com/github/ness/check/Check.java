@@ -1,5 +1,6 @@
 package com.github.ness.check;
 
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.bukkit.Bukkit;
@@ -28,10 +29,22 @@ public abstract class Check {
     @Getter
     private final String checkName;
     private static CheckManager manager;
+    private final boolean hasAsyncScheduler;
+    private final long milliSeconds;
 
     protected Check(Class<?> classe, NessPlayer nessPlayer) {
         this.checkName = classe.getSimpleName();
         this.nessPlayer = nessPlayer;
+        this.hasAsyncScheduler = false;
+        this.milliSeconds = 0L;
+    }
+    
+    protected Check(Class<?> classe, NessPlayer nessPlayer, boolean scheduler, Duration d) {
+        this.checkName = classe.getSimpleName();
+        this.nessPlayer = nessPlayer;
+        this.hasAsyncScheduler = scheduler;
+        
+        this.milliSeconds = d.toMillis();
     }
 
     /**
@@ -59,7 +72,7 @@ public abstract class Check {
      * Called async and periodically
      *
      */
-    protected void checkAsyncPeriodic() {
+    public void checkAsyncPeriodic() {
         throw new UnsupportedOperationException("Not implemented - checkAsyncPeriodic");
     }
 

@@ -9,10 +9,12 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.Messenger;
 
 import com.github.ness.check.Check;
 import com.github.ness.check.CheckManager;
 import com.github.ness.check.CoreListener;
+import com.github.ness.listener.BungeeCordListener;
 import com.github.ness.packets.NessPacketListener;
 import com.github.ness.violation.ViolationHandler;
 
@@ -30,6 +32,8 @@ public class NessAnticheat {
     private final CheckManager checkManager;
     @Getter
     private final ViolationHandler violationHandler;
+    @Getter
+    private final SyncScheduler syncScheduler;
 
     static {
         minecraftVersion = getVersion();
@@ -37,6 +41,7 @@ public class NessAnticheat {
 
     NessAnticheat(JavaPlugin plugin, Path folder) {
         this.plugin = plugin;
+        this.syncScheduler = new SyncScheduler(this);
         executor = Executors.newSingleThreadScheduledExecutor();
         this.violationHandler = new ViolationHandler(this);
         checkManager = new CheckManager(this);
@@ -56,12 +61,18 @@ public class NessAnticheat {
         Bukkit.getServer().getPluginManager().registerEvents(new CoreListener(this.getCheckManager()), plugin);
         // Start configuration
         logger.fine("Configuration loaded. Initiating checks...");
-
+        this.getPlugin().saveDefaultConfig();
         // Start checks
         logger.fine("Starting CheckManager");
         if (!Bukkit.getName().toLowerCase().contains("glowstone")) {
             PacketEvents.getAPI().getEventManager().registerListener(new NessPacketListener(this));
         }
+        if(this.getPlugin().getConfig().getBoolean("violation-handling.notify-staff.bungeecord")) {
+            Messenger messenger = plugin.getServer().getMessenger();
+            messenger.registerOutgoingPluginChannel(plugin, "BungeeCord");
+            messenger.registerIncomingPluginChannel(plugin, "BungeeCord", new BungeeCordListener());
+        }
+        syncScheduler.startScheduler();
     }
 
     /**

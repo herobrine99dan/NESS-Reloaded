@@ -1,46 +1,46 @@
 package com.github.ness.antibot;
 
-import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.Scheduler;
-
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.ness.NessAnticheat;
 
 public class AntiBot {
 
-    private final JavaPlugin plugin;
-    private final AntiBotConfig config;
+    private final NessAnticheat plugin;
     private final int maxPlayersPerSecond;
     private final String kickMessage;
 
-    private final Cache<UUID, Boolean> whitelist;
+    private final List<UUID> whitelist;
     private final AtomicLong counter = new AtomicLong();
+    private final int timeUntilTrusted;
 
-    public AntiBot(JavaPlugin plugin, AntiBotConfig config) {
+    public AntiBot(NessAnticheat plugin) {
         this.plugin = plugin;
-        this.config = config;
+        ConfigurationSection section = plugin.getPlugin().getConfig().getConfigurationSection("antibot");
+        maxPlayersPerSecond = section.getInt("max-players-per-second", 15);
+        timeUntilTrusted = section.getInt("time-until-trusted", 10);
+        kickMessage = ChatColor.translateAlternateColorCodes('&',
+                section.getString("kick-message", "Bot Attack Detected! By NESS Reloaded"));
 
-        maxPlayersPerSecond = config.maxPlayersPerSecond();
-        kickMessage = ChatColor.translateAlternateColorCodes('&', config.kickMessage());
-
-        whitelist = Caffeine.newBuilder().maximumSize(1200L).expireAfterAccess(Duration.ofDays(4L))
-                .scheduler(Scheduler.systemScheduler()).build();
+        whitelist = new ArrayList<UUID>();
     }
 
     public void initiate() {
-        plugin.getServer().getPluginManager().registerEvents(new ListenerImpl(), plugin);
-        plugin.getServer().getScheduler().runTaskTimer(plugin, () -> counter.set(0L), 0L, 20L);
+        Bukkit.getServer().getPluginManager().registerEvents(new ListenerImpl(), plugin.getPlugin());
+        plugin.getPlugin().getServer().getScheduler().runTaskTimer(plugin.getPlugin(), () -> counter.set(0L), 0L, 20L);
     }
 
     /*
@@ -51,8 +51,10 @@ public class AntiBot {
 
         @EventHandler(priority = EventPriority.LOWEST)
         public void interceptLogins(AsyncPlayerPreLoginEvent event) {
-            if (counter.incrementAndGet() > maxPlayersPerSecond
-                    && whitelist.getIfPresent(event.getUniqueId()) != null) {
+            if (whitelist.size() > 120) {
+                whitelist.remove(0);
+            }
+            if (counter.incrementAndGet() > maxPlayersPerSecond && whitelist.contains(event.getUniqueId())) {
                 event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, kickMessage);
             }
         }
@@ -60,12 +62,12 @@ public class AntiBot {
         @EventHandler
         public void onJoin(PlayerJoinEvent e) {
             Player player = e.getPlayer();
-            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            plugin.getPlugin().getServer().getScheduler().runTaskLater(plugin.getPlugin(), () -> {
 
                 if (player.isOnline()) {
-                    whitelist.put(player.getUniqueId(), Boolean.TRUE);
+                    whitelist.add(player.getUniqueId());
                 }
-            }, config.timeUntilTrusted() * 20L);
+            }, timeUntilTrusted * 20L);
         }
     }
 
