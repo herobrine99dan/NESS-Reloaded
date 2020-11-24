@@ -21,11 +21,8 @@ public class Timer extends Check {
      */
     @Override
     public void checkEvent(ReceivedPacketEvent e) {
-        if(player().isNot(e.getNessPlayer().getBukkitPlayer())) {
-            return;
-        }
         NessPlayer nessPlayer = e.getNessPlayer();
-        if (!e.getPacket().getName().toLowerCase().contains("position") || nessPlayer.isTeleported()) {
+        if (!e.getPacket().isPosition() || nessPlayer.isTeleported()) {
             return;
         }
         final long current = System.nanoTime();

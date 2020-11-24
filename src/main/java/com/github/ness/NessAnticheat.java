@@ -13,9 +13,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.github.ness.check.Check;
 import com.github.ness.check.CheckManager;
 import com.github.ness.check.CoreListener;
-import com.github.ness.packets.PacketListener;
+import com.github.ness.packets.NessPacketListener;
 import com.github.ness.violation.ViolationHandler;
 
+import io.github.retrooper.packetevents.PacketEvents;
 import lombok.Getter;
 
 public class NessAnticheat {
@@ -59,7 +60,7 @@ public class NessAnticheat {
         // Start checks
         logger.fine("Starting CheckManager");
         if (!Bukkit.getName().toLowerCase().contains("glowstone")) {
-            plugin.getServer().getPluginManager().registerEvents(new PacketListener(this), plugin);
+            PacketEvents.getAPI().getEventManager().registerListener(new NessPacketListener(this));
         }
     }
 

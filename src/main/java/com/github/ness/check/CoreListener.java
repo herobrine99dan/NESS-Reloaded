@@ -30,11 +30,6 @@ public class CoreListener implements Listener {
         nessPlayer.updateMovementValue(
                 new MovementValues(e.getPlayer(), ImmutableLoc.of(e.getTo()), ImmutableLoc.of(e.getFrom())));
     }
-    
-    @EventHandler
-    public void onPacket(ReceivedPacketEvent e) {
-        manager.onEvent(e);
-    }
 
     @EventHandler
     public void onPlayerJoin(PlayerQuitEvent e) {

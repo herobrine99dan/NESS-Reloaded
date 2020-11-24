@@ -1,0 +1,5 @@
+show-violations:
+  header: '&7Violations for &e%TARGET%'
+  body: '&7Hack: &e%HACK%&7. Count: %VIOLATIONS%'
+no-permission: '&cSorry, you cannot use this.'
+not-found-player: '&cTarget player not specified, not found, or offline.'

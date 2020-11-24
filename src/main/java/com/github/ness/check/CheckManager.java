@@ -46,7 +46,15 @@ public class CheckManager implements Listener {
     public Object onEvent(ReceivedPacketEvent event) {
         for (NessPlayer np : nessPlayers.values()) {
             for (Check c : np.getChecks()) {
-                c.checkEvent(event);
+                if (c.player().isNot(event.getNessPlayer().getBukkitPlayer())) {
+                    return null;
+                }
+                try {
+                    c.checkEvent(event);
+                } catch (Exception ex) {
+                    logger.log(Level.SEVERE,
+                            "There was an exception while executing the check " + c.getCheckName(), ex);
+                }
             }
         }
         return event;
@@ -70,10 +78,12 @@ public class CheckManager implements Listener {
     }
 
     public void removeNessPlayer(NessPlayer np) {
+        logger.finer("Removing the NessPlayer object with name" + np.getBukkitPlayer().getName());
         nessPlayers.remove(np.getBukkitPlayer().getUniqueId());
     }
 
     public void removeNessPlayer(Player p) {
+        logger.finer("Removing the NessPlayer object with name" + p.getName());
         nessPlayers.remove(p.getUniqueId());
     }
 
