@@ -7,9 +7,7 @@ import lombok.Getter;
  * 
  * @author A248
  *
- * @deprecated {@link Infraction} is closest replacement for this class
  */
-@Deprecated
 public class Violation {
 
 	@Getter

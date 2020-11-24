@@ -1,30 +1,28 @@
 package com.github.ness.check.world;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.check.CheckInfos;
-import com.github.ness.check.ListeningCheck;
-import com.github.ness.check.ListeningCheckFactory;
-import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 
-public class ScaffoldAngle extends ListeningCheck<BlockPlaceEvent> {
+public class ScaffoldAngle extends Check {
 	private static final double MAX_ANGLE = Math.toRadians(90);
 
-	public static final ListeningCheckInfo<BlockPlaceEvent> checkInfo = CheckInfos.forEvent(BlockPlaceEvent.class);
-
-	public ScaffoldAngle(ListeningCheckFactory<?, BlockPlaceEvent> factory, NessPlayer player) {
-		super(factory, player);
-	}
+    public ScaffoldAngle(NessPlayer nessPlayer, CheckManager manager) {
+        super(ScaffoldAngle.class, nessPlayer, manager);
+    }
 
 	@Override
-	protected void checkEvent(BlockPlaceEvent event) {
+	public void checkEvent(Event e) {
+        if (!(e instanceof PlayerMoveEvent)) {
+            return;
+        }
+        BlockPlaceEvent event = (BlockPlaceEvent) e;
 		BlockFace placedFace = event.getBlock().getFace(event.getBlockAgainst());
 		if (placedFace == null) {
 			return;
@@ -34,7 +32,7 @@ public class ScaffoldAngle extends ListeningCheck<BlockPlaceEvent> {
 		float placedAngle = nessPlayer.getMovementValues().getTo().getDirectionVector().toBukkitVector()
 				.angle(placedVector);
 		if (placedAngle > MAX_ANGLE) {
-			flagEvent(event);
+			this.flag();
 		}
 	}
 

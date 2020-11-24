@@ -50,7 +50,6 @@ class NessCommands implements CommandExecutor {
 	private void onCommand0(final CommandSender sender, final String[] args) {
 		String firstArg = (args.length >= 1) ? args[0] : null;
 		if (!sender.hasPermission(getPermission(firstArg))) {
-			sendMessage(sender, ness.getMessagesConfig().noPermission());
 			return;
 		}
 		if (firstArg == null) {
@@ -59,15 +58,13 @@ class NessCommands implements CommandExecutor {
 		}
 		switch (args[0].toLowerCase()) {
 		case "reload":
-			ness.getConfigManager().reload().thenCompose((ignore) -> ness.getCheckManager().reload())
-					.whenComplete((ignore, ex) -> {
-				if (ex != null) {
-					logger.log(Level.WARNING, "Error while reloading", ex);
-					sendMessage(sender, "&cError reloading NESS, check your server console for details.");
-					return;
-				}
-				sendMessage(sender, "&aReloaded NESS!");
-			});
+		    try {
+		        sendMessage(sender, "&aReloaded NESS!");
+		    }catch(Exception ex) {
+                logger.log(Level.WARNING, "Error while reloading", ex);
+                sendMessage(sender, "&cError reloading NESS, check your server console for details.");
+                return;
+		    }
 			break;
 		case "violations":
 			showViolations(sender, (args.length >= 2) ? Bukkit.getPlayer(args[1]) : null);
@@ -80,7 +77,7 @@ class NessCommands implements CommandExecutor {
 			break;
 		case "debug":
 			if (sender instanceof Player) {
-				NessPlayer np = ness.getCheckManager().getExistingPlayer((Player) sender);
+				NessPlayer np = ness.getCheckManager().getNessPlayer((Player) sender);
 				if (np == null) {
 					// This shouldn't happen, but just in case
 					sendMessage(sender, "Your NESSPlayer isn't loaded");
@@ -120,19 +117,19 @@ class NessCommands implements CommandExecutor {
 			sendUnknownTarget(sender);
 			return;
 		}
-		NessPlayer nessPlayer = ness.getCheckManager().getExistingPlayer(target);
+		NessPlayer nessPlayer = ness.getCheckManager().getNessPlayer(target);
 		if (nessPlayer == null) {
 			sendUnknownTarget(sender);
 			return;
 		}
 		String name = target.getName();
-		String header = ness.getMessagesConfig().showViolationsHeader();
-		String body = ness.getMessagesConfig().showViolationsBody();
+		String header = "Header:";
+		String body = "Body";
 
 		sendMessage(sender, header.replace("%TARGET%", name));
-		ness.getCheckManager().forEachCheck(target.getUniqueId(), (check) -> {
+		ness.getCheckManager().getNessPlayer(target.getUniqueId()).getChecks().forEach((check) -> {
 			sendMessage(sender,
-					body.replace("%HACK%", check.getFactory().getCheckName())
+					body.replace("%HACK%", check.getCheckName())
 						.replace("%VIOLATIONS%", Integer.toString(check.currentViolationCount())));
 		});
 	}
@@ -142,17 +139,16 @@ class NessCommands implements CommandExecutor {
 			sendUnknownTarget(sender);
 			return;
 		}
-		NessPlayer nessPlayer = ness.getCheckManager().getExistingPlayer(target);
+		NessPlayer nessPlayer = ness.getCheckManager().getNessPlayer(target);
 		if (nessPlayer == null) {
 			sendUnknownTarget(sender);
 			return;
 		}
-		ness.getCheckManager().forEachCheck(target.getUniqueId(), (check) -> check.clearViolationCount());
+		ness.getCheckManager().getNessPlayer(target.getUniqueId()).getChecks().forEach((check) -> check.clearViolationCount());
 		sendMessage(sender, "&7Cleared violations for &e%TARGET%".replace("%TARGET%", target.getName()));
 	}
 	
 	private void sendUnknownTarget(CommandSender sender) {
-		sendMessage(sender, ness.getMessagesConfig().notFoundPlayer());
 	}
 	
 	private void mustBePlayer(CommandSender sender) {

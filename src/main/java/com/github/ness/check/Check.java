@@ -1,16 +1,16 @@
 package com.github.ness.check;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ness.NessAnticheat;
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Infraction;
-import com.github.ness.api.PlayerFlagEvent;
+
+import lombok.Getter;
 
 /**
  * A check, associated with a player. Includes an optional async task.
@@ -18,18 +18,23 @@ import com.github.ness.api.PlayerFlagEvent;
  * @author A248
  *
  */
-public class Check {
+public abstract class Check {
 
     private final NessPlayer nessPlayer;
 
     private final AtomicInteger violations = new AtomicInteger();
+    @Getter
     private final String checkName;
-    private final CheckManager manager;
+    private final Class<?> checkClass;
+    private static CheckManager manager;
 
-    protected Check(String name, NessPlayer nessPlayer, CheckManager manager) {
-        this.checkName = name;
+    protected Check(Class<?> classe, NessPlayer nessPlayer, CheckManager manager) {
+        this.checkName = classe.getSimpleName();
+        this.checkClass = classe;
         this.nessPlayer = nessPlayer;
-        this.manager = manager;
+        if(manager != null) {
+            Check.manager = manager;
+        }
     }
 
     /**
@@ -61,41 +66,24 @@ public class Check {
      * Flags the player for cheating
      * 
      */
-    protected final void flag() {
+    public final void flag() {
         flag("");
     }
+    
+    public abstract void checkEvent(Event e);
 
     /**
      * Flags the player for cheating
      * 
      * @param details debugging details
      */
-    protected final void flag(String details) {
-        if (callFlagEvent()) {
-            flag0(details);
+    public final void flag(String details) {
+        if (callViolationEvent()) {
+            this.nessPlayer.getBukkitPlayer().sendMessage("Cheats Detected: " + this.getCheckName() + " Details: " + details);
         }
     }
 
-    /**
-     * Flags and gets the infraction
-     * 
-     * @param details debugging details
-     * @return the infraction
-     */
-    Infraction flag0(String details) {
-        int violations = this.violations.incrementAndGet();
-        Infraction infraction = new InfractionImpl(this, violations, details);
-        nessPlayer.addInfraction(infraction);
-        return infraction;
-    }
-
-    boolean callFlagEvent() {
-        return callEvent(new PlayerFlagEvent(nessPlayer, getFactory()))
-                && callDeprecatedPlayerViolationEvent();
-    }
-
-    @SuppressWarnings("deprecation")
-    private boolean callDeprecatedPlayerViolationEvent() {
+    private boolean callViolationEvent() {
         if (com.github.ness.api.impl.PlayerViolationEvent.getHandlerList().getRegisteredListeners().length == 0) {
             return true;
         }
@@ -107,6 +95,10 @@ public class Check {
         Bukkit.getServer().getPluginManager().callEvent((Event) event);
         return !event.isCancelled();
     }
+    
+    public Check makeEqualCheck(NessPlayer nessPlayer) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SecurityException {
+        return (Check) this.checkClass.getConstructors()[0].newInstance(nessPlayer, this.manager());
+    }
 
     public int currentViolationCount() {
         return violations.get();
@@ -115,5 +107,4 @@ public class Check {
     public void clearViolationCount() {
         violations.set(0);
     }
-
 }

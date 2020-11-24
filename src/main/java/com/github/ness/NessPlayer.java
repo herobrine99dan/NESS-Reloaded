@@ -9,7 +9,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.function.Consumer;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,8 +16,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
-import com.github.ness.api.AnticheatPlayer;
-import com.github.ness.api.Infraction;
+import com.github.ness.api.Violation;
+import com.github.ness.check.Check;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
@@ -28,9 +27,9 @@ import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
 
-public class NessPlayer implements AnticheatPlayer {
+public class NessPlayer {
 
-    private final Queue<Infraction> infractions = new ArrayBlockingQueue<>(2);
+    private final Queue<Violation> infractions = new ArrayBlockingQueue<>(2);
 
     /**
      * Player UUID
@@ -73,6 +72,8 @@ public class NessPlayer implements AnticheatPlayer {
     @Getter
     @Setter
     private UUID lastEntityAttacked;
+    @Getter
+    private final Set<Check> checks = new HashSet<Check>();
 
     public NessPlayer(Player player, boolean devMode) {
         uuid = player.getUniqueId();
@@ -82,17 +83,11 @@ public class NessPlayer implements AnticheatPlayer {
                 new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
                 new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
     }
-
-    /*
-     * API methods
-     */
-
-    @Override
+    
     public UUID getUniqueId() {
         return uuid;
     }
 
-    @Override
     public Player getBukkitPlayer() {
         return player;
     }
@@ -102,13 +97,13 @@ public class NessPlayer implements AnticheatPlayer {
      */
 
     /**
-     * Adds an infraction. If this player has too many infractions, {@code false} is
+     * Adds a violation. If this player has too many infractions, {@code false} is
      * returned
      * 
      * @param infraction the infraction
      * @return true if the infraction was added, false if the queue size was reached
      */
-    public boolean addInfraction(Infraction infraction) {
+    public boolean addInfraction(Violation infraction) {
         return infractions.offer(infraction);
     }
 
@@ -124,17 +119,9 @@ public class NessPlayer implements AnticheatPlayer {
     public void setPlayerAction(PlayerAction action) {
         actionTime.put(action, System.nanoTime());
     }
-
-    /**
-     * Polls and drains all infractions applying the specified action
-     * 
-     * @param action the action on each infraction
-     */
-    public void pollInfractions(Consumer<Infraction> action) {
-        Infraction infraction;
-        while ((infraction = infractions.poll()) != null) {
-            action.accept(infraction);
-        }
+    
+    public void addCheck(Check c) {
+        this.checks.add(c);
     }
 
     /*

@@ -2,30 +2,27 @@ package com.github.ness.check.world;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.check.CheckInfos;
-import com.github.ness.check.ListeningCheck;
-import com.github.ness.check.ListeningCheckFactory;
-import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.utility.Utility;
 
-public class ScaffoldFalseTarget extends ListeningCheck<BlockPlaceEvent> {
+public class ScaffoldFalseTarget extends Check {
 
-	public static final ListeningCheckInfo<BlockPlaceEvent> checkInfo = CheckInfos
-			.forEvent(BlockPlaceEvent.class);
-
-	public ScaffoldFalseTarget(ListeningCheckFactory<?, BlockPlaceEvent> factory, NessPlayer player) {
-		super(factory, player);
-	}
-
-    @Override
-    protected void checkEvent(BlockPlaceEvent e) {
-        Check1(e);
+    public ScaffoldFalseTarget(NessPlayer nessPlayer, CheckManager manager) {
+        super(ScaffoldFalseTarget.class, nessPlayer, manager);
     }
 
-    public void Check1(BlockPlaceEvent event) {
+    @Override
+    public void checkEvent(Event e) {
+        if (!(e instanceof PlayerMoveEvent)) {
+            return;
+        }
+        BlockPlaceEvent event = (BlockPlaceEvent) e;
         Player player = event.getPlayer();
         Block target = player.getTargetBlock(null, 5);
         if (target == null) {
@@ -36,7 +33,7 @@ public class ScaffoldFalseTarget extends ListeningCheck<BlockPlaceEvent> {
                     && target.getType().isSolid() && !target.getType().name().toLowerCase().contains("sign")
                     && !target.getType().toString().toLowerCase().contains("fence")
                     && player.getLocation().getY() > event.getBlock().getLocation().getY() && target.getType().isOccluding()) {
-            	flagEvent(event);
+            	this.flag();
             	//if(player().setViolation(new Violation("Scaffold", "FalseTarget"))) event.setCancelled(true);
             }
         }

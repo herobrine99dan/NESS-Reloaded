@@ -94,7 +94,7 @@ public class PacketListener implements Listener {
         }
         
         private boolean shouldContinue(Object packet) throws IllegalArgumentException, IllegalAccessException {
-        	NessPlayer nessPlayer = ness.getCheckManager().getExistingPlayer(uuid);
+        	NessPlayer nessPlayer = ness.getCheckManager().getNessPlayer(uuid);
         	if (nessPlayer == null) {
         		return true;
         	}
