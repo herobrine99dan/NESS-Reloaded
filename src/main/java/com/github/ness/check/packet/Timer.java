@@ -21,6 +21,9 @@ public class Timer extends Check {
      */
     @Override
     public void checkEvent(ReceivedPacketEvent e) {
+        if(player().isNot(e.getNessPlayer().getBukkitPlayer())) {
+            return;
+        }
         NessPlayer nessPlayer = e.getNessPlayer();
         if (!e.getPacket().getName().toLowerCase().contains("position") || nessPlayer.isTeleported()) {
             return;
@@ -34,7 +37,7 @@ public class Timer extends Check {
         final long average = delay.average();
         final float speed = 50.0f / (float) average;
         if (speed > 1.1) {
-            this.flag("Timer: " + speed);
+            this.flag("Timer: " + speed, nessPlayer);
         }
         if (nessPlayer.isDebugMode()) {
             nessPlayer.sendDevMessage("Timer: " + speed + " Average: " + average);

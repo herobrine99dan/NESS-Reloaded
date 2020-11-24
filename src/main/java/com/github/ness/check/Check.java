@@ -67,8 +67,8 @@ public abstract class Check {
      * Flags the player for cheating
      * 
      */
-    public final void flag() {
-        flag("");
+    public final void flag(NessPlayer sender) {
+        flag("", sender);
     }
 
     public abstract void checkEvent(ReceivedPacketEvent e);
@@ -78,10 +78,10 @@ public abstract class Check {
      * 
      * @param details debugging details
      */
-    public final void flag(String details) {
+    public final void flag(String details, NessPlayer sender) {
         if (callViolationEvent()) {
-            this.nessPlayer.getBukkitPlayer()
-                    .sendMessage("Cheats Detected: " + this.getCheckName() + " Details: " + details);
+            nessPlayer.getBukkitPlayer()
+                    .sendMessage("Cheats Detected: " + this.getCheckName() + " Details: " + details + " Name: " + this.nessPlayer.getBukkitPlayer().getName());
         }
     }
 

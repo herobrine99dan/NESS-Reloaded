@@ -25,7 +25,7 @@ final class NessApiImpl {
         if (anticheatPlayer != null) {
             for (Check check : anticheatPlayer.getChecks()) {
                 if (check.getCheckName().equals(violation.getCheck())) {
-                    check.flag("");
+                    check.flag("", null);
                     return;
                 }
             }
