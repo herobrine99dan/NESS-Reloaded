@@ -83,7 +83,7 @@ public class NessPlayer {
                 new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
                 new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
     }
-    
+
     public UUID getUniqueId() {
         return uuid;
     }
@@ -119,7 +119,7 @@ public class NessPlayer {
     public void setPlayerAction(PlayerAction action) {
         actionTime.put(action, System.nanoTime());
     }
-    
+
     public void addCheck(Check c) {
         this.checks.add(c);
     }

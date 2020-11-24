@@ -148,7 +148,7 @@ public class DiscordWebhook {
         stream.flush();
         stream.close();
 
-        connection.getInputStream().close(); //I'm not sure why but it doesn't work without getting the InputStream
+        connection.getInputStream().close(); // I'm not sure why but it doesn't work without getting the InputStream
         connection.disconnect();
     }
 

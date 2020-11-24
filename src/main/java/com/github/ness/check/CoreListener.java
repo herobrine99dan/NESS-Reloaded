@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import com.github.ness.NessPlayer;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
+import com.github.ness.packets.ReceivedPacketEvent;
 
 public class CoreListener implements Listener {
 
@@ -28,6 +29,11 @@ public class CoreListener implements Listener {
         NessPlayer nessPlayer = manager.getNessPlayer(e.getPlayer());
         nessPlayer.updateMovementValue(
                 new MovementValues(e.getPlayer(), ImmutableLoc.of(e.getTo()), ImmutableLoc.of(e.getFrom())));
+    }
+    
+    @EventHandler
+    public void onPacket(ReceivedPacketEvent e) {
+        manager.onEvent(e);
     }
 
     @EventHandler

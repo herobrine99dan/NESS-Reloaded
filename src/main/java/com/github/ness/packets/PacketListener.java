@@ -22,12 +22,12 @@ import io.netty.channel.ChannelPipeline;
 
 public class PacketListener implements Listener {
 
-	private final NessAnticheat ness;
-	
-	public PacketListener(NessAnticheat ness) {
-		this.ness = ness;
-	}
-	
+    private final NessAnticheat ness;
+
+    public PacketListener(NessAnticheat ness) {
+        this.ness = ness;
+    }
+
     /**
      * Gets the netty Channel of a Player
      *
@@ -36,10 +36,11 @@ public class PacketListener implements Listener {
      * @throws UncheckedReflectiveOperationException if reflection failed
      */
     private Channel getChannel(Player player) {
-    	if(!player.isOnline()) {
-    		throw new UncheckedReflectiveOperationException("Player " + player.getName() + " isn't online!", new ReflectiveOperationException());
-    	}
-    	return NetworkReflection.getChannel(NetworkReflection.getNetworkManager(player));
+        if (!player.isOnline()) {
+            throw new UncheckedReflectiveOperationException("Player " + player.getName() + " isn't online!",
+                    new ReflectiveOperationException());
+        }
+        return NetworkReflection.getChannel(NetworkReflection.getNetworkManager(player));
     }
 
     @EventHandler
@@ -77,30 +78,28 @@ public class PacketListener implements Listener {
         ChannelPipeline pipeline = getChannel(player).pipeline();
         pipeline.addBefore("packet_handler", player.getName() + "NESSListener", channelDuplexHandler);
     }
-    
+
     private class ChannelDuplexHandlerImpl extends ChannelDuplexHandler {
-    	
-    	private final UUID uuid;
-    	
-    	ChannelDuplexHandlerImpl(Player player) {
-    		uuid = player.getUniqueId();
-    	}
-    	
+
+        private final UUID uuid;
+
+        ChannelDuplexHandlerImpl(Player player) {
+            uuid = player.getUniqueId();
+        }
+
         @Override
         public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
-        	if (shouldContinue(packet)) {
-        		super.channelRead(channelHandlerContext, packet);
-        	}
+            if (shouldContinue(packet)) {
+                super.channelRead(channelHandlerContext, packet);
+            }
         }
-        
+
         private boolean shouldContinue(Object packet) throws IllegalArgumentException, IllegalAccessException {
-        	NessPlayer nessPlayer = ness.getCheckManager().getNessPlayer(uuid);
-        	if (nessPlayer == null) {
-        		return true;
-        	}
-            ReceivedPacketEvent event = new ReceivedPacketEvent(
-                    nessPlayer,
-                    getPacketObject(packet));
+            NessPlayer nessPlayer = ness.getCheckManager().getNessPlayer(uuid);
+            if (nessPlayer == null) {
+                return true;
+            }
+            ReceivedPacketEvent event = new ReceivedPacketEvent(nessPlayer, getPacketObject(packet));
             ness.getPlugin().getServer().getPluginManager().callEvent(event);
             return !event.isCancelled();
         }
@@ -111,7 +110,7 @@ public class PacketListener implements Listener {
         SimplePacket packet;
         if (packetname.contains("flying")) {
             packet = new WrappedInFlyingPacket(p);
-        } else if(packetname.contains("useentity")){
+        } else if (packetname.contains("useentity")) {
             packet = new WrappedInUseEntityPacket(p);
         } else {
             packet = new SimplePacket(p);

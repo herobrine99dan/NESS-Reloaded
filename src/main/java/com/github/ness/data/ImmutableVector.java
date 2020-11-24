@@ -1,11 +1,9 @@
 package com.github.ness.data;
 
-
 import lombok.Getter;
 import org.bukkit.util.Vector;
 
 public class ImmutableVector {
-
 
     @Getter
     private final double x;
@@ -21,8 +19,7 @@ public class ImmutableVector {
     }
 
     /**
-     * Creates an immutable vector from a bukkit vector, with an overridden
-     * world
+     * Creates an immutable vector from a bukkit vector, with an overridden world
      *
      * @param location the bukkit vector
      * @return the immutable vector

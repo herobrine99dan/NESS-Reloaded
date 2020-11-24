@@ -15,12 +15,14 @@ import lombok.Setter;
 /**
  * Called when NESS executes a command as specified in the configuration.
  * 
- * [deprecated] This event is inherently unstable. When it fires is dependent on arbitrary configuration values;
- * it may be disabled entirely. Which replacement should be used depends on the use case: If code listening to
- * this event intends to perform a callback or trigger after a player is flagged for a violation,
- * {@link NESSApi#addInfractionTrigger(InfractionTrigger)} is the recommended way to do that. If it is intended
- * to prevent a player from being punished in certain conditions by cancelling this event, {@link PlayerFlagEvent}
- * should be used.
+ * [deprecated] This event is inherently unstable. When it fires is dependent on
+ * arbitrary configuration values; it may be disabled entirely. Which
+ * replacement should be used depends on the use case: If code listening to this
+ * event intends to perform a callback or trigger after a player is flagged for
+ * a violation, {@link NESSApi#addInfractionTrigger(InfractionTrigger)} is the
+ * recommended way to do that. If it is intended to prevent a player from being
+ * punished in certain conditions by cancelling this event,
+ * {@link PlayerFlagEvent} should be used.
  *
  */
 public class PlayerPunishEvent extends Event implements Cancellable {
@@ -42,7 +44,8 @@ public class PlayerPunishEvent extends Event implements Cancellable {
      * This event is fired when someone is punished
      */
 
-    public PlayerPunishEvent(Player player, NessPlayer nessplayer, Violation violation, int violations, String command) {
+    public PlayerPunishEvent(Player player, NessPlayer nessplayer, Violation violation, int violations,
+            String command) {
         super(!Bukkit.isPrimaryThread());
         this.player = player;
         this.command = command;

@@ -9,19 +9,12 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.RegisteredListener;
 
 import com.github.ness.NessAnticheat;
 import com.github.ness.NessPlayer;
-import com.github.ness.check.movement.oldmovementchecks.FlyHighDistance;
-import com.github.ness.check.movement.oldmovementchecks.NoFall;
-import com.github.ness.check.movement.oldmovementchecks.Speed;
-import com.github.ness.check.world.ScaffoldAngle;
-import com.github.ness.check.world.ScaffoldFalseTarget;
+import com.github.ness.check.packet.Timer;
+import com.github.ness.packets.ReceivedPacketEvent;
 
 import lombok.Getter;
 
@@ -37,23 +30,24 @@ public class CheckManager implements Listener {
 
     public CheckManager(NessAnticheat nessAnticheat) {
         this.ness = nessAnticheat;
-        this.listenToAllEvents();
-        this.checkList.add(new FlyHighDistance(null, this));
-        this.checkList.add(new NoFall(null, this));
-        this.checkList.add(new Speed(null, this));
-        this.checkList.add(new ScaffoldAngle(null, this));
-        this.checkList.add(new ScaffoldFalseTarget(null, this));
+        //this.listenToAllEvents();
+       // this.checkList.add(new FlyHighDistance(null, this));
+        //this.checkList.add(new NoFall(null, this));
+        this.checkList.add(new Timer(null, this));
+        //this.checkList.add(new Speed(null, this));
+        //this.checkList.add(new ScaffoldAngle(null, this));
+        //this.checkList.add(new ScaffoldFalseTarget(null, this));
     }
 
-    public void listenToAllEvents() {
+    /*public void listenToAllEvents() {
         RegisteredListener registeredListener = new RegisteredListener(this, (listener, event) -> onEvent(event),
                 EventPriority.NORMAL, ness.getPlugin(), false);
         for (HandlerList handler : HandlerList.getHandlerLists()) {
             handler.register(registeredListener);
         }
-    }
+    }*/
 
-    private Object onEvent(Event event) {
+    public Object onEvent(ReceivedPacketEvent event) {
         for (NessPlayer np : nessPlayers.values()) {
             for (Check c : np.getChecks()) {
                 c.checkEvent(event);

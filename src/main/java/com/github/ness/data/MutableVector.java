@@ -124,8 +124,7 @@ public class MutableVector implements Cloneable {
     }
 
     public boolean isInSphere(MutableVector origin, double radius) {
-        return (square(origin.x - this.x) + square(origin.y - this.y)
-                + square(origin.z - this.z) <= square(radius));
+        return (square(origin.x - this.x) + square(origin.y - this.y) + square(origin.z - this.z) <= square(radius));
     }
 
     private double square(double x) {

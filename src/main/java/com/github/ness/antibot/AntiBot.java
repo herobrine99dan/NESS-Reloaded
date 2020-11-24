@@ -19,53 +19,54 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class AntiBot {
 
-	private final JavaPlugin plugin;
-	private final AntiBotConfig config;
-	private final int maxPlayersPerSecond;
-	private final String kickMessage;
-	
-	private final Cache<UUID, Boolean> whitelist;
-	private final AtomicLong counter = new AtomicLong();
+    private final JavaPlugin plugin;
+    private final AntiBotConfig config;
+    private final int maxPlayersPerSecond;
+    private final String kickMessage;
 
-	public AntiBot(JavaPlugin plugin, AntiBotConfig config) {
-		this.plugin = plugin;
-		this.config = config;
+    private final Cache<UUID, Boolean> whitelist;
+    private final AtomicLong counter = new AtomicLong();
 
-		maxPlayersPerSecond = config.maxPlayersPerSecond();
-		kickMessage = ChatColor.translateAlternateColorCodes('&', config.kickMessage());
+    public AntiBot(JavaPlugin plugin, AntiBotConfig config) {
+        this.plugin = plugin;
+        this.config = config;
 
-		whitelist = Caffeine.newBuilder().maximumSize(1200L).expireAfterAccess(Duration.ofDays(4L))
-				.scheduler(Scheduler.systemScheduler()).build();
-	}
-	
-	public void initiate() {
-		plugin.getServer().getPluginManager().registerEvents(new ListenerImpl(), plugin);
-		plugin.getServer().getScheduler().runTaskTimer(plugin, () -> counter.set(0L), 0L, 20L);
-	}
-	
-	/*
-	 * This class being public improves some of Paper's optimisations with event handlers
-	 */
-	public class ListenerImpl implements Listener {
+        maxPlayersPerSecond = config.maxPlayersPerSecond();
+        kickMessage = ChatColor.translateAlternateColorCodes('&', config.kickMessage());
 
-		@EventHandler(priority = EventPriority.LOWEST)
-		public void interceptLogins(AsyncPlayerPreLoginEvent event) {
-			if (counter.incrementAndGet() > maxPlayersPerSecond
-					&& whitelist.getIfPresent(event.getUniqueId()) != null) {
-				event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, kickMessage);
-			}
-		}
+        whitelist = Caffeine.newBuilder().maximumSize(1200L).expireAfterAccess(Duration.ofDays(4L))
+                .scheduler(Scheduler.systemScheduler()).build();
+    }
 
-		@EventHandler
-		public void onJoin(PlayerJoinEvent e) {
-			Player player = e.getPlayer();
-			plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+    public void initiate() {
+        plugin.getServer().getPluginManager().registerEvents(new ListenerImpl(), plugin);
+        plugin.getServer().getScheduler().runTaskTimer(plugin, () -> counter.set(0L), 0L, 20L);
+    }
 
-				if (player.isOnline()) {
-					whitelist.put(player.getUniqueId(), Boolean.TRUE);
-				}
-			}, config.timeUntilTrusted() * 20L);
-		}
-	}
+    /*
+     * This class being public improves some of Paper's optimisations with event
+     * handlers
+     */
+    public class ListenerImpl implements Listener {
+
+        @EventHandler(priority = EventPriority.LOWEST)
+        public void interceptLogins(AsyncPlayerPreLoginEvent event) {
+            if (counter.incrementAndGet() > maxPlayersPerSecond
+                    && whitelist.getIfPresent(event.getUniqueId()) != null) {
+                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, kickMessage);
+            }
+        }
+
+        @EventHandler
+        public void onJoin(PlayerJoinEvent e) {
+            Player player = e.getPlayer();
+            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+
+                if (player.isOnline()) {
+                    whitelist.put(player.getUniqueId(), Boolean.TRUE);
+                }
+            }, config.timeUntilTrusted() * 20L);
+        }
+    }
 
 }

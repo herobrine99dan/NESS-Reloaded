@@ -1,4 +1,4 @@
-  
+
 package com.github.ness.packets.wrappers;
 
 import java.lang.reflect.Field;
@@ -18,22 +18,20 @@ public class WrappedInUseEntityPacket extends SimplePacket {
 
     public WrappedInUseEntityPacket(Object packet) {
         super(packet);
-        if(!initialized) {
-        	fieldId = this.getField(packet.getClass(), int.class, 0);
-        	fieldAction = getField(packet.getClass(), Enum.class, 0);
-        	initialized = true;
+        if (!initialized) {
+            fieldId = this.getField(packet.getClass(), int.class, 0);
+            fieldAction = getField(packet.getClass(), Enum.class, 0);
+            initialized = true;
         }
     }
 
     @Override
     public void process() throws IllegalArgumentException, IllegalAccessException {
-    	entityId = fieldId.getInt(this.getPacket());
+        entityId = fieldId.getInt(this.getPacket());
         action = EnumEntityUseAction.values()[((Enum<?>) fieldAction.get(this.getPacket())).ordinal()];
     }
 
     public enum EnumEntityUseAction {
-        INTERACT,
-        ATTACK,
-        INTERACT_AT
+        INTERACT, ATTACK, INTERACT_AT
     }
 }

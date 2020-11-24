@@ -27,12 +27,13 @@ public class ReflectionUtility {
         return pkg.substring(pkg.lastIndexOf(".") + 1);
     }
 
-    //TODO To Optimize this
+    // TODO To Optimize this
     public static String getBlockName(Player p, ImmutableLoc loc) {
         if (NessAnticheat.getMinecraftVersion() > 1132) {
             Object entityPlayer = ReflectionUtility.getHandle(p);
             Object world = ReflectionUtility.callMethod(entityPlayer, "getWorld");
-            Object position = ReflectionUtility.callConstructor(ReflectionUtility.getNMSClass("BlockPosition"), loc.getX(), loc.getY(), loc.getZ());
+            Object position = ReflectionUtility.callConstructor(ReflectionUtility.getNMSClass("BlockPosition"),
+                    loc.getX(), loc.getY(), loc.getZ());
             Object type = ReflectionUtility.callMethod(world, "getType", position);
             Object block = ReflectionUtility.callMethod(type, "getBlock");
             return block.getClass().getSimpleName().replaceFirst("Block", "").toLowerCase();

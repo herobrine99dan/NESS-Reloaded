@@ -9,6 +9,7 @@ import org.bukkit.event.Event;
 
 import com.github.ness.NessAnticheat;
 import com.github.ness.NessPlayer;
+import com.github.ness.packets.ReceivedPacketEvent;
 
 import lombok.Getter;
 
@@ -32,7 +33,7 @@ public abstract class Check {
         this.checkName = classe.getSimpleName();
         this.checkClass = classe;
         this.nessPlayer = nessPlayer;
-        if(manager != null) {
+        if (manager != null) {
             Check.manager = manager;
         }
     }
@@ -69,8 +70,8 @@ public abstract class Check {
     public final void flag() {
         flag("");
     }
-    
-    public abstract void checkEvent(Event e);
+
+    public abstract void checkEvent(ReceivedPacketEvent e);
 
     /**
      * Flags the player for cheating
@@ -79,7 +80,8 @@ public abstract class Check {
      */
     public final void flag(String details) {
         if (callViolationEvent()) {
-            this.nessPlayer.getBukkitPlayer().sendMessage("Cheats Detected: " + this.getCheckName() + " Details: " + details);
+            this.nessPlayer.getBukkitPlayer()
+                    .sendMessage("Cheats Detected: " + this.getCheckName() + " Details: " + details);
         }
     }
 
@@ -87,16 +89,17 @@ public abstract class Check {
         if (com.github.ness.api.impl.PlayerViolationEvent.getHandlerList().getRegisteredListeners().length == 0) {
             return true;
         }
-        return callEvent(new com.github.ness.api.impl.PlayerViolationEvent(nessPlayer.getBukkitPlayer(),
-                nessPlayer, new com.github.ness.api.Violation(checkName, ""), violations.get()));
+        return callEvent(new com.github.ness.api.impl.PlayerViolationEvent(nessPlayer.getBukkitPlayer(), nessPlayer,
+                new com.github.ness.api.Violation(checkName, ""), violations.get()));
     }
 
     private boolean callEvent(Cancellable event) {
         Bukkit.getServer().getPluginManager().callEvent((Event) event);
         return !event.isCancelled();
     }
-    
-    public Check makeEqualCheck(NessPlayer nessPlayer) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SecurityException {
+
+    public Check makeEqualCheck(NessPlayer nessPlayer) throws InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException, SecurityException {
         return (Check) this.checkClass.getConstructors()[0].newInstance(nessPlayer, this.manager());
     }
 

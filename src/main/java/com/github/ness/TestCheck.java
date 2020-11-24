@@ -1,9 +1,8 @@
 package com.github.ness;
 
-import org.bukkit.event.Event;
-
 import com.github.ness.check.Check;
 import com.github.ness.check.CheckManager;
+import com.github.ness.packets.ReceivedPacketEvent;
 
 public class TestCheck extends Check {
 
@@ -12,7 +11,7 @@ public class TestCheck extends Check {
     }
 
     @Override
-    public void checkEvent(Event e) {
+    public void checkEvent(ReceivedPacketEvent e) {
         // TODO Auto-generated method stub
 
     }
