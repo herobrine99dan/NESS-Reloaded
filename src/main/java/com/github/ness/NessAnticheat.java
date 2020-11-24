@@ -38,7 +38,7 @@ public class NessAnticheat {
 	static {
 		minecraftVersion = getVersion();
 	}
-
+    //This Line is so useful!
 	NessAnticheat(JavaPlugin plugin, Path folder) {
 		this.plugin = plugin;
 		executor = Executors.newSingleThreadScheduledExecutor();
