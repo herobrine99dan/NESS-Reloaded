@@ -39,8 +39,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
-			xDiff -= Math.abs(nessPlayer.getLastVelocity().getX());
-			zDiff -= Math.abs(nessPlayer.getLastVelocity().getZ());
+			return;
 		}
 		double xzDiff = Math.hypot(xDiff, zDiff);
 

@@ -32,7 +32,7 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
 	}
 	
 	public interface Config {
-		@DefaultDouble(0.95)
+		@DefaultDouble(1)
 		double maxGravity();
 	}
 
@@ -49,11 +49,11 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
     public void Check(PlayerMoveEvent e) {
         NessPlayer np = this.player();
         Player p = e.getPlayer();
-        double y = np.getMovementValues().yDiff;
-        double yresult = y - p.getVelocity().getY();
         MovementValues values = np.getMovementValues();
+        double y = values.yDiff;
+        double yresult = y - p.getVelocity().getY();
         if (Utility.hasflybypass(p) || values.isAroundSlime() || p.getAllowFlight()
-                || values.isAroundLily() || p.isInsideVehicle() || Utility.hasVehicleNear(p, 3)) {
+                || values.isAroundLily() || Utility.hasVehicleNear(p, 3)) {
             return;
         }
         double max = maxInvalidVelocity;
@@ -63,7 +63,7 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
         if (np.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2500) {
             y -= Math.abs(np.getLastVelocity().getY());
         }
-        if (Math.abs(yresult) > max && !np.isTeleported() && np.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) > 1500) {
+        if (Math.abs(yresult) > max && !np.isTeleported()) {
         	flagEvent(e, " " + yresult);
         	//if(player().setViolation(new Violation("Fly", "InvalidVelocity: " + yresult))) e.setCancelled(true);
         }

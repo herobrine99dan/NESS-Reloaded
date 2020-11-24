@@ -174,9 +174,25 @@ public class MovementValues {
 		this.to = to;
 		this.from = from;
 	}
-	
+
 	public boolean hasBlockNearHead() {
 		return blockUnderHead;
+	}
+
+	/**
+	 * Check if the player is falling using his server Motion
+	 * @return true if the player is falling
+	 */
+	public boolean isServerFalling() {
+		return this.serverVelocity.getY() < 0;
+	}
+	
+	/**
+	 * Check if the player is falling using his yDifference
+	 * @return true if the player is falling
+	 */
+	public boolean isClientFalling() {
+		return this.yDiff < 0;
 	}
 
 	public void doCalculations() {
