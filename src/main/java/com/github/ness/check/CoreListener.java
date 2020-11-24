@@ -26,7 +26,7 @@ public class CoreListener implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
-        NessPlayer nessPlayer = manager.getNessPlayer(e.getPlayer());
+        NessPlayer nessPlayer = manager.getNessPlayer(e.getPlayer().getUniqueId());
         nessPlayer.updateMovementValue(
                 new MovementValues(e.getPlayer(), ImmutableLoc.of(e.getTo()), ImmutableLoc.of(e.getFrom())));
     }

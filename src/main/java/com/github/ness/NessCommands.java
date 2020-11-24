@@ -77,7 +77,7 @@ class NessCommands implements CommandExecutor {
             break;
         case "debug":
             if (sender instanceof Player) {
-                NessPlayer np = ness.getCheckManager().getNessPlayer((Player) sender);
+                NessPlayer np = ness.getCheckManager().getNessPlayer(((Player) sender).getUniqueId());
                 if (np == null) {
                     // This shouldn't happen, but just in case
                     sendMessage(sender, "Your NESSPlayer isn't loaded");
@@ -117,7 +117,7 @@ class NessCommands implements CommandExecutor {
             sendUnknownTarget(sender);
             return;
         }
-        NessPlayer nessPlayer = ness.getCheckManager().getNessPlayer(target);
+        NessPlayer nessPlayer = ness.getCheckManager().getNessPlayer(target.getUniqueId());
         if (nessPlayer == null) {
             sendUnknownTarget(sender);
             return;
@@ -138,7 +138,7 @@ class NessCommands implements CommandExecutor {
             sendUnknownTarget(sender);
             return;
         }
-        NessPlayer nessPlayer = ness.getCheckManager().getNessPlayer(target);
+        NessPlayer nessPlayer = ness.getCheckManager().getNessPlayer(target.getUniqueId());
         if (nessPlayer == null) {
             sendUnknownTarget(sender);
             return;

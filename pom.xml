@@ -5,7 +5,7 @@
 	
 	<groupId>com.github.ness</groupId>
 	<artifactId>ness</artifactId>
-	<version>2.8.0-SNAPSHOT</version>
+	<version>2.9.0-SNAPSHOT</version>
 	<name>NESS-Reloaded</name>
 	
 	<properties>
@@ -13,7 +13,6 @@
 		<junit.version>5.7.0</junit.version>
 		<slf4j.version>1.7.30</slf4j.version>
 		<protocollib.version>4.5.0</protocollib.version>
-		<caffeine.version>2.8.5</caffeine.version>
 		<dazzleconf.version>1.0.0-RC4</dazzleconf.version>
 	</properties>
 	
@@ -102,19 +101,11 @@
 						<configuration>
 							<minimizeJar>false</minimizeJar>
 							<artifactSet>
-								<includes>
-									<include>com.github.ben-manes.caffeine:caffeine</include>
-									<include>space.arim.dazzleconf:*</include>
-								</includes>
 							</artifactSet>
 							<relocations>
 								<relocation>
-									<pattern>com.github.benmanes.caffeine</pattern>
-									<shadedPattern>com.github.ness.shaded.com.github.benmanes.caffeine</shadedPattern>
-								</relocation>
-								<relocation>
-									<pattern>space.arim.dazzleconf</pattern>
-									<shadedPattern>com.github.ness.shaded.space.arim.dazzleconf</shadedPattern>
+									<pattern>com.github.retrooper</pattern>
+									<shadedPattern>com.github.ness.shaded.com.github.retrooper</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>
@@ -133,16 +124,9 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>com.github.ben-manes.caffeine</groupId>
-			<artifactId>caffeine</artifactId>
-			<version>${caffeine.version}</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>space.arim.dazzleconf</groupId>
-			<artifactId>dazzleconf-ext-snakeyaml</artifactId>
-			<version>${dazzleconf.version}</version>
-			<optional>true</optional>
+	    	<groupId>com.github.retrooper</groupId>
+	    	<artifactId>packetevents</artifactId>
+	    	<version>1.7.9</version>
 		</dependency>
 		<!-- Testing -->
 		<dependency>
@@ -186,9 +170,9 @@
 	
 	<repositories>
 		<repository>
-        	<id>dmulloy2-repo</id>
-        	<url>https://repo.dmulloy2.net/nexus/repository/public/</url>
-        </repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
 		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>

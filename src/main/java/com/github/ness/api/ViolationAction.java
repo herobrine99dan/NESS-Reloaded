@@ -8,11 +8,7 @@ import org.bukkit.entity.Player;
  * {@link NESSApi#addViolationAction(ViolationAction)}.
  *
  * @author A248
- * @deprecated It is preferred to use {@link InfractionTrigger}, which is an
- *             interface, and has finer control over specifying the
- *             synchronisation context of the trigger
  */
-@Deprecated
 public abstract class ViolationAction {
 
     private final boolean canRunAsync;
@@ -53,6 +49,6 @@ public abstract class ViolationAction {
      * @param violationCount the number of times the player has violated the
      *                       specific check
      */
-    public abstract void actOn(Player player, @SuppressWarnings("deprecation") Violation violation, int violationCount);
+    public abstract void actOn(Player player, Violation violation, int violationCount);
 
 }

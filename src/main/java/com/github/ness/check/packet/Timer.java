@@ -8,8 +8,8 @@ import com.github.ness.utility.LongRingBuffer;
 
 public class Timer extends Check {
     
-    public Timer(NessPlayer nessPlayer, CheckManager manager) {
-        super(Timer.class, nessPlayer, manager);
+    public Timer(NessPlayer nessPlayer) {
+        super(Timer.class, nessPlayer);
         this.delay = new LongRingBuffer(40);
     }
     
@@ -37,7 +37,7 @@ public class Timer extends Check {
         final long average = delay.average();
         final float speed = 50.0f / (float) average;
         if (speed > 1.1) {
-            this.flag("Timer: " + speed, nessPlayer);
+            this.flag("Timer: " + speed);
         }
         if (nessPlayer.isDebugMode()) {
             nessPlayer.sendDevMessage("Timer: " + speed + " Average: " + average);

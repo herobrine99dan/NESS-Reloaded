@@ -14,6 +14,9 @@ import com.github.ness.check.Check;
 import com.github.ness.check.CheckManager;
 import com.github.ness.check.CoreListener;
 import com.github.ness.packets.PacketListener;
+import com.github.ness.violation.ViolationHandler;
+
+import lombok.Getter;
 
 public class NessAnticheat {
 
@@ -24,16 +27,17 @@ public class NessAnticheat {
     private final ScheduledExecutorService executor;
 
     private final CheckManager checkManager;
+    @Getter
+    private final ViolationHandler violationHandler;
 
     static {
         minecraftVersion = getVersion();
     }
 
-    // This Line is so useful!
     NessAnticheat(JavaPlugin plugin, Path folder) {
         this.plugin = plugin;
         executor = Executors.newSingleThreadScheduledExecutor();
-
+        this.violationHandler = new ViolationHandler(this);
         checkManager = new CheckManager(this);
     }
 
@@ -47,37 +51,16 @@ public class NessAnticheat {
         if (minecraftVersion > 1152 && minecraftVersion < 1162) {
             logger.warning("Please use 1.16.2 Spigot Version since 1.16/1.16.1 has a lot of false flags");
         }
-        Check check = new TestCheck(null, this.getCheckManager());
+        Check.updateCheckManager(this.getCheckManager());
         Bukkit.getServer().getPluginManager().registerEvents(new CoreListener(this.getCheckManager()), plugin);
         // Start configuration
         logger.fine("Configuration loaded. Initiating checks...");
 
         // Start checks
         logger.fine("Starting CheckManager");
-        // CompletableFuture<?> future = checkManager.start();
-        // plugin.getServer().getScheduler().runTaskLater(plugin, future::join, 1L);
-
-        // Start violation handling
-
-        // Register API implementation
-        // getPlugin().getServer().getServicesManager().register(NESSApi.class, new
-        // NessApiImpl(this), plugin,
-        // ServicePriority.Low);
-
-        // Start AntiBot if enabled
-
-        // Start packet listener except on Glowstone
         if (!Bukkit.getName().toLowerCase().contains("glowstone")) {
             plugin.getServer().getPluginManager().registerEvents(new PacketListener(this), plugin);
         }
-        // Start plugin message listener if bungeecord notify-staff hook enabled
-        /*
-         * if (getMainConfig().getViolationHandling().notifyStaff().bungeecord()) {
-         * Messenger messenger = plugin.getServer().getMessenger();
-         * messenger.registerOutgoingPluginChannel(plugin, "BungeeCord");
-         * messenger.registerIncomingPluginChannel(plugin, "BungeeCord", new
-         * BungeeCordListener()); }
-         */
     }
 
     /**
