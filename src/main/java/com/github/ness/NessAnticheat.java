@@ -23,6 +23,8 @@ import com.github.ness.listener.BungeeCordListener;
 import com.github.ness.packets.PacketListener;
 import com.github.ness.violation.ViolationManager;
 
+import lombok.Getter;
+
 public class NessAnticheat {
 
 	private static final Logger logger = NessLogger.getLogger(NessAnticheat.class);

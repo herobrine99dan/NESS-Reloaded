@@ -16,7 +16,7 @@ public interface PlayersManager {
 	 * 
 	 * @return an immutable copy of all anticheat players
 	 */
-	Collection<? extends AnticheatPlayer> getAllPlayers();
+	Collection<AnticheatPlayer> getAllPlayers();
 
 	/**
 	 * Gets an anticheat player by UUID, or {@code null} if there is none

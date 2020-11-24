@@ -15,6 +15,6 @@ public interface ChecksManager {
 	 * 
 	 * @return an immutable collection copy of all anticheat checks
 	 */
-	Collection<? extends AnticheatCheck> getAllChecks();
+	Collection<AnticheatCheck> getAllChecks();
 	
 }
