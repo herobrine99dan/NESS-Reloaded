@@ -96,6 +96,17 @@ public class NessPlayer {
     public Player getBukkitPlayer() {
         return player;
     }
+    
+    /**
+     * This method clean the fields in this objects
+     */
+    public void cleanFields() {
+        actionTime.clear();
+        lastVelocity = null;
+        attackedEntities.clear();
+        movementValues = null;
+        checks.clear();
+    }
 
     /*
      * Infraction methods

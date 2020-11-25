@@ -100,7 +100,7 @@ public class MovementValues {
             ableFly = p.getAllowFlight();
             for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 2)) {
                 String name = b.getType().name();
-                if (b.isLiquid()) {
+                if (name.contains("WATER") || name.contains("LAVA") || name.contains("LIQUID")) {
                     liquids = true;
                 }
                 if (b.getType().isSolid()) { // Doing all things in a single for loop is better than 12 loops

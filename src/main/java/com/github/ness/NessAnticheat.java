@@ -34,8 +34,6 @@ public class NessAnticheat {
     @Getter
     private final ViolationHandler violationHandler;
     @Getter
-    private final SyncScheduler syncScheduler;
-    @Getter
     private final AntiBot antiBot;
 
     static {
@@ -44,7 +42,6 @@ public class NessAnticheat {
 
     NessAnticheat(JavaPlugin plugin, Path folder) {
         this.plugin = plugin;
-        this.syncScheduler = new SyncScheduler(this);
         executor = Executors.newSingleThreadScheduledExecutor();
         this.violationHandler = new ViolationHandler(this);
         checkManager = new CheckManager(this);
@@ -80,7 +77,6 @@ public class NessAnticheat {
         if(this.getPlugin().getConfig().getBoolean("antibot.enable")) {
             this.antiBot.initiate();
         }
-        syncScheduler.startScheduler();
     }
 
     /**

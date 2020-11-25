@@ -14,10 +14,13 @@ public class Violation {
     private final String check;
     @Getter
     private final String details;
+    @Getter
+    private final int violationCount;
 
-    public Violation(String check, String details) {
+    public Violation(String check, String details, int violationCount) {
         this.check = check;
         this.details = details;
+        this.violationCount = violationCount;
     }
     
     public void validateValues() {

@@ -33,6 +33,7 @@ public class CoreListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerQuitEvent e) {
+        manager.getNessPlayer(e.getPlayer().getUniqueId()).cleanFields();
         manager.removeNessPlayer(e.getPlayer());
     }
 

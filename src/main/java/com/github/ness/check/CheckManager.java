@@ -1,6 +1,7 @@
 package com.github.ness.check;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,6 +42,7 @@ public class CheckManager implements Listener {
     public void initialize() {
         final List<String> checks = CheckManager.this.getNess().getPlugin().getConfig().getStringList("enabled-checks");
         final ChecksPackage[] packs = ChecksPackage.values();
+        checks.addAll(Arrays.asList(ChecksPackage.REQUIRED_CHECKS));
         ness.getExecutor().execute(new Runnable() {
             @Override
             public void run() {

@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.ness.NessAnticheat;
-import com.github.ness.NessPlayer;
-import com.github.ness.RunnableDataContainer;
 import com.github.ness.api.Violation;
 import com.github.ness.api.ViolationAction;
 import com.github.ness.check.Check;
@@ -28,34 +27,26 @@ public class ViolationHandler {
         this.actions.add(action);
     }
 
-    public void onCheat(Player player, Violation violation, int violationCount, Check check) {
+    public void onCheat(Player player, Violation violation, Check check) {
+        List<ViolationAction> syncActions = new ArrayList<ViolationAction>();
+        List<ViolationAction> asyncActions = new ArrayList<ViolationAction>();
         for (ViolationAction action : actions) {
             if (action.canRunAsync()) {
-                action.actOn(player, violation, violationCount);
-            } else {// TODO Fix this
-                ViolationRunnableDataContainer runnable = new ViolationRunnableDataContainer(null, player, violation,
-                        violationCount, action);
-                action.actOn(player, violation, violationCount);
-                ness.getSyncScheduler().addAction(runnable);
+                asyncActions.add(action);
+            } else {
+                syncActions.add(action);
             }
         }
-    }
-
-    class ViolationRunnableDataContainer extends RunnableDataContainer {
-
-        public ViolationRunnableDataContainer(NessPlayer nessPlayer, Object... objects) {
-            super(nessPlayer, objects);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (ViolationAction action : syncActions) {
+                    action.actOn(player, violation);
+                }
+            }
+        }.runTaskLater(ness.getPlugin(), 20);
+        for (ViolationAction action : asyncActions) {
+            action.actOn(player, violation);
         }
-
-        @Override
-        public void run() {
-            Player player = (Player) this.getArray()[0];
-            Violation violation = (Violation) this.getArray()[1];
-            int violationCount = (int) this.getArray()[2];
-            ViolationAction action = (ViolationAction) this.getArray()[3];
-            action.actOn(player, violation, violationCount);
-        }
-
     }
-
 }

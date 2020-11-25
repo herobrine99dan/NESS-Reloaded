@@ -49,6 +49,6 @@ public abstract class ViolationAction {
      * @param violationCount the number of times the player has violated the
      *                       specific check
      */
-    public abstract void actOn(Player player, Violation violation, int violationCount);
+    public abstract void actOn(Player player, Violation violation);
 
 }

@@ -5,8 +5,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ness.NessAnticheat;
 import com.github.ness.NessPlayer;
@@ -47,6 +47,9 @@ public abstract class Check {
         this.milliSeconds = milliSeconds;
     }
 
+    /**
+     * This method enables the schedule and will be called by CheckFactory
+     */
     public void startScheduler() {
         if (hasAsyncScheduler) {
             manager().getNess().getExecutor().scheduleAtFixedRate(new Runnable() {
@@ -92,8 +95,8 @@ public abstract class Check {
      * Flags the player for cheating
      * 
      */
-    public final void flag() {
-        flag("");
+    public final int flag() {
+        return flag("");
     }
 
     public abstract void checkEvent(ReceivedPacketEvent e);
@@ -104,20 +107,23 @@ public abstract class Check {
      * @param details debugging details
      */
     public final int flag(String details) {
-        if (callViolationEvent(details)) {
-            nessPlayer.getBukkitPlayer().sendMessage("Cheats Detected: " + this.getCheckName() + " Details: " + details
-                    + " Name: " + this.nessPlayer.getBukkitPlayer().getName());
-            return this.violations.addAndGet(1);
+        Violation violation = new Violation(this.checkName, details, this.violations.addAndGet(1));
+        if (callViolationEvent(violation)) {
+            this.nessPlayer.addViolation(violation);
+            ness().getViolationHandler().onCheat(this.player().getBukkitPlayer(), violation, this);
+            return this.violations.get();
+        } else {
+            this.violations.decrementAndGet();
         }
         return this.violations.get();
     }
 
-    private boolean callViolationEvent(String details) {
+    private boolean callViolationEvent(Violation violation) {
         if (PlayerViolationEvent.getHandlerList().getRegisteredListeners().length == 0) {
             return true;
         }
         PlayerViolationEvent event = new PlayerViolationEvent(nessPlayer.getBukkitPlayer(), nessPlayer,
-                new Violation(checkName, details), violations.get());
+                violation, violations.get());
         Bukkit.getServer().getPluginManager().callEvent((Event) event);
         return !event.isCancelled();
     }
@@ -128,6 +134,21 @@ public abstract class Check {
 
     public void clearViolationCount() {
         violations.set(0);
+    }
+
+    /**
+     * Runs a delayed task using the bukkit scheduler
+     * 
+     * @param command  the runnable to run later
+     * @param duration the delay
+     */
+    public void runTaskLater(Runnable command, Duration duration) {
+        JavaPlugin plugin = manager().getNess().getPlugin();
+        plugin.getServer().getScheduler().runTaskLater(plugin, command, duration.toMillis() / 50L);
+    }
+
+    public Duration durationOfTicks(int ticks) {
+        return Duration.ofMillis(ticks * 50L);
     }
 
     @Override
