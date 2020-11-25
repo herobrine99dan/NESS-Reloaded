@@ -17,7 +17,7 @@ public class ReceivedPacketEvent implements Cancellable {
         this.packet = packet;
         this.nessPlayer = nessplayer;
     }
-
+    
     @Override
     public boolean isCancelled() {
         return cancelled;

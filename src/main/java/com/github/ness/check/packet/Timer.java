@@ -47,7 +47,6 @@ public class Timer extends Check {
             }
             this.lastDelay = current;
         }
-
     }
 
 }

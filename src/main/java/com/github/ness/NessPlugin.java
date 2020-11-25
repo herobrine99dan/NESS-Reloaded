@@ -37,7 +37,6 @@ public class NessPlugin extends JavaPlugin {
         PacketEvents.getSettings().injectAsync(true);
         PacketEvents.getSettings().ejectAsync(true);
         PacketEvents.init(this);
-        PacketEvents.getAPI().getEventManager().registerListener(new NessPacketListener(ness));
     }
 
     @Override

@@ -107,8 +107,8 @@
 							</artifactSet>
 							<relocations>
 								<relocation>
-									<pattern>com.github.retrooper.</pattern>
-									<shadedPattern>com.github.ness.shaded.com.github.retrooper</shadedPattern>
+									<pattern>io.github.retrooper</pattern>
+									<shadedPattern>com.github.ness.shaded.io.github.retrooper</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>
