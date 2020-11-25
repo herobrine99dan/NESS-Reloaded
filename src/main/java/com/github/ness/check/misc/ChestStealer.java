@@ -23,6 +23,7 @@ public class ChestStealer extends ListeningCheck<InventoryClickEvent> {
 			forEventWithAsyncPeriodic(InventoryClickEvent.class, Duration.ofMillis(500));
 	private long moveInvItemsLastTime;
 	private int movedInvItems;
+	private Material lastItemType = Material.AIR;
 
 	public ChestStealer(ListeningCheckFactory<?, InventoryClickEvent> factory, NessPlayer player) {
 		super(factory, player);
@@ -49,21 +50,25 @@ public class ChestStealer extends ListeningCheck<InventoryClickEvent> {
 		if(nessPlayer.getBukkitPlayer().getGameMode().equals(GameMode.CREATIVE) || e.getCurrentItem() == null) {
 			return;
 		}
-		if (i1 != i2 && e.getCurrentItem().getType() != Material.AIR) {
-			movedInvItems++;
-			if (movedInvItems > 4) {
-				
-				//if(player().setViolation(new Violation("ChestStealer", "movedInventoryItems: " + movedInvItems))) e.setCancelled(true);
-				flagEvent(e, " movedInventoryItems: " + movedInvItems);
-				movedInvItems = 0;
+		final Material itemType = e.getCurrentItem().getType();
+		if (i1 != i2 && itemType != Material.AIR) {
+			if (!lastItemType.equals(itemType)) {
+				movedInvItems++;
+				if (movedInvItems > 4) {
+
+					//if(player().setViolation(new Violation("ChestStealer", "movedInventoryItems: " + movedInvItems))) e.setCancelled(true);
+					flagEvent(e, " movedInventoryItems: " + movedInvItems);
+					movedInvItems = 0;
+				}
+				final long now = System.currentTimeMillis();
+				final long result = now - moveInvItemsLastTime;
+				if (result < 80) {
+					flagEvent(e, " timeBetweenMovedItems: " + result);
+					//if(player().setViolation(new Violation("ChestStealer", "timeBetweenMovedItems: " + result))) e.setCancelled(true);
+				}
+				moveInvItemsLastTime = System.currentTimeMillis();
 			}
-			final long now = System.currentTimeMillis();
-			final long result = now - moveInvItemsLastTime;
-			if (result < 80) {
-				flagEvent(e, " timeBetweenMovedItems: " + result);
-				//if(player().setViolation(new Violation("ChestStealer", "timeBetweenMovedItems: " + result))) e.setCancelled(true);
-			}
-			moveInvItemsLastTime = System.currentTimeMillis();
+			lastItemType = itemType;
 		}
 	}
 
