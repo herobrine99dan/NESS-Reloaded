@@ -45,14 +45,20 @@ public class CheckManager implements Listener {
             @Override
             public void run() {
                 for (String s : checks) {
+                    boolean founded = false;
                     for (ChecksPackage pack : packs) {
                         try {
                             Class<?> clazz = Class.forName("com.github.ness.check." + pack.prefix() + "." + s);
                             CheckManager.this.checkList.add(new CheckFactory(clazz));
+                            logger.fine("CheckFactory with name: " + s + " was loaded correctly!");
+                            founded = true;
                             break;
                         } catch (ClassNotFoundException e) {
-                            logger.finest("Searching class: " + s + " in package: " + pack.prefix());
+                            //We check in other packages
                         }
+                    }
+                    if(!founded) {
+                        logger.warning("CheckFactory with name: " + s + " wasn't found!");
                     }
                 }
             }
@@ -78,18 +84,23 @@ public class CheckManager implements Listener {
 
     public void makeNessPlayer(Player player) {
         NessPlayer nessPlayer = new NessPlayer(player, devMode);
-        for (CheckFactory c : this.checkList) {
-            try {
-                Check check = c.makeEqualCheck(nessPlayer);
-                nessPlayer.addCheck(check);
-                logger.finer(
-                        "Adding Check: " + check.getCheckName() + " to: " + nessPlayer.getBukkitPlayer().getName());
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                    | InvocationTargetException | SecurityException e) {
-                logger.log(Level.SEVERE, "There was an exception while enabling the check: " + c.getClazz().getName(),
-                        e);
+        ness.getExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                for (CheckFactory c : checkList) {
+                    try {
+                        Check check = c.makeEqualCheck(nessPlayer);
+                        nessPlayer.addCheck(check);
+                        logger.finer(
+                                "Adding Check: " + check.getCheckName() + " to: " + nessPlayer.getBukkitPlayer().getName());
+                    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                            | InvocationTargetException | SecurityException e) {
+                        logger.log(Level.SEVERE, "There was an exception while enabling the check: " + c.getClazz().getName(),
+                                e);
+                    }
+                }
             }
-        }
+        });
         nessPlayers.put(player.getUniqueId(), nessPlayer);
     }
 
