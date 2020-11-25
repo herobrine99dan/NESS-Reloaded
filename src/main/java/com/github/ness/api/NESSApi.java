@@ -1,11 +1,9 @@
-package com.github.ness.antibot;
+package com.github.ness.api;
 
 import org.bukkit.entity.Player;
 
 import com.github.ness.NessAnticheat;
 import com.github.ness.NessPlayer;
-import com.github.ness.api.Violation;
-import com.github.ness.api.ViolationAction;
 import com.github.ness.check.Check;
 
 public class NESSApi {

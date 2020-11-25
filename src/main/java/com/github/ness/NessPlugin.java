@@ -7,6 +7,13 @@ import com.github.ness.packets.NessPacketListener;
 import io.github.retrooper.packetevents.PacketEvents;
 
 public class NessPlugin extends JavaPlugin {
+    
+    /**
+     * This class contains method that load, enable and disable the plugin
+     * This class prevents errors caused by /reload command or plugins that do the same thing (PlugMan or others)
+     * @author A248 with some changes from herobrine99dan
+     * @since 2.8
+     */
 
     private NessAnticheat ness;
     

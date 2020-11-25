@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.Messenger;
 
+import com.github.ness.antibot.AntiBot;
 import com.github.ness.check.Check;
 import com.github.ness.check.CheckManager;
 import com.github.ness.check.CoreListener;
@@ -34,6 +35,8 @@ public class NessAnticheat {
     private final ViolationHandler violationHandler;
     @Getter
     private final SyncScheduler syncScheduler;
+    @Getter
+    private final AntiBot antiBot;
 
     static {
         minecraftVersion = getVersion();
@@ -45,6 +48,7 @@ public class NessAnticheat {
         executor = Executors.newSingleThreadScheduledExecutor();
         this.violationHandler = new ViolationHandler(this);
         checkManager = new CheckManager(this);
+        antiBot = new AntiBot(this);
     }
 
     private static int getVersion() {
@@ -71,6 +75,9 @@ public class NessAnticheat {
             Messenger messenger = plugin.getServer().getMessenger();
             messenger.registerOutgoingPluginChannel(plugin, "BungeeCord");
             messenger.registerIncomingPluginChannel(plugin, "BungeeCord", new BungeeCordListener());
+        }
+        if(this.getPlugin().getConfig().getBoolean("antibot.enable")) {
+            this.antiBot.initiate();
         }
         syncScheduler.startScheduler();
     }

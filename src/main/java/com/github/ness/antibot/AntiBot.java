@@ -1,7 +1,7 @@
 package com.github.ness.antibot;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -18,12 +18,16 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import com.github.ness.NessAnticheat;
 
 public class AntiBot {
+    /**
+     * This class is just a small AntiBot Protection using Async Events
+     * @author herobrine99dan with some improvements of A248
+     */
 
     private final NessAnticheat plugin;
     private final int maxPlayersPerSecond;
     private final String kickMessage;
 
-    private final List<UUID> whitelist;
+    private final Set<UUID> whitelist;
     private final AtomicLong counter = new AtomicLong();
     private final int timeUntilTrusted;
 
@@ -35,7 +39,7 @@ public class AntiBot {
         kickMessage = ChatColor.translateAlternateColorCodes('&',
                 section.getString("kick-message", "Bot Attack Detected! By NESS Reloaded"));
 
-        whitelist = new ArrayList<UUID>();
+        whitelist = new HashSet<UUID>();
     }
 
     public void initiate() {
@@ -52,7 +56,7 @@ public class AntiBot {
         @EventHandler(priority = EventPriority.LOWEST)
         public void interceptLogins(AsyncPlayerPreLoginEvent event) {
             if (whitelist.size() > 120) {
-                whitelist.remove(0);
+                whitelist.remove(whitelist.iterator().next());
             }
             if (counter.incrementAndGet() > maxPlayersPerSecond && whitelist.contains(event.getUniqueId())) {
                 event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, kickMessage);

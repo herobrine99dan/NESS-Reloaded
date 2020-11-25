@@ -1,6 +1,7 @@
 package com.github.ness.check;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.bukkit.Bukkit;
@@ -38,13 +39,24 @@ public abstract class Check {
         this.hasAsyncScheduler = false;
         this.milliSeconds = 0L;
     }
-    
-    protected Check(Class<?> classe, NessPlayer nessPlayer, boolean scheduler, Duration d) {
+
+    protected Check(Class<?> classe, NessPlayer nessPlayer, boolean hasScheduler, long milliSeconds) {
         this.checkName = classe.getSimpleName();
         this.nessPlayer = nessPlayer;
-        this.hasAsyncScheduler = scheduler;
-        
-        this.milliSeconds = d.toMillis();
+        this.hasAsyncScheduler = hasScheduler;
+        this.milliSeconds = milliSeconds;
+    }
+
+    public void startScheduler() {
+        if (hasAsyncScheduler) {
+            manager().getNess().getExecutor().scheduleAtFixedRate(new Runnable() {
+                @Override
+                public void run() {
+                    Check.this.checkAsyncPeriodic();
+                }
+            }, 1L, this.milliSeconds, TimeUnit.MILLISECONDS);
+        }
+
     }
 
     /**
@@ -55,16 +67,16 @@ public abstract class Check {
     protected NessPlayer player() {
         return nessPlayer;
     }
-    
+
     public static void updateCheckManager(CheckManager manager) {
         Check.manager = manager;
     }
 
-    protected CheckManager manager() {
+    public CheckManager manager() {
         return manager;
     }
 
-    protected NessAnticheat ness() {
+    NessAnticheat ness() {
         return manager.getNess();
     }
 
@@ -92,23 +104,20 @@ public abstract class Check {
      * @param details debugging details
      */
     public final int flag(String details) {
-        if (callViolationEvent()) {
-            nessPlayer.getBukkitPlayer()
-                    .sendMessage("Cheats Detected: " + this.getCheckName() + " Details: " + details + " Name: " + this.nessPlayer.getBukkitPlayer().getName());
+        if (callViolationEvent(details)) {
+            nessPlayer.getBukkitPlayer().sendMessage("Cheats Detected: " + this.getCheckName() + " Details: " + details
+                    + " Name: " + this.nessPlayer.getBukkitPlayer().getName());
             return this.violations.addAndGet(1);
         }
         return this.violations.get();
     }
 
-    private boolean callViolationEvent() {
+    private boolean callViolationEvent(String details) {
         if (PlayerViolationEvent.getHandlerList().getRegisteredListeners().length == 0) {
             return true;
         }
-        return callEvent(new PlayerViolationEvent(nessPlayer.getBukkitPlayer(), nessPlayer,
-                new Violation(checkName, ""), violations.get()));
-    }
-
-    private boolean callEvent(Cancellable event) {
+        PlayerViolationEvent event = new PlayerViolationEvent(nessPlayer.getBukkitPlayer(), nessPlayer,
+                new Violation(checkName, details), violations.get());
         Bukkit.getServer().getPluginManager().callEvent((Event) event);
         return !event.isCancelled();
     }
@@ -120,11 +129,11 @@ public abstract class Check {
     public void clearViolationCount() {
         violations.set(0);
     }
-    
+
     @Override
     public String toString() {
-        return "Check [nessPlayer=" + nessPlayer.getBukkitPlayer().getName() + ", violations=" + violations + ", checkName=" + checkName
-                + ", getCheckName()=" + getCheckName() + "]";
+        return "Check [nessPlayer=" + nessPlayer.getBukkitPlayer().getName() + ", violations=" + violations
+                + ", checkName=" + checkName + ", getCheckName()=" + getCheckName() + "]";
     }
 
     @Override

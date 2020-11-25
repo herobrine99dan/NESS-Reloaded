@@ -72,6 +72,11 @@ public class NessPlayer {
     @Getter
     @Setter
     private UUID lastEntityAttacked;
+    /**
+     * This Set contains checks that will be executed for this player
+     * 
+     * @since 3.0
+     */
     @Getter
     private final Set<Check> checks = Collections.synchronizedSet(new HashSet<Check>());;
 
@@ -97,14 +102,14 @@ public class NessPlayer {
      */
 
     /**
-     * Adds a violation. If this player has too many infractions, {@code false} is
+     * Adds a violation. If this player has too many violations, {@code false} is
      * returned
      * 
      * @param infraction the infraction
      * @return true if the infraction was added, false if the queue size was reached
      */
-    public boolean addInfraction(Violation infraction) {
-        return infractions.offer(infraction);
+    public boolean addViolation(Violation violation) {
+        return infractions.offer(violation);
     }
 
     public void addEntityToAttackedEntities(int id) {
@@ -120,6 +125,11 @@ public class NessPlayer {
         actionTime.put(action, System.nanoTime());
     }
 
+    /**
+     * Add a Check to the CheckList Set
+     * 
+     * @param action
+     */
     public void addCheck(Check c) {
         this.checks.add(c);
     }
@@ -215,15 +225,19 @@ public class NessPlayer {
      * Drags down the player
      * 
      */
-    // TODO Implement damage, using proportions
     public void completeDragDown() {
+        //this.checks.iterator().next().manager().getNess().getSyncScheduler().addAction(r);
         if (!player.isOnline()) {
             return;
         }
         final long current = System.nanoTime() / 1000_000L;
         if ((current - setBackTicks) > 40) {
             double ytoAdd = player.getVelocity().getY();
+            if (ytoAdd > 0) {
+                return;
+            }
             final Location block = player.getLocation().clone().add(0, ytoAdd, 0);
+
             for (int i = 0; i < 10; i++) {
                 if (block.getBlock().getType().isSolid()) {
                     block.add(0, 0.1, 0);
