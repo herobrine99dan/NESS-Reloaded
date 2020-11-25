@@ -3,7 +3,7 @@ package com.github.ness.api;
 import lombok.Getter;
 
 /**
- * Old violation object
+ * Old bug Good violation object
  * 
  * @author A248
  *
@@ -18,6 +18,12 @@ public class Violation {
     public Violation(String check, String details) {
         this.check = check;
         this.details = details;
+    }
+    
+    public void validateValues() {
+        if(check == null || details == null) {
+            throw new NullPointerException("String check or String detail can't be null!");
+        }
     }
 
 }

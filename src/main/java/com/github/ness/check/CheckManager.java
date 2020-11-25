@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -26,7 +27,7 @@ public class CheckManager implements Listener {
     private Map<UUID, NessPlayer> nessPlayers = Collections.synchronizedMap(new HashMap<UUID, NessPlayer>());
     private final boolean devMode = true;
     @Getter
-    private final Set<CheckFactory> checkList = new HashSet<CheckFactory>();
+    private final Set<CheckFactory> checkList = Collections.synchronizedSet(new HashSet<CheckFactory>());
 
     @Getter
     private final NessAnticheat ness;
@@ -34,13 +35,28 @@ public class CheckManager implements Listener {
 
     public CheckManager(NessAnticheat nessAnticheat) {
         this.ness = nessAnticheat;
-        // this.listenToAllEvents();
-        // this.checkList.add(new FlyHighDistance(null, this));
-        // this.checkList.add(new NoFall(null, this));
-        this.checkList.add(new CheckFactory(Timer.class));
-        // this.checkList.add(new Speed(null, this));
-        // this.checkList.add(new ScaffoldAngle(null, this));
-        // this.checkList.add(new ScaffoldFalseTarget(null, this));
+
+    }
+
+    public void initialize() {
+        final List<String> checks = CheckManager.this.getNess().getPlugin().getConfig().getStringList("enabled-checks");
+        final ChecksPackage[] packs = ChecksPackage.values();
+        ness.getExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                for (String s : checks) {
+                    for (ChecksPackage pack : packs) {
+                        try {
+                            Class<?> clazz = Class.forName("com.github.ness.check." + pack.prefix() + "." + s);
+                            CheckManager.this.checkList.add(new CheckFactory(clazz));
+                            break;
+                        } catch (ClassNotFoundException e) {
+                            logger.finest("Searching class: " + s + " in package: " + pack.prefix());
+                        }
+                    }
+                }
+            }
+        });
     }
 
     public Object onEvent(ReceivedPacketEvent event) {
@@ -52,8 +68,8 @@ public class CheckManager implements Listener {
                 try {
                     c.checkEvent(event);
                 } catch (Exception ex) {
-                    logger.log(Level.SEVERE,
-                            "There was an exception while executing the check " + c.getCheckName(), ex);
+                    logger.log(Level.SEVERE, "There was an exception while executing the check " + c.getCheckName(),
+                            ex);
                 }
             }
         }

@@ -7,7 +7,7 @@ import com.github.ness.api.Violation;
 import com.github.ness.api.ViolationAction;
 
 public class PunishAction extends ViolationAction {
-
+    
     @Override
     public void actOn(Player player, Violation violation, int violationCount) {
     }

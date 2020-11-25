@@ -48,6 +48,7 @@ public class NessAnticheat {
         executor = Executors.newSingleThreadScheduledExecutor();
         this.violationHandler = new ViolationHandler(this);
         checkManager = new CheckManager(this);
+        checkManager.initialize();
         antiBot = new AntiBot(this);
     }
 

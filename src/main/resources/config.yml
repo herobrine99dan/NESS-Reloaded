@@ -54,7 +54,7 @@ dev-mode: false
  # Comment out a check to disable
  # 
 enabled-checks:
-  -  '#AbilititiesSpoofed'
+#  -  'AbilititiesSpoofed'
   -  'Aimbot'
   -  'AimbotGCD'
   -  'AutoClicker'
