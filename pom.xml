@@ -101,10 +101,13 @@
 						<configuration>
 							<minimizeJar>false</minimizeJar>
 							<artifactSet>
+								<includes>
+									<include>com.github.retrooper:packetevents</include>
+								</includes>
 							</artifactSet>
 							<relocations>
 								<relocation>
-									<pattern>com.github.retrooper</pattern>
+									<pattern>com.github.retrooper.</pattern>
 									<shadedPattern>com.github.ness.shaded.com.github.retrooper</shadedPattern>
 								</relocation>
 							</relocations>

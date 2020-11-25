@@ -73,7 +73,7 @@ public class NessPlayer {
     @Setter
     private UUID lastEntityAttacked;
     @Getter
-    private final Set<Check> checks = new HashSet<Check>();
+    private final Set<Check> checks = Collections.synchronizedSet(new HashSet<Check>());;
 
     public NessPlayer(Player player, boolean devMode) {
         uuid = player.getUniqueId();
