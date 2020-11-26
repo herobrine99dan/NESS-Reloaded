@@ -47,17 +47,8 @@ public class Speed extends Check {
             hozDist -= Math.abs(player().getLastVelocity().getZ());
         }
         hozDist -= (float) (hozDist / 100.0D * values.getSpeedPotion() * 20.0D);
-        Material mat = null;
-        for (int x = -1; x < 1; x++) {
-            for (int z = -1; z < 1; z++) {
-                mat = from.getWorld()
-                        .getBlockAt(from.getBlockX() + x, player.getEyeLocation().getBlockY() + 1, from.getBlockZ() + z)
-                        .getType();
-                if (mat.isSolid()) {
-                    maxSpd = 0.50602;
-                    break;
-                }
-            }
+        if (values.hasBlockNearHead()) {
+            maxSpd = 0.50602;
         }
         if(movementValues.isAroundSlabs() || movementValues.isAroundStairs()) {
             maxSpd += 0.1;
