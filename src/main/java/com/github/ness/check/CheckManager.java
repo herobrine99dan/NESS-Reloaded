@@ -82,6 +82,7 @@ public class CheckManager implements Listener {
                     if (event.getPacket().isUseEntity()) {
                         c.onUseEntity((UseEntityEvent) event);
                     }
+                    c.onEveryPacket(event);
                 } catch (Exception ex) {
                     logger.log(Level.SEVERE, "There was an exception while executing the check " + c.getCheckName(),
                             ex);

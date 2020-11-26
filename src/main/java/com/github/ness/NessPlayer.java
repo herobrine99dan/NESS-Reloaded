@@ -78,7 +78,7 @@ public class NessPlayer {
      * @since 3.0
      */
     @Getter
-    private final Set<Check> checks = Collections.synchronizedSet(new HashSet<Check>());;
+    private final Set<Check> checks = Collections.synchronizedSet(new HashSet<Check>());
 
     public NessPlayer(Player player, boolean devMode) {
         uuid = player.getUniqueId();

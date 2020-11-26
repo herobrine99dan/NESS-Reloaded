@@ -79,6 +79,16 @@ public class MovementValues {
     @Getter
     private final boolean sprinting;
     private final boolean blockUnderHead;
+    @Getter
+    private final String vehicle;
+    @Getter
+    private final float fallDistance;
+    @Getter
+    private final boolean flyBypass;
+    @Getter
+    private final boolean thereVehicleNear;
+    @Getter
+    private final boolean sneaking;
 
     public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from) {
         if (Bukkit.isPrimaryThread()) {
@@ -135,6 +145,8 @@ public class MovementValues {
             AroundWeb = web;
             AroundStairs = stairs;
             sprinting = p.isSprinting();
+            sneaking = p.isSneaking();
+            thereVehicleNear = Utility.hasVehicleNear(p, 4);
             if (!slime) {
                 slime = Utility.hasBlock(p, "SLIME");
             }
@@ -145,6 +157,13 @@ public class MovementValues {
             insideVehicle = p.isInsideVehicle();
             AroundCarpet = carpet;
             AroundLiquids = liquids;
+            fallDistance = p.getFallDistance();
+            flyBypass = Utility.hasflybypass(p);
+            if (p.getVehicle() != null) {
+                this.vehicle = p.getVehicle().getType().name();
+            } else {
+                this.vehicle = "";
+            }
         } else {
             AroundIce = false;
             AroundSlabs = false;
@@ -154,16 +173,21 @@ public class MovementValues {
             groundAround = false;
             sprinting = false;
             AroundLily = false;
+            thereVehicleNear = false;
             AroundWeb = false;
             blockUnderHead = false;
             AroundSnow = false;
             insideVehicle = false;
             gamemode = GameMode.SURVIVAL;
             isFlying = false;
+            fallDistance = 0f;
             ableFly = false;
+            flyBypass = false;
+            sneaking = false;
             AroundLiquids = false;
             AroundSlime = false;
             AroundStairs = false;
+            this.vehicle = "";
         }
         yawDiff = to.getYaw() - from.getYaw();
         pitchDiff = to.getPitch() - from.getPitch();

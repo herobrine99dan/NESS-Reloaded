@@ -27,7 +27,7 @@ public class NESSApi {
         violation.validateValues();
         for (Check c : nessPlayer.getChecks()) {
             if (c.getCheckName().equals(violation.getCheck())) {
-                return c.flag(violation.getDetails());
+                return c.flag(violation.getDetails(), null);
             }
         }
         return 0;
@@ -35,6 +35,7 @@ public class NESSApi {
 
     /**
      * Add a ViolationAction that will be executed when a player flags a check.
+     * 
      * @param action
      */
     public void addViolationAction(ViolationAction action) {
@@ -54,7 +55,7 @@ public class NESSApi {
         NessPlayer nessPlayer = validateValues(p, check);
         for (Check c : nessPlayer.getChecks()) {
             if (c.equals(check)) {
-                return c.flag(details);
+                return c.flag(details, null);
             }
         }
         return 0;
@@ -62,6 +63,7 @@ public class NESSApi {
 
     /**
      * Check if Player isn't online or if the Player object is null
+     * 
      * @param Player p
      * @return the NessPlayer if there weren't errors
      */
@@ -78,8 +80,9 @@ public class NESSApi {
 
     /**
      * Check if the Check object is null, then call validatePlayer
+     * 
      * @param Player p
-     * @param Check check
+     * @param Check  check
      * @return the NessPlayer obtained from validatePlayer(player) method
      */
     private NessPlayer validateValues(Player p, Check check) {

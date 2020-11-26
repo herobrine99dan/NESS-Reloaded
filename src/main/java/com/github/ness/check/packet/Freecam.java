@@ -34,10 +34,13 @@ public class Freecam extends Check {
     }
 
     @Override
-    public void onFlying(FlyingEvent e) {
-        this.lastPosition = System.nanoTime();
-    }
+    public void onFlying(FlyingEvent e) {}
 
     @Override
     public void onUseEntity(UseEntityEvent e) {}
+
+    @Override
+    public void onEveryPacket(ReceivedPacketEvent e) {
+        this.lastPosition = System.nanoTime();
+    }
 }

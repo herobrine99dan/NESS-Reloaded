@@ -23,18 +23,16 @@ public class NessPacketListener extends PacketListenerDynamic {
     public void onPacketReceive(PacketReceiveEvent e) {
         Packet packet = new Packet(Direction.RECEIVE, e.getNMSPacket(), e.getPacketId());
         ReceivedPacketEvent event;
-        if(packet.isPosition() || packet.isFlying() || packet.isRotation()) {
-            event = new FlyingEvent(
-                    ness.getCheckManager().getNessPlayer(e.getPlayer().getUniqueId()), packet);
-        } else if(packet.isUseEntity()) {
-            event = new UseEntityEvent(
-                    ness.getCheckManager().getNessPlayer(e.getPlayer().getUniqueId()), packet);
+        if (packet.isPosition() || packet.isFlying() || packet.isRotation()) {
+            event = new FlyingEvent(ness.getCheckManager().getNessPlayer(e.getPlayer().getUniqueId()), packet);
+        } else if (packet.isUseEntity()) {
+            event = new UseEntityEvent(ness.getCheckManager().getNessPlayer(e.getPlayer().getUniqueId()), packet);
         } else {
-            event = new ReceivedPacketEvent(
-                    ness.getCheckManager().getNessPlayer(e.getPlayer().getUniqueId()), packet);
+            event = new ReceivedPacketEvent(ness.getCheckManager().getNessPlayer(e.getPlayer().getUniqueId()), packet);
         }
         event.process();
         ness.getCheckManager().onEvent(event);
+        e.setCancelled(event.isCancelled());
     }
 
     @PacketHandler

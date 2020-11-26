@@ -2,6 +2,7 @@ package com.github.ness.check.packet;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.UseEntityEvent;
 import com.github.ness.utility.LongRingBuffer;
@@ -40,7 +41,7 @@ public class Timer extends Check {
             final long average = delay.average();
             final float speed = 50.0f / (float) average;
             if (speed > 1.1) {
-                this.flag("Timer: " + speed);
+                this.flag("Timer: " + speed, e);
             }
             if (nessPlayer.isDebugMode()) {
                 nessPlayer.sendDevMessage("Timer: " + speed + " Average: " + average);
@@ -50,6 +51,13 @@ public class Timer extends Check {
     }
 
     @Override
-    public void onUseEntity(UseEntityEvent e) {}
+    public void onUseEntity(UseEntityEvent e) {
+    }
+
+    @Override
+    public void onEveryPacket(ReceivedPacketEvent e) {
+        // TODO Auto-generated method stub
+
+    }
 
 }
