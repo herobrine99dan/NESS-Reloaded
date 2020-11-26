@@ -2,6 +2,8 @@ package com.github.ness.packets;
 
 import com.github.ness.NessAnticheat;
 import com.github.ness.packets.Packet.Direction;
+import com.github.ness.packets.event.FlyingEvent;
+import com.github.ness.packets.event.UseEntityEvent;
 
 import io.github.retrooper.packetevents.event.PacketListenerDynamic;
 import io.github.retrooper.packetevents.event.annotation.PacketHandler;
@@ -20,8 +22,18 @@ public class NessPacketListener extends PacketListenerDynamic {
     @PacketHandler
     public void onPacketReceive(PacketReceiveEvent e) {
         Packet packet = new Packet(Direction.RECEIVE, e.getNMSPacket(), e.getPacketId());
-        ReceivedPacketEvent event = new ReceivedPacketEvent(
-                ness.getCheckManager().getNessPlayer(e.getPlayer().getUniqueId()), packet);
+        ReceivedPacketEvent event;
+        if(packet.isPosition() || packet.isFlying() || packet.isRotation()) {
+            event = new FlyingEvent(
+                    ness.getCheckManager().getNessPlayer(e.getPlayer().getUniqueId()), packet);
+        } else if(packet.isUseEntity()) {
+            event = new UseEntityEvent(
+                    ness.getCheckManager().getNessPlayer(e.getPlayer().getUniqueId()), packet);
+        } else {
+            event = new ReceivedPacketEvent(
+                    ness.getCheckManager().getNessPlayer(e.getPlayer().getUniqueId()), packet);
+        }
+        event.process();
         ness.getCheckManager().onEvent(event);
     }
 

@@ -6,6 +6,8 @@ import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.ReceivedPacketEvent;
+import com.github.ness.packets.event.FlyingEvent;
+import com.github.ness.packets.event.UseEntityEvent;
 
 public class Freecam extends Check {
 
@@ -13,7 +15,7 @@ public class Freecam extends Check {
     private int maxDelay = 550;
 
     public Freecam(NessPlayer player) {
-        super(Freecam.class, player, true, 50L);
+        super(Freecam.class, player,true, 50L);
         // this.maxDelay =
         // this.ness().getMainConfig().getCheckSection().freecam().maxDelay();
         lastPosition = 0;
@@ -32,7 +34,10 @@ public class Freecam extends Check {
     }
 
     @Override
-    public void checkEvent(ReceivedPacketEvent e) {
+    public void onFlying(FlyingEvent e) {
         this.lastPosition = System.nanoTime();
     }
+
+    @Override
+    public void onUseEntity(UseEntityEvent e) {}
 }

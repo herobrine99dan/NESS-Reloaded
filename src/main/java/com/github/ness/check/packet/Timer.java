@@ -2,8 +2,8 @@ package com.github.ness.check.packet;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
-import com.github.ness.check.CheckManager;
-import com.github.ness.packets.ReceivedPacketEvent;
+import com.github.ness.packets.event.FlyingEvent;
+import com.github.ness.packets.event.UseEntityEvent;
 import com.github.ness.utility.LongRingBuffer;
 
 public class Timer extends Check {
@@ -25,7 +25,7 @@ public class Timer extends Check {
      * Thanks to GladUrBad for a small hint
      */
     @Override
-    public void checkEvent(ReceivedPacketEvent e) {
+    public void onFlying(FlyingEvent e) {
         NessPlayer nessPlayer = e.getNessPlayer();
         if (nessPlayer.isTeleported()) {
             return;
@@ -48,5 +48,8 @@ public class Timer extends Check {
             this.lastDelay = current;
         }
     }
+
+    @Override
+    public void onUseEntity(UseEntityEvent e) {}
 
 }

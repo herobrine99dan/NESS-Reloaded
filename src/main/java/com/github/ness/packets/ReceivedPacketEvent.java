@@ -18,6 +18,8 @@ public class ReceivedPacketEvent implements Cancellable {
         this.nessPlayer = nessplayer;
     }
     
+    public void process() {}
+    
     @Override
     public boolean isCancelled() {
         return cancelled;

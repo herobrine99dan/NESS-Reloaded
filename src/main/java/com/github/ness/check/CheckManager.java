@@ -18,8 +18,9 @@ import org.bukkit.event.Listener;
 import com.github.ness.NessAnticheat;
 import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
-import com.github.ness.check.packet.Timer;
 import com.github.ness.packets.ReceivedPacketEvent;
+import com.github.ness.packets.event.FlyingEvent;
+import com.github.ness.packets.event.UseEntityEvent;
 
 import lombok.Getter;
 
@@ -56,10 +57,10 @@ public class CheckManager implements Listener {
                             founded = true;
                             break;
                         } catch (ClassNotFoundException e) {
-                            //We check in other packages
+                            // We check in other packages
                         }
                     }
-                    if(!founded) {
+                    if (!founded) {
                         logger.warning("CheckFactory with name: " + s + " wasn't found!");
                     }
                 }
@@ -74,7 +75,13 @@ public class CheckManager implements Listener {
                     return null;
                 }
                 try {
-                    c.checkEvent(event);
+                    if (event.getPacket().isFlying() || event.getPacket().isPosition()
+                            || event.getPacket().isRotation()) {
+                        c.onFlying((FlyingEvent) event);
+                    }
+                    if (event.getPacket().isUseEntity()) {
+                        c.onUseEntity((UseEntityEvent) event);
+                    }
                 } catch (Exception ex) {
                     logger.log(Level.SEVERE, "There was an exception while executing the check " + c.getCheckName(),
                             ex);
@@ -93,12 +100,12 @@ public class CheckManager implements Listener {
                     try {
                         Check check = c.makeEqualCheck(nessPlayer);
                         nessPlayer.addCheck(check);
-                        logger.finer(
-                                "Adding Check: " + check.getCheckName() + " to: " + nessPlayer.getBukkitPlayer().getName());
+                        logger.finer("Adding Check: " + check.getCheckName() + " to: "
+                                + nessPlayer.getBukkitPlayer().getName());
                     } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                             | InvocationTargetException | SecurityException e) {
-                        logger.log(Level.SEVERE, "There was an exception while enabling the check: " + c.getClazz().getName(),
-                                e);
+                        logger.log(Level.SEVERE,
+                                "There was an exception while enabling the check: " + c.getClazz().getName(), e);
                     }
                 }
             }

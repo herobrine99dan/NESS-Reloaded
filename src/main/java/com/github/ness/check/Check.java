@@ -12,7 +12,8 @@ import com.github.ness.NessAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.api.impl.PlayerViolationEvent;
-import com.github.ness.packets.ReceivedPacketEvent;
+import com.github.ness.packets.event.FlyingEvent;
+import com.github.ness.packets.event.UseEntityEvent;
 
 import lombok.Getter;
 
@@ -40,7 +41,8 @@ public abstract class Check {
         this.milliSeconds = 0L;
     }
 
-    protected Check(Class<?> classe, NessPlayer nessPlayer, boolean hasScheduler, long milliSeconds) {
+    protected Check(Class<?> classe, NessPlayer nessPlayer, boolean hasScheduler,
+            long milliSeconds) {
         this.checkName = classe.getSimpleName();
         this.nessPlayer = nessPlayer;
         this.hasAsyncScheduler = hasScheduler;
@@ -99,7 +101,8 @@ public abstract class Check {
         return flag("");
     }
 
-    public abstract void checkEvent(ReceivedPacketEvent e);
+    public abstract void onFlying(FlyingEvent e);
+    public abstract void onUseEntity(UseEntityEvent e);
 
     /**
      * Flags the player for cheating
@@ -122,8 +125,8 @@ public abstract class Check {
         if (PlayerViolationEvent.getHandlerList().getRegisteredListeners().length == 0) {
             return true;
         }
-        PlayerViolationEvent event = new PlayerViolationEvent(nessPlayer.getBukkitPlayer(), nessPlayer,
-                violation, violations.get());
+        PlayerViolationEvent event = new PlayerViolationEvent(nessPlayer.getBukkitPlayer(), nessPlayer, violation,
+                violations.get());
         Bukkit.getServer().getPluginManager().callEvent((Event) event);
         return !event.isCancelled();
     }
