@@ -46,7 +46,7 @@ public class ImmutableLoc {
         return new ImmutableLoc(location.getWorld().getName(), location.getX(), location.getY(), location.getZ(),
                 location.getYaw(), location.getPitch());
     }
-
+    
     /**
      * Creates an immutable location from a bukkit location, with an overridden
      * world

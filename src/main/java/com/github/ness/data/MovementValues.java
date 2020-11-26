@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.utility.Utility;
 
@@ -67,9 +68,9 @@ public class MovementValues {
     @Getter
     private final boolean insideVehicle;
     @Getter
-    ImmutableLoc to;
+    private ImmutableLoc to;
     @Getter
-    ImmutableLoc from;
+    private ImmutableLoc from;
     @Getter
     private final GameMode gamemode;
     @Getter
@@ -89,6 +90,22 @@ public class MovementValues {
     private final boolean thereVehicleNear;
     @Getter
     private final boolean sneaking;
+    @Getter
+    private final boolean dead;
+    @Getter
+    private final boolean entityAround;
+    @Getter
+    private final boolean seaBlocksAround;
+    @Getter
+    private final int speedPotion;
+    @Getter
+    private final int jumpPotion;
+    @Getter
+    private final boolean trapdoorNear;
+    @Getter
+    private final ImmutableBlock toBlock;
+    @Getter
+    private final ImmutableBlock fromBlock;
 
     public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from) {
         if (Bukkit.isPrimaryThread()) {
@@ -103,6 +120,8 @@ public class MovementValues {
             boolean carpet = false;
             boolean ground = false;
             boolean web = false;
+            boolean sea = false;
+            boolean trapdoor = false;
             serverVelocity = new ImmutableVector(p.getVelocity().getX(), p.getVelocity().getY(),
                     p.getVelocity().getZ());
             gamemode = p.getGameMode();
@@ -136,15 +155,25 @@ public class MovementValues {
                     carpet = true;
                 } else if (name.contains("WEB")) {
                     web = true;
+                } else if (name.contains("SEA")) {
+                    sea = true;
+                } else if (name.contains("TRAP")) {
+                    trapdoor = true;
                 }
             }
+            seaBlocksAround = sea;
             AroundSnow = snow;
+            trapdoorNear = trapdoor;
             blockUnderHead = Utility.groundAround(to.toBukkitLocation().add(0, 1.8, 0));
             AroundLadders = ladder;
             AroundSlabs = slab;
+            toBlock = ImmutableBlock.of(to.toBukkitLocation().getBlock());
+            fromBlock = ImmutableBlock.of(from.toBukkitLocation().getBlock());
             AroundWeb = web;
             AroundStairs = stairs;
             sprinting = p.isSprinting();
+            dead = p.isDead();
+            entityAround = p.getNearbyEntities(2, 2, 2).isEmpty();
             sneaking = p.isSneaking();
             thereVehicleNear = Utility.hasVehicleNear(p, 4);
             if (!slime) {
@@ -152,6 +181,8 @@ public class MovementValues {
             }
             AroundSlime = slime;
             AroundIce = ice;
+            speedPotion = Utility.getPotionEffectLevel(p, PotionEffectType.SPEED);
+            jumpPotion = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
             AroundLily = lily;
             groundAround = ground;
             insideVehicle = p.isInsideVehicle();
@@ -166,11 +197,18 @@ public class MovementValues {
             }
         } else {
             AroundIce = false;
+            trapdoorNear = false;
             AroundSlabs = false;
             serverVelocity = new ImmutableVector(0, 0, 0);
             AroundCarpet = false;
             AroundLadders = false;
+            toBlock = new ImmutableBlock((int) to.getX(), (int) to.getY(), (int) to.getZ(), "STONE", true, true);
+            fromBlock = new ImmutableBlock((int) from.getX(), (int) from.getY(), (int) from.getZ(), "STONE", true,
+                    true);
             groundAround = false;
+            speedPotion = 0;
+            jumpPotion = 0;
+            seaBlocksAround = false;
             sprinting = false;
             AroundLily = false;
             thereVehicleNear = false;
@@ -178,6 +216,8 @@ public class MovementValues {
             blockUnderHead = false;
             AroundSnow = false;
             insideVehicle = false;
+            dead = false;
+            entityAround = false;
             gamemode = GameMode.SURVIVAL;
             isFlying = false;
             fallDistance = 0f;

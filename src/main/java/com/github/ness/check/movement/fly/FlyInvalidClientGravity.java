@@ -1,0 +1,54 @@
+package com.github.ness.check.movement.fly;
+
+import org.bukkit.entity.Player;
+
+import com.github.ness.NessPlayer;
+import com.github.ness.check.Check;
+import com.github.ness.data.MovementValues;
+import com.github.ness.data.PlayerAction;
+import com.github.ness.packets.ReceivedPacketEvent;
+import com.github.ness.packets.event.FlyingEvent;
+import com.github.ness.packets.event.UseEntityEvent;
+import com.github.ness.utility.Utility;
+
+public class FlyInvalidClientGravity extends Check {
+
+    float flyYSum;
+
+    public FlyInvalidClientGravity(NessPlayer player) {
+        super(FlyInvalidClientGravity.class, player);
+    }
+
+    double maxInvalidVelocity;
+    private double lastDeltaY;
+
+    @Override
+    public void onFlying(FlyingEvent e) {
+        NessPlayer np = this.player();
+        MovementValues values = np.getMovementValues();
+        double y = values.yDiff;
+        if (values.isFlyBypass() || values.isAbleFly() || values.isAroundLiquids() || values.isInsideVehicle()
+                || values.isThereVehicleNear() || values.isAroundWeb() || values.hasBlockNearHead()
+                || np.isTeleported()) {
+            return;
+        }
+        double yPredicted = Math.abs((lastDeltaY - 0.08D) * 0.9800000190734863D);
+        if (np.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
+            yPredicted = np.getLastVelocity().getY();
+        }
+        double yResult = Math.abs(y - yPredicted);
+        // TODO Needs better ground test
+        if (yResult > 0.004D && !values.isGroundAround()) {
+            np.sendDevMessage("Predicted: " + (float) yResult + " Y: " + (float) y);
+        }
+        lastDeltaY = y;
+    }
+
+    @Override
+    public void onUseEntity(UseEntityEvent e) {
+    }
+
+    @Override
+    public void onEveryPacket(ReceivedPacketEvent e) {
+    }
+}

@@ -3,7 +3,6 @@ package com.github.ness.check.movement.oldmovementchecks;
 import java.time.Duration;
 
 import org.bukkit.Material;
-import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
@@ -47,10 +46,7 @@ public class Speed extends Check {
             hozDist -= Math.abs(player().getLastVelocity().getX());
             hozDist -= Math.abs(player().getLastVelocity().getZ());
         }
-        if (player.hasPotionEffect(PotionEffectType.SPEED)) {
-            final int level = Utility.getPotionEffectLevel(player, PotionEffectType.SPEED);
-            hozDist = (float) (hozDist - hozDist / 100.0D * level * 20.0D);
-        }
+        hozDist -= (float) (hozDist / 100.0D * values.getSpeedPotion() * 20.0D);
         Material mat = null;
         for (int x = -1; x < 1; x++) {
             for (int z = -1; z < 1; z++) {
@@ -77,12 +73,10 @@ public class Speed extends Check {
                 if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000) {
                     if (!values.isInsideVehicle()
                             || (values.isInsideVehicle() && !values.getVehicle().contains("HORSE"))) {
-                        Material small = player.getWorld().getBlockAt(player.getLocation().subtract(0, .1, 0))
-                                .getType();
-                        if (!player.getWorld().getBlockAt(from).getType().isSolid()
-                                && !player.getWorld().getBlockAt(to).getType().isSolid() && nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) > 1000) {
-                            if (!small.name().contains("TRAPDOOR")) {
-                                this.flagEvent(e, maxSpd + " Dist: " + hozDist);
+                        if (!values.getFromBlock().isSolid()
+                                && !values.getToBlock().isSolid() && nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) > 1000) {
+                            if (!values.isTrapdoorNear()) {
+                                this.flag(maxSpd + " Dist: " + hozDist,e);
                             }
                         }
                     }
