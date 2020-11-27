@@ -25,12 +25,15 @@ public class FlyHighJump extends Check {
 
     @Override
     public void onFlying(FlyingEvent e) {
+        if(!e.isPosition()) {
+            return;
+        }
         NessPlayer nessPlayer = this.player();
         final MovementValues movementValues = nessPlayer.getMovementValues();
         double y = movementValues.yDiff;
         if (Utility.isMathematicallyOnGround(movementValues.getTo().getY()) || movementValues.isFlyBypass()
                 || movementValues.isAroundSlime() || movementValues.isAbleFly() || movementValues.isAroundLiquids()
-                || movementValues.isAroundLily() || movementValues.isSeaBlocksAround() || movementValues.isAroundSlabs()
+                || movementValues.isAroundLily() || movementValues.isAroundSea() || movementValues.isAroundSlabs()
                 || movementValues.isAroundStairs() || movementValues.isAroundLiquids()
                 || ReflectionUtility.getBlockName(p, ImmutableLoc.of(e.getTo().clone().add(0, -0.5, 0)))
                         .contains("scaffolding")
@@ -59,15 +62,9 @@ public class FlyHighJump extends Check {
     }
 
     @Override
-    public void onUseEntity(UseEntityEvent e) {
-        // TODO Auto-generated method stub
-
-    }
+    public void onUseEntity(UseEntityEvent e) {}
 
     @Override
-    public void onEveryPacket(ReceivedPacketEvent e) {
-        // TODO Auto-generated method stub
-
-    }
+    public void onEveryPacket(ReceivedPacketEvent e) { }
 
 }

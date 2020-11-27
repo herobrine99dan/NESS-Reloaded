@@ -2,8 +2,6 @@ package com.github.ness;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.ness.packets.NessPacketListener;
-
 import io.github.retrooper.packetevents.PacketEvents;
 
 public class NessPlugin extends JavaPlugin {

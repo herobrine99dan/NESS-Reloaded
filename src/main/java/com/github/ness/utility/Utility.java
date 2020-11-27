@@ -86,9 +86,8 @@ public class Utility {
      * @param b
      * @return
      */
-    public static boolean isClimbableBlock(Block b) {
-        String block = Utility.getMaterialName(b.getLocation());
-        return block.contains("LADDER") || block.contains("VINE");
+    public static boolean isClimbableBlock(String m) {
+        return m.contains("LADDER") ||  m.contains("VINE");
     }
 
     /**

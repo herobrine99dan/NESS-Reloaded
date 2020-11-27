@@ -64,6 +64,16 @@ public class MovementValues {
     @Getter
     private final boolean AroundWeb;
     @Getter
+    private final boolean AroundChest;
+    @Getter
+    private final boolean AroundPot;
+    @Getter
+    private final boolean AroundBed;
+    @Getter
+    private final boolean AroundDetector;
+    @Getter
+    private final boolean AroundChorus;
+    @Getter
     private final ImmutableVector serverVelocity;
     @Getter
     private final boolean insideVehicle;
@@ -95,18 +105,25 @@ public class MovementValues {
     @Getter
     private final boolean entityAround;
     @Getter
-    private final boolean seaBlocksAround;
+    private final boolean AroundSea;
+    @Getter
+    private final boolean bliendnessEffect;
     @Getter
     private final int speedPotion;
     @Getter
     private final int jumpPotion;
     @Getter
+    private final int foodLevel;
+    @Getter
     private final boolean trapdoorNear;
+    @Getter
+    private final float walkSpeed;
     @Getter
     private final ImmutableBlock toBlock;
     @Getter
     private final ImmutableBlock fromBlock;
 
+    //TODO For now ImmutableLoc objects are updated by PlayerMove, make FlyingEvent update them
     public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from) {
         if (Bukkit.isPrimaryThread()) {
             boolean liquids = false;
@@ -122,6 +139,11 @@ public class MovementValues {
             boolean web = false;
             boolean sea = false;
             boolean trapdoor = false;
+            boolean bed = false;
+            boolean pot = false;
+            boolean chest = false;
+            boolean detector = false;
+            boolean chorus = false;
             serverVelocity = new ImmutableVector(p.getVelocity().getX(), p.getVelocity().getY(),
                     p.getVelocity().getZ());
             gamemode = p.getGameMode();
@@ -159,10 +181,26 @@ public class MovementValues {
                     sea = true;
                 } else if (name.contains("TRAP")) {
                     trapdoor = true;
+                } else if (name.contains("BED")) {
+                    bed = true;
+                }else if (name.contains("POT")) {
+                    pot = true;
+                }else if (name.contains("CHEST")) {
+                    chest = true;
+                }else if (name.contains("DETECTOR")) {
+                    detector = true;
+                }else if (name.contains("CHORUS")) {
+                    chorus = true;
                 }
             }
-            seaBlocksAround = sea;
+            AroundSea = sea;
+            AroundPot = pot;
+            foodLevel = p.getFoodLevel();
+            AroundChest = chest;
+            AroundDetector = detector;
+            AroundBed = bed;
             AroundSnow = snow;
+            AroundChorus = chorus;
             trapdoorNear = trapdoor;
             blockUnderHead = Utility.groundAround(to.toBukkitLocation().add(0, 1.8, 0));
             AroundLadders = ladder;
@@ -170,6 +208,7 @@ public class MovementValues {
             toBlock = ImmutableBlock.of(to.toBukkitLocation().getBlock());
             fromBlock = ImmutableBlock.of(from.toBukkitLocation().getBlock());
             AroundWeb = web;
+            walkSpeed = p.getWalkSpeed();
             AroundStairs = stairs;
             sprinting = p.isSprinting();
             dead = p.isDead();
@@ -183,6 +222,7 @@ public class MovementValues {
             AroundIce = ice;
             speedPotion = Utility.getPotionEffectLevel(p, PotionEffectType.SPEED);
             jumpPotion = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
+            bliendnessEffect = p.hasPotionEffect(PotionEffectType.BLINDNESS);
             AroundLily = lily;
             groundAround = ground;
             insideVehicle = p.isInsideVehicle();
@@ -205,10 +245,18 @@ public class MovementValues {
             toBlock = new ImmutableBlock((int) to.getX(), (int) to.getY(), (int) to.getZ(), "STONE", true, true);
             fromBlock = new ImmutableBlock((int) from.getX(), (int) from.getY(), (int) from.getZ(), "STONE", true,
                     true);
+            walkSpeed = 0.2f;
+            foodLevel = 20;
             groundAround = false;
             speedPotion = 0;
             jumpPotion = 0;
-            seaBlocksAround = false;
+            AroundPot = false;
+            AroundChest = false;
+            AroundDetector = false;
+            AroundBed = false;
+            AroundChorus = false;
+            bliendnessEffect = false;
+            AroundSea = false;
             sprinting = false;
             AroundLily = false;
             thereVehicleNear = false;

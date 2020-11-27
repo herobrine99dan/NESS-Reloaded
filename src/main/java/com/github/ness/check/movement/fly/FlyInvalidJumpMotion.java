@@ -1,69 +1,65 @@
 package com.github.ness.check.movement.fly;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerMoveEvent;
-
 import com.github.ness.NessPlayer;
-import com.github.ness.check.CheckInfos;
-import com.github.ness.check.ListeningCheck;
-import com.github.ness.check.ListeningCheckFactory;
-import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.check.Check;
+import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
+import com.github.ness.packets.ReceivedPacketEvent;
+import com.github.ness.packets.event.FlyingEvent;
+import com.github.ness.packets.event.UseEntityEvent;
 import com.github.ness.utility.Utility;
 
-public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
+public class FlyInvalidJumpMotion extends Check {
 
-	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
+    public FlyInvalidJumpMotion(NessPlayer player) {
+        super(FlyInvalidJumpMotion.class, player);
+    }
 
-	public FlyInvalidJumpMotion(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
-		super(factory, player);
-	}
+    @Override
+    public void onFlying(FlyingEvent e) {
+        if(!e.isPosition()) {
+            return;
+        }
+        NessPlayer player = e.getNessPlayer();
+        MovementValues values = player.getMovementValues();
+        ImmutableLoc to = values.getTo();
+        ImmutableLoc from = values.getFrom();
+        double yDiff = to.getY() - from.getY();
+        NessPlayer nessPlayer = this.player();
+        MovementValues movementValues = nessPlayer.getMovementValues();
+        if (movementValues.isAroundSlabs() || movementValues.isAroundLiquids() || movementValues.isAroundSnow()
+                || movementValues.isAroundChest() || movementValues.isAroundPot() || movementValues.isAroundDetector()
+                || movementValues.isAroundBed() || movementValues.isAroundLadders() || movementValues.isAroundChorus()
+                || movementValues.isAroundSea() || movementValues.isAroundIce() || movementValues.isAroundSlime()
+                || movementValues.isFlyBypass()) {
+            return;
+        }
+        if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1300) {
+            yDiff -= Math.abs(nessPlayer.getLastVelocity().getY());
+        }
+        // !player.getNearbyEntities(4, 4, 4).isEmpty()
+        if (yDiff > 0 && !movementValues.isInsideVehicle()) {
+            if (movementValues.getServerVelocity().getY() == 0.42f
+                    && !Utility.isMathematicallyOnGround(movementValues.getTo().getY())
+                    && Utility.isMathematicallyOnGround(movementValues.getFrom().getY())) {
+                double yResult = Math.abs(yDiff - movementValues.getServerVelocity().getY());
+                if (yResult != 0.0 && nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) > 1700
+                        && nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 1700) {
+                    flag(" yResult: " + yResult + "  yDiff: " + yDiff, e);
+                    // if(player().setViolation(new Violation("Fly", "InvalidJumpMotion yResult: " +
+                    // yResult + " yDiff: " + yDiff))) event.setCancelled(true);
+                }
+            }
+        }
+    }
 
-	@Override
-	protected void checkEvent(PlayerMoveEvent event) {
-		Player player = event.getPlayer();
-		Location to = event.getTo().clone();
-		Location from = event.getFrom().clone();
-		double yDiff = event.getTo().getY() - event.getFrom().getY();
-		NessPlayer nessPlayer = this.player();
-		MovementValues movementValues = nessPlayer.getMovementValues();
-		if (Utility.getMaterialName(event.getTo().clone().add(0, -0.3, 0)).contains("SLAB")
-				|| event.getTo().getBlock().isLiquid() || movementValues.isAroundLiquids() || movementValues.isAroundSnow()
-				|| Utility.groundAround(to.clone().add(0, 1.8, 0))
-				|| Utility.specificBlockNear(to.clone(), "chest")
-				|| Utility.specificBlockNear(to.clone(), "ladder")
-				|| Utility.specificBlockNear(to.clone(), "pot")
-				|| Utility.specificBlockNear(to.clone(), "bed")
-				|| Utility.specificBlockNear(to.clone(), "detector") || movementValues.isAroundStairs()
-				|| Utility.getMaterialName(to.clone().add(0, 1.8, 0)).contains("CHORUS")
-				|| Utility.getMaterialName(from.clone().add(0, 1.6, 0)).contains("CHORUS")
-				|| Utility.getMaterialName(to).contains("LADDER")
-				|| Utility.getMaterialName(to).contains("VINE")
-				|| Utility.getMaterialName(to).contains("SEA")
-				|| Utility.getMaterialName(from).contains("SEA")
-				|| Utility.getMaterialName(to.clone().add(0, 0.3, 0)).contains("SEA")
-				|| Utility.getMaterialName(to.clone().add(0, -0.2, 0)).contains("SEA")
-				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).contains("LADDER")
-				|| movementValues.isAroundIce() || movementValues.isAroundSlime() || Utility.hasflybypass(player)) {
-			return;
-		}
-		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1300) {
-			yDiff -= Math.abs(nessPlayer.getLastVelocity().getY());
-		}
-		// !player.getNearbyEntities(4, 4, 4).isEmpty()
-		if (yDiff > 0 && !player.isInsideVehicle()) {
-			if (player.getVelocity().getY() == 0.42f && !Utility.isMathematicallyOnGround(event.getTo().getY())
-					&& Utility.isMathematicallyOnGround(event.getFrom().getY())) {
-				double yResult = Math.abs(yDiff - player.getVelocity().getY());
-				if (yResult != 0.0 && nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) > 1700
-						&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 1700) {
-					flagEvent(event, " yResult: " + yResult + "  yDiff: " + yDiff);
-	            	//if(player().setViolation(new Violation("Fly", "InvalidJumpMotion yResult: " + yResult + "  yDiff: " + yDiff))) event.setCancelled(true);
-				}
-			}
-		}
-	}
+    @Override
+    public void onUseEntity(UseEntityEvent e) {
+    }
+
+    @Override
+    public void onEveryPacket(ReceivedPacketEvent e) {
+    }
 
 }

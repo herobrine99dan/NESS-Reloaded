@@ -19,6 +19,9 @@ public class FlyInvalidGravity extends Check {
     @Override
     public void onFlying(FlyingEvent e) {
         NessPlayer np = this.player();
+        if(!e.isPosition()) {
+            return;
+        }
         MovementValues values = np.getMovementValues();
         double y = values.yDiff;
         double yresult = y - values.getServerVelocity().getY();

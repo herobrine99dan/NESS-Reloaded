@@ -1,5 +1,7 @@
 package com.github.ness.data;
 
+import org.bukkit.util.Vector;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,6 +33,12 @@ public class MutableVector implements Cloneable {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+    
+    public MutableVector(Vector vector) {
+        this.x = vector.getX();
+        this.y = vector.getY();
+        this.z = vector.getZ();
     }
 
     public static double getEpsilon() {

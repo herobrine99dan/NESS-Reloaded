@@ -12,18 +12,18 @@ import com.github.ness.packets.event.UseEntityEvent;
 import com.github.ness.utility.Utility;
 
 public class FlyInvalidClientGravity extends Check {
-
-    float flyYSum;
-
+    
     public FlyInvalidClientGravity(NessPlayer player) {
         super(FlyInvalidClientGravity.class, player);
     }
 
-    double maxInvalidVelocity;
-    private double lastDeltaY;
+    private double lastDeltaY; //TODO use AirTicks
 
     @Override
     public void onFlying(FlyingEvent e) {
+        if(!e.isPosition()) {
+            return;
+        }
         NessPlayer np = this.player();
         MovementValues values = np.getMovementValues();
         double y = values.yDiff;
