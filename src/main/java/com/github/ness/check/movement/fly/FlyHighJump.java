@@ -35,10 +35,7 @@ public class FlyHighJump extends Check {
                 || movementValues.isAroundSlime() || movementValues.isAbleFly() || movementValues.isAroundLiquids()
                 || movementValues.isAroundLily() || movementValues.isAroundSea() || movementValues.isAroundSlabs()
                 || movementValues.isAroundStairs() || movementValues.isAroundLiquids()
-                || ReflectionUtility.getBlockName(p, ImmutableLoc.of(e.getTo().clone().add(0, -0.5, 0)))
-                        .contains("scaffolding")
-                || ReflectionUtility.getBlockName(p, ImmutableLoc.of(e.getTo().clone().add(0, 0.5, 0)))
-                        .contains("scaffolding")
+                || movementValues.isAroundScaffolding()
                 || movementValues.isAroundSnow() || movementValues.isAroundLadders() || nessPlayer.isTeleported()
                 || movementValues.isInsideVehicle() || movementValues.isThereVehicleNear()
                 || nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 1000) {

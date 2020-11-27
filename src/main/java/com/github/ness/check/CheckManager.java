@@ -44,7 +44,10 @@ public class CheckManager implements Listener {
         final List<String> checks = CheckManager.this.getNess().getPlugin().getConfig().getStringList("enabled-checks");
         final ChecksPackage[] packs = ChecksPackage.values();
         checks.addAll(Arrays.asList(ChecksPackage.REQUIRED_CHECKS));
+        logger.finer("Checks: " + checks);
+        checkList.clear();
         ness.getExecutor().execute(new Runnable() {
+
             @Override
             public void run() {
                 for (String s : checks) {
@@ -52,12 +55,14 @@ public class CheckManager implements Listener {
                     for (ChecksPackage pack : packs) {
                         try {
                             Class<?> clazz = Class.forName("com.github.ness.check." + pack.prefix() + "." + s);
-                            CheckManager.this.checkList.add(new CheckFactory(clazz));
+                            CheckFactory factory = new CheckFactory(clazz);
+                            CheckManager.this.checkList.add(factory); //
                             logger.fine("CheckFactory with name: " + s + " was loaded correctly!");
                             founded = true;
-                            break;
-                        } catch (ClassNotFoundException e) {
-                            // We check in other packages
+                        } catch (Exception e) {
+                            if(!(e instanceof ClassNotFoundException)) {
+                                throw new IllegalStateException("There was an error while loading CheckFactory " + s + " (Is the Constructor public?)",e);
+                            }
                         }
                     }
                     if (!founded) {
@@ -66,6 +71,7 @@ public class CheckManager implements Listener {
                 }
             }
         });
+
     }
 
     public Object onEvent(ReceivedPacketEvent event) {
@@ -93,7 +99,7 @@ public class CheckManager implements Listener {
     }
 
     public void makeNessPlayer(Player player) {
-        NessPlayer nessPlayer = new NessPlayer(player, devMode);
+        NessPlayer nessPlayer = new NessPlayer(player, devMode, this.getNess().getMaterialAccess());
         ness.getExecutor().execute(new Runnable() {
             @Override
             public void run() {

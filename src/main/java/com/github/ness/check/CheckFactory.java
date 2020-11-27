@@ -9,6 +9,14 @@ import lombok.Getter;
 
 public class CheckFactory {
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "CheckFactory [constructorCache=" + constructorCache + ", clazz=" + clazz + "]";
+    }
+
     private final Constructor<?> constructorCache;
     @Getter
     private final Class<?> clazz;

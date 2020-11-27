@@ -10,7 +10,7 @@ import com.github.ness.utility.Utility;
 
 public class FastLadder extends Check {
 
-    protected FastLadder(NessPlayer nessPlayer) {
+    public FastLadder(NessPlayer nessPlayer) {
         super(FastLadder.class, nessPlayer);
     }
 

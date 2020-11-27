@@ -1,6 +1,9 @@
 package com.github.ness.data;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+
+import com.github.ness.NessAnticheat;
 
 import lombok.Getter;
 
@@ -24,8 +27,9 @@ public class ImmutableBlock {
     }
 
     public static ImmutableBlock of(Block b) {
-        return new ImmutableBlock(b.getX(), b.getY(), b.getZ(), b.getType().name(), b.getType().isSolid(),
-                b.getType().isOccluding());
+        Material m = NessAnticheat.getMaterialAccess().getMaterial(b);
+        return new ImmutableBlock(b.getX(), b.getY(), b.getZ(), m.name(), m.isSolid(),
+                m.isOccluding());
     }
 
 }

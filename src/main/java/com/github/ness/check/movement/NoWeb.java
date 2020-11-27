@@ -10,7 +10,7 @@ import com.github.ness.packets.event.UseEntityEvent;
 
 public class NoWeb extends Check {
 
-    protected NoWeb(NessPlayer nessPlayer) {
+    public NoWeb(NessPlayer nessPlayer) {
         super(NoWeb.class, nessPlayer);
     }
 

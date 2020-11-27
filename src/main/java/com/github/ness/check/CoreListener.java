@@ -13,7 +13,7 @@ import com.github.ness.packets.ReceivedPacketEvent;
 
 public class CoreListener implements Listener {
 
-    CheckManager manager;
+    private CheckManager manager;
 
     public CoreListener(CheckManager manager) {
         this.manager = manager;
@@ -28,7 +28,8 @@ public class CoreListener implements Listener {
     public void onMove(PlayerMoveEvent e) {
         NessPlayer nessPlayer = manager.getNessPlayer(e.getPlayer().getUniqueId());
         nessPlayer.updateMovementValue(
-                new MovementValues(e.getPlayer(), ImmutableLoc.of(e.getTo()), ImmutableLoc.of(e.getFrom())));
+                new MovementValues(e.getPlayer(), ImmutableLoc.of(e.getTo()), ImmutableLoc.of(e.getFrom()),
+                this.manager.getNess().getMaterialAccess()));
     }
 
     @EventHandler

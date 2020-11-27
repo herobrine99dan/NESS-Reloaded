@@ -45,6 +45,7 @@ public class OmniSprint extends Check {
             MutableVector toEntity = new MutableVector(values.getTo().toBukkitLocation().toVector()
                     .subtract(values.getFrom().toBukkitLocation().toVector()));
             double dot = toEntity.normalize().dot(direction);
+            nessPlayer.sendDevMessage("Dot: " + (float) dot + " Angle: " + (float) angle + " Block: " + values.getBlockUnder().getType());
             if (angle < 1.58) {
                 flag(e);
                 // if(player().setViolation(new Violation("OmniSprint", "")))

@@ -1,11 +1,15 @@
 package com.github.ness.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
+import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.utility.Utility;
 
 import lombok.Getter;
@@ -74,6 +78,8 @@ public class MovementValues {
     @Getter
     private final boolean AroundChorus;
     @Getter
+    private final boolean AroundScaffolding;
+    @Getter
     private final ImmutableVector serverVelocity;
     @Getter
     private final boolean insideVehicle;
@@ -122,9 +128,15 @@ public class MovementValues {
     private final ImmutableBlock toBlock;
     @Getter
     private final ImmutableBlock fromBlock;
+    @Getter
+    private final ImmutableBlock blockUnder;
+    @Getter
+    private final List<ImmutableBlock> blocks;
 
-    //TODO For now ImmutableLoc objects are updated by PlayerMove, make FlyingEvent update them
-    public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from) {
+    // TODO For now ImmutableLoc objects are updated by PlayerMove, make FlyingEvent
+    // update them
+    public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from, MaterialAccess materialAccess) {
+        blocks = new ArrayList<ImmutableBlock>();
         if (Bukkit.isPrimaryThread()) {
             boolean liquids = false;
             boolean ice = false;
@@ -144,13 +156,15 @@ public class MovementValues {
             boolean chest = false;
             boolean detector = false;
             boolean chorus = false;
+            boolean scaffolding = false;
             serverVelocity = new ImmutableVector(p.getVelocity().getX(), p.getVelocity().getY(),
                     p.getVelocity().getZ());
             gamemode = p.getGameMode();
             isFlying = p.isFlying();
             ableFly = p.getAllowFlight();
             for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 2)) {
-                String name = b.getType().name();
+                blocks.add(ImmutableBlock.of(b));
+                String name = materialAccess.getMaterial(b).name();
                 if (name.contains("WATER") || name.contains("LAVA") || name.contains("LIQUID")) {
                     liquids = true;
                 }
@@ -183,17 +197,20 @@ public class MovementValues {
                     trapdoor = true;
                 } else if (name.contains("BED")) {
                     bed = true;
-                }else if (name.contains("POT")) {
+                } else if (name.contains("POT")) {
                     pot = true;
-                }else if (name.contains("CHEST")) {
+                } else if (name.contains("CHEST")) {
                     chest = true;
-                }else if (name.contains("DETECTOR")) {
+                } else if (name.contains("DETECTOR")) {
                     detector = true;
-                }else if (name.contains("CHORUS")) {
+                } else if (name.contains("CHORUS")) {
                     chorus = true;
+                } else if (name.contains("SCAFFOLDING")) {
+                    scaffolding = true;
                 }
             }
             AroundSea = sea;
+            AroundScaffolding = scaffolding;
             AroundPot = pot;
             foodLevel = p.getFoodLevel();
             AroundChest = chest;
@@ -220,6 +237,7 @@ public class MovementValues {
             }
             AroundSlime = slime;
             AroundIce = ice;
+            blockUnder = ImmutableBlock.of(to.toBukkitLocation().clone().add(0, -0.5, 0).getBlock());
             speedPotion = Utility.getPotionEffectLevel(p, PotionEffectType.SPEED);
             jumpPotion = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
             bliendnessEffect = p.hasPotionEffect(PotionEffectType.BLINDNESS);
@@ -242,6 +260,8 @@ public class MovementValues {
             serverVelocity = new ImmutableVector(0, 0, 0);
             AroundCarpet = false;
             AroundLadders = false;
+            blockUnder = new ImmutableBlock((int) to.getX(), (int) (to.getY() - 0.5), (int) to.getZ(), "STONE",
+                    true, true);
             toBlock = new ImmutableBlock((int) to.getX(), (int) to.getY(), (int) to.getZ(), "STONE", true, true);
             fromBlock = new ImmutableBlock((int) from.getX(), (int) from.getY(), (int) from.getZ(), "STONE", true,
                     true);
@@ -265,6 +285,7 @@ public class MovementValues {
             AroundSnow = false;
             insideVehicle = false;
             dead = false;
+            AroundScaffolding = false;
             entityAround = false;
             gamemode = GameMode.SURVIVAL;
             isFlying = false;

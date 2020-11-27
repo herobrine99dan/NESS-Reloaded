@@ -15,7 +15,7 @@ public class SpeedFriction extends Check {
     double lastDeltaXZ;
     int buffer;
 
-    protected SpeedFriction(NessPlayer nessPlayer) {
+    public SpeedFriction(NessPlayer nessPlayer) {
         super(SpeedFriction.class, nessPlayer);
     }
 

@@ -1,5 +1,6 @@
 package com.github.ness;
 
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -12,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.Messenger;
 
 import com.github.ness.antibot.AntiBot;
+import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.check.Check;
 import com.github.ness.check.CheckManager;
 import com.github.ness.check.CoreListener;
@@ -35,18 +37,29 @@ public class NessAnticheat {
     private final ViolationHandler violationHandler;
     @Getter
     private final AntiBot antiBot;
+    private static MaterialAccess materialAccess;
 
     static {
         minecraftVersion = getVersion();
     }
 
-    NessAnticheat(JavaPlugin plugin, Path folder) {
+    NessAnticheat(JavaPlugin plugin, Path folder, Class<?> materialAccessImplClass) {
         this.plugin = plugin;
         executor = Executors.newSingleThreadScheduledExecutor();
         this.violationHandler = new ViolationHandler(this);
         checkManager = new CheckManager(this);
         checkManager.initialize();
         antiBot = new AntiBot(this);
+        try {
+            materialAccess = materialAccessImplClass.asSubclass(MaterialAccess.class).getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+    
+    public static MaterialAccess getMaterialAccess() {
+        return materialAccess;
     }
 
     private static int getVersion() {

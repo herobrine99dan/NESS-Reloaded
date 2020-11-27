@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.github.ness.api.Violation;
+import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.check.Check;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
@@ -80,13 +81,13 @@ public class NessPlayer {
     @Getter
     private final Set<Check> checks = Collections.synchronizedSet(new HashSet<Check>());
 
-    public NessPlayer(Player player, boolean devMode) {
+    public NessPlayer(Player player, boolean devMode, MaterialAccess materialAccess) {
         uuid = player.getUniqueId();
         this.player = player;
         this.devMode = devMode;
         this.movementValues = new MovementValues(player,
                 new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
-                new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
+                new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d), materialAccess);
     }
 
     public UUID getUniqueId() {
