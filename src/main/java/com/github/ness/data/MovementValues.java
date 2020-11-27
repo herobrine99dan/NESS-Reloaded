@@ -133,8 +133,7 @@ public class MovementValues {
     @Getter
     private final List<ImmutableBlock> blocks;
 
-    // TODO For now ImmutableLoc objects are updated by PlayerMove, make FlyingEvent
-    // update them
+    // TODO Locations are updated by CheckManager.onEvent(ReceivedPacketEvent), but the MovementValues is anyway created only with PlayerMoveEvent
     public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from, MaterialAccess materialAccess) {
         blocks = new ArrayList<ImmutableBlock>();
         if (Bukkit.isPrimaryThread()) {
@@ -163,7 +162,7 @@ public class MovementValues {
             isFlying = p.isFlying();
             ableFly = p.getAllowFlight();
             for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 2)) {
-                blocks.add(ImmutableBlock.of(b));
+                blocks.add(ImmutableBlock.of(b,materialAccess));
                 String name = materialAccess.getMaterial(b).name();
                 if (name.contains("WATER") || name.contains("LAVA") || name.contains("LIQUID")) {
                     liquids = true;
@@ -222,8 +221,8 @@ public class MovementValues {
             blockUnderHead = Utility.groundAround(to.toBukkitLocation().add(0, 1.8, 0));
             AroundLadders = ladder;
             AroundSlabs = slab;
-            toBlock = ImmutableBlock.of(to.toBukkitLocation().getBlock());
-            fromBlock = ImmutableBlock.of(from.toBukkitLocation().getBlock());
+            toBlock = ImmutableBlock.of(to.toBukkitLocation().getBlock(),materialAccess);
+            fromBlock = ImmutableBlock.of(from.toBukkitLocation().getBlock(),materialAccess);
             AroundWeb = web;
             walkSpeed = p.getWalkSpeed();
             AroundStairs = stairs;
@@ -237,7 +236,7 @@ public class MovementValues {
             }
             AroundSlime = slime;
             AroundIce = ice;
-            blockUnder = ImmutableBlock.of(to.toBukkitLocation().clone().add(0, -0.5, 0).getBlock());
+            blockUnder = ImmutableBlock.of(to.toBukkitLocation().clone().add(0, -0.5, 0).getBlock(),materialAccess);
             speedPotion = Utility.getPotionEffectLevel(p, PotionEffectType.SPEED);
             jumpPotion = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
             bliendnessEffect = p.hasPotionEffect(PotionEffectType.BLINDNESS);

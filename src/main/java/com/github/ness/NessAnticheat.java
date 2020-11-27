@@ -37,7 +37,8 @@ public class NessAnticheat {
     private final ViolationHandler violationHandler;
     @Getter
     private final AntiBot antiBot;
-    private static MaterialAccess materialAccess;
+    @Getter
+    private MaterialAccess materialAccess;
 
     static {
         minecraftVersion = getVersion();
@@ -56,10 +57,6 @@ public class NessAnticheat {
                 | NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException(e);
         }
-    }
-    
-    public static MaterialAccess getMaterialAccess() {
-        return materialAccess;
     }
 
     private static int getVersion() {

@@ -73,6 +73,9 @@ public class NessPlayer {
     @Getter
     @Setter
     private UUID lastEntityAttacked;
+    @Getter
+    @Setter
+    private volatile ImmutableLoc toLoc, fromLoc; // These will be updated by position packet
     /**
      * This Set contains checks that will be executed for this player
      * 
@@ -85,6 +88,8 @@ public class NessPlayer {
         uuid = player.getUniqueId();
         this.player = player;
         this.devMode = devMode;
+        toLoc = new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d);
+        fromLoc = new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d);
         this.movementValues = new MovementValues(player,
                 new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
                 new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d), materialAccess);
@@ -97,7 +102,7 @@ public class NessPlayer {
     public Player getBukkitPlayer() {
         return player;
     }
-    
+
     /**
      * This method clean the fields in this objects
      */
@@ -238,7 +243,7 @@ public class NessPlayer {
      * 
      */
     public void completeDragDown() {
-        //this.checks.iterator().next().manager().getNess().getSyncScheduler().addAction(r);
+        // this.checks.iterator().next().manager().getNess().getSyncScheduler().addAction(r);
         if (!player.isOnline()) {
             return;
         }

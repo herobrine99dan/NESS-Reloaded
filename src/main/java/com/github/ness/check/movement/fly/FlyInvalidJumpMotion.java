@@ -32,7 +32,7 @@ public class FlyInvalidJumpMotion extends Check {
                 || movementValues.isAroundChest() || movementValues.isAroundPot() || movementValues.isAroundDetector()
                 || movementValues.isAroundBed() || movementValues.isAroundLadders() || movementValues.isAroundChorus()
                 || movementValues.isAroundSea() || movementValues.isAroundIce() || movementValues.isAroundSlime()
-                || movementValues.isFlyBypass()) {
+                || movementValues.isFlyBypass() || movementValues.hasBlockNearHead()) {
             return;
         }
         if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1300) {

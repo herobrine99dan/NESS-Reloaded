@@ -3,7 +3,7 @@ package com.github.ness.data;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-import com.github.ness.NessAnticheat;
+import com.github.ness.blockgetter.MaterialAccess;
 
 import lombok.Getter;
 
@@ -26,8 +26,8 @@ public class ImmutableBlock {
         this.occluding = occluding;
     }
 
-    public static ImmutableBlock of(Block b) {
-        Material m = NessAnticheat.getMaterialAccess().getMaterial(b);
+    public static ImmutableBlock of(Block b, MaterialAccess access) {
+        Material m = access.getMaterial(b);
         return new ImmutableBlock(b.getX(), b.getY(), b.getZ(), m.name(), m.isSolid(),
                 m.isOccluding());
     }

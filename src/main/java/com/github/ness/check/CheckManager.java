@@ -18,6 +18,7 @@ import org.bukkit.event.Listener;
 import com.github.ness.NessAnticheat;
 import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
+import com.github.ness.data.ImmutableLoc;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.UseEntityEvent;
@@ -60,8 +61,9 @@ public class CheckManager implements Listener {
                             logger.fine("CheckFactory with name: " + s + " was loaded correctly!");
                             founded = true;
                         } catch (Exception e) {
-                            if(!(e instanceof ClassNotFoundException)) {
-                                throw new IllegalStateException("There was an error while loading CheckFactory " + s + " (Is the Constructor public?)",e);
+                            if (!(e instanceof ClassNotFoundException)) {
+                                throw new IllegalStateException("There was an error while loading CheckFactory " + s
+                                        + " (Is the Constructor public?)", e);
                             }
                         }
                     }
@@ -84,6 +86,22 @@ public class CheckManager implements Listener {
                     if (event.getPacket().isFlying() || event.getPacket().isPosition()
                             || event.getPacket().isRotation()) {
                         c.onFlying((FlyingEvent) event);
+                    }
+                    double x = 0, y = 0, z = 0, yaw = 0, pitch = 0; //TODO Test new change
+                    if (event.getPacket().isPosition()) {
+                        FlyingEvent e = (FlyingEvent) event;
+                        x = e.getX();
+                        y = e.getY();
+                        z = e.getZ();
+                    }
+                    if (event.getPacket().isRotation()) {
+                        FlyingEvent e = (FlyingEvent) event;
+                        yaw = e.getYaw();
+                        pitch = e.getPitch();
+                    }
+                    if (event.getPacket().isPosition() || event.getPacket().isRotation()) {
+                        np.setFromLoc(np.getToLoc());
+                        np.setToLoc(new ImmutableLoc(np.getFromLoc().getWorld(), x, y, z, (float) yaw, pitch));
                     }
                     if (event.getPacket().isUseEntity()) {
                         c.onUseEntity((UseEntityEvent) event);
