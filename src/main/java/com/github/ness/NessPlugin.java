@@ -1,6 +1,13 @@
 package com.github.ness;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.ness.blockgetter.MaterialAccess;
 
 import io.github.retrooper.packetevents.PacketEvents;
 
@@ -21,6 +28,15 @@ public class NessPlugin extends JavaPlugin {
             throw new IllegalStateException("Already enabled and running");
         }
         PacketEvents.load();
+        try {
+            MaterialAccess.class.toString(); //The bukkit class loader must load this class to execute the stupid method
+            NessClassLoader loader = new NessClassLoader(new URL[] {this.getFile().toURI().toURL()},this.getClassLoader());
+            loader.loadClass("com.github.ness.blockgetter.MaterialAccessImpl");
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        } catch(ClassNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     @Override
