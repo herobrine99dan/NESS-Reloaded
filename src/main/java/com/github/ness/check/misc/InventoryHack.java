@@ -15,7 +15,7 @@ import io.github.retrooper.packetevents.packetwrappers.in.windowclick.WrappedPac
 
 public class InventoryHack extends Check {
 
-    public InventoryHack(Class<?> classe, NessPlayer nessPlayer) {
+    public InventoryHack(NessPlayer nessPlayer) {
         super(InventoryHack.class, nessPlayer);
     }
 

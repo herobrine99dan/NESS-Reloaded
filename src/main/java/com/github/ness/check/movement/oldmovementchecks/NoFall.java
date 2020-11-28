@@ -19,14 +19,18 @@ public class NoFall extends Check {
 
     @Override
     public void onFlying(FlyingEvent e) {
+        if (!e.isPosition()) {
+            return;
+        }
         double deltaY = e.getNessPlayer().getMovementValues().yDiff;
-        if(deltaY >= 0) {
+        if (deltaY >= 0) {
             serverFallDistance = 0;
-        } else if(deltaY < 0) {
+        } else if (deltaY < 0) {
             serverFallDistance -= deltaY;
         }
-        if((e.getNessPlayer().getMovementValues().getFallDistance() - serverFallDistance) > 0.01) {
-            
+        double subtraction = Math.abs(e.getNessPlayer().getMovementValues().getFallDistance() - serverFallDistance);
+        if (subtraction > 2.3) {
+            this.flag("Subtraction: " + (float) subtraction, e);
         }
     }
 
