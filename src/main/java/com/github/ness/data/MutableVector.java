@@ -165,11 +165,11 @@ public class MutableVector implements Cloneable {
     }
 
     public ImmutableLoc toLocation(String world) {
-        return new ImmutableLoc(world, this.x, this.y, this.z, 0, 0);
+        return new ImmutableLoc(world, this.x, this.y, this.z, 0, 0, true);
     }
 
     public ImmutableLoc toLocation(String world, float yaw, float pitch) {
-        return new ImmutableLoc(world, this.x, this.y, this.z, yaw, pitch);
+        return new ImmutableLoc(world, this.x, this.y, this.z, yaw, pitch, true);
     }
 
     @Override

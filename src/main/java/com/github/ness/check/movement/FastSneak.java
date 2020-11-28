@@ -2,29 +2,27 @@ package com.github.ness.check.movement;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
-import com.github.ness.data.ImmutableBlock;
 import com.github.ness.data.MovementValues;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.UseEntityEvent;
 
-public class Phase extends Check {
+public class FastSneak extends Check {
 
-    public Phase(NessPlayer nessPlayer) {
-        super(Phase.class, nessPlayer);
+    public FastSneak(NessPlayer nessPlayer) {
+        super(FastSneak.class, nessPlayer);
     }
 
     @Override
     public void onFlying(FlyingEvent e) {
+        MovementValues values = e.getNessPlayer().getMovementValues();
         if (!e.getPacket().isPosition()) {
             return;
         }
-        NessPlayer nessPlayer = this.player();
-        MovementValues values = nessPlayer.getMovementValues();
-        ImmutableBlock block = values.getEyeHeightBlock();
-        if (block.isOccluding() && !values.isInsideVehicle() && values.isGroundAround() && !nessPlayer.isTeleported()
-                && nessPlayer.getMovementValues().getXZDiff() > 0.195) {
-            flag(e);
+        if(values.isSneaking() && values.getXZDiff() > 0.13) {
+            if(e.getNessPlayer().isDevMode()) {
+                e.getNessPlayer().sendDevMessage("CHEATS: " + values.getXZDiff());
+            }
         }
     }
 

@@ -88,11 +88,10 @@ public class NessPlayer {
         uuid = player.getUniqueId();
         this.player = player;
         this.devMode = devMode;
-        toLoc = new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d);
-        fromLoc = new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d);
-        this.movementValues = new MovementValues(player,
-                new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
-                new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d), materialAccess);
+        this.teleported = false;
+        toLoc = new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d, false);
+        fromLoc = new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d, false);
+        this.movementValues = new MovementValues(player,toLoc,fromLoc, materialAccess);
     }
 
     public UUID getUniqueId() {

@@ -87,7 +87,7 @@ public class CheckManager implements Listener {
                             || event.getPacket().isRotation()) {
                         c.onFlying((FlyingEvent) event);
                     }
-                    double x = 0, y = 0, z = 0, yaw = 0, pitch = 0; //TODO Test new change
+                    double x = 0, y = 0, z = 0, yaw = 0, pitch = 0; // TODO Test new change
                     if (event.getPacket().isPosition()) {
                         FlyingEvent e = (FlyingEvent) event;
                         x = e.getX();
@@ -101,7 +101,7 @@ public class CheckManager implements Listener {
                     }
                     if (event.getPacket().isPosition() || event.getPacket().isRotation()) {
                         np.setFromLoc(np.getToLoc());
-                        np.setToLoc(new ImmutableLoc(np.getFromLoc().getWorld(), x, y, z, (float) yaw, pitch));
+                        np.setToLoc(new ImmutableLoc(np.getFromLoc().getWorld(), x, y, z, (float) yaw, pitch, true));
                     }
                     if (event.getPacket().isUseEntity()) {
                         c.onUseEntity((UseEntityEvent) event);

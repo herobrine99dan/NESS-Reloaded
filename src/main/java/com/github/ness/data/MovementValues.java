@@ -1,13 +1,11 @@
 package com.github.ness.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.NumberConversions;
 
 import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.utility.Utility;
@@ -131,11 +129,11 @@ public class MovementValues {
     @Getter
     private final ImmutableBlock blockUnder;
     @Getter
-    private final List<ImmutableBlock> blocks;
+    private final ImmutableBlock eyeHeightBlock;
 
-    // TODO Locations are updated by CheckManager.onEvent(ReceivedPacketEvent), but the MovementValues is anyway created only with PlayerMoveEvent
+    // TODO Locations are updated by CheckManager.onEvent(ReceivedPacketEvent), but
+    // the MovementValues is anyway created only with PlayerMoveEvent
     public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from, MaterialAccess materialAccess) {
-        blocks = new ArrayList<ImmutableBlock>();
         if (Bukkit.isPrimaryThread()) {
             boolean liquids = false;
             boolean ice = false;
@@ -162,7 +160,6 @@ public class MovementValues {
             isFlying = p.isFlying();
             ableFly = p.getAllowFlight();
             for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 2)) {
-                blocks.add(ImmutableBlock.of(b,materialAccess));
                 String name = materialAccess.getMaterial(b).name();
                 if (name.contains("WATER") || name.contains("LAVA") || name.contains("LIQUID")) {
                     liquids = true;
@@ -176,7 +173,7 @@ public class MovementValues {
                     slime = true;
                 } else if (name.contains("STAIR")) {
                     stairs = true;
-                } else if (name.contains("SLAB")) {
+                } else if (name.contains("SLAB") || name.contains("STEP")) {
                     slab = true;
                 } else if (name.contains("LADDER")) {
                     ladder = true;
@@ -204,7 +201,7 @@ public class MovementValues {
                     detector = true;
                 } else if (name.contains("CHORUS")) {
                     chorus = true;
-                } else if (name.contains("SCAFFOLDING")) {
+                } else if (name.contains("SCAFFOLD")) {
                     scaffolding = true;
                 }
             }
@@ -221,8 +218,8 @@ public class MovementValues {
             blockUnderHead = Utility.groundAround(to.toBukkitLocation().add(0, 1.8, 0));
             AroundLadders = ladder;
             AroundSlabs = slab;
-            toBlock = ImmutableBlock.of(to.toBukkitLocation().getBlock(),materialAccess);
-            fromBlock = ImmutableBlock.of(from.toBukkitLocation().getBlock(),materialAccess);
+            toBlock = ImmutableBlock.of(to.toBukkitLocation().getBlock(), materialAccess);
+            fromBlock = ImmutableBlock.of(from.toBukkitLocation().getBlock(), materialAccess);
             AroundWeb = web;
             walkSpeed = p.getWalkSpeed();
             AroundStairs = stairs;
@@ -231,12 +228,13 @@ public class MovementValues {
             entityAround = p.getNearbyEntities(2, 2, 2).isEmpty();
             sneaking = p.isSneaking();
             thereVehicleNear = Utility.hasVehicleNear(p, 4);
+            eyeHeightBlock = ImmutableBlock.of(p.getEyeLocation().getBlock(), materialAccess);
             if (!slime) {
                 slime = Utility.hasBlock(p, "SLIME");
             }
             AroundSlime = slime;
             AroundIce = ice;
-            blockUnder = ImmutableBlock.of(to.toBukkitLocation().clone().add(0, -0.5, 0).getBlock(),materialAccess);
+            blockUnder = ImmutableBlock.of(to.toBukkitLocation().clone().add(0, -0.5, 0).getBlock(), materialAccess);
             speedPotion = Utility.getPotionEffectLevel(p, PotionEffectType.SPEED);
             jumpPotion = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
             bliendnessEffect = p.hasPotionEffect(PotionEffectType.BLINDNESS);
@@ -258,12 +256,12 @@ public class MovementValues {
             AroundSlabs = false;
             serverVelocity = new ImmutableVector(0, 0, 0);
             AroundCarpet = false;
-            AroundLadders = false;
-            blockUnder = new ImmutableBlock((int) to.getX(), (int) (to.getY() - 0.5), (int) to.getZ(), "STONE",
+            eyeHeightBlock = new ImmutableBlock(new ImmutableLoc(this.getTo().getWorld(), 0, 1.8, 0, 0f, 0, false), "STONE",
                     true, true);
-            toBlock = new ImmutableBlock((int) to.getX(), (int) to.getY(), (int) to.getZ(), "STONE", true, true);
-            fromBlock = new ImmutableBlock((int) from.getX(), (int) from.getY(), (int) from.getZ(), "STONE", true,
-                    true);
+            AroundLadders = false;
+            blockUnder = new ImmutableBlock(this.locToBlock(this.to, -0.5), "STONE", true, true);
+            toBlock = new ImmutableBlock(this.locToBlock(this.to, 0), "STONE", true, true);
+            fromBlock = new ImmutableBlock(this.locToBlock(this.from, 0), "STONE", true, true);
             walkSpeed = 0.2f;
             foodLevel = 20;
             groundAround = false;
@@ -305,6 +303,17 @@ public class MovementValues {
         XZDiff = Math.hypot(xDiff, zDiff);
         this.to = to;
         this.from = from;
+    }
+
+    private int floorCord(double loc) {
+        return NumberConversions.floor(loc);
+    }
+
+    private ImmutableLoc locToBlock(ImmutableLoc loc, double yAdd) {
+        double x = floorCord(loc.getX());
+        double y = floorCord(loc.getY()) + yAdd;
+        double z = floorCord(loc.getZ());
+        return new ImmutableLoc(loc.getWorld(), x, y, z, 0, 0, false);
     }
 
     public boolean hasBlockNearHead() {

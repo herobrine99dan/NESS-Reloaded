@@ -26,14 +26,16 @@ public class ImmutableLoc {
     @Getter
     private ImmutableVector directionVector;
 
-    public ImmutableLoc(String world, double x, double y, double z, float yaw, double pitch) {
+    public ImmutableLoc(String world, double x, double y, double z, float yaw, double pitch, boolean makeDirection) {
         this.world = world;
         this.x = x;
         this.y = y;
         this.z = z;
         this.pitch = pitch;
         this.yaw = yaw;
-        makeDirection();
+        if (makeDirection) {
+            makeDirection();
+        }
     }
 
     /**
@@ -44,9 +46,9 @@ public class ImmutableLoc {
      */
     public static ImmutableLoc of(Location location) {
         return new ImmutableLoc(location.getWorld().getName(), location.getX(), location.getY(), location.getZ(),
-                location.getYaw(), location.getPitch());
+                location.getYaw(), location.getPitch(), true);
     }
-    
+
     /**
      * Creates an immutable location from a bukkit location, with an overridden
      * world
@@ -57,7 +59,7 @@ public class ImmutableLoc {
      */
     public static ImmutableLoc of(Location location, String world) {
         return new ImmutableLoc(world, location.getX(), location.getY(), location.getZ(), location.getYaw(),
-                location.getPitch());
+                location.getPitch(), true);
     }
 
     private void makeDirection() {
@@ -80,7 +82,7 @@ public class ImmutableLoc {
         double z = 0;
         float yaw = 0;
         double pitch = 0;
-        return new ImmutableLoc(this.world, x, y, z, yaw, pitch);
+        return new ImmutableLoc(this.world, x, y, z, yaw, pitch, true);
     }
 
     public double distance(ImmutableLoc o) {
