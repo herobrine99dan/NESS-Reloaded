@@ -123,7 +123,7 @@ public class CheckManager implements Listener {
     }
 
     public void makeNessPlayer(Player player) {
-        NessPlayer nessPlayer = new NessPlayer(player, devMode, this.getNess().getMaterialAccess());
+        NessPlayer nessPlayer = new NessPlayer(player, devMode, this.getNess().getMaterialAccess(), player.getEntityId());
         ness.getExecutor().execute(new Runnable() {
             @Override
             public void run() {

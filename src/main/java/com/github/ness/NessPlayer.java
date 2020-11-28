@@ -76,6 +76,8 @@ public class NessPlayer {
     @Getter
     @Setter
     private volatile ImmutableLoc toLoc, fromLoc; // These will be updated by position packet
+    @Getter
+    private int entityId;
     /**
      * This Set contains checks that will be executed for this player
      * 
@@ -84,11 +86,12 @@ public class NessPlayer {
     @Getter
     private final Set<Check> checks = Collections.synchronizedSet(new HashSet<Check>());
 
-    public NessPlayer(Player player, boolean devMode, MaterialAccess materialAccess) {
+    public NessPlayer(Player player, boolean devMode, MaterialAccess materialAccess, int entityId) {
         uuid = player.getUniqueId();
         this.player = player;
         this.devMode = devMode;
         this.teleported = false;
+        this.entityId = entityId;
         toLoc = new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d, false);
         fromLoc = new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d, false);
         this.movementValues = new MovementValues(player,toLoc,fromLoc, materialAccess);

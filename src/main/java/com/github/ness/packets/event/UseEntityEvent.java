@@ -13,6 +13,8 @@ public class UseEntityEvent extends ReceivedPacketEvent {
     private int entityId = 0;
     @Getter
     private EntityUseAction action;
+    @Getter
+    private WrappedPacketInUseEntity useEntityPacket;
 
     public UseEntityEvent(NessPlayer nessplayer, Packet packet) {
         super(nessplayer, packet);
@@ -20,8 +22,8 @@ public class UseEntityEvent extends ReceivedPacketEvent {
 
     @Override
     public void process() {
-        WrappedPacketInUseEntity packet = new WrappedPacketInUseEntity(this.getPacket().getRawPacket());
-        this.entityId = packet.getEntityID();
-        action = packet.getAction();
+        useEntityPacket = new WrappedPacketInUseEntity(this.getPacket().getRawPacket());
+        this.entityId = useEntityPacket.getEntityID();
+        action = useEntityPacket.getAction();
     }
 }

@@ -44,8 +44,7 @@ public abstract class Check {
         this.milliSeconds = 0L;
     }
 
-    protected Check(Class<?> classe, NessPlayer nessPlayer, boolean hasScheduler,
-            long milliSeconds) {
+    protected Check(Class<?> classe, NessPlayer nessPlayer, boolean hasScheduler, long milliSeconds) {
         this.checkName = classe.getSimpleName();
         this.nessPlayer = nessPlayer;
         this.hasAsyncScheduler = hasScheduler;
@@ -101,14 +100,36 @@ public abstract class Check {
      * 
      */
     public final int flag(NessEvent e) {
-        return flag("",e);
+        return flag("", e);
     }
 
-    public void onFlying(FlyingEvent e) {}
-    public void onUseEntity(UseEntityEvent e) {}
-    public void onEveryPacket(ReceivedPacketEvent e) {}
-    public void onBukkitEvent(NessEvent e) {}
-    public void onBukkitEvent(NessBukkitEvent e) {}
+    /**
+     * Flags the player for cheating
+     * 
+     */
+    public final int flag(String details) {
+        return flag(details, null);
+    }
+
+    public void onFlying(FlyingEvent e) {
+    }
+
+    public void onUseEntity(UseEntityEvent e) {
+    }
+
+    public void onEveryPacket(ReceivedPacketEvent e) {
+    }
+
+    public void onBukkitEvent(NessBukkitEvent e) {
+    }
+    
+    /**
+     * Flags the player for cheating
+     * 
+     */
+    public final int flag(NessEvent e, String details) {
+        return flag(details, e);
+    }
 
     /**
      * Flags the player for cheating
@@ -120,6 +141,9 @@ public abstract class Check {
         if (callViolationEvent(violation)) {
             this.nessPlayer.addViolation(violation);
             ness().getViolationHandler().onCheat(this.player().getBukkitPlayer(), violation, this);
+            if (e == null) {
+                return this.violations.get();
+            }
             return this.violations.get();
         } else {
             this.violations.decrementAndGet();
