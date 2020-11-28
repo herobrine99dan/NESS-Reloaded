@@ -96,6 +96,10 @@ public class Packet {
     public boolean isTransaction() {
         return isReceiving() && packetId == PacketType.Client.TRANSACTION;
     }
+    
+    public boolean isChat() {
+        return isReceiving() && packetId == PacketType.Client.CHAT;
+    }
 
     public boolean isTeleport() {
         return isSending() && packetId == PacketType.Server.POSITION;

@@ -2,7 +2,6 @@ package com.github.ness.packets.event;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.packets.Packet;
-import com.github.ness.packets.ReceivedPacketEvent;
 
 import io.github.retrooper.packetevents.packetwrappers.in.useentity.WrappedPacketInUseEntity;
 import io.github.retrooper.packetevents.packetwrappers.in.useentity.WrappedPacketInUseEntity.EntityUseAction;

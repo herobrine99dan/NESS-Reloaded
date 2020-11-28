@@ -19,8 +19,9 @@ import com.github.ness.NessAnticheat;
 import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
 import com.github.ness.data.ImmutableLoc;
-import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.packets.event.FlyingEvent;
+import com.github.ness.packets.event.NessEvent;
+import com.github.ness.packets.event.ReceivedPacketEvent;
 import com.github.ness.packets.event.UseEntityEvent;
 
 import lombok.Getter;
@@ -76,37 +77,40 @@ public class CheckManager implements Listener {
 
     }
 
-    public Object onEvent(ReceivedPacketEvent event) {
+    public Object onEvent(NessEvent event) {
         for (NessPlayer np : nessPlayers.values()) {
             for (Check c : np.getChecks()) {
                 if (c.player().isNot(event.getNessPlayer().getBukkitPlayer())) {
                     return null;
                 }
                 try {
-                    if (event.getPacket().isFlying() || event.getPacket().isPosition()
-                            || event.getPacket().isRotation()) {
+                    if(event instanceof ReceivedPacketEvent) {
+                        ReceivedPacketEvent packetEvent = (ReceivedPacketEvent) event;
+                    if (packetEvent.getPacket().isFlying() || packetEvent.getPacket().isPosition()
+                            || packetEvent.getPacket().isRotation()) {
                         c.onFlying((FlyingEvent) event);
                     }
                     double x = 0, y = 0, z = 0, yaw = 0, pitch = 0; // TODO Test new change
-                    if (event.getPacket().isPosition()) {
+                    if (packetEvent.getPacket().isPosition()) {
                         FlyingEvent e = (FlyingEvent) event;
                         x = e.getX();
                         y = e.getY();
                         z = e.getZ();
                     }
-                    if (event.getPacket().isRotation()) {
+                    if (packetEvent.getPacket().isRotation()) {
                         FlyingEvent e = (FlyingEvent) event;
                         yaw = e.getYaw();
                         pitch = e.getPitch();
                     }
-                    if (event.getPacket().isPosition() || event.getPacket().isRotation()) {
+                    if (packetEvent.getPacket().isPosition() || packetEvent.getPacket().isRotation()) {
                         np.setFromLoc(np.getToLoc());
                         np.setToLoc(new ImmutableLoc(np.getFromLoc().getWorld(), x, y, z, (float) yaw, pitch, true));
                     }
-                    if (event.getPacket().isUseEntity()) {
+                    if (packetEvent.getPacket().isUseEntity()) {
                         c.onUseEntity((UseEntityEvent) event);
                     }
-                    c.onEveryPacket(event);
+                        c.onEveryPacket(packetEvent);
+                    }
                 } catch (Exception ex) {
                     logger.log(Level.SEVERE, "There was an exception while executing the check " + c.getCheckName(),
                             ex);
@@ -153,7 +157,8 @@ public class CheckManager implements Listener {
     }
 
     public Object reload() {
-        // TODO Auto-generated method stub
+        this.getNess().getPlugin().reloadConfig();
+        this.initialize();
         return null;
     }
 }

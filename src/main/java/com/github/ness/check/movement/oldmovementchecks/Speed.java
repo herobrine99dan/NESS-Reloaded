@@ -9,8 +9,8 @@ import com.github.ness.check.Check;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.packets.event.FlyingEvent;
+import com.github.ness.packets.event.ReceivedPacketEvent;
 import com.github.ness.packets.event.UseEntityEvent;
 import com.github.ness.utility.Utility;
 

@@ -12,8 +12,9 @@ import com.github.ness.NessAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
 import com.github.ness.api.impl.PlayerViolationEvent;
-import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.packets.event.FlyingEvent;
+import com.github.ness.packets.event.NessEvent;
+import com.github.ness.packets.event.ReceivedPacketEvent;
 import com.github.ness.packets.event.UseEntityEvent;
 
 import lombok.Getter;
@@ -98,7 +99,7 @@ public abstract class Check {
      * Flags the player for cheating
      * 
      */
-    public final int flag(ReceivedPacketEvent e) {
+    public final int flag(NessEvent e) {
         return flag("",e);
     }
 
@@ -111,7 +112,7 @@ public abstract class Check {
      * 
      * @param details debugging details
      */
-    public final int flag(String details, ReceivedPacketEvent e) {
+    public final int flag(String details, NessEvent e) {
         Violation violation = new Violation(this.checkName, details, this.violations.addAndGet(1));
         if (callViolationEvent(violation)) {
             this.nessPlayer.addViolation(violation);

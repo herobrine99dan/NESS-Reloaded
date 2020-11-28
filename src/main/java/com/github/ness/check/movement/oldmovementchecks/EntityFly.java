@@ -3,8 +3,8 @@ package com.github.ness.check.movement.oldmovementchecks;
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
 import com.github.ness.data.MovementValues;
-import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.packets.event.FlyingEvent;
+import com.github.ness.packets.event.ReceivedPacketEvent;
 import com.github.ness.packets.event.UseEntityEvent;
 
 public class EntityFly extends Check {
