@@ -34,13 +34,13 @@ public class InventoryHack extends Check {
             NessPlayer nessPlayer = player();
             MovementValues values = nessPlayer.getMovementValues();
             if (nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) < 1500
-                    || nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500
-                    || values.isFlyBypass() || this.player().isTeleported()) {
+                    || nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500 || values.isFlyBypass()
+                    || this.player().isTeleported()) {
                 return;
             }
             if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 100
                     || nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKBROKED) < 100) {
-                flag(e);
+                flag(" InvalidBlockAction", e);
                 return;
             } else if (nessPlayer.milliSecondTimeDifference(PlayerAction.ANIMATION) < 100) {
                 flag("MS: " + nessPlayer.milliSecondTimeDifference(PlayerAction.ANIMATION), e);
@@ -55,7 +55,7 @@ public class InventoryHack extends Check {
                 Location to = nessPlayer.getBukkitPlayer().getLocation();
                 double distance = (Math.abs(to.getX() - from.getX())) + (Math.abs(to.getZ() - from.getZ()));
                 if (distance > 0.15) {
-                    flag(e);
+                    flag(" Distance: " + distance, e);
                 }
             }, durationOfTicks(2));
         }

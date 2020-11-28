@@ -16,6 +16,7 @@ import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.NessEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
 import com.github.ness.packets.event.UseEntityEvent;
+import com.github.ness.packets.event.bukkit.NessBukkitEvent;
 
 import lombok.Getter;
 
@@ -103,9 +104,11 @@ public abstract class Check {
         return flag("",e);
     }
 
-    public abstract void onFlying(FlyingEvent e);
-    public abstract void onUseEntity(UseEntityEvent e);
-    public abstract void onEveryPacket(ReceivedPacketEvent e);
+    public void onFlying(FlyingEvent e) {}
+    public void onUseEntity(UseEntityEvent e) {}
+    public void onEveryPacket(ReceivedPacketEvent e) {}
+    public void onBukkitEvent(NessEvent e) {}
+    public void onBukkitEvent(NessBukkitEvent e) {}
 
     /**
      * Flags the player for cheating

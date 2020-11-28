@@ -65,10 +65,6 @@ public class NessAnticheat {
     }
 
     void start() {
-        // Detect version
-        if (minecraftVersion > 1152 && minecraftVersion < 1162) {
-            logger.warning("Please use 1.16.2 Spigot Version since 1.16/1.16.1 has a lot of false flags");
-        }
         Check.updateCheckManager(this.getCheckManager());
         Bukkit.getServer().getPluginManager().registerEvents(new CoreListener(this.getCheckManager()), plugin);
         // Start configuration
@@ -77,7 +73,9 @@ public class NessAnticheat {
         // Start checks
         logger.fine("Starting CheckManager");
         if (!Bukkit.getName().toLowerCase().contains("glowstone")) {
-            PacketEvents.getAPI().getEventManager().registerListener(new NessPacketListener(this));
+            NessPacketListener listener = new NessPacketListener(this);
+            Bukkit.getPluginManager().registerEvents(listener, this.getPlugin());
+            PacketEvents.getAPI().getEventManager().registerListener(listener);
         }
         if(this.getPlugin().getConfig().getBoolean("violation-handling.notify-staff.bungeecord")) {
             Messenger messenger = plugin.getServer().getMessenger();

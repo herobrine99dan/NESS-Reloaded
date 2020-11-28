@@ -23,6 +23,7 @@ import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.NessEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
 import com.github.ness.packets.event.UseEntityEvent;
+import com.github.ness.packets.event.bukkit.NessBukkitEvent;
 
 import lombok.Getter;
 
@@ -39,7 +40,6 @@ public class CheckManager implements Listener {
 
     public CheckManager(NessAnticheat nessAnticheat) {
         this.ness = nessAnticheat;
-
     }
 
     public void initialize() {
@@ -110,6 +110,8 @@ public class CheckManager implements Listener {
                         c.onUseEntity((UseEntityEvent) event);
                     }
                         c.onEveryPacket(packetEvent);
+                    } else if (event instanceof NessBukkitEvent) {
+                        c.onBukkitEvent((NessBukkitEvent) event);
                     }
                 } catch (Exception ex) {
                     logger.log(Level.SEVERE, "There was an exception while executing the check " + c.getCheckName(),

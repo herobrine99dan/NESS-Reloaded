@@ -15,6 +15,9 @@ public class EntityFly extends Check {
 
     @Override
     public void onFlying(FlyingEvent e) {
+        if (!e.isPosition()) {
+            return;
+        }
         MovementValues values = player().getMovementValues();
         if (values.isInsideVehicle() && e.isPosition()) {
             if (!values.getVehicle().contains("HORSE")) {

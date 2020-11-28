@@ -2,15 +2,21 @@ package com.github.ness.packets;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.NessAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.packets.Packet.Direction;
 import com.github.ness.packets.event.FlyingEvent;
-import com.github.ness.packets.event.NessInventoryClickEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
 import com.github.ness.packets.event.UseEntityEvent;
+import com.github.ness.packets.event.bukkit.NessBlockBreakEvent;
+import com.github.ness.packets.event.bukkit.NessBlockPlaceEvent;
+import com.github.ness.packets.event.bukkit.NessInventoryClickEvent;
+import com.github.ness.packets.event.bukkit.NessPlayerInteractEvent;
 
 import io.github.retrooper.packetevents.event.PacketListenerDynamic;
 import io.github.retrooper.packetevents.event.annotation.PacketHandler;
@@ -45,7 +51,33 @@ public class NessPacketListener extends PacketListenerDynamic implements Listene
     @EventHandler
     public void onClick(InventoryClickEvent e) {
         NessPlayer nessPlayer = this.ness.getCheckManager().getNessPlayer(e.getWhoClicked().getUniqueId());
-        ness.getCheckManager().onEvent(new NessInventoryClickEvent(e,nessPlayer));
+        NessInventoryClickEvent event = new NessInventoryClickEvent(e,nessPlayer);
+        ness.getCheckManager().onEvent(event);
+        e.setCancelled(event.isCancelled());
+    }
+    
+    @EventHandler
+    public void onPlaces(BlockPlaceEvent e) {
+        NessPlayer nessPlayer = this.ness.getCheckManager().getNessPlayer(e.getPlayer().getUniqueId());
+        NessBlockPlaceEvent event = new NessBlockPlaceEvent(e,nessPlayer);
+        ness.getCheckManager().onEvent(event);
+        e.setCancelled(event.isCancelled());
+    }
+
+    @EventHandler
+    public void onBreak(BlockBreakEvent e) {
+        NessPlayer nessPlayer = this.ness.getCheckManager().getNessPlayer(e.getPlayer().getUniqueId());
+        NessBlockBreakEvent event = new NessBlockBreakEvent(e,nessPlayer);
+        ness.getCheckManager().onEvent(event);
+        e.setCancelled(event.isCancelled());
+    }
+    
+    @EventHandler
+    public void onInteract(PlayerInteractEvent e) {
+        NessPlayer nessPlayer = this.ness.getCheckManager().getNessPlayer(e.getPlayer().getUniqueId());
+        NessPlayerInteractEvent event = new NessPlayerInteractEvent(nessPlayer,e);
+        ness.getCheckManager().onEvent(event);
+        e.setCancelled(event.isCancelled());
     }
 
     @PacketHandler

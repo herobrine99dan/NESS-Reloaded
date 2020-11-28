@@ -16,6 +16,9 @@ public class FastLadder extends Check {
 
     @Override
     public void onFlying(FlyingEvent e) {
+        if (!e.isPosition()) {
+            return;
+        }
         NessPlayer nessPlayer = this.player();
         MovementValues movementValues = nessPlayer.getMovementValues();
         if (Utility.isClimbableBlock(movementValues.getToBlock().getType()) && !movementValues.isFlyBypass() && !nessPlayer.isTeleported()) {

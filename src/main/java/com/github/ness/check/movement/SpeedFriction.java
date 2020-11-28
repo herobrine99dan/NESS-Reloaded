@@ -10,7 +10,7 @@ import com.github.ness.packets.event.UseEntityEvent;
 import com.github.ness.utility.Utility;
 
 public class SpeedFriction extends Check {
-    
+
     int airTicks;
     double lastDeltaXZ;
     int buffer;
@@ -21,10 +21,12 @@ public class SpeedFriction extends Check {
 
     @Override
     public void onFlying(FlyingEvent e) {
+        if (!e.isPosition()) {
+            return;
+        }
         NessPlayer nessPlayer = this.player();
         MovementValues values = nessPlayer.getMovementValues();
-        if (values.isFlyBypass() || values.isAroundLiquids()
-                || values.isAroundSlime() || values.hasBlockNearHead()) {
+        if (values.isFlyBypass() || values.isAroundLiquids() || values.isAroundSlime() || values.hasBlockNearHead()) {
             return;
         }
         if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
@@ -37,15 +39,15 @@ public class SpeedFriction extends Check {
         } else {
             airTicks = 0;
         }
-        if (airTicks > 1) {
+        if (airTicks > 2) {
             final double prediction = lastDeltaXZ * 0.91f + (values.isSprinting() ? 0.026 : 0.02);
             final double difference = xzDiff - prediction;
             if (difference > 1e-5) {
                 buffer++;
-                if(buffer > 3) {
-                    this.flag(e);
+                if (buffer > 3) {
+                    this.flag("Diff: " + String.format("%.10f", (double) difference), e);
                 }
-            } else if(buffer > 0) {
+            } else if (buffer > 0) {
                 buffer--;
             }
         }
@@ -53,9 +55,11 @@ public class SpeedFriction extends Check {
     }
 
     @Override
-    public void onUseEntity(UseEntityEvent e) {}
+    public void onUseEntity(UseEntityEvent e) {
+    }
 
     @Override
-    public void onEveryPacket(ReceivedPacketEvent e) {}
+    public void onEveryPacket(ReceivedPacketEvent e) {
+    }
 
 }

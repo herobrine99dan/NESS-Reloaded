@@ -22,6 +22,9 @@ public class Jesus extends Check {
 
     @Override
     public void onFlying(FlyingEvent e) {
+        if (!e.isPosition()) {
+            return;
+        }
         NessPlayer nessPlayer = this.player();
         double xDist = nessPlayer.getMovementValues().xDiff;
         double zDist = nessPlayer.getMovementValues().zDiff;
@@ -40,7 +43,7 @@ public class Jesus extends Check {
         walkSpeed += yVelocity;
         if ((xDist > walkSpeed || zDist > walkSpeed) && values.getToBlock().getType().contains("WATER")
                 && values.getFromBlock().getType().contains("WATER") && !values.isFlyBypass()
-                && !values.isInsideVehicle()) {
+                && !values.isInsideVehicle() && !values.isAroundLily()) {
             flag(e);
         }
     }

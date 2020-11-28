@@ -15,6 +15,9 @@ public class InvalidSprint extends Check {
 
     @Override
     public void onFlying(FlyingEvent e) {
+        if (!e.isPosition()) {
+            return;
+        }
         MovementValues values = e.getNessPlayer().getMovementValues();
         if (values.isSprinting()) {
             if (values.isBliendnessEffect() || values.getFoodLevel() < 7) {
