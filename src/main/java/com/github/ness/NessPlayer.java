@@ -9,6 +9,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -78,6 +79,10 @@ public class NessPlayer {
     private volatile ImmutableLoc toLoc, fromLoc; // These will be updated by position packet
     @Getter
     private int entityId;
+    @Getter
+    @Setter
+    private boolean cinematic;
+    
     /**
      * This Set contains checks that will be executed for this player
      * 
@@ -85,6 +90,8 @@ public class NessPlayer {
      */
     @Getter
     private final Set<Check> checks = Collections.synchronizedSet(new HashSet<Check>());
+    @Getter
+    private AtomicBoolean checksInitialized = new AtomicBoolean(false);
 
     public NessPlayer(Player player, boolean devMode, MaterialAccess materialAccess, int entityId) {
         uuid = player.getUniqueId();

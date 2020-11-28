@@ -44,7 +44,7 @@ public class SpeedFriction extends Check {
             final double difference = xzDiff - prediction;
             if (difference > 1e-5) {
                 buffer++;
-                if (buffer > 3) {
+                if (buffer > 4) {
                     this.flag("Diff: " + String.format("%.10f", (double) difference), e);
                 }
             } else if (buffer > 0) {

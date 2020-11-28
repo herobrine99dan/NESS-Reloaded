@@ -22,6 +22,7 @@ import com.github.ness.data.ImmutableLoc;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.NessEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
+import com.github.ness.packets.event.SendedPacketEvent;
 import com.github.ness.packets.event.UseEntityEvent;
 import com.github.ness.packets.event.bukkit.NessBukkitEvent;
 
@@ -43,12 +44,16 @@ public class CheckManager implements Listener {
     }
 
     public void initialize() {
+        checkList.clear();
+        this.loadChecks(false);
+    }
+
+    public void loadChecks(boolean async) {
         final List<String> checks = CheckManager.this.getNess().getPlugin().getConfig().getStringList("enabled-checks");
         final ChecksPackage[] packs = ChecksPackage.values();
         checks.addAll(Arrays.asList(ChecksPackage.REQUIRED_CHECKS));
         logger.finer("Checks: " + checks);
-        checkList.clear();
-        ness.getExecutor().execute(new Runnable() {
+        Runnable runnable = new Runnable() {
 
             @Override
             public void run() {
@@ -73,57 +78,66 @@ public class CheckManager implements Listener {
                     }
                 }
             }
-        });
-
+        };
+        if (async) {
+            ness.getExecutor().execute(runnable);
+        } else {
+            runnable.run();
+        }
     }
 
     public Object onEvent(NessEvent event) {
-        for (NessPlayer np : nessPlayers.values()) {
-            for (Check c : np.getChecks()) {
+        for (NessPlayer nessPlayer : nessPlayers.values()) {
+            for (Check c : nessPlayer.getChecks()) {
                 if (c.player().isNot(event.getNessPlayer().getBukkitPlayer())) {
                     return null;
                 }
                 try {
-                    if(event instanceof ReceivedPacketEvent) {
+                    if (event instanceof ReceivedPacketEvent) {
                         ReceivedPacketEvent packetEvent = (ReceivedPacketEvent) event;
-                    if (packetEvent.getPacket().isFlying() || packetEvent.getPacket().isPosition()
-                            || packetEvent.getPacket().isRotation()) {
-                        c.onFlying((FlyingEvent) event);
-                    }
-                    double x = 0, y = 0, z = 0, yaw = 0, pitch = 0; // TODO Test new change
-                    if (packetEvent.getPacket().isPosition()) {
-                        FlyingEvent e = (FlyingEvent) event;
-                        x = e.getX();
-                        y = e.getY();
-                        z = e.getZ();
-                    }
-                    if (packetEvent.getPacket().isRotation()) {
-                        FlyingEvent e = (FlyingEvent) event;
-                        yaw = e.getYaw();
-                        pitch = e.getPitch();
-                    }
-                    if (packetEvent.getPacket().isPosition() || packetEvent.getPacket().isRotation()) {
-                        np.setFromLoc(np.getToLoc());
-                        np.setToLoc(new ImmutableLoc(np.getFromLoc().getWorld(), x, y, z, (float) yaw, pitch, true));
-                    }
-                    if (packetEvent.getPacket().isUseEntity()) {
-                        c.onUseEntity((UseEntityEvent) event);
-                    }
+                        if (packetEvent.getPacket().isFlying() || packetEvent.getPacket().isPosition()
+                                || packetEvent.getPacket().isRotation()) {
+                            c.onFlying((FlyingEvent) event);
+                        }
+                        double x = 0, y = 0, z = 0, yaw = 0, pitch = 0; // TODO Test new change
+                        if (packetEvent.getPacket().isPosition()) {
+                            FlyingEvent e = (FlyingEvent) event;
+                            x = e.getX();
+                            y = e.getY();
+                            z = e.getZ();
+                        }
+                        if (packetEvent.getPacket().isRotation()) {
+                            FlyingEvent e = (FlyingEvent) event;
+                            yaw = e.getYaw();
+                            pitch = e.getPitch();
+                        }
+                        if (packetEvent.getPacket().isPosition() || packetEvent.getPacket().isRotation()) {
+                            nessPlayer.setFromLoc(nessPlayer.getToLoc());
+                            nessPlayer.setToLoc(
+                                    new ImmutableLoc(nessPlayer.getFromLoc().getWorld(), x, y, z, (float) yaw, pitch, true));
+                        }
+                        if (packetEvent.getPacket().isUseEntity()) {
+                            c.onUseEntity((UseEntityEvent) event);
+                        }
                         c.onEveryPacket(packetEvent);
                     } else if (event instanceof NessBukkitEvent) {
                         c.onBukkitEvent((NessBukkitEvent) event);
+                    } else if (event instanceof SendedPacketEvent) {
+                        c.onEveryPacket((SendedPacketEvent) event);
                     }
                 } catch (Exception ex) {
                     logger.log(Level.SEVERE, "There was an exception while executing the check " + c.getCheckName(),
                             ex);
                 }
             }
+            nessPlayer.getChecksInitialized().set(true);
         }
         return event;
     }
 
     public void makeNessPlayer(Player player) {
-        NessPlayer nessPlayer = new NessPlayer(player, devMode, this.getNess().getMaterialAccess(), player.getEntityId());
+        NessPlayer nessPlayer = new NessPlayer(player, devMode, this.getNess().getMaterialAccess(),
+                player.getEntityId());
         ness.getExecutor().execute(new Runnable() {
             @Override
             public void run() {

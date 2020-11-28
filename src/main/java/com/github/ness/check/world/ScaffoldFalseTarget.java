@@ -12,7 +12,7 @@ import com.github.ness.utility.Utility;
 
 public class ScaffoldFalseTarget extends Check {
 
-    protected ScaffoldFalseTarget(NessPlayer nessPlayer) {
+    public ScaffoldFalseTarget(NessPlayer nessPlayer) {
         super(ScaffoldFalseTarget.class, nessPlayer);
     }
 

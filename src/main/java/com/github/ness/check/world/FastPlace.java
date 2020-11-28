@@ -15,11 +15,6 @@ public class FastPlace extends Check {
         super(FastPlace.class, nessPlayer);
         // TODO Auto-generated constructor stub
     }
-
-    public FastPlace(Class<?> classe, NessPlayer nessPlayer, boolean hasScheduler, long milliSeconds) {
-        super(classe, nessPlayer, hasScheduler, milliSeconds);
-        // TODO Auto-generated constructor stub
-    }
     
     @Override
     public void onBukkitEvent(NessBukkitEvent ev) {

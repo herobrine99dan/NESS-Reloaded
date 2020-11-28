@@ -93,7 +93,7 @@ public class Killaura extends Check {
     public void Check3(UseEntityEvent event) {
         runTaskLater(() -> {
             Player player = (Player) event.getNessPlayer().getBukkitPlayer();
-            if (player.hasLineOfSight(event.getPacket().getEntity())) {
+            if (player.hasLineOfSight(event.getUseEntityPacket().getEntity())) {
                 return;
             }
             Block b = player.getTargetBlock(null, 5);

@@ -52,6 +52,10 @@ public class Packet {
     public boolean isAbilities() {
         return isReceiving() && packetId == PacketType.Client.ABILITIES;
     }
+    
+    public boolean isServerAbilities() {
+        return isSending() && packetId == PacketType.Server.ABILITIES;
+    }
 
     public boolean isBlockPlace() {
         return isReceiving() && packetId == PacketType.Client.BLOCK_PLACE;

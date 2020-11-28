@@ -15,6 +15,7 @@ import com.github.ness.api.impl.PlayerViolationEvent;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.NessEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
+import com.github.ness.packets.event.SendedPacketEvent;
 import com.github.ness.packets.event.UseEntityEvent;
 import com.github.ness.packets.event.bukkit.NessBukkitEvent;
 
@@ -118,6 +119,9 @@ public abstract class Check {
     }
 
     public void onEveryPacket(ReceivedPacketEvent e) {
+    }
+    
+    public void onEveryPacket(SendedPacketEvent e) {
     }
 
     public void onBukkitEvent(NessBukkitEvent e) {

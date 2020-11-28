@@ -15,7 +15,7 @@ public class BlockBreakAction extends Check {
 
     private static final double MAX_ANGLE = Math.toRadians(90);
 
-    protected BlockBreakAction(NessPlayer nessPlayer) {
+    public BlockBreakAction(NessPlayer nessPlayer) {
         super(BlockBreakAction.class, nessPlayer);
     }
 

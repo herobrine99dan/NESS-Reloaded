@@ -23,7 +23,7 @@ public class NoFall extends Check {
             return;
         }
         double deltaY = e.getNessPlayer().getMovementValues().yDiff;
-        if (deltaY >= 0) {
+        if (deltaY >= 0 || e.getNessPlayer().getMovementValues().isAroundLiquids() || e.getNessPlayer().getMovementValues().isAroundLadders()) {
             serverFallDistance = 0;
         } else if (deltaY < 0) {
             serverFallDistance -= deltaY;
