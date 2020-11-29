@@ -21,14 +21,14 @@ public class CheckFactory {
     @Getter
     private final Class<?> clazz;
  
-    public CheckFactory(Class<?> clazz) {
-        this.constructorCache = clazz.getConstructors()[0];
+    public CheckFactory(Class<?> clazz) throws NoSuchMethodException, SecurityException {
+        this.constructorCache = clazz.getDeclaredConstructor(NessPlayer.class, CheckManager.class);
         this.clazz = clazz;
     }
 
     public Check makeEqualCheck(NessPlayer nessPlayer, CheckManager manager) throws InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException, SecurityException {
-        Check check = (Check) this.constructorCache.newInstance(nessPlayer);
+        Check check = (Check) this.constructorCache.newInstance(nessPlayer, manager);
         check.startScheduler();
         return check;
     }
