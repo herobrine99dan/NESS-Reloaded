@@ -47,6 +47,11 @@ antibot:
   kick-message: 'Bot Attack Detected! By NESS Reloaded'
  # Enable developer mode
 dev-mode: false
+
+checkmanager:
+  async-initialization: false
+  async-nessplayer-initialization: true
+  
  # 
  # 
  # Enabled checks

@@ -45,16 +45,15 @@ public class CheckManager implements Listener {
 
     public void initialize() {
         checkList.clear();
-        this.loadChecks(false);
+        this.loadChecks(this.getNess().getNessConfig().getConfig().getBoolean("checkmanager.async-initialization", false));
     }
 
     public void loadChecks(boolean async) {
-        final List<String> checks = CheckManager.this.getNess().getPlugin().getConfig().getStringList("enabled-checks");
+        final List<String> checks = this.getNess().getNessConfig().getEnabledChecks();
         final ChecksPackage[] packs = ChecksPackage.values();
         checks.addAll(Arrays.asList(ChecksPackage.REQUIRED_CHECKS));
         logger.finer("Checks: " + checks);
         Runnable runnable = new Runnable() {
-
             @Override
             public void run() {
                 for (String s : checks) {
@@ -138,7 +137,7 @@ public class CheckManager implements Listener {
     public void makeNessPlayer(Player player) {
         NessPlayer nessPlayer = new NessPlayer(player, devMode, this.getNess().getMaterialAccess(),
                 player.getEntityId());
-        ness.getExecutor().execute(new Runnable() {
+        Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 for (CheckFactory c : checkList) {
@@ -154,7 +153,12 @@ public class CheckManager implements Listener {
                     }
                 }
             }
-        });
+        };
+        if(this.getNess().getNessConfig().getConfig().getBoolean("async-nessplayer-initialization", true)) {
+        ness.getExecutor().execute(runnable);
+        } else {
+            runnable.run();
+        }
         nessPlayers.put(player.getUniqueId(), nessPlayer);
     }
 
@@ -172,9 +176,8 @@ public class CheckManager implements Listener {
         return nessPlayers.get(uuid);
     }
 
-    public Object reload() {
-        this.getNess().getPlugin().reloadConfig();
+    public void reload() {
+        this.getNess().getNessConfig().reloadConfiguration(ness);
         this.initialize();
-        return null;
     }
 }

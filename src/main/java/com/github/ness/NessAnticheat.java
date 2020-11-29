@@ -39,6 +39,8 @@ public class NessAnticheat {
     private final AntiBot antiBot;
     @Getter
     private MaterialAccess materialAccess;
+    @Getter
+    private NessConfig nessConfig;
 
     static {
         minecraftVersion = getVersion();
@@ -52,6 +54,7 @@ public class NessAnticheat {
         checkManager.initialize();
         antiBot = new AntiBot(this);
         this.materialAccess = materialAccess;
+        this.nessConfig = new NessConfig("config.yml", "messages.yml");
     }
 
     private static int getVersion() {
@@ -60,7 +63,14 @@ public class NessAnticheat {
     }
 
     void start() {
+        this.nessConfig.reloadConfiguration(this);
         Check.updateCheckManager(this.getCheckManager());
+        if (!this.nessConfig.checkConfigVersion())
+            logger.warning(
+                    "Your config.yml is outdated! Until you regenerate it, NESS will use default values for some checks.");
+        if (!this.nessConfig.checkMessagesVersion())
+            logger.warning(
+                    "Your messages.yml is outdated! Until you regenerate it, NESS will use default values for some messages.");
         Bukkit.getServer().getPluginManager().registerEvents(new CoreListener(this.getCheckManager()), plugin);
         // Start configuration
         logger.fine("Configuration loaded. Initiating checks...");
@@ -72,12 +82,12 @@ public class NessAnticheat {
             Bukkit.getPluginManager().registerEvents(listener, this.getPlugin());
             PacketEvents.getAPI().getEventManager().registerListener(listener);
         }
-        if(this.getPlugin().getConfig().getBoolean("violation-handling.notify-staff.bungeecord")) {
+        if (this.getPlugin().getConfig().getBoolean("violation-handling.notify-staff.bungeecord")) {
             Messenger messenger = plugin.getServer().getMessenger();
             messenger.registerOutgoingPluginChannel(plugin, "BungeeCord");
             messenger.registerIncomingPluginChannel(plugin, "BungeeCord", new BungeeCordListener());
         }
-        if(this.getPlugin().getConfig().getBoolean("antibot.enable")) {
+        if (this.getPlugin().getConfig().getBoolean("antibot.enable")) {
             this.antiBot.initiate();
         }
     }
@@ -118,16 +128,15 @@ public class NessAnticheat {
         try {
             if (!executor.awaitTermination(500, TimeUnit.MILLISECONDS)) {
                 executor.shutdownNow();
-            } 
+            }
         } catch (InterruptedException e) {
             executor.shutdownNow();
         }
-        /*try {
-            executor.shutdown();
-            executor.awaitTermination(10L, TimeUnit.SECONDS);
-        } catch (InterruptedException ex) {
-            logger.log(Level.WARNING, "Failed to complete thread pool termination", ex);
-        }*/
+        /*
+         * try { executor.shutdown(); executor.awaitTermination(10L, TimeUnit.SECONDS);
+         * } catch (InterruptedException ex) { logger.log(Level.WARNING,
+         * "Failed to complete thread pool termination", ex); }
+         */
     }
 
 }
