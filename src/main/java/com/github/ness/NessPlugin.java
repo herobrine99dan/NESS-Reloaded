@@ -2,6 +2,7 @@ package com.github.ness;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,7 +23,6 @@ public class NessPlugin extends JavaPlugin {
      */
 
     private NessAnticheat ness;
-    private Class<?> materialAccessImplClass;
 
     @Override
     public synchronized void onLoad() {
@@ -30,17 +30,6 @@ public class NessPlugin extends JavaPlugin {
             throw new IllegalStateException("Already enabled and running");
         }
         PacketEvents.load();
-        try {
-            MaterialAccess.class.hashCode(); // The bukkit class loader must load this class to execute the stupid
-                                             // method
-            NessClassLoader loader = new NessClassLoader(new URL[] { this.getFile().toURI().toURL() },
-                    this.getClassLoader());
-            materialAccessImplClass = loader.findClass("com.github.ness.blockgetter.MaterialAccessImpl");
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException(e);
-        }
     }
 
     @Override
@@ -48,7 +37,22 @@ public class NessPlugin extends JavaPlugin {
         if (ness != null) {
             throw new IllegalStateException("Already enabled and running");
         }
-        NessAnticheat ness = new NessAnticheat(this, getDataFolder().toPath(), materialAccessImplClass);
+        MaterialAccess materialAccess = null;
+        try {
+            MaterialAccess.class.hashCode(); // The bukkit class loader must load this class to execute the stupid
+                                             // method
+            NessClassLoader loader = new NessClassLoader(new URL[] { this.getFile().toURI().toURL() },
+                    this.getClassLoader());
+            Class<?> materialAccessImplClass = loader.findClass("com.github.ness.blockgetter.MaterialAccessImpl");
+            materialAccess = materialAccessImplClass.asSubclass(MaterialAccess.class).getDeclaredConstructor()
+                    .newInstance();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException("NESS Reloaded can't be started due to an exception!", e);
+        }
+        NessAnticheat ness = new NessAnticheat(this, getDataFolder().toPath(), materialAccess);
         ness.start();
         getCommand("ness").setExecutor(new NessCommands(ness));
         this.ness = ness;

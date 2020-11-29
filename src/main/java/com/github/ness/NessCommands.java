@@ -10,9 +10,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
-
+@Deprecated
 class NessCommands implements CommandExecutor {
-
+    /**
+     * @deprecated This needs a recode to work with the new framework
+     * @author A248 and herobrine99dan
+     *
+     */
     private static final Logger logger = NessLogger.getLogger(NessCommands.class);
 
     private final NessAnticheat ness;

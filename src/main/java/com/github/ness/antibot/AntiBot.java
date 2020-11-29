@@ -1,5 +1,6 @@
 package com.github.ness.antibot;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -39,7 +40,7 @@ public class AntiBot {
         kickMessage = ChatColor.translateAlternateColorCodes('&',
                 section.getString("kick-message", "Bot Attack Detected! By NESS Reloaded"));
 
-        whitelist = new HashSet<UUID>();
+        whitelist = Collections.synchronizedSet(new HashSet<UUID>());
     }
 
     public void initiate() {

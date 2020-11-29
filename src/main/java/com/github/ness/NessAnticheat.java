@@ -29,7 +29,7 @@ public class NessAnticheat {
     private static final Logger logger = NessLogger.getLogger(NessAnticheat.class);
 
     private final JavaPlugin plugin;
-    private final static int minecraftVersion;
+    private static final int minecraftVersion;
     private final ScheduledExecutorService executor;
 
     private final CheckManager checkManager;
@@ -44,19 +44,14 @@ public class NessAnticheat {
         minecraftVersion = getVersion();
     }
 
-    NessAnticheat(JavaPlugin plugin, Path folder, Class<?> materialAccessImplClass) {
+    NessAnticheat(JavaPlugin plugin, Path folder, MaterialAccess materialAccess) {
         this.plugin = plugin;
         executor = Executors.newSingleThreadScheduledExecutor();
         this.violationHandler = new ViolationHandler(this);
         checkManager = new CheckManager(this);
         checkManager.initialize();
         antiBot = new AntiBot(this);
-        try {
-            materialAccess = materialAccessImplClass.asSubclass(MaterialAccess.class).getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException(e);
-        }
+        this.materialAccess = materialAccess;
     }
 
     private static int getVersion() {
@@ -119,12 +114,20 @@ public class NessAnticheat {
 
     void close() {
         // checkManager.close();
+        executor.shutdown();
         try {
+            if (!executor.awaitTermination(500, TimeUnit.MILLISECONDS)) {
+                executor.shutdownNow();
+            } 
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+        }
+        /*try {
             executor.shutdown();
             executor.awaitTermination(10L, TimeUnit.SECONDS);
         } catch (InterruptedException ex) {
             logger.log(Level.WARNING, "Failed to complete thread pool termination", ex);
-        }
+        }*/
     }
 
 }
