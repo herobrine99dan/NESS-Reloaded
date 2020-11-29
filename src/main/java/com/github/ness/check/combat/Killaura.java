@@ -1,18 +1,16 @@
 package com.github.ness.check.combat;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.packets.event.UseEntityEvent;
-import com.github.ness.utility.MathUtils;
 
 public class Killaura extends Check {
 
@@ -20,8 +18,8 @@ public class Killaura extends Check {
     double minAngle = -0.2;
     double maxReach = 3.4;
 
-    public Killaura(NessPlayer nessPlayer) {
-        super(Killaura.class, nessPlayer, true, 70);
+    public Killaura(NessPlayer nessPlayer, CheckManager manager) {
+        super(Killaura.class, nessPlayer, true, 70, manager);
         // TODO Auto-generated constructor stub
     }
 

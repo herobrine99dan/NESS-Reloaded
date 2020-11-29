@@ -4,6 +4,7 @@ import java.time.Duration;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.event.FlyingEvent;
@@ -14,8 +15,8 @@ public class FlyHighDistance extends Check {
 
     private int preVL;
 
-    public FlyHighDistance(NessPlayer player) {
-        super(FlyHighDistance.class, player, true, Duration.ofSeconds(1).toMillis());
+    public FlyHighDistance(NessPlayer player, CheckManager manager) {
+        super(FlyHighDistance.class, player, true, Duration.ofSeconds(1).toMillis(), manager);
     }
 
     @Override

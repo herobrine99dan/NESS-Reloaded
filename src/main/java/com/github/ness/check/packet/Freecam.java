@@ -4,6 +4,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
@@ -14,8 +15,8 @@ public class Freecam extends Check {
     private long lastPosition;
     private int maxDelay = 550;
 
-    public Freecam(NessPlayer player) {
-        super(Freecam.class, player,true, 50L);
+    public Freecam(NessPlayer player, CheckManager manager) {
+        super(Freecam.class, player,true, 50L, manager);
         // this.maxDelay =
         // this.ness().getMainConfig().getCheckSection().freecam().maxDelay();
         lastPosition = 0;

@@ -26,7 +26,7 @@ public class CheckFactory {
         this.clazz = clazz;
     }
 
-    public Check makeEqualCheck(NessPlayer nessPlayer) throws InstantiationException, IllegalAccessException,
+    public Check makeEqualCheck(NessPlayer nessPlayer, CheckManager manager) throws InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException, SecurityException {
         Check check = (Check) this.constructorCache.newInstance(nessPlayer);
         check.startScheduler();

@@ -2,6 +2,7 @@ package com.github.ness.check.movement;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.event.FlyingEvent;
@@ -15,8 +16,8 @@ public class SpeedFriction extends Check {
     double lastDeltaXZ;
     int buffer;
 
-    public SpeedFriction(NessPlayer nessPlayer) {
-        super(SpeedFriction.class, nessPlayer);
+    public SpeedFriction(NessPlayer nessPlayer, CheckManager manager) {
+        super(SpeedFriction.class, nessPlayer, manager);
     }
 
     @Override

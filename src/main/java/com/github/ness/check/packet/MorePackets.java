@@ -2,6 +2,7 @@ package com.github.ness.check.packet;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
@@ -14,8 +15,8 @@ public class MorePackets extends Check {
     private int serverCrasherMaxPackets;
     int normalPacketsCounter;
 
-    public MorePackets(NessPlayer player) {
-        super(MorePackets.class, player,true, 50L);
+    public MorePackets(NessPlayer player, CheckManager manager) {
+        super(MorePackets.class, player,true, 50L, manager);
         //this.maxPackets = this.ness().getMainConfig().getCheckSection().morePackets().maxPackets();
         //this.serverCrasherMaxPackets = this.ness().getMainConfig().getCheckSection().morePackets()
         //        .serverCrasherMaxPackets();

@@ -2,6 +2,7 @@ package com.github.ness.check.combat;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.packets.event.ReceivedPacketEvent;
 
 import io.github.retrooper.packetevents.packetwrappers.in.entityaction.WrappedPacketInEntityAction;
@@ -13,8 +14,8 @@ public class FastSneak extends Check {
     private boolean sent;
     private int buffer;
 
-    public FastSneak(NessPlayer nessPlayer) {
-        super(FastSneak.class, nessPlayer);
+    public FastSneak(NessPlayer nessPlayer, CheckManager manager) {
+        super(FastSneak.class, nessPlayer, manager);
     }
 
     @Override

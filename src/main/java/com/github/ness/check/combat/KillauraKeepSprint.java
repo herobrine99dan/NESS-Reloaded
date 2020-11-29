@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.event.FlyingEvent;
@@ -13,8 +14,8 @@ public class KillauraKeepSprint extends Check {
     private double lastDeltaXZ;
     private int bufferViolation;
 
-    public KillauraKeepSprint(NessPlayer nessPlayer) {
-        super(Aimbot.class, nessPlayer);
+    public KillauraKeepSprint(NessPlayer nessPlayer, CheckManager manager) {
+        super(Aimbot.class, nessPlayer, manager);
         lastDeltaXZ = 0;
     }
     

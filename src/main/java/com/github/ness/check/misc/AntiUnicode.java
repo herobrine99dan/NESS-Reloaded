@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
 import com.github.ness.packets.event.UseEntityEvent;
@@ -16,8 +17,8 @@ public class AntiUnicode extends Check {
     private static final ThreadLocal<CharsetEncoder> asciiEncoder = ThreadLocal
             .withInitial(() -> StandardCharsets.US_ASCII.newEncoder());
 
-    public AntiUnicode(Class<?> classe, NessPlayer nessPlayer) {
-        super(AntiUnicode.class, nessPlayer);
+    public AntiUnicode(NessPlayer nessPlayer, CheckManager manager) {
+        super(AntiUnicode.class, nessPlayer, manager);
         // TODO Auto-generated constructor stub
     }
 

@@ -7,14 +7,15 @@ import org.bukkit.entity.Player;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.utility.Utility;
 
 public class PlayerESP extends Check {
     
     private double minAngle;
 
-    public PlayerESP(NessPlayer nessPlayer) {
-        super(PlayerESP.class, nessPlayer, true, Duration.ofSeconds(1).toMillis());
+    public PlayerESP(NessPlayer nessPlayer, CheckManager manager) {
+        super(PlayerESP.class, nessPlayer, true, Duration.ofSeconds(1).toMillis(), manager);
         minAngle = -0.5;
     }
     

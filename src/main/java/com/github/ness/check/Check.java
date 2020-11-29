@@ -34,22 +34,24 @@ public abstract class Check {
     private final AtomicInteger violations = new AtomicInteger();
     @Getter
     private final String checkName;
-    private static CheckManager manager;
+    private CheckManager manager;
     private final boolean hasAsyncScheduler;
     private final long milliSeconds;
 
-    protected Check(Class<?> classe, NessPlayer nessPlayer) {
+    protected Check(Class<?> classe, NessPlayer nessPlayer, CheckManager manager) {
         this.checkName = classe.getSimpleName();
         this.nessPlayer = nessPlayer;
         this.hasAsyncScheduler = false;
         this.milliSeconds = 0L;
+        this.manager = manager;
     }
 
-    protected Check(Class<?> classe, NessPlayer nessPlayer, boolean hasScheduler, long milliSeconds) {
+    protected Check(Class<?> classe, NessPlayer nessPlayer, boolean hasScheduler, long milliSeconds, CheckManager manager) {
         this.checkName = classe.getSimpleName();
         this.nessPlayer = nessPlayer;
         this.hasAsyncScheduler = hasScheduler;
         this.milliSeconds = milliSeconds;
+        this.manager = manager;
     }
 
     /**
@@ -74,10 +76,6 @@ public abstract class Check {
      */
     protected NessPlayer player() {
         return nessPlayer;
-    }
-
-    public static void updateCheckManager(CheckManager manager) {
-        Check.manager = manager;
     }
 
     public CheckManager manager() {

@@ -5,18 +5,18 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.MovementValues;
 import com.github.ness.packets.event.bukkit.NessBlockBreakEvent;
 import com.github.ness.packets.event.bukkit.NessBukkitEvent;
-import com.github.ness.packets.event.bukkit.NessInventoryClickEvent;
 import com.github.ness.utility.Utility;
 
 public class BlockBreakAction extends Check {
 
     private static final double MAX_ANGLE = Math.toRadians(90);
 
-    public BlockBreakAction(NessPlayer nessPlayer) {
-        super(BlockBreakAction.class, nessPlayer);
+    public BlockBreakAction(NessPlayer nessPlayer, CheckManager manager) {
+        super(BlockBreakAction.class, nessPlayer, manager);
     }
 
     @Override

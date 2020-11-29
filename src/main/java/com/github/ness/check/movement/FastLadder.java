@@ -2,6 +2,7 @@ package com.github.ness.check.movement;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.MovementValues;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
@@ -10,8 +11,8 @@ import com.github.ness.utility.Utility;
 
 public class FastLadder extends Check {
 
-    public FastLadder(NessPlayer nessPlayer) {
-        super(FastLadder.class, nessPlayer);
+    public FastLadder(NessPlayer nessPlayer, CheckManager manager) {
+        super(FastLadder.class, nessPlayer, manager);
     }
 
     @Override

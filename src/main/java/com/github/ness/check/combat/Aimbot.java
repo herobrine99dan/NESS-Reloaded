@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
 import com.github.ness.utility.MathUtils;
@@ -15,8 +16,8 @@ public class Aimbot extends Check {
     private List<Double> pitchDiff;
     private double lastGCD = 0;
 
-    public Aimbot(NessPlayer nessPlayer) {
-        super(Aimbot.class, nessPlayer);
+    public Aimbot(NessPlayer nessPlayer, CheckManager manager) {
+        super(Aimbot.class, nessPlayer, manager);
         lastYaw = 0;
         this.pitchDiff = new ArrayList<Double>();
     }

@@ -6,14 +6,15 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.packets.event.bukkit.NessBlockPlaceEvent;
 import com.github.ness.packets.event.bukkit.NessBukkitEvent;
 import com.github.ness.utility.Utility;
 
 public class ScaffoldFalseTarget extends Check {
 
-    public ScaffoldFalseTarget(NessPlayer nessPlayer) {
-        super(ScaffoldFalseTarget.class, nessPlayer);
+    public ScaffoldFalseTarget(NessPlayer nessPlayer, CheckManager manager) {
+        super(ScaffoldFalseTarget.class, nessPlayer, manager);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.github.ness.check.movement;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.MovementValues;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
@@ -9,8 +10,8 @@ import com.github.ness.packets.event.UseEntityEvent;
 
 public class InvalidSprint extends Check {
 
-    public InvalidSprint(NessPlayer nessPlayer) {
-        super(InvalidSprint.class, nessPlayer);
+    public InvalidSprint(NessPlayer nessPlayer, CheckManager manager) {
+        super(InvalidSprint.class, nessPlayer, manager);
     }
 
     @Override

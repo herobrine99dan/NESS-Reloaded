@@ -2,17 +2,17 @@ package com.github.ness.check.movement.oldmovementchecks;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
 import com.github.ness.packets.event.UseEntityEvent;
-import com.github.ness.utility.Utility;
 
 public class Step extends Check {
 
-    public Step(NessPlayer player) {
-        super(EntityFly.class, player);
+    public Step(NessPlayer player, CheckManager manager) {
+        super(EntityFly.class, player, manager);
     }
 
     @Override

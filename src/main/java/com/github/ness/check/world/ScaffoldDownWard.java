@@ -8,13 +8,14 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.packets.event.bukkit.NessBukkitEvent;
 import com.github.ness.packets.event.bukkit.NessPlayerInteractEvent;
 
 public class ScaffoldDownWard extends Check {
 
-    public ScaffoldDownWard(NessPlayer nessPlayer) {
-        super(ScaffoldDownWard.class, nessPlayer);
+    public ScaffoldDownWard(NessPlayer nessPlayer, CheckManager manager) {
+        super(ScaffoldDownWard.class, nessPlayer, manager);
     }
 
     @Override

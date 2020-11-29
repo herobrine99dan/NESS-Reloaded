@@ -7,6 +7,7 @@ import org.bukkit.inventory.Inventory;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
 import com.github.ness.packets.event.UseEntityEvent;
@@ -24,8 +25,8 @@ public class ChestStealer extends Check {
     private Material lastItemType = Material.AIR;
 
 
-    public ChestStealer(NessPlayer player) {
-        super(ChestStealer.class, player, true, 500);
+    public ChestStealer(NessPlayer player, CheckManager manager) {
+        super(ChestStealer.class, player, true, 500, manager);
     }
     
     @Override

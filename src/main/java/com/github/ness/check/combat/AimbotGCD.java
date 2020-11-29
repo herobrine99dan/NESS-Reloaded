@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.utility.MathUtils;
 import com.github.ness.utility.Utility;
@@ -15,8 +16,8 @@ public class AimbotGCD extends Check {
     private double lastGCD = 0;
     private double lastPitchDelta;
 
-    public AimbotGCD(NessPlayer nessPlayer) {
-        super(AimbotGCD.class, nessPlayer);
+    public AimbotGCD(NessPlayer nessPlayer, CheckManager manager) {
+        super(AimbotGCD.class, nessPlayer, manager);
     }
     
     @Override

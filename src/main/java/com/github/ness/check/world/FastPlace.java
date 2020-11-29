@@ -4,6 +4,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.packets.event.bukkit.NessBlockPlaceEvent;
 import com.github.ness.packets.event.bukkit.NessBukkitEvent;
 
@@ -11,8 +12,8 @@ public class FastPlace extends Check {
     
     private int blockPlace;
 
-    public FastPlace(NessPlayer nessPlayer) {
-        super(FastPlace.class, nessPlayer);
+    public FastPlace(NessPlayer nessPlayer, CheckManager manager) {
+        super(FastPlace.class, nessPlayer, manager);
         // TODO Auto-generated constructor stub
     }
     

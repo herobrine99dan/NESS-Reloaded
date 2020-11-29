@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.event.FlyingEvent;
@@ -15,8 +16,8 @@ public class FlyFalseGround extends Check {
 
     private int preVL;
 
-    public FlyFalseGround(NessPlayer player) {
-        super(FlyFalseGround.class, player);
+    public FlyFalseGround(NessPlayer player, CheckManager manager) {
+        super(FlyFalseGround.class, player, manager);
     }
 
     @Override

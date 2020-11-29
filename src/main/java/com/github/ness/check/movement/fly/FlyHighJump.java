@@ -1,26 +1,21 @@
 package com.github.ness.check.movement.fly;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.potion.PotionEffectType;
-
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
-import com.github.ness.data.ImmutableLoc;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
 import com.github.ness.packets.event.UseEntityEvent;
-import com.github.ness.utility.ReflectionUtility;
 import com.github.ness.utility.Utility;
 
 public class FlyHighJump extends Check {
 
     float flyYSum;
 
-    public FlyHighJump(NessPlayer player) {
-        super(FlyHighJump.class, player);
+    public FlyHighJump(NessPlayer player, CheckManager manager) {
+        super(FlyHighJump.class, player,manager);
     }
 
     @Override

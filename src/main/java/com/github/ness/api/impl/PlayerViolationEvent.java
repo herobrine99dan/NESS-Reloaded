@@ -19,7 +19,6 @@ public class PlayerViolationEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
     @Getter
     private final Player player;
-    @Getter
     private final NessPlayer nessplayer;
     @Getter
     private final int violations;

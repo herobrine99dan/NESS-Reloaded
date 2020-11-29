@@ -4,6 +4,7 @@ import org.bukkit.Location;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.event.FlyingEvent;
@@ -15,8 +16,8 @@ import io.github.retrooper.packetevents.packetwrappers.in.windowclick.WrappedPac
 
 public class InventoryHack extends Check {
 
-    public InventoryHack(NessPlayer nessPlayer) {
-        super(InventoryHack.class, nessPlayer);
+    public InventoryHack(NessPlayer nessPlayer, CheckManager manager) {
+        super(InventoryHack.class, nessPlayer, manager);
     }
 
     @Override

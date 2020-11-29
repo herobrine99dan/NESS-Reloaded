@@ -4,6 +4,7 @@ import java.time.Duration;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
@@ -15,8 +16,8 @@ public class NoGround extends Check {
 
     private int flags;
 
-    public NoGround(NessPlayer player) {
-        super(NoGround.class, player, true, Duration.ofSeconds(1).toMillis());
+    public NoGround(NessPlayer player, CheckManager manager) {
+        super(NoGround.class, player, true, Duration.ofSeconds(1).toMillis(), manager);
     }
 
     @Override

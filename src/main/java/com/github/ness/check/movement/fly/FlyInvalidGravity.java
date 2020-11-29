@@ -2,6 +2,7 @@ package com.github.ness.check.movement.fly;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.event.FlyingEvent;
@@ -10,8 +11,8 @@ import com.github.ness.packets.event.UseEntityEvent;
 
 public class FlyInvalidGravity extends Check {
 
-    public FlyInvalidGravity(NessPlayer player) {
-        super(FlyInvalidGravity.class, player);
+    public FlyInvalidGravity(NessPlayer player, CheckManager manager) {
+        super(FlyInvalidGravity.class, player, manager);
     }
 
     double maxInvalidVelocity = 1.5;

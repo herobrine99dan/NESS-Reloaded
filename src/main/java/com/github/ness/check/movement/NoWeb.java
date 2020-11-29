@@ -2,6 +2,7 @@ package com.github.ness.check.movement;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.event.FlyingEvent;
@@ -10,8 +11,8 @@ import com.github.ness.packets.event.UseEntityEvent;
 
 public class NoWeb extends Check {
 
-    public NoWeb(NessPlayer nessPlayer) {
-        super(NoWeb.class, nessPlayer);
+    public NoWeb(NessPlayer nessPlayer, CheckManager manager) {
+        super(NoWeb.class, nessPlayer, manager);
     }
 
     @Override

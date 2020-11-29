@@ -2,10 +2,10 @@ package com.github.ness.check.packet;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.packets.event.ReceivedPacketEvent;
 import com.github.ness.packets.event.SendedPacketEvent;
 
-import io.github.retrooper.packetevents.packettype.PacketType;
 import io.github.retrooper.packetevents.packetwrappers.in.abilities.WrappedPacketInAbilities;
 import io.github.retrooper.packetevents.packetwrappers.out.abilities.WrappedPacketOutAbilities;
 
@@ -14,8 +14,8 @@ public class BadPacketsB extends Check {
     private boolean badPacketsAServerSent;
     private boolean badPacketsAClientSent;
 
-    public BadPacketsB(NessPlayer nessPlayer) {
-        super(BadPacketsB.class, nessPlayer);
+    public BadPacketsB(NessPlayer nessPlayer, CheckManager manager) {
+        super(BadPacketsB.class, nessPlayer, manager);
     }
 
     @Override

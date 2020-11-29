@@ -2,6 +2,7 @@ package com.github.ness.check.movement;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.MovementValues;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
@@ -9,8 +10,8 @@ import com.github.ness.packets.event.UseEntityEvent;
 
 public class FastSneak extends Check {
 
-    public FastSneak(NessPlayer nessPlayer) {
-        super(FastSneak.class, nessPlayer);
+    public FastSneak(NessPlayer nessPlayer, CheckManager manager) {
+        super(FastSneak.class, nessPlayer, manager);
     }
 
     @Override

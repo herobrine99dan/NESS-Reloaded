@@ -2,6 +2,7 @@ package com.github.ness.check.movement;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.ImmutableBlock;
 import com.github.ness.data.MovementValues;
 import com.github.ness.packets.event.FlyingEvent;
@@ -10,8 +11,8 @@ import com.github.ness.packets.event.UseEntityEvent;
 
 public class Phase extends Check {
 
-    public Phase(NessPlayer nessPlayer) {
-        super(Phase.class, nessPlayer);
+    public Phase(NessPlayer nessPlayer, CheckManager manager) {
+        super(Phase.class, nessPlayer, manager);
     }
 
     @Override

@@ -1,9 +1,8 @@
 package com.github.ness.check.movement.oldmovementchecks;
 
-import java.time.Duration;
-
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
 import com.github.ness.packets.event.UseEntityEvent;
@@ -13,8 +12,8 @@ public class NoFall extends Check {
     private int flags;
     private double serverFallDistance;
 
-    public NoFall(NessPlayer player) {
-        super(NoFall.class, player);
+    public NoFall(NessPlayer player, CheckManager manager) {
+        super(NoFall.class, player, manager);
     }
 
     @Override

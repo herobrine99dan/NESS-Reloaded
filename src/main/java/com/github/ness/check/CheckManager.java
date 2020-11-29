@@ -142,7 +142,7 @@ public class CheckManager implements Listener {
             public void run() {
                 for (CheckFactory c : checkList) {
                     try {
-                        Check check = c.makeEqualCheck(nessPlayer);
+                        Check check = c.makeEqualCheck(nessPlayer, CheckManager.this);
                         nessPlayer.addCheck(check);
                         logger.finer("Adding Check: " + check.getCheckName() + " to: "
                                 + nessPlayer.getBukkitPlayer().getName());

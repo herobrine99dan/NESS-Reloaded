@@ -1,23 +1,21 @@
 package com.github.ness.check.movement;
 
-import org.bukkit.potion.PotionEffectType;
-
 import com.github.ness.NessAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.event.FlyingEvent;
 import com.github.ness.packets.event.ReceivedPacketEvent;
 import com.github.ness.packets.event.UseEntityEvent;
-import com.github.ness.utility.Utility;
 
 public class Jesus extends Check {
 
     double distmultiplier = 0.75;
 
-    public Jesus(NessPlayer nessPlayer) {
-        super(Jesus.class, nessPlayer);
+    public Jesus(NessPlayer nessPlayer, CheckManager manager) {
+        super(Jesus.class, nessPlayer, manager);
     }
 
     @Override

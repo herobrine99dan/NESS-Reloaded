@@ -2,6 +2,7 @@ package com.github.ness.check.movement.fly;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
@@ -12,8 +13,8 @@ import com.github.ness.utility.Utility;
 
 public class FlyInvalidJumpMotion extends Check {
 
-    public FlyInvalidJumpMotion(NessPlayer player) {
-        super(FlyInvalidJumpMotion.class, player);
+    public FlyInvalidJumpMotion(NessPlayer player, CheckManager manager) {
+        super(FlyInvalidJumpMotion.class, player, manager);
     }
 
     @Override
