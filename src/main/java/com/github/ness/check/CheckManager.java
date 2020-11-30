@@ -45,11 +45,14 @@ public class CheckManager implements Listener {
 
     public void initialize() {
         checkList.clear();
-        this.loadChecks(this.getNess().getNessConfig().getConfig().getBoolean("checkmanager.async-initialization", false));
+        logger.finer("Initializating Checks!");
+        this.loadChecks(
+                this.getNess().getPlugin().getConfig().getBoolean("checkmanager.async-initialization", false));
+        logger.finer("Checks have been initialized!");
     }
 
     public void loadChecks(boolean async) {
-        final List<String> checks = this.getNess().getNessConfig().getEnabledChecks();
+        final List<String> checks = this.getNess().getPlugin().getConfig().getStringList("enabled-checks");
         final ChecksPackage[] packs = ChecksPackage.values();
         checks.addAll(Arrays.asList(ChecksPackage.REQUIRED_CHECKS));
         logger.finer("Checks: " + checks);
@@ -112,8 +115,8 @@ public class CheckManager implements Listener {
                         }
                         if (packetEvent.getPacket().isPosition() || packetEvent.getPacket().isRotation()) {
                             nessPlayer.setFromLoc(nessPlayer.getToLoc());
-                            nessPlayer.setToLoc(
-                                    new ImmutableLoc(nessPlayer.getFromLoc().getWorld(), x, y, z, (float) yaw, pitch, true));
+                            nessPlayer.setToLoc(new ImmutableLoc(nessPlayer.getFromLoc().getWorld(), x, y, z,
+                                    (float) yaw, pitch, true));
                         }
                         if (packetEvent.getPacket().isUseEntity()) {
                             c.onUseEntity((UseEntityEvent) event);
@@ -154,8 +157,8 @@ public class CheckManager implements Listener {
                 }
             }
         };
-        if(this.getNess().getNessConfig().getConfig().getBoolean("async-nessplayer-initialization", true)) {
-        ness.getExecutor().execute(runnable);
+        if (this.getNess().getPlugin().getConfig().getBoolean("async-nessplayer-initialization", true)) {
+            ness.getExecutor().execute(runnable);
         } else {
             runnable.run();
         }
@@ -177,7 +180,6 @@ public class CheckManager implements Listener {
     }
 
     public void reload() {
-        this.getNess().getNessConfig().reloadConfiguration(ness);
         this.initialize();
     }
 }

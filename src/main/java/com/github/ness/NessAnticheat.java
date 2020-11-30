@@ -39,8 +39,6 @@ public class NessAnticheat {
     private final AntiBot antiBot;
     @Getter
     private MaterialAccess materialAccess;
-    @Getter
-    private NessConfig nessConfig;
 
     static {
         minecraftVersion = getVersion();
@@ -54,7 +52,6 @@ public class NessAnticheat {
         checkManager.initialize();
         antiBot = new AntiBot(this);
         this.materialAccess = materialAccess;
-        this.nessConfig = new NessConfig("config.yml", "messages.yml");
     }
 
     private static int getVersion() {
@@ -63,13 +60,6 @@ public class NessAnticheat {
     }
 
     void start() {
-        this.nessConfig.reloadConfiguration(this);
-        if (!this.nessConfig.checkConfigVersion())
-            logger.warning(
-                    "Your config.yml is outdated! Until you regenerate it, NESS will use default values for some checks.");
-        if (!this.nessConfig.checkMessagesVersion())
-            logger.warning(
-                    "Your messages.yml is outdated! Until you regenerate it, NESS will use default values for some messages.");
         Bukkit.getServer().getPluginManager().registerEvents(new CoreListener(this.getCheckManager()), plugin);
         // Start configuration
         logger.fine("Configuration loaded. Initiating checks...");
