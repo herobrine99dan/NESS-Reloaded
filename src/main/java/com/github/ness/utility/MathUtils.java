@@ -48,24 +48,26 @@ public class MathUtils {
     }
 
     /**
-     * GCD Utils from Hawk (https://github.com/HawkAnticheat/Hawk/blob/master/src/me/islandscout/hawk/util/MathPlus.java)
+     * GCD Utils from Hawk
+     * (https://github.com/HawkAnticheat/Hawk/blob/master/src/me/islandscout/hawk/util/MathPlus.java)
+     * 
      * @author Islandscout
      */
     public static double gcdRational(double a, double b) {
-        if(a == 0) {
+        if (a == 0) {
             return b;
         }
         int quotient = getIntQuotient(b, a);
         double remainder = ((b / a) - quotient) * a;
-        if(Math.abs(remainder) < Math.max(a, b) * 1E-3F)
+        if (Math.abs(remainder) < Math.max(a, b) * 1E-3F)
             remainder = 0;
         return gcdRational(remainder, a);
     }
-    
+
     public static int getIntQuotient(double dividend, double divisor) {
         double ans = dividend / divisor;
         double error = Math.max(dividend, divisor) * 1E-3F;
-        return (int)(ans + error);
+        return (int) (ans + error);
     }
 
     /**
@@ -76,7 +78,7 @@ public class MathUtils {
      * @return the sensitivity
      */
     public static double getSensitivity(double gcd) {
-        return (1.655 * Math.cbrt(0.8333 * gcd)) - 0.3333;
+        return ((1.670 - 0.004) * Math.cbrt(0.8333 * gcd)) - 0.3333;
     }
 
     public static double gcdRational(List<Double> numbers) {

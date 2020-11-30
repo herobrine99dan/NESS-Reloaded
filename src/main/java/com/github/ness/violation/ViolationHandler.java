@@ -27,26 +27,14 @@ public class ViolationHandler {
         this.actions.add(action);
     }
 
-    public void onCheat(Player player, Violation violation, Check check) {
-        List<ViolationAction> syncActions = new ArrayList<ViolationAction>();
-        List<ViolationAction> asyncActions = new ArrayList<ViolationAction>();
-        for (ViolationAction action : actions) {
-            if (action.canRunAsync()) {
-                asyncActions.add(action);
-            } else {
-                syncActions.add(action);
-            }
-        }
+    public void onCheat(Player player, Violation violation) {
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (ViolationAction action : syncActions) {
+                for (ViolationAction action : actions) {
                     action.actOn(player, violation);
                 }
             }
         }.runTaskLater(ness.getPlugin(), 20);
-        for (ViolationAction action : asyncActions) {
-            action.actOn(player, violation);
-        }
     }
 }

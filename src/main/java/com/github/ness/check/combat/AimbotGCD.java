@@ -11,15 +11,16 @@ import com.github.ness.utility.MathUtils;
 import com.github.ness.utility.Utility;
 
 public class AimbotGCD extends Check {
-    
+
     private List<Double> pitchDiff = new ArrayList<Double>();
     private double lastGCD = 0;
     private double lastPitchDelta;
+    private int lastSensitivity;
 
     public AimbotGCD(NessPlayer nessPlayer, CheckManager manager) {
         super(AimbotGCD.class, nessPlayer, manager);
     }
-    
+
     @Override
     public void onFlying(FlyingEvent e) {
         NessPlayer player = e.getNessPlayer();
@@ -35,19 +36,17 @@ public class AimbotGCD extends Check {
                 lastGCD = gcd;
             }
             double result = Math.abs(gcd - lastGCD);
-            if(player.isCinematic()) {
+            if (player.isCinematic()) {
                 player.sendDevMessage("Cinematic!");
             }
+            final int sensitivity = (int) (MathUtils.getSensitivity(gcd) * 200);
             if (result < 0.007) {
-                final double sensitivity = MathUtils.getSensitivity(gcd);
-                player.sendDevMessage("GCD: " + Utility.round(gcd, 100) + "Sensitivity: "
-                        + Math.round(MathUtils.getSensitivity(gcd) * 200));
-                player.setSensitivity(sensitivity);
+                player.sendDevMessage("GCD: " + Utility.round(gcd, 100) + "Sensitivity: " + sensitivity);
+                if (Math.abs(sensitivity - lastSensitivity) == 0) {
+                    player.setSensitivity(sensitivity);
+                }
             }
-            if (result > 0.001D || gcd < 1.0E-4D) {
-                player.sendDevMessage("GCD: " + Utility.round(gcd, 100) + "Sensitivity: "
-                        + Math.round(MathUtils.getSensitivity(gcd) * 200));
-            }
+            lastSensitivity = sensitivity;
             pitchDiff.clear();
             lastGCD = gcd;
         }

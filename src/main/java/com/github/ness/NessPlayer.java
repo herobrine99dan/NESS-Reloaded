@@ -82,6 +82,9 @@ public class NessPlayer {
     @Getter
     @Setter
     private boolean cinematic;
+    @Getter
+    @Setter
+    private int ticks;
     
     /**
      * This Set contains checks that will be executed for this player

@@ -1,17 +1,18 @@
-package com.github.ness.check.combat;
+package com.github.ness.check.required;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.Check;
+import com.github.ness.check.CheckManager;
 import com.github.ness.data.MovementValues;
 import com.github.ness.packets.event.FlyingEvent;
 
 public class CinematicProcessor extends Check {
 
-    public CinematicProcessor(NessPlayer nessPlayer) {
-        super(CinematicProcessor.class, nessPlayer);
+    public CinematicProcessor(NessPlayer nessPlayer, CheckManager manager) {
+        super(CinematicProcessor.class, nessPlayer, manager);
     }
 
     private final List<Double> yawSamples = new ArrayList<Double>();
@@ -28,10 +29,10 @@ public class CinematicProcessor extends Check {
         MovementValues values = event.getNessPlayer().getMovementValues();
         final double yawDelta = Math.abs(values.yawDiff);
         final double yawAccel = Math.abs(yawDelta - lastYawDelta);
-        final double yawAccelAccel = Math.abs(yawAccelAccel - lastYawAccel);
+        final double yawAccelAccel = Math.abs(yawAccel - lastYawAccel);
         final boolean invalidYaw = yawAccelAccel < 0.05 && yawAccelAccel > 0;
         final boolean exponentialYaw = yawAccelAccel < 0.001;
-        if (finalSensitivity < 100 && exponentialYaw) {
+        if (this.player().getSensitivity() < 100 && exponentialYaw) {
             cinematicTicks += 3.5;
         } else if (invalidYaw) {
             cinematicTicks += 1.75;
@@ -43,9 +44,9 @@ public class CinematicProcessor extends Check {
         if (cinematicTicks > 20) {
             cinematicTicks -= 1.5;
         }
-        cinematic = cinematicTicks > 7.5 || ((ticks() - lastCinematic) < 120);
+        cinematic = cinematicTicks > 7.5 || ((this.player().getTicks() - lastCinematic) < 120);
         if(cinematic && cinematicTicks > 7.5) {
-            lastCinematic = ticks();
+            lastCinematic = this.player().getTicks();
         }
         this.lastYawDelta = yawDelta;
         this.lastYawAccel = yawAccel;

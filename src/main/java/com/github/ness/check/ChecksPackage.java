@@ -8,6 +8,7 @@ public enum ChecksPackage {
 	FLYCHEAT("movement.fly"),
 	PACKET("packet"),
 	WORLD("world"),
+	REQUIRED("required"),
 	OLDMOVEMENTCHECKS("movement.oldmovementchecks"),
 	MISC("misc");
 

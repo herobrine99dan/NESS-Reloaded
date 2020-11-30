@@ -64,7 +64,6 @@ public class NessAnticheat {
 
     void start() {
         this.nessConfig.reloadConfiguration(this);
-        Check.updateCheckManager(this.getCheckManager());
         if (!this.nessConfig.checkConfigVersion())
             logger.warning(
                     "Your config.yml is outdated! Until you regenerate it, NESS will use default values for some checks.");

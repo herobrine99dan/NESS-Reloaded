@@ -8,13 +8,9 @@ import com.github.ness.api.ViolationAction;
 
 import net.md_5.bungee.api.ChatColor;
 
-public class NotifyAction extends ViolationAction {
+public class NotifyAction implements ViolationAction {
 
     long lastDelay = System.nanoTime();
-
-    public NotifyAction() {
-        super();
-    }
 
     @Override
     public void actOn(Player player, Violation violation) {

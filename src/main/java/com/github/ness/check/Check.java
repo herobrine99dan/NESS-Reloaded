@@ -142,7 +142,7 @@ public abstract class Check {
         Violation violation = new Violation(this.checkName, details, this.violations.addAndGet(1));
         if (callViolationEvent(violation)) {
             this.nessPlayer.addViolation(violation);
-            ness().getViolationHandler().onCheat(this.player().getBukkitPlayer(), violation, this);
+            ness().getViolationHandler().onCheat(this.player().getBukkitPlayer(), violation);
             if (e == null) {
                 return this.violations.get();
             }
