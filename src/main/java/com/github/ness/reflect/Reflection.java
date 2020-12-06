@@ -1,10 +1,9 @@
 package com.github.ness.reflect;
 
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Member;
+import java.util.function.Function;
 
 /**
  * Entry point for obtaining reflective objects
@@ -15,21 +14,6 @@ import java.util.List;
 public class Reflection {
 
 	private final MethodHandles.Lookup lookup = MethodHandles.lookup();
-
-	private List<Class<?>> getHierarchy(Class<?> clazz) {
-		List<Class<?>> hierarchy = new ArrayList<>();
-		Class<?> currentClass = clazz;
-		while (!currentClass.equals(Object.class)) {
-			hierarchy.add(currentClass);
-			currentClass = currentClass.getSuperclass();
-		}
-		return hierarchy;
-	}
-
-	private ReflectionException notFound(Class<?> clazz, MemberDescription<?> description, int memberIndex) {
-		throw new ReflectionException("No member found in " + clazz.getName() + " for description "
-				+ description + " and member index " + memberIndex);
-	}
 
 	/**
 	 * Finds a method matching the given description. May locate inherited methods and non public methods. <br>
@@ -45,18 +29,7 @@ public class Reflection {
 	 * @throws ReflectionException if not found
 	 */
 	public <R> MethodInvoker<R> getMethod(Class<?> clazz, MethodDescription<R> description, int memberIndex) {
-		for (Class<?> clazzToSearch : getHierarchy(clazz)) {
-			for (Method method : clazzToSearch.getDeclaredMethods()) {
-				if (!description.matches(method)) {
-					continue;
-				}
-				if (memberIndex-- <= 0) {
-					method.setAccessible(true);
-					return new MethodInvokerImpl<>(lookup, method);
-				}
-			}
-		}
-		throw notFound(clazz, description, memberIndex);
+		return new MethodInvokerImpl<>(lookup, getMember(clazz, description, memberIndex, Class::getDeclaredMethods));
 	}
 
 	/**
@@ -73,18 +46,28 @@ public class Reflection {
 	 * @throws ReflectionException if not found
 	 */
 	public <T> FieldInvoker<T> getField(Class<?> clazz, FieldDescription<T> description, int memberIndex) {
-		for (Class<?> clazzToSearch : getHierarchy(clazz)) {
-			for (Field field : clazzToSearch.getDeclaredFields()) {
-				if (!description.matches(field)) {
+		return new FieldInvokerImpl<>(lookup, getMember(clazz, description, memberIndex, Class::getDeclaredFields));
+	}
+
+	private <M extends AccessibleObject & Member> M getMember(Class<?> clazz, MemberDescription<M> description,
+			int memberIndex, Function<Class<?>, M[]> getDeclaredMembers) {
+		Class<?> currentClass = clazz;
+		while (!currentClass.equals(Object.class)) {
+
+			for (M member : getDeclaredMembers.apply(currentClass)) {
+				if (!description.matches(member)) {
 					continue;
 				}
 				if (memberIndex-- <= 0) {
-					field.setAccessible(true);
-					return new FieldInvokerImpl<>(lookup, field);
+					member.setAccessible(true);
+					return member;
 				}
 			}
+
+			currentClass = currentClass.getSuperclass();
 		}
-		throw notFound(clazz, description, memberIndex);
+		throw new ReflectionException("No member found in " + clazz.getName() + " for description "
+				+ description + " and member index " + memberIndex);
 	}
 
 }
