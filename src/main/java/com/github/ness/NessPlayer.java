@@ -24,8 +24,6 @@ import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.NetworkReflection;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
 
 public class NessPlayer implements AnticheatPlayer {
@@ -40,38 +38,30 @@ public class NessPlayer implements AnticheatPlayer {
 	 * Bukkit Player corresponding to this NESSPlayer
 	 */
 	private final Player player;
-	@Getter
+
 	private final boolean devMode;
-	@Getter
-	@Setter
+
 	private double sensitivity; // The Player Sensitivity
 	private final Map<PlayerAction, Long> actionTime = Collections.synchronizedMap(new EnumMap<>(PlayerAction.class));
-	@Getter
-	@Setter
+
 	private ImmutableLoc lastVelocity;
-	@Getter
+
 	private final Set<Integer> attackedEntities = new HashSet<Integer>();
 
-	@Getter
-	@Setter
 	private boolean hasSetback;
 
 	private long setBackTicks;
-	@Getter
-	@Setter
+
 	private boolean teleported;
-	@Getter
+
 	private volatile MovementValues movementValues;
-	@Getter
-	@Setter
+
 	private boolean debugMode;
-	@Getter
-	@Setter
+
 	private boolean mouseRecord; // Is the player recording?
 	private long lastWasOnGround = System.nanoTime() - Duration.ofHours(1L).toNanos();
 	private long lastWasOnIce = lastWasOnGround;
-	@Getter
-	@Setter
+
 	private UUID lastEntityAttacked;
 
 	public NessPlayer(Player player, boolean devMode) {
@@ -100,6 +90,10 @@ public class NessPlayer implements AnticheatPlayer {
 	/*
 	 * Infraction methods
 	 */
+
+	public boolean isDevMode() {
+		return devMode;
+	}
 
 	/**
 	 * Adds an infraction. If this player has too many infractions, {@code false} is
@@ -269,6 +263,70 @@ public class NessPlayer implements AnticheatPlayer {
 		}
 		NessPlayer other = (NessPlayer) object;
 		return uuid.equals(other.uuid);
+	}
+
+	public boolean isTeleported() {
+		return teleported;
+	}
+
+	public void setTeleported(boolean teleported) {
+		this.teleported = teleported;
+	}
+
+	public MovementValues getMovementValues() {
+		return movementValues;
+	}
+
+	public boolean isDebugMode() {
+		return debugMode;
+	}
+
+	public void setDebugMode(boolean debugMode) {
+		this.debugMode = debugMode;
+	}
+
+	public boolean isMouseRecord() {
+		return mouseRecord;
+	}
+
+	public void setMouseRecord(boolean mouseRecord) {
+		this.mouseRecord = mouseRecord;
+	}
+
+	public boolean isHasSetback() {
+		return hasSetback;
+	}
+
+	public void setHasSetback(boolean hasSetback) {
+		this.hasSetback = hasSetback;
+	}
+
+	public UUID getLastEntityAttacked() {
+		return lastEntityAttacked;
+	}
+
+	public void setLastEntityAttacked(UUID lastEntityAttacked) {
+		this.lastEntityAttacked = lastEntityAttacked;
+	}
+
+	public Set<Integer> getAttackedEntities() {
+		return attackedEntities;
+	}
+
+	public ImmutableLoc getLastVelocity() {
+		return lastVelocity;
+	}
+
+	public void setLastVelocity(ImmutableLoc lastVelocity) {
+		this.lastVelocity = lastVelocity;
+	}
+
+	public double getSensitivity() {
+		return sensitivity;
+	}
+
+	public void setSensitivity(double sensitivity) {
+		this.sensitivity = sensitivity;
 	}
 
 }

@@ -7,8 +7,6 @@ import org.bukkit.entity.Player;
 
 import com.github.ness.utility.Utility;
 
-import lombok.Getter;
-
 //Need a refactor
 public class MovementValues {
 
@@ -32,51 +30,51 @@ public class MovementValues {
 	 * Z Difference (to.getZ() - from.getZ());
 	 */
 	public final double zDiff;
-	@Getter
+
 	private final double XZDiff;
-	@Getter
+
 	private final boolean AroundIce;
 	/**
 	 * Liquids= Lava and Water
 	 */
-	@Getter
+
 	private final boolean AroundLiquids;
-	@Getter
+
 	private final boolean AroundStairs;
 	/**
 	 * Utility.specificBlockNear(to, "slime"); or Utility.hasBlock(p, "slime");
 	 */
-	@Getter
+
 	private final boolean AroundSlime;
-	@Getter
+
 	private final boolean AroundSlabs;
-	@Getter
+
 	private final boolean AroundSnow;
-	@Getter
+
 	private final boolean AroundLadders;
-	@Getter
+
 	private final boolean AroundLily;
-	@Getter
+
 	private final boolean AroundCarpet;
-	@Getter
+
 	private final boolean groundAround;
-	@Getter
-	private final boolean AroundWeb;
-	@Getter
+
+	private final boolean aroundWeb;
+
 	private final ImmutableVector serverVelocity;
-	@Getter
+
 	private final boolean insideVehicle;
-	@Getter
-	ImmutableLoc to;
-	@Getter
-	ImmutableLoc from;
-	@Getter
+
+	private final ImmutableLoc to;
+
+	private final ImmutableLoc from;
+
 	private final GameMode gamemode;
-	@Getter
+
 	private final boolean isFlying;
-	@Getter
+
 	private final boolean ableFly;
-	@Getter
+
 	private final boolean sprinting;
 	private final boolean blockUnderHead;
 
@@ -132,7 +130,7 @@ public class MovementValues {
 			blockUnderHead = Utility.groundAround(to.toBukkitLocation().add(0, 1.8, 0));
 			AroundLadders = ladder;
 			AroundSlabs = slab;
-			AroundWeb = web;
+			aroundWeb = web;
 			AroundStairs = stairs;
 			sprinting = p.isSprinting();
 			if (!slime) {
@@ -154,7 +152,7 @@ public class MovementValues {
 			groundAround = false;
 			sprinting = false;
 			AroundLily = false;
-			AroundWeb = false;
+			aroundWeb = false;
 			blockUnderHead = false;
 			AroundSnow = false;
 			insideVehicle = false;
@@ -175,20 +173,106 @@ public class MovementValues {
 		this.from = from;
 	}
 
+	public double getXZDiff() {
+		return XZDiff;
+	}
+
+	public boolean isAroundIce() {
+		return AroundIce;
+	}
+
+	public boolean isAroundLiquids() {
+		return AroundLiquids;
+	}
+
+	public boolean isAroundStairs() {
+		return AroundStairs;
+	}
+
+	public boolean isAroundSlime() {
+		return AroundSlime;
+	}
+
+	public boolean isAroundSlabs() {
+		return AroundSlabs;
+	}
+
+	public boolean isAroundSnow() {
+		return AroundSnow;
+	}
+
+	public boolean isAroundLadders() {
+		return AroundLadders;
+	}
+
+	public boolean isAroundLily() {
+		return AroundLily;
+	}
+
+	public boolean isAroundCarpet() {
+		return AroundCarpet;
+	}
+
+	public boolean isGroundAround() {
+		return groundAround;
+	}
+
+	public boolean isAroundWeb() {
+		return aroundWeb;
+	}
+
+	public ImmutableVector getServerVelocity() {
+		return serverVelocity;
+	}
+
+	public boolean isInsideVehicle() {
+		return insideVehicle;
+	}
+
+	public ImmutableLoc getTo() {
+		return to;
+	}
+
+	public ImmutableLoc getFrom() {
+		return from;
+	}
+
+	public GameMode getGamemode() {
+		return gamemode;
+	}
+
+	public boolean isFlying() {
+		return isFlying;
+	}
+
+	public boolean isAbleFly() {
+		return ableFly;
+	}
+
+	public boolean isSprinting() {
+		return sprinting;
+	}
+
+	public boolean isBlockUnderHead() {
+		return blockUnderHead;
+	}
+
 	public boolean hasBlockNearHead() {
 		return blockUnderHead;
 	}
 
 	/**
 	 * Check if the player is falling using his server Motion
+	 * 
 	 * @return true if the player is falling
 	 */
 	public boolean isServerFalling() {
 		return this.serverVelocity.getY() < 0;
 	}
-	
+
 	/**
 	 * Check if the player is falling using his yDifference
+	 * 
 	 * @return true if the player is falling
 	 */
 	public boolean isClientFalling() {

@@ -1,7 +1,5 @@
 package com.github.ness.api;
 
-import lombok.Getter;
-
 /**
  * Old violation object
  * 
@@ -12,14 +10,20 @@ import lombok.Getter;
 @Deprecated
 public class Violation {
 
-	@Getter
 	private final String check;
-	@Getter
 	private final String details;
 
 	public Violation(String check, String details) {
 		this.check = check;
 		this.details = details;
+	}
+
+	public String getCheck() {
+		return check;
+	}
+
+	public String getDetails() {
+		return details;
 	}
 
 }

@@ -7,24 +7,15 @@ import org.bukkit.util.NumberConversions;
 
 import com.github.ness.utility.MathUtils;
 
-import lombok.Getter;
-
 public class ImmutableLoc {
 
-	@Getter
 	private final String world;
-	@Getter
 	private final double x;
-	@Getter
 	private final double y;
-	@Getter
 	private final double z;
-	@Getter
 	private final float yaw;
-	@Getter
 	private final double pitch;
-	@Getter
-	private ImmutableVector directionVector;
+	private final ImmutableVector directionVector;
 
 	public ImmutableLoc(String world, double x, double y, double z, float yaw, double pitch) {
 		this.world = world;
@@ -33,7 +24,7 @@ public class ImmutableLoc {
 		this.z = z;
 		this.pitch = pitch;
 		this.yaw = yaw;
-		makeDirection();
+		directionVector = makeDirection(yaw, pitch);
 	}
 
 	/**
@@ -60,15 +51,42 @@ public class ImmutableLoc {
 				location.getPitch());
 	}
 
-	private void makeDirection() {
+	private static ImmutableVector makeDirection(double yaw, double pitch) {
 		double rotX = yaw;
 		double rotY = pitch;
 		double y = -MathUtils.sin(Math.toRadians(rotY));
 		double xz = MathUtils.cos(Math.toRadians(rotY));
 		double x = -xz * MathUtils.sin(Math.toRadians(rotX));
 		double z = xz * MathUtils.cos(Math.toRadians(rotX));
-		ImmutableVector vector = new ImmutableVector(x, y, z);
-		this.directionVector = vector;
+		return new ImmutableVector(x, y, z);
+	}
+
+	public String getWorld() {
+		return world;
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public double getZ() {
+		return z;
+	}
+
+	public float getYaw() {
+		return yaw;
+	}
+
+	public double getPitch() {
+		return pitch;
+	}
+
+	public ImmutableVector getDirectionVector() {
+		return directionVector;
 	}
 
 	public ImmutableLoc subtract(ImmutableLoc loc) {

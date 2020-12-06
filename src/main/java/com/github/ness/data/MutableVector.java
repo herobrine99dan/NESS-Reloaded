@@ -1,30 +1,17 @@
 package com.github.ness.data;
 
-import lombok.Getter;
-import lombok.Setter;
-
 public class MutableVector implements Cloneable {
 
-    @Getter
-    @Setter
     private double x;
-    @Getter
-    @Setter
     private double y;
-    @Getter
-    @Setter
     private double z;
 
     public MutableVector() {
-        this.x = 0.0D;
-        this.y = 0.0D;
-        this.z = 0.0D;
+    	this(0D, 0D, 0D);
     }
 
     public MutableVector(int x, int y, int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    	this((double) x, (double) y, (double) z);
     }
 
     public MutableVector(double x, double y, double z) {
@@ -33,7 +20,31 @@ public class MutableVector implements Cloneable {
         this.z = z;
     }
 
-    public static double getEpsilon() {
+    double getX() {
+		return x;
+	}
+
+	void setX(double x) {
+		this.x = x;
+	}
+
+	double getY() {
+		return y;
+	}
+
+	void setY(double y) {
+		this.y = y;
+	}
+
+	double getZ() {
+		return z;
+	}
+
+	void setZ(double z) {
+		this.z = z;
+	}
+
+	public static double getEpsilon() {
         return 1.0E-6D;
     }
 
@@ -144,7 +155,8 @@ public class MutableVector implements Cloneable {
         return (int) Math.floor(this.z);
     }
 
-    public MutableVector clone() {
+    @Override
+	public MutableVector clone() {
         try {
             return (MutableVector) super.clone();
         } catch (CloneNotSupportedException e) {
@@ -183,9 +195,7 @@ public class MutableVector implements Cloneable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
+        if (obj == null || getClass() != obj.getClass())
             return false;
         MutableVector other = (MutableVector) obj;
         if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))

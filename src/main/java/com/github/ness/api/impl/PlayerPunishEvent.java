@@ -11,9 +11,6 @@ import com.github.ness.api.InfractionTrigger;
 import com.github.ness.api.PlayerFlagEvent;
 import com.github.ness.api.Violation;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Called when NESS executes a command as specified in the configuration.
  * 
@@ -29,17 +26,12 @@ import lombok.Setter;
 @Deprecated
 public class PlayerPunishEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
-    @Getter
+
     private final Player player;
-    @Getter
     private final NessPlayer nessplayer;
-    @Getter
     private final int violations;
-    @Getter
     private final Violation violation;
-    @Setter
     private boolean cancelled;
-    @Getter
     private final String command;
 
     /**
@@ -55,7 +47,27 @@ public class PlayerPunishEvent extends Event implements Cancellable {
         this.violations = violations;
     }
 
-    public static HandlerList getHandlerList() {
+    public Player getPlayer() {
+		return player;
+	}
+
+	public NessPlayer getNessplayer() {
+		return nessplayer;
+	}
+
+	public int getViolations() {
+		return violations;
+	}
+
+	public Violation getViolation() {
+		return violation;
+	}
+
+	public String getCommand() {
+		return command;
+	}
+
+	public static HandlerList getHandlerList() {
         return HANDLERS;
     }
 
@@ -68,5 +80,10 @@ public class PlayerPunishEvent extends Event implements Cancellable {
     public boolean isCancelled() {
         return this.cancelled;
     }
+
+	@Override
+	public void setCancelled(boolean cancel) {
+		cancelled = cancel;
+	}
 
 }

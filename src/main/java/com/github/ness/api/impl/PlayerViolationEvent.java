@@ -2,8 +2,7 @@ package com.github.ness.api.impl;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Violation;
-import lombok.Getter;
-import lombok.Setter;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -20,15 +19,12 @@ import org.bukkit.event.HandlerList;
 public class PlayerViolationEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
-    @Getter
+
     private final Player player;
-    @Getter
     private final NessPlayer nessplayer;
-    @Getter
     private final int violations;
-    @Getter
     private final Violation violation;
-    @Setter
+
     private boolean cancelled;
 
     /**
@@ -45,7 +41,23 @@ public class PlayerViolationEvent extends Event implements Cancellable {
         this.violations = violations;
     }
 
-    public static HandlerList getHandlerList() {
+    public Player getPlayer() {
+		return player;
+	}
+
+	public NessPlayer getNessplayer() {
+		return nessplayer;
+	}
+
+	public int getViolations() {
+		return violations;
+	}
+
+	public Violation getViolation() {
+		return violation;
+	}
+
+	public static HandlerList getHandlerList() {
         return HANDLERS;
     }
 
@@ -57,5 +69,10 @@ public class PlayerViolationEvent extends Event implements Cancellable {
     @Override
     public boolean isCancelled() {
         return this.cancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean cancel) {
+    	cancelled = cancel;
     }
 }

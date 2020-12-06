@@ -2,8 +2,6 @@ package com.github.ness.packets.wrappers;
 
 import java.lang.reflect.Field;
 
-import lombok.Getter;
-
 public class WrappedInFlyingPacket extends SimplePacket {
 
 	private static Field fieldX;
@@ -13,14 +11,12 @@ public class WrappedInFlyingPacket extends SimplePacket {
 	private static Field fieldPitch;
 	private static Field fieldGround;
 	private static volatile boolean initialized = false;
-	@Getter
+
 	private double x, y, z;
-	@Getter
 	private float yaw, pitch;
-	@Getter
 	private boolean look, pos, onGround;
 
-	public WrappedInFlyingPacket(Object packet) throws IllegalArgumentException, IllegalAccessException {
+	public WrappedInFlyingPacket(Object packet) throws IllegalArgumentException {
 		super(packet);
 		if (!initialized) {
 			fieldX = getField(packet.getClass(), double.class, 0);
@@ -31,6 +27,38 @@ public class WrappedInFlyingPacket extends SimplePacket {
 			fieldGround = getField(packet.getClass(), boolean.class, 0);
 			initialized = true;
 		}
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public double getZ() {
+		return z;
+	}
+
+	public float getYaw() {
+		return yaw;
+	}
+
+	public float getPitch() {
+		return pitch;
+	}
+
+	public boolean isLook() {
+		return look;
+	}
+
+	public boolean isPos() {
+		return pos;
+	}
+
+	public boolean isOnGround() {
+		return onGround;
 	}
 
 	@Override
