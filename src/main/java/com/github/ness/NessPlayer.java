@@ -29,14 +29,6 @@ import net.md_5.bungee.api.ChatColor;
 
 public class NessPlayer implements AnticheatPlayer {
 
-	public UUID getLastEntityAttacked() {
-		return lastEntityAttacked;
-	}
-
-	public void setLastEntityAttacked(UUID lastEntityAttacked) {
-		this.lastEntityAttacked = lastEntityAttacked;
-	}
-
 	private final Queue<Infraction> infractions = new ArrayBlockingQueue<>(2);
 
 	/**
@@ -51,29 +43,6 @@ public class NessPlayer implements AnticheatPlayer {
 	private final boolean devMode;
 
 	private double sensitivity; // The Player Sensitivity
-	public double getSensitivity() {
-		return sensitivity;
-	}
-
-	public void setSensitivity(double sensitivity) {
-		this.sensitivity = sensitivity;
-	}
-
-	public ImmutableLoc getLastVelocity() {
-		return lastVelocity;
-	}
-
-	public void setLastVelocity(ImmutableLoc lastVelocity) {
-		this.lastVelocity = lastVelocity;
-	}
-
-	public boolean isHasSetback() {
-		return hasSetback;
-	}
-
-	public void setHasSetback(boolean hasSetback) {
-		this.hasSetback = hasSetback;
-	}
 
 	public long getSetBackTicks() {
 		return setBackTicks;
@@ -81,46 +50,6 @@ public class NessPlayer implements AnticheatPlayer {
 
 	public void setSetBackTicks(long setBackTicks) {
 		this.setBackTicks = setBackTicks;
-	}
-
-	public boolean isTeleported() {
-		return teleported;
-	}
-
-	public void setTeleported(boolean teleported) {
-		this.teleported = teleported;
-	}
-
-	public MovementValues getMovementValues() {
-		return movementValues;
-	}
-
-	public void setMovementValues(MovementValues movementValues) {
-		this.movementValues = movementValues;
-	}
-
-	public boolean isDebugMode() {
-		return debugMode;
-	}
-
-	public void setDebugMode(boolean debugMode) {
-		this.debugMode = debugMode;
-	}
-
-	public boolean isMouseRecord() {
-		return mouseRecord;
-	}
-
-	public void setMouseRecord(boolean mouseRecord) {
-		this.mouseRecord = mouseRecord;
-	}
-
-	public boolean isDevMode() {
-		return devMode;
-	}
-
-	public Set<Integer> getAttackedEntities() {
-		return attackedEntities;
 	}
 
 	private final Map<PlayerAction, Long> actionTime = Collections.synchronizedMap(new EnumMap<>(PlayerAction.class));

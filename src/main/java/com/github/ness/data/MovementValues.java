@@ -174,90 +174,6 @@ public class MovementValues {
 		this.from = from;
 	}
 
-	public double getXZDiff() {
-		return XZDiff;
-	}
-
-	public boolean isAroundIce() {
-		return AroundIce;
-	}
-
-	public boolean isAroundLiquids() {
-		return AroundLiquids;
-	}
-
-	public boolean isAroundStairs() {
-		return AroundStairs;
-	}
-
-	public boolean isAroundSlime() {
-		return AroundSlime;
-	}
-
-	public boolean isAroundSlabs() {
-		return AroundSlabs;
-	}
-
-	public boolean isAroundSnow() {
-		return AroundSnow;
-	}
-
-	public boolean isAroundLadders() {
-		return AroundLadders;
-	}
-
-	public boolean isAroundLily() {
-		return AroundLily;
-	}
-
-	public boolean isAroundCarpet() {
-		return AroundCarpet;
-	}
-
-	public boolean isGroundAround() {
-		return groundAround;
-	}
-
-	public boolean isAroundWeb() {
-		return aroundWeb;
-	}
-
-	public ImmutableVector getServerVelocity() {
-		return serverVelocity;
-	}
-
-	public boolean isInsideVehicle() {
-		return insideVehicle;
-	}
-
-	public ImmutableLoc getTo() {
-		return to;
-	}
-
-	public ImmutableLoc getFrom() {
-		return from;
-	}
-
-	public GameMode getGamemode() {
-		return gamemode;
-	}
-
-	public boolean isFlying() {
-		return isFlying;
-	}
-
-	public boolean isAbleFly() {
-		return ableFly;
-	}
-
-	public boolean isSprinting() {
-		return sprinting;
-	}
-
-	public boolean isBlockUnderHead() {
-		return blockUnderHead;
-	}
-
 	public boolean hasBlockNearHead() {
 		return blockUnderHead;
 	}
@@ -292,18 +208,9 @@ public class MovementValues {
 		return to;
 	}
 
-	public void setTo(ImmutableLoc to) {
-		this.to = to;
-	}
-
 	public ImmutableLoc getFrom() {
 		return from;
 	}
-
-	public void setFrom(ImmutableLoc from) {
-		this.from = from;
-	}
-
 	public double getYawDiff() {
 		return yawDiff;
 	}
@@ -369,7 +276,7 @@ public class MovementValues {
 	}
 
 	public boolean isAroundWeb() {
-		return AroundWeb;
+		return aroundWeb;
 	}
 
 	public ImmutableVector getServerVelocity() {

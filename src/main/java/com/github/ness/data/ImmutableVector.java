@@ -37,18 +37,6 @@ public class ImmutableVector {
         return new ImmutableVector(vector.getX(), vector.getY(), vector.getZ());
     }
 
-    public double getX() {
-		return x;
-	}
-
-	public double getY() {
-		return y;
-	}
-
-	public double getZ() {
-		return z;
-	}
-
 	/**
      * Converts back to a bukkit location
      *
