@@ -111,7 +111,7 @@ public class MovementValues {
 					slime = true;
 				} else if (name.contains("STAIR")) {
 					stairs = true;
-				} else if (name.contains("SLAB")) {
+				} else if (name.contains("SLAB") || name.contains("STEP")) {
 					slab = true;
 				} else if (name.contains("LADDER")) {
 					ladder = true;

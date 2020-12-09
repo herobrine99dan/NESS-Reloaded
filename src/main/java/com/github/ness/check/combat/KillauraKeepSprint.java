@@ -1,7 +1,12 @@
 package com.github.ness.check.combat;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
@@ -10,17 +15,15 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.packets.ReceivedPacketEvent;
 
-public class KillauraKeepSprint extends ListeningCheck<ReceivedPacketEvent> {
+public class KillauraKeepSprint extends ListeningCheck<PlayerMoveEvent> {
 
-	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos
-			.forEvent(ReceivedPacketEvent.class);
+	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
 	private double lastDeltaXZ;
 	private int bufferViolation;
 
-	public KillauraKeepSprint(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
+	public KillauraKeepSprint(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 		lastDeltaXZ = 0;
 	}
@@ -30,14 +33,14 @@ public class KillauraKeepSprint extends ListeningCheck<ReceivedPacketEvent> {
 	 * (https://github.com/freppp/)
 	 */
 	@Override
-	protected void checkEvent(ReceivedPacketEvent e) {
-		if (!e.getPacket().getName().toLowerCase().contains("position") || e.getNessPlayer().isTeleported()) {
+	protected void checkEvent(PlayerMoveEvent e) {
+		NessPlayer player = player();
+		if (player.isHasSetback() || player.isTeleported()) {
 			return;
 		}
-		if (e.getNessPlayer().getLastEntityAttacked() == null) {
+		if (player.getLastEntityAttacked() == null) {
 			return;
 		}
-		NessPlayer player = e.getNessPlayer();
 		MovementValues values = player.getMovementValues();
 		final double deltaXZ = values.getXZDiff();
 
@@ -46,8 +49,11 @@ public class KillauraKeepSprint extends ListeningCheck<ReceivedPacketEvent> {
 		final long swingDelay = player.milliSecondTimeDifference(PlayerAction.ATTACK);
 
 		final boolean sprinting = values.isSprinting();
-
-		final boolean validTarget = Bukkit.getEntity(player.getLastEntityAttacked()) instanceof Player;
+		LivingEntity entity = getEntityById(e.getPlayer().getWorld(), player.getLastEntityAttacked());
+		if(entity == null) { //The Entity can be dead.
+			return;
+		}
+		final boolean validTarget = entity instanceof Player;
 		final boolean invalid = acceleration < .0025 && sprinting && deltaXZ > .22 && swingDelay < 150 && validTarget;
 		if (invalid) {
 			if (++bufferViolation > 4) {
@@ -57,6 +63,15 @@ public class KillauraKeepSprint extends ListeningCheck<ReceivedPacketEvent> {
 			bufferViolation--;
 		}
 		this.lastDeltaXZ = deltaXZ;
+	}
+	
+	private LivingEntity getEntityById(World w, UUID uuid) {
+		for(LivingEntity l : w.getLivingEntities()) {
+			if(l.getUniqueId().equals(uuid)) {
+				return l;
+			}
+		}
+		return null;
 	}
 
 }

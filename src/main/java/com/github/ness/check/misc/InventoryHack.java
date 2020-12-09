@@ -45,7 +45,7 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) < 1500
 				|| nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500 || Utility.hasflybypass(player)
-				|| this.player().isTeleported()) {
+				|| nessPlayer.isTeleported() || nessPlayer.isHasSetback()) {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 100

@@ -260,7 +260,9 @@ public class NessPlayer implements AnticheatPlayer {
 	}
 
 	public void sendDevMessage(String message) {
-		this.getBukkitPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Dev> &7" + message));
+		if(this.isDevMode()) {
+			this.getBukkitPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Dev> &7" + message));
+		}
 	}
 
 	public void updateMovementValue(MovementValues values) {

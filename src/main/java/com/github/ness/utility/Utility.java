@@ -40,6 +40,12 @@ public class Utility {
 	public static double round(double value, int precision) {
 		return (double) Math.round(value * precision) / precision;
 	}
+	
+	public static Location getEyeLocation(LivingEntity player) {
+		final Location eye = player.getLocation();
+		eye.setY(eye.getY() + player.getEyeHeight());
+		return eye;
+	}
 
 	/**
 	 * Get Angle (in Radians) beetween a player and the target
