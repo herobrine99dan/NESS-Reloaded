@@ -1,5 +1,6 @@
 package com.github.ness.check.misc;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -39,6 +40,9 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 		}
 		Player player = (Player) e.getWhoClicked();
 		NessPlayer nessPlayer = player();
+		if(player.getGameMode().name().contains("CREATIVE")) {
+			return;
+		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) < 1500
 				|| nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500 || Utility.hasflybypass(player)
 				|| this.player().isTeleported()) {
