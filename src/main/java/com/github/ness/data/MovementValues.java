@@ -5,9 +5,8 @@ import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.utility.Utility;
-
-import lombok.Getter;
 
 //Need a refactor
 public class MovementValues {
@@ -32,55 +31,55 @@ public class MovementValues {
 	 * Z Difference (to.getZ() - from.getZ());
 	 */
 	public final double zDiff;
-	@Getter
+
 	private final double XZDiff;
-	@Getter
+
 	private final boolean AroundIce;
 	/**
 	 * Liquids= Lava and Water
 	 */
-	@Getter
+
 	private final boolean AroundLiquids;
-	@Getter
+
 	private final boolean AroundStairs;
 	/**
 	 * Utility.specificBlockNear(to, "slime"); or Utility.hasBlock(p, "slime");
 	 */
-	@Getter
+
 	private final boolean AroundSlime;
-	@Getter
+
 	private final boolean AroundSlabs;
-	@Getter
+
 	private final boolean AroundSnow;
-	@Getter
+
 	private final boolean AroundLadders;
-	@Getter
+
 	private final boolean AroundLily;
-	@Getter
+
 	private final boolean AroundCarpet;
-	@Getter
+
 	private final boolean groundAround;
-	@Getter
+
 	private final boolean AroundWeb;
-	@Getter
+
 	private final ImmutableVector serverVelocity;
-	@Getter
+
 	private final boolean insideVehicle;
-	@Getter
+
 	ImmutableLoc to;
-	@Getter
+
 	ImmutableLoc from;
-	@Getter
+
 	private final GameMode gamemode;
-	@Getter
+
 	private final boolean isFlying;
-	@Getter
+
 	private final boolean ableFly;
-	@Getter
+
 	private final boolean sprinting;
 	private final boolean blockUnderHead;
 
-	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from) {
+	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from, MaterialAccess access) {
 		if (Bukkit.isPrimaryThread()) {
 			boolean liquids = false;
 			boolean ice = false;
@@ -99,7 +98,7 @@ public class MovementValues {
 			isFlying = p.isFlying();
 			ableFly = p.getAllowFlight();
 			for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 2)) {
-				String name = b.getType().name();
+				String name = access.getMaterial(b).name();
 				if (b.isLiquid()) {
 					liquids = true;
 				}
@@ -181,14 +180,16 @@ public class MovementValues {
 
 	/**
 	 * Check if the player is falling using his server Motion
+	 * 
 	 * @return true if the player is falling
 	 */
 	public boolean isServerFalling() {
 		return this.serverVelocity.getY() < 0;
 	}
-	
+
 	/**
 	 * Check if the player is falling using his yDifference
+	 * 
 	 * @return true if the player is falling
 	 */
 	public boolean isClientFalling() {
@@ -201,5 +202,117 @@ public class MovementValues {
 
 	public ImmutableVector getDirection() {
 		return this.getTo().getDirectionVector();
+	}
+
+	public ImmutableLoc getTo() {
+		return to;
+	}
+
+	public void setTo(ImmutableLoc to) {
+		this.to = to;
+	}
+
+	public ImmutableLoc getFrom() {
+		return from;
+	}
+
+	public void setFrom(ImmutableLoc from) {
+		this.from = from;
+	}
+
+	public double getYawDiff() {
+		return yawDiff;
+	}
+
+	public double getPitchDiff() {
+		return pitchDiff;
+	}
+
+	public double getxDiff() {
+		return xDiff;
+	}
+
+	public double getyDiff() {
+		return yDiff;
+	}
+
+	public double getzDiff() {
+		return zDiff;
+	}
+
+	public double getXZDiff() {
+		return XZDiff;
+	}
+
+	public boolean isAroundIce() {
+		return AroundIce;
+	}
+
+	public boolean isAroundLiquids() {
+		return AroundLiquids;
+	}
+
+	public boolean isAroundStairs() {
+		return AroundStairs;
+	}
+
+	public boolean isAroundSlime() {
+		return AroundSlime;
+	}
+
+	public boolean isAroundSlabs() {
+		return AroundSlabs;
+	}
+
+	public boolean isAroundSnow() {
+		return AroundSnow;
+	}
+
+	public boolean isAroundLadders() {
+		return AroundLadders;
+	}
+
+	public boolean isAroundLily() {
+		return AroundLily;
+	}
+
+	public boolean isAroundCarpet() {
+		return AroundCarpet;
+	}
+
+	public boolean isGroundAround() {
+		return groundAround;
+	}
+
+	public boolean isAroundWeb() {
+		return AroundWeb;
+	}
+
+	public ImmutableVector getServerVelocity() {
+		return serverVelocity;
+	}
+
+	public boolean isInsideVehicle() {
+		return insideVehicle;
+	}
+
+	public GameMode getGamemode() {
+		return gamemode;
+	}
+
+	public boolean isFlying() {
+		return isFlying;
+	}
+
+	public boolean isAbleFly() {
+		return ableFly;
+	}
+
+	public boolean isSprinting() {
+		return sprinting;
+	}
+
+	public boolean isBlockUnderHead() {
+		return blockUnderHead;
 	}
 }

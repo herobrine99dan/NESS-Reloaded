@@ -15,6 +15,7 @@ import org.bukkit.plugin.messaging.Messenger;
 
 import com.github.ness.antibot.AntiBot;
 import com.github.ness.api.NESSApi;
+import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.check.CheckManager;
 import com.github.ness.config.ConfigManager;
 import com.github.ness.config.NessConfig;
@@ -35,22 +36,29 @@ public class NessAnticheat {
 	private final CheckManager checkManager;
 	private final ViolationManager violationManager;
 
+	private MaterialAccess materialAccess;
+
 	static {
 		minecraftVersion = getVersion();
 	}
 
-	NessAnticheat(JavaPlugin plugin, Path folder) {
+	NessAnticheat(JavaPlugin plugin, Path folder, MaterialAccess materialAccess) {
 		this.plugin = plugin;
 		executor = Executors.newSingleThreadScheduledExecutor();
 
 		configManager = new ConfigManager(folder);
 		checkManager = new CheckManager(this);
 		violationManager = new ViolationManager(this);
+		this.materialAccess = materialAccess;
 	}
 
 	private static int getVersion() {
 		String first = Bukkit.getVersion().substring(Bukkit.getVersion().indexOf("(MC: "));
 		return Integer.valueOf(first.replace("(MC: ", "").replace(")", "").replace(" ", "").replace(".", ""));
+	}
+
+	public MaterialAccess getMaterialAccess() {
+		return materialAccess;
 	}
 
 	void start() {

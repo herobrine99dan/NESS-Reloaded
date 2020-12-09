@@ -30,10 +30,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		Player player = e.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = this.player().getMovementValues();
-		final double dist = from.distance(to);
-		double hozDist = dist - (to.getY() - from.getY());
-		if (to.getY() < from.getY())
-			hozDist = dist - (from.getY() - to.getY());
+		double hozDist = movementValues.getXZDiff();
 		double maxSpd = 0.43;
 		if (player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 1800) {
 			hozDist -= Math.abs(player().getLastVelocity().getX());
@@ -41,7 +38,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		}
 		if (player.hasPotionEffect(PotionEffectType.SPEED)) {
 			final int level = Utility.getPotionEffectLevel(player, PotionEffectType.SPEED);
-			hozDist = (float) (hozDist - hozDist / 100.0D * level * 20.0D);
+			hozDist -= (float) (hozDist / 100.0D * level * 20.0D);
 		}
 		Material mat = null;
 		for (int x = -1; x < 1; x++) {

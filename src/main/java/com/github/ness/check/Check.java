@@ -84,19 +84,7 @@ public class Check extends BaseCheck {
 	boolean callFlagEvent() {
 		JavaPlugin plugin = getFactory().getCheckManager().getNess().getPlugin();
 
-		return callEvent(plugin, new PlayerFlagEvent(nessPlayer, getFactory()))
-				&& callDeprecatedPlayerViolationEvent(plugin);
-	}
-	
-	@SuppressWarnings("deprecation")
-	private boolean callDeprecatedPlayerViolationEvent(JavaPlugin plugin) {
-		if (com.github.ness.api.impl.PlayerViolationEvent.getHandlerList().getRegisteredListeners().length == 0) {
-			return true;
-		}
-		return callEvent(plugin, new com.github.ness.api.impl.PlayerViolationEvent(
-				nessPlayer.getBukkitPlayer(), nessPlayer,
-				new com.github.ness.api.Violation(getFactory().getCheckName(), ""),
-				violations.get()));
+		return callEvent(plugin, new PlayerFlagEvent(nessPlayer, getFactory()));
 	}
 	
 	private boolean callEvent(JavaPlugin plugin, Cancellable event) {

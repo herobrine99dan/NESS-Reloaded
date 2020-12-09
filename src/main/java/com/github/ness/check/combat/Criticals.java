@@ -35,7 +35,7 @@ public class Criticals extends ListeningCheck<EntityDamageByEntityEvent> {
 			if (!player.isOnGround() && player.getFallDistance() > 0 && !Utility.hasflybypass(player)
 					&& !player.getLocation().getBlock().getRelative(BlockFace.DOWN).isLiquid()
 					&& !player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid()
-					&& !player.isInsideVehicle()
+					&& !Utility.hasVehicleNear(player, 3)
 					&& !Utility.getMaterialName(values.getTo().toBukkitLocation()).contains("WEB")
 					&& !Utility.getMaterialName(values.getFrom().toBukkitLocation()).contains("WEB")) {
 				NessPlayer np = player();

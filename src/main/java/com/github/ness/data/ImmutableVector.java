@@ -1,17 +1,16 @@
 package com.github.ness.data;
 
 
-import lombok.Getter;
 import org.bukkit.util.Vector;
 
 public class ImmutableVector {
 
 
-    @Getter
+    
     private final double x;
-    @Getter
+    
     private final double y;
-    @Getter
+    
     private final double z;
 
     public ImmutableVector(double x, double y, double z) {
@@ -31,7 +30,19 @@ public class ImmutableVector {
         return new ImmutableVector(vector.getX(), vector.getY(), vector.getZ());
     }
 
-    /**
+    public double getX() {
+		return x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public double getZ() {
+		return z;
+	}
+
+	/**
      * Converts back to a bukkit location
      *
      * @return the bukkit location

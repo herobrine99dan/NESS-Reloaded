@@ -19,16 +19,23 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
+import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.NetworkReflection;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
 
 public class NessPlayer implements AnticheatPlayer {
+
+	public UUID getLastEntityAttacked() {
+		return lastEntityAttacked;
+	}
+
+	public void setLastEntityAttacked(UUID lastEntityAttacked) {
+		this.lastEntityAttacked = lastEntityAttacked;
+	}
 
 	private final Queue<Infraction> infractions = new ArrayBlockingQueue<>(2);
 
@@ -40,47 +47,99 @@ public class NessPlayer implements AnticheatPlayer {
 	 * Bukkit Player corresponding to this NESSPlayer
 	 */
 	private final Player player;
-	@Getter
 	private final boolean devMode;
-	@Getter
-	@Setter
 	private double sensitivity; // The Player Sensitivity
-	private final Map<PlayerAction, Long> actionTime = Collections.synchronizedMap(new EnumMap<>(PlayerAction.class));
-	@Getter
-	@Setter
-	private ImmutableLoc lastVelocity;
-	@Getter
-	private final Set<Integer> attackedEntities = new HashSet<Integer>();
+	public double getSensitivity() {
+		return sensitivity;
+	}
 
-	@Getter
-	@Setter
+	public void setSensitivity(double sensitivity) {
+		this.sensitivity = sensitivity;
+	}
+
+	public ImmutableLoc getLastVelocity() {
+		return lastVelocity;
+	}
+
+	public void setLastVelocity(ImmutableLoc lastVelocity) {
+		this.lastVelocity = lastVelocity;
+	}
+
+	public boolean isHasSetback() {
+		return hasSetback;
+	}
+
+	public void setHasSetback(boolean hasSetback) {
+		this.hasSetback = hasSetback;
+	}
+
+	public long getSetBackTicks() {
+		return setBackTicks;
+	}
+
+	public void setSetBackTicks(long setBackTicks) {
+		this.setBackTicks = setBackTicks;
+	}
+
+	public boolean isTeleported() {
+		return teleported;
+	}
+
+	public void setTeleported(boolean teleported) {
+		this.teleported = teleported;
+	}
+
+	public MovementValues getMovementValues() {
+		return movementValues;
+	}
+
+	public void setMovementValues(MovementValues movementValues) {
+		this.movementValues = movementValues;
+	}
+
+	public boolean isDebugMode() {
+		return debugMode;
+	}
+
+	public void setDebugMode(boolean debugMode) {
+		this.debugMode = debugMode;
+	}
+
+	public boolean isMouseRecord() {
+		return mouseRecord;
+	}
+
+	public void setMouseRecord(boolean mouseRecord) {
+		this.mouseRecord = mouseRecord;
+	}
+
+	public boolean isDevMode() {
+		return devMode;
+	}
+
+	public Set<Integer> getAttackedEntities() {
+		return attackedEntities;
+	}
+
+	private final Map<PlayerAction, Long> actionTime = Collections.synchronizedMap(new EnumMap<>(PlayerAction.class));
+	private ImmutableLoc lastVelocity;
+	private final Set<Integer> attackedEntities = new HashSet<Integer>();
 	private boolean hasSetback;
 
 	private long setBackTicks;
-	@Getter
-	@Setter
 	private boolean teleported;
-	@Getter
 	private volatile MovementValues movementValues;
-	@Getter
-	@Setter
 	private boolean debugMode;
-	@Getter
-	@Setter
 	private boolean mouseRecord; // Is the player recording?
 	private long lastWasOnGround = System.nanoTime() - Duration.ofHours(1L).toNanos();
 	private long lastWasOnIce = lastWasOnGround;
-	@Getter
-	@Setter
 	private UUID lastEntityAttacked;
 
-	public NessPlayer(Player player, boolean devMode) {
+	public NessPlayer(Player player, boolean devMode, MaterialAccess access) {
 		uuid = player.getUniqueId();
 		this.player = player;
 		this.devMode = devMode;
-		this.movementValues = new MovementValues(player,
-				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d),
-				new ImmutableLoc(player.getWorld().getName(), 0d, 0d, 0d, 0f, 0d));
+		this.movementValues = new MovementValues(player,ImmutableLoc.of(player.getLocation()), ImmutableLoc.of(player.getLocation()), access);
 	}
 
 	/*
@@ -236,6 +295,9 @@ public class NessPlayer implements AnticheatPlayer {
 		final long current = System.nanoTime() / 1000_000L;
 		if ((current - setBackTicks) > 40) {
 			double ytoAdd = player.getVelocity().getY();
+            if (ytoAdd > 0) {
+                return;
+            }
 			final Location block = player.getLocation().clone().add(0, ytoAdd, 0);
 			for (int i = 0; i < 10; i++) {
 				if (block.getBlock().getType().isSolid()) {

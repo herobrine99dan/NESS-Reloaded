@@ -52,7 +52,8 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 		}
 		final long current = System.nanoTime();
 		delay.add((long) ((current - lastDelay) / 1e+6));
-		if (delay.size() < 40 || nessPlayer.isTeleported()) {
+		//TODO Test Timer False Flag like https://youtu.be/kDnC0CtJNAE
+		if (delay.size() < 40 || nessPlayer.isHasSetback()) {
 			return;
 		}
 
