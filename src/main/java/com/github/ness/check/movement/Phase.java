@@ -1,5 +1,6 @@
 package com.github.ness.check.movement;
 
+import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -23,6 +24,9 @@ public class Phase extends ListeningCheck<PlayerMoveEvent> {
     protected void checkEvent(PlayerMoveEvent event) {
         Block b = event.getTo().clone().add(0, event.getPlayer().getEyeHeight(), 0).getBlock();
         NessPlayer nessPlayer = this.player();
+        if(event.getPlayer().getGameMode().name().contains("SPECTATOR")) {
+        	return;
+        }
         if (b.getType().isOccluding() && !Utility.hasVehicleNear(event.getPlayer(), 3)
                 && Utility.groundAround(event.getTo().clone()) && !nessPlayer.isTeleported()
                 && nessPlayer.getMovementValues().getXZDiff() > 0.25) {
