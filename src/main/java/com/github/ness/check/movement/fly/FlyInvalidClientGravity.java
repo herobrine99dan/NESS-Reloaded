@@ -45,7 +45,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		MovementValues values = np.getMovementValues();
 		double y = values.yDiff;
-		if (Utility.hasflybypass(p) || p.getAllowFlight() || values.isAroundLiquids() || p.isInsideVehicle()
+		if (Utility.hasflybypass(p) || p.getAllowFlight() || values.isAroundLiquids() || Utility.hasVehicleNear(p, 3)
 				|| Utility.hasVehicleNear(p, 3) || values.isAroundWeb() || values.hasBlockNearHead() || np.isTeleported()) {
 			return;
 		}

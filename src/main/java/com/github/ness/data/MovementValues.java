@@ -5,6 +5,7 @@ import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.utility.Utility;
 
 //Need a refactor
@@ -78,7 +79,7 @@ public class MovementValues {
 	private final boolean sprinting;
 	private final boolean blockUnderHead;
 
-	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from) {
+	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from, MaterialAccess access) {
 		if (Bukkit.isPrimaryThread()) {
 			boolean liquids = false;
 			boolean ice = false;
@@ -97,7 +98,7 @@ public class MovementValues {
 			isFlying = p.isFlying();
 			ableFly = p.getAllowFlight();
 			for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 2)) {
-				String name = b.getType().name();
+				String name = access.getMaterial(b).name();
 				if (b.isLiquid()) {
 					liquids = true;
 				}
@@ -110,7 +111,7 @@ public class MovementValues {
 					slime = true;
 				} else if (name.contains("STAIR")) {
 					stairs = true;
-				} else if (name.contains("SLAB")) {
+				} else if (name.contains("SLAB") || name.contains("STEP")) {
 					slab = true;
 				} else if (name.contains("LADDER")) {
 					ladder = true;
@@ -285,5 +286,117 @@ public class MovementValues {
 
 	public ImmutableVector getDirection() {
 		return this.getTo().getDirectionVector();
+	}
+
+	public ImmutableLoc getTo() {
+		return to;
+	}
+
+	public void setTo(ImmutableLoc to) {
+		this.to = to;
+	}
+
+	public ImmutableLoc getFrom() {
+		return from;
+	}
+
+	public void setFrom(ImmutableLoc from) {
+		this.from = from;
+	}
+
+	public double getYawDiff() {
+		return yawDiff;
+	}
+
+	public double getPitchDiff() {
+		return pitchDiff;
+	}
+
+	public double getxDiff() {
+		return xDiff;
+	}
+
+	public double getyDiff() {
+		return yDiff;
+	}
+
+	public double getzDiff() {
+		return zDiff;
+	}
+
+	public double getXZDiff() {
+		return XZDiff;
+	}
+
+	public boolean isAroundIce() {
+		return AroundIce;
+	}
+
+	public boolean isAroundLiquids() {
+		return AroundLiquids;
+	}
+
+	public boolean isAroundStairs() {
+		return AroundStairs;
+	}
+
+	public boolean isAroundSlime() {
+		return AroundSlime;
+	}
+
+	public boolean isAroundSlabs() {
+		return AroundSlabs;
+	}
+
+	public boolean isAroundSnow() {
+		return AroundSnow;
+	}
+
+	public boolean isAroundLadders() {
+		return AroundLadders;
+	}
+
+	public boolean isAroundLily() {
+		return AroundLily;
+	}
+
+	public boolean isAroundCarpet() {
+		return AroundCarpet;
+	}
+
+	public boolean isGroundAround() {
+		return groundAround;
+	}
+
+	public boolean isAroundWeb() {
+		return AroundWeb;
+	}
+
+	public ImmutableVector getServerVelocity() {
+		return serverVelocity;
+	}
+
+	public boolean isInsideVehicle() {
+		return insideVehicle;
+	}
+
+	public GameMode getGamemode() {
+		return gamemode;
+	}
+
+	public boolean isFlying() {
+		return isFlying;
+	}
+
+	public boolean isAbleFly() {
+		return ableFly;
+	}
+
+	public boolean isSprinting() {
+		return sprinting;
+	}
+
+	public boolean isBlockUnderHead() {
+		return blockUnderHead;
 	}
 }

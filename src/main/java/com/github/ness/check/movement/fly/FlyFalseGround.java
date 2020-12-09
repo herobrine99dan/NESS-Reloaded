@@ -37,8 +37,7 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		ness();
 		if (Bukkit.getVersion().contains("1.8") || movementValues.isAroundLily() || movementValues.isAroundCarpet()
 				|| movementValues.isAroundSnow() || NessAnticheat.getMinecraftVersion() > 1152
-				|| ReflectionUtility.getBlockName(player, ImmutableLoc.of(player.getLocation().clone().add(0, -0.5, 0)))
-						.contains("scaffolding")) {
+				|| this.ness().getMaterialAccess().getMaterial(player.getLocation().clone().add(0, -0.5, 0)).name().contains("SCAFFOLD")) {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500

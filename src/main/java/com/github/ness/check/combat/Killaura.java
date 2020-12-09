@@ -1,6 +1,8 @@
 package com.github.ness.check.combat;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -18,7 +20,6 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
-import com.github.ness.data.ImmutableVector;
 import com.github.ness.utility.MathUtils;
 import com.github.ness.utility.Utility;
 
@@ -30,6 +31,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	double maxYaw;
 	double minAngle;
 	double maxReach;
+	List<Float> angleList;
 
 	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfos
 			.forEventWithAsyncPeriodic(EntityDamageByEntityEvent.class, Duration.ofMillis(70));
@@ -39,6 +41,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		this.maxYaw = this.ness().getMainConfig().getCheckSection().killaura().maxYaw();
 		this.minAngle = this.ness().getMainConfig().getCheckSection().killaura().minAngle();
 		this.maxReach = this.ness().getMainConfig().getCheckSection().killaura().maxReach();
+		this.angleList = new ArrayList<Float>();
 	}
 
 	public interface Config {
@@ -106,7 +109,8 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 
 	public void Check2(EntityDamageByEntityEvent event) {
 		Player player = (Player) event.getDamager();
-		if (player.getLocation().getPitch() == Math.round(player.getLocation().getPitch())) {
+		if ((player.getLocation().getPitch() == Math.round(player.getLocation().getPitch()))
+				&& Math.abs(player.getLocation().getPitch()) == 90.0) {
 			punish(event, "PerfectAngle");
 		} else if (player.getLocation().getYaw() == Math.round(player.getLocation().getYaw())) {
 			punish(event, "PerfectAngle1");
@@ -154,17 +158,23 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		NessPlayer nessPlayer = player();
 		Player player = (Player) event.getDamager();
 		float angle = (float) Utility.getAngle(player, event.getEntity().getLocation(), makeDirection(nessPlayer));
-		if (angle < -0.4) {
-			punish(event, "HitBox");
-		} else {
-			final float vectorAngle = player.getLocation().toVector().angle(event.getEntity().getLocation().toVector());
-			nessPlayer.sendDevMessage("Angle: " + angle + " VectorAngle: " + vectorAngle);
+		angleList.add(angle);
+		if (angleList.size() > 19) {
+			final double average = MathUtils.average(angleList);
+			if (average < 0.6) {
+				punish(event, "HitBox, Angle: " + average + ",Pitch: " + (float) player.getLocation().getPitch());
+			}
+			angleList.clear();
 		}
+
 	}
 
 	private Vector makeDirection(NessPlayer player) {
 		double rotX = player.getMovementValues().getTo().getYaw();
-		double rotY = 3;
+		double rotY = player.getMovementValues().getTo().getPitch();
+		if (rotY < 0) {
+			rotY = 3;
+		}
 		double y = -MathUtils.sin(Math.toRadians(rotY));
 		double xz = MathUtils.cos(Math.toRadians(rotY));
 		double x = -xz * MathUtils.sin(Math.toRadians(rotX));

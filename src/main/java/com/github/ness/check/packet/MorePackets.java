@@ -32,10 +32,10 @@ public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
 	}
 
 	public interface Config {
-		@DefaultInteger(80)
+		@DefaultInteger(85)
 		int maxPackets();
 
-		@DefaultInteger(230)
+		@DefaultInteger(250)
 		@ConfComments({
 				"NESS Reloaded can async kick players (using Netty, NESS Reloaded can disable the autoRead config option)",
 				"This feature is experimental, to disable set this to -1, else change this number to something bigger (A normal PLayer sends at most 100 packets per second" })

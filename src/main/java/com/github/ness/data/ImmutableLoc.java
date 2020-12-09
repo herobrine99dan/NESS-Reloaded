@@ -10,11 +10,14 @@ import com.github.ness.utility.MathUtils;
 public class ImmutableLoc {
 
 	private final String world;
+
 	private final double x;
 	private final double y;
 	private final double z;
+
 	private final float yaw;
 	private final double pitch;
+
 	private final ImmutableVector directionVector;
 
 	public ImmutableLoc(String world, double x, double y, double z, float yaw, double pitch) {

@@ -24,7 +24,7 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 	public FlyHighJump(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
-	
+
 	@Override
 	protected boolean shouldDragDown() {
 		return true;
@@ -36,16 +36,17 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		final MovementValues movementValues = nessPlayer.getMovementValues();
 		double y = movementValues.yDiff;
-		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || Utility.hasflybypass(p) || movementValues.isAroundSlime()
-				|| p.getAllowFlight() || Utility.isInWater(p) || movementValues.isAroundLily()
-				|| Utility.specificBlockNear(e.getTo().clone(), "sea") || movementValues.isAroundSlabs()
-				|| movementValues.isAroundStairs() || movementValues.isAroundLiquids()
-				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(e.getTo().clone().add(0, -0.5, 0)))
-						.contains("scaffolding")
-				|| ReflectionUtility.getBlockName(p, ImmutableLoc.of(e.getTo().clone().add(0, 0.5, 0)))
-						.contains("scaffolding")
-				|| movementValues.isAroundSnow()
-				|| movementValues.isAroundLadders() || nessPlayer.isTeleported() || p.isInsideVehicle() || Utility.hasVehicleNear(p, 3) || nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 1000) {
+		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || Utility.hasflybypass(p)
+				|| movementValues.isAroundSlime() || p.getAllowFlight() || Utility.isInWater(p)
+				|| movementValues.isAroundLily() || Utility.specificBlockNear(e.getTo().clone(), "SEA")
+				|| movementValues.isAroundSlabs() || movementValues.isAroundStairs() || movementValues.isAroundLiquids()
+				|| this.ness().getMaterialAccess().getMaterial(e.getTo().clone().add(0, -0.5, 0)).name()
+						.contains("SCAFFOLD")
+				|| this.ness().getMaterialAccess().getMaterial(e.getTo().clone().add(0, 0.5, 0)).name()
+						.contains("SCAFFOLD")
+				|| movementValues.isAroundSnow() || movementValues.isAroundLadders() || nessPlayer.isTeleported()
+				|| Utility.hasVehicleNear(p, 3)
+				|| nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 1000) {
 			flyYSum = 0;
 			return;
 		}
@@ -58,8 +59,9 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 			double jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
 			max += jumpBoost * (max / 2);
 			if (flyYSum > max && p.getVelocity().getY() < 0) {
-				flagEvent(e , " ySum: " + flyYSum);
-	        	//if(player().setViolation(new Violation("Fly", "HighJump ySum: " + flyYSum))) e.setCancelled(true);
+				flagEvent(e, " ySum: " + flyYSum);
+				// if(player().setViolation(new Violation("Fly", "HighJump ySum: " + flyYSum)))
+				// e.setCancelled(true);
 			}
 		}
 	}

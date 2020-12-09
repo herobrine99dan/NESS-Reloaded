@@ -84,7 +84,7 @@ class PlayerManager implements PlayersManager {
 	}
 	
 	NessPlayer addPlayer(Player player) {
-		NessPlayer nessPlayer = new NessPlayer(player, ness().getMainConfig().isDevMode());
+		NessPlayer nessPlayer = new NessPlayer(player, ness().getMainConfig().isDevMode(), this.ness().getMaterialAccess());
 
 		Set<BaseCheckFactory<?>> enabledFactories = new HashSet<>();
 		for (BaseCheckFactory<?> factory : checkManager.getCheckFactories()) {

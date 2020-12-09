@@ -51,7 +51,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
         if ((xDist > walkSpeed || zDist > walkSpeed) && event.getTo().getBlock().isLiquid()
                 && event.getTo().clone().add(0, 0.01, 0).getBlock().isLiquid()
                 && event.getTo().clone().add(0, -0.01, 0).getBlock().isLiquid() && event.getFrom().getBlock().isLiquid()
-                && !Utility.hasflybypass(p) && !p.isInsideVehicle()) {
+                && !Utility.hasflybypass(p) && !Utility.hasVehicleNear(p, 3)) {
         	flagEvent(event);
         }
     }

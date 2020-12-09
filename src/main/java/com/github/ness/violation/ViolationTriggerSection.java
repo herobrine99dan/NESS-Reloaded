@@ -163,26 +163,8 @@ public interface ViolationTriggerSection {
 					String command = manager.addViolationVariables(command(), infractionImpl);
 
 					JavaPlugin plugin = ness.getPlugin();
-					if (!callDeprecatedPlayerPunishEvent(plugin, infractionImpl.getPlayer(), infraction, command)) {
-						return;
-					}
 					plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command);
 				}
-
-				@SuppressWarnings("deprecation")
-				private boolean callDeprecatedPlayerPunishEvent(JavaPlugin plugin, NessPlayer nessPlayer,
-						Infraction infraction, String command) {
-					if (com.github.ness.api.impl.PlayerPunishEvent.getHandlerList()
-							.getRegisteredListeners().length == 0) {
-						return true;
-					}
-					com.github.ness.api.impl.PlayerPunishEvent event = new com.github.ness.api.impl.PlayerPunishEvent(
-							nessPlayer.getBukkitPlayer(), nessPlayer,
-							ViolationMigratorUtil.violationFromInfraction(infraction), infraction.getCount(), command);
-					plugin.getServer().getPluginManager().callEvent(event);
-					return !event.isCancelled();
-				}
-
 			};
 		}
 

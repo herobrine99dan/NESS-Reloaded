@@ -32,20 +32,13 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 		if (Utility.getMaterialName(event.getTo().clone().add(0, -0.3, 0)).contains("SLAB")
 				|| event.getTo().getBlock().isLiquid() || movementValues.isAroundLiquids() || movementValues.isAroundSnow()
 				|| Utility.groundAround(to.clone().add(0, 1.8, 0))
-				|| Utility.specificBlockNear(to.clone(), "chest")
-				|| Utility.specificBlockNear(to.clone(), "ladder")
-				|| Utility.specificBlockNear(to.clone(), "pot")
-				|| Utility.specificBlockNear(to.clone(), "bed")
-				|| Utility.specificBlockNear(to.clone(), "detector") || movementValues.isAroundStairs()
+				|| Utility.specificBlockNear(to.clone(), "CHEST")
+				|| Utility.specificBlockNear(to.clone(), "LADDER")
+				|| Utility.specificBlockNear(to.clone(), "POT")
+				|| Utility.specificBlockNear(to.clone(), "BED")
+				|| Utility.specificBlockNear(to.clone(), "DETECTOR") || movementValues.isAroundStairs()
 				|| Utility.getMaterialName(to.clone().add(0, 1.8, 0)).contains("CHORUS")
 				|| Utility.getMaterialName(from.clone().add(0, 1.6, 0)).contains("CHORUS")
-				|| Utility.getMaterialName(to).contains("LADDER")
-				|| Utility.getMaterialName(to).contains("VINE")
-				|| Utility.getMaterialName(to).contains("SEA")
-				|| Utility.getMaterialName(from).contains("SEA")
-				|| Utility.getMaterialName(to.clone().add(0, 0.3, 0)).contains("SEA")
-				|| Utility.getMaterialName(to.clone().add(0, -0.2, 0)).contains("SEA")
-				|| Utility.getMaterialName(from.clone().add(0, 0.5, 0)).contains("LADDER")
 				|| movementValues.isAroundIce() || movementValues.isAroundSlime() || Utility.hasflybypass(player)) {
 			return;
 		}
@@ -53,7 +46,7 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 			yDiff -= Math.abs(nessPlayer.getLastVelocity().getY());
 		}
 		// !player.getNearbyEntities(4, 4, 4).isEmpty()
-		if (yDiff > 0 && !player.isInsideVehicle()) {
+		if (yDiff > 0 && !Utility.hasVehicleNear(player, 3)) {
 			if (player.getVelocity().getY() == 0.42f && !Utility.isMathematicallyOnGround(event.getTo().getY())
 					&& Utility.isMathematicallyOnGround(event.getFrom().getY())) {
 				double yResult = Math.abs(yDiff - player.getVelocity().getY());

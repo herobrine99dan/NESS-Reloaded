@@ -32,5 +32,6 @@ Also see the [extended contributors page](https://github.com/herobrine99dan/NESS
 
 ## License
 
-NESS-Reloaded is open-source under the GNU GPL v3 or later.
- 
+NESS-Reloaded is licensed under the GNU General Public License v3 or later. See the license file for more inormation.
+
+This project contains concepts originally from ProtocolLib, Copyright (C) 2018 Kristian S. Stangeland, licensed under the GNU General Public License version 2 or later. ProtocolLib concepts are used in NESS-Reloaded under the GNU General Public License version 3, according to the definition of a "combined work."

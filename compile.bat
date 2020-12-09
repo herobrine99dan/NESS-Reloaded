@@ -1,2 +1,1 @@
 mvn clean verify
-pause

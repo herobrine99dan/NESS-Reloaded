@@ -8,6 +8,7 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.MathUtils;
 import com.github.ness.utility.Utility;
@@ -20,6 +21,7 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 	private float lastYaw;
 	private List<Double> pitchDiff;
 	private double lastGCD = 0;
+	private int buffer;
 
 	public Aimbot(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
 		super(factory, player);
@@ -37,6 +39,7 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 		}
 		makeSensitivity(e);
 		Check2(e);
+		Check3(e);
 	}
 
 	private void makeSensitivity(ReceivedPacketEvent event) {
@@ -105,5 +108,23 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {
 			flag(" PerfectAura1");
 		}
+	}
+	
+	/**
+	 * @author Tecnio
+	 * This check comes from AntiHaxerman (https://github.com/Tecnio/AntiHaxerman/blob/master/src/main/java/me/tecnio/antihaxerman/check/impl/aim/AimE.java)
+	 * @param e
+	 */
+	private void Check3(ReceivedPacketEvent e) {
+		NessPlayer player = e.getNessPlayer();
+        if (player.milliSecondTimeDifference(PlayerAction.ATTACK) < 100) {
+            if (player.getMovementValues().getYawDiff() % .25 == 0.0 && player.getMovementValues().getYawDiff() > 0) {
+                if (++buffer > 3) {
+                    flag();
+                }
+            } else if(buffer > 0) {
+            	buffer--;
+            }
+        }
 	}
 }

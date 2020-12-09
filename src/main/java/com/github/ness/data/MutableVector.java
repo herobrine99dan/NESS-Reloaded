@@ -20,27 +20,27 @@ public class MutableVector implements Cloneable {
         this.z = z;
     }
 
-    double getX() {
+  public double getX() {
 		return x;
 	}
 
-	void setX(double x) {
+	public void setX(double x) {
 		this.x = x;
 	}
 
-	double getY() {
+	public double getY() {
 		return y;
 	}
 
-	void setY(double y) {
+	public void setY(double y) {
 		this.y = y;
 	}
 
-	double getZ() {
+	public double getZ() {
 		return z;
 	}
 
-	void setZ(double z) {
+	public void setZ(double z) {
 		this.z = z;
 	}
 
@@ -204,4 +204,5 @@ public class MutableVector implements Cloneable {
             return false;
         return Double.doubleToLongBits(z) == Double.doubleToLongBits(other.z);
     }
+
 }

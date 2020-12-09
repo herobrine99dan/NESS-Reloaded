@@ -17,7 +17,7 @@ public class InvalidSprint extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
-	protected InvalidSprint(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer nessPlayer) {
+	public InvalidSprint(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer nessPlayer) {
 		super(factory, nessPlayer);
 	}
 	@Override
