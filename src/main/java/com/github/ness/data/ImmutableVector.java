@@ -1,33 +1,17 @@
 package com.github.ness.data;
 
-
 import org.bukkit.util.Vector;
 
 public class ImmutableVector {
 
-
-    
     private final double x;
-    
     private final double y;
-    
     private final double z;
 
     public ImmutableVector(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
-    }
-
-    /**
-     * Creates an immutable vector from a bukkit vector, with an overridden
-     * world
-     *
-     * @param location the bukkit vector
-     * @return the immutable vector
-     */
-    public static ImmutableVector of(Vector vector) {
-        return new ImmutableVector(vector.getX(), vector.getY(), vector.getZ());
     }
 
     public double getX() {
@@ -41,6 +25,17 @@ public class ImmutableVector {
 	public double getZ() {
 		return z;
 	}
+
+	/**
+     * Creates an immutable vector from a bukkit vector, with an overridden
+     * world
+     *
+     * @param location the bukkit vector
+     * @return the immutable vector
+     */
+    public static ImmutableVector of(Vector vector) {
+        return new ImmutableVector(vector.getX(), vector.getY(), vector.getZ());
+    }
 
 	/**
      * Converts back to a bukkit location

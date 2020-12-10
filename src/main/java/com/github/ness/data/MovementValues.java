@@ -60,15 +60,15 @@ public class MovementValues {
 
 	private final boolean groundAround;
 
-	private final boolean AroundWeb;
+	private final boolean aroundWeb;
 
 	private final ImmutableVector serverVelocity;
 
 	private final boolean insideVehicle;
 
-	ImmutableLoc to;
+	private final ImmutableLoc to;
 
-	ImmutableLoc from;
+	private final ImmutableLoc from;
 
 	private final GameMode gamemode;
 
@@ -131,7 +131,7 @@ public class MovementValues {
 			blockUnderHead = Utility.groundAround(to.toBukkitLocation().add(0, 1.8, 0));
 			AroundLadders = ladder;
 			AroundSlabs = slab;
-			AroundWeb = web;
+			aroundWeb = web;
 			AroundStairs = stairs;
 			sprinting = p.isSprinting();
 			if (!slime) {
@@ -153,7 +153,7 @@ public class MovementValues {
 			groundAround = false;
 			sprinting = false;
 			AroundLily = false;
-			AroundWeb = false;
+			aroundWeb = false;
 			blockUnderHead = false;
 			AroundSnow = false;
 			insideVehicle = false;
@@ -208,18 +208,9 @@ public class MovementValues {
 		return to;
 	}
 
-	public void setTo(ImmutableLoc to) {
-		this.to = to;
-	}
-
 	public ImmutableLoc getFrom() {
 		return from;
 	}
-
-	public void setFrom(ImmutableLoc from) {
-		this.from = from;
-	}
-
 	public double getYawDiff() {
 		return yawDiff;
 	}
@@ -285,7 +276,7 @@ public class MovementValues {
 	}
 
 	public boolean isAroundWeb() {
-		return AroundWeb;
+		return aroundWeb;
 	}
 
 	public ImmutableVector getServerVelocity() {
