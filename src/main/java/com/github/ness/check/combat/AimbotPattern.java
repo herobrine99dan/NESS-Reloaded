@@ -24,7 +24,7 @@ public class AimbotPattern extends ListeningCheck<ReceivedPacketEvent> {
 	@Override
 	protected void checkEvent(ReceivedPacketEvent event) {
 		NessPlayer player = this.player();
-		yawChanges.add(player.getMovementValues().yawDiff);
+		yawChanges.add(player.getMovementValues().getYawDiff());
 		if (yawChanges.size() > SIZE) {
 
 		}

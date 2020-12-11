@@ -31,7 +31,7 @@ public class Strafe extends ListeningCheck<PlayerMoveEvent> {
 
         double dist = distanceXZ(e.getFrom(), e.getTo());
         double angle = Math.toDegrees(Math.atan2(dir.getX(), dir.getZ()));
-        double yawDiff = np.getMovementValues().yawDiff;
+        double yawDiff = np.getMovementValues().getYawDiff();
 
         angle = -angle;
         if (angle < 0) {

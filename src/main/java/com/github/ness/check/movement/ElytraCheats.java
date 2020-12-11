@@ -43,7 +43,7 @@ public class ElytraCheats extends ListeningCheck<PlayerMoveEvent> {
         if (!p.isGliding()) {
             return;
         }
-        float yDiff = (float) this.player().getMovementValues().yDiff;
+        float yDiff = (float) this.player().getMovementValues().getyDiff();
         float xzDiff = (float) this.player().getMovementValues().getXZDiff();
         if (xzDiff > maxXZDiff || yDiff > this.maxYDiff) {
         	flagEvent(event);

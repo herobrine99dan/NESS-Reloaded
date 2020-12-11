@@ -29,7 +29,7 @@ public class AimbotGCD extends ListeningCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		NessPlayer player = player();
-		double pitchDelta = Math.abs(player.getMovementValues().pitchDiff);
+		double pitchDelta = Math.abs(player.getMovementValues().getPitchDiff());
 		if (Math.abs(pitchDelta) >= 10 || Math.abs(pitchDelta) < 0.05 || pitchDelta == 0.0 || player.isTeleported()
 				|| player.isHasSetback() || Math.abs(player.getMovementValues().getTo().getPitch()) == 90) {
 			return;

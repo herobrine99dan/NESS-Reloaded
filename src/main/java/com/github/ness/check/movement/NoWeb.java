@@ -24,8 +24,8 @@ public class NoWeb extends ListeningCheck<PlayerMoveEvent> {
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
-		double xDiff = Math.abs(nessPlayer.getMovementValues().xDiff);
-		double zDiff = Math.abs(nessPlayer.getMovementValues().zDiff);
+		double xDiff = Math.abs(nessPlayer.getMovementValues().getxDiff());
+		double zDiff = Math.abs(nessPlayer.getMovementValues().getzDiff());
 		final double walkSpeed = p.getWalkSpeed() * 0.85;
 		xDiff -= (xDiff / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);
 		zDiff -= (zDiff / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);

@@ -27,7 +27,7 @@ public class OmniSprint extends ListeningCheck<ReceivedPacketEvent> {
 		// event.getTo().toVector().subtract(event.getFrom().toVector());
 		MovementValues values = nessPlayer.getMovementValues();
 		if (values.isSprinting()) {
-			if (values.getServerVelocity().getY() > 0.0 || nessPlayer.getMovementValues().yawDiff > 10) {
+			if (values.getServerVelocity().getY() > 0.0 || nessPlayer.getMovementValues().getYawDiff() > 10) {
 				return;
 			}
 			Vector moving = values.getFrom().toBukkitLocation().clone()

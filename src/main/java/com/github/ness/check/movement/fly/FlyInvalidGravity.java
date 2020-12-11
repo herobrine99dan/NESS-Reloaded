@@ -50,7 +50,7 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
         NessPlayer np = this.player();
         Player p = e.getPlayer();
         MovementValues values = np.getMovementValues();
-        double y = values.yDiff;
+        double y = values.getyDiff();
         double yresult = y - p.getVelocity().getY();
         if (Utility.hasflybypass(p) || values.isAroundSlime() || p.getAllowFlight()
                 || values.isAroundLily() || Utility.hasVehicleNear(p, 3)) {

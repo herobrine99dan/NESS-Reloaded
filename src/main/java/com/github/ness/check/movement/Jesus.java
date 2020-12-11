@@ -34,8 +34,8 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
     protected void checkEvent(PlayerMoveEvent event) {
         Player p = event.getPlayer();
         NessPlayer nessPlayer = this.player();
-        double xDist = nessPlayer.getMovementValues().xDiff;
-        double zDist = nessPlayer.getMovementValues().zDiff;
+        double xDist = nessPlayer.getMovementValues().getxDiff();
+        double zDist = nessPlayer.getMovementValues().getzDiff();
         double walkSpeed = p.getWalkSpeed() * distmultiplier;
 		if (NessAnticheat.getMinecraftVersion() > 1122) {
             walkSpeed = p.getWalkSpeed() * 1.3;

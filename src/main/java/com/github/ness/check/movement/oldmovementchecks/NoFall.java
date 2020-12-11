@@ -51,7 +51,7 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 				|| nessPlayer.isTeleported()) {
 			return;
 		}
-		Double vertDist = values.yDiff;
+		Double vertDist = values.getyDiff();
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500) {
 			hozDist -= Math.abs(nessPlayer.getLastVelocity().getX()) + Math.abs(nessPlayer.getLastVelocity().getZ());
 			vertDist -= Math.abs(nessPlayer.getLastVelocity().getY());

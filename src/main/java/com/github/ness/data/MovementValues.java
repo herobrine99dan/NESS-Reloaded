@@ -14,23 +14,23 @@ public class MovementValues {
 	/**
 	 * Yaw Difference (to.getYaw() - from.getYaw());
 	 */
-	public final double yawDiff;
+	private final double yawDiff;
 	/**
 	 * Pitch Difference (to.getPitch() - from.getPitch());
 	 */
-	public final double pitchDiff;
+	private final double pitchDiff;
 	/**
 	 * X Difference (to.getX() - from.getX());
 	 */
-	public final double xDiff;
+	private final double xDiff;
 	/**
 	 * Y Difference (to.getY() - from.getY());
 	 */
-	public final double yDiff;
+	private final double yDiff;
 	/**
 	 * Z Difference (to.getZ() - from.getZ());
 	 */
-	public final double zDiff;
+	private final double zDiff;
 
 	private final double XZDiff;
 

@@ -45,7 +45,7 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 	private void makeSensitivity(ReceivedPacketEvent event) {
 		// float yaw = to.getYaw() - from.getYaw();
 		NessPlayer player = event.getNessPlayer();
-		double pitch = Math.abs(player.getMovementValues().pitchDiff);
+		double pitch = Math.abs(player.getMovementValues().getPitchDiff());
 		if (Math.abs(pitch) >= 10 || Math.abs(pitch) < 0.05 || pitch == 0.0 || !player.isTeleported()
 				|| Math.abs(player.getMovementValues().getTo().getPitch()) == 90) {
 			return;
@@ -79,12 +79,12 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 		if (np.getSensitivity() == 0) {
 			return;
 		}
-		if (np.getMovementValues().yawDiff < 1) {
+		if (np.getMovementValues().getYawDiff() < 1) {
 			return;
 		}
 		double firstvar = np.getSensitivity() * 0.6F + 0.2F;
 		float secondvar = (float) (Math.pow(firstvar, 3f));
-		double yawResult = np.getMovementValues().yawDiff - lastYaw;
+		double yawResult = np.getMovementValues().getYawDiff() - lastYaw;
 		float thirdvar = (float) yawResult / (secondvar * 1.2f);
 		float x = (float) (thirdvar - Math.floor(thirdvar));
 		// TODO Fixing Smooth Camera
@@ -93,7 +93,7 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 			// if(player().setViolation(new Violation("Aimbot", "ImpossibleRotation: " +
 			// x))) e.setCancelled(true);
 		}
-		lastYaw = (float) np.getMovementValues().yawDiff;
+		lastYaw = (float) np.getMovementValues().getYawDiff();
 	}
 
 	/**
@@ -101,8 +101,8 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 	 */
 	private void Check2(ReceivedPacketEvent e) {
 		NessPlayer player = e.getNessPlayer();
-		float yawChange = (float) Math.abs(player.getMovementValues().yawDiff);
-		float pitchChange = (float) Math.abs(player.getMovementValues().pitchDiff);
+		float yawChange = (float) Math.abs(player.getMovementValues().getYawDiff());
+		float pitchChange = (float) Math.abs(player.getMovementValues().getPitchDiff());
 		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {
 			flag(" PerfectAura");
 		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {

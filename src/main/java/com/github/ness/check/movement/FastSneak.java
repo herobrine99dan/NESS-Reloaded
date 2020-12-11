@@ -24,8 +24,8 @@ public class FastSneak extends ListeningCheck<PlayerMoveEvent> {
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
-		double xDiff = Math.abs(nessPlayer.getMovementValues().xDiff);
-		double zDiff = Math.abs(nessPlayer.getMovementValues().zDiff);
+		double xDiff = Math.abs(nessPlayer.getMovementValues().getxDiff());
+		double zDiff = Math.abs(nessPlayer.getMovementValues().getzDiff());
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1300) {
 			xDiff -= Math.abs(nessPlayer.getLastVelocity().getX());
 			zDiff -= Math.abs(nessPlayer.getLastVelocity().getZ());

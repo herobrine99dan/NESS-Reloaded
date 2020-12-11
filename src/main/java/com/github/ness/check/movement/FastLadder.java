@@ -36,7 +36,7 @@ public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
         NessPlayer np = this.player();
         if (Utility.isClimbableBlock(p.getLocation().getBlock()) && !p.hasPotionEffect(PotionEffectType.JUMP)
                 && !Utility.hasflybypass(p) && !np.isTeleported()) {
-            double distance = np.getMovementValues().yDiff;
+            double distance = np.getMovementValues().getyDiff();
             if (distance > 0.155D && p.getVelocity().getY() < 0) {
             	flagEvent(event);
             	//if(player().setViolation(new Violation("FastLadder", "Dist: " + distance))) event.setCancelled(true);

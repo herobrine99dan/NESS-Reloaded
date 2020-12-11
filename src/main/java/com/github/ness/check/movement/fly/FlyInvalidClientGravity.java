@@ -44,7 +44,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		NessPlayer np = this.player();
 		Player p = e.getPlayer();
 		MovementValues values = np.getMovementValues();
-		double y = values.yDiff;
+		double y = values.getyDiff();
 		if (Utility.hasflybypass(p) || p.getAllowFlight() || values.isAroundLiquids() || Utility.hasVehicleNear(p, 3)
 				|| Utility.hasVehicleNear(p, 3) || values.isAroundWeb() || values.hasBlockNearHead() || np.isTeleported()) {
 			return;
