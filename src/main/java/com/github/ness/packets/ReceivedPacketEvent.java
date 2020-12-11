@@ -1,17 +1,26 @@
 package com.github.ness.packets;
 
+import com.github.ness.NessPlayer;
+import com.github.ness.packets.wrappers.SimplePacket;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.github.ness.NessPlayer;
-import com.github.ness.packets.wrappers.SimplePacket;
-
 public class ReceivedPacketEvent extends Event implements Cancellable {
+
 	private static final HandlerList HANDLERS = new HandlerList();
 
-	SimplePacket packet;
+	private final SimplePacket packet;
+	private final NessPlayer nessPlayer;
+	private boolean cancelled;
+
+	public ReceivedPacketEvent(NessPlayer nessplayer, SimplePacket packet) {
+		super(!Bukkit.isPrimaryThread());
+		this.packet = packet;
+		this.nessPlayer = nessplayer;
+	}
 
 	public SimplePacket getPacket() {
 		return packet;
@@ -19,15 +28,6 @@ public class ReceivedPacketEvent extends Event implements Cancellable {
 
 	public NessPlayer getNessPlayer() {
 		return nessPlayer;
-	}
-
-	NessPlayer nessPlayer;
-	private boolean cancelled;
-
-	public ReceivedPacketEvent(NessPlayer nessplayer, SimplePacket packet) {
-		super(!Bukkit.isPrimaryThread());
-		this.packet = packet;
-		this.nessPlayer = nessplayer;
 	}
 
 	public static HandlerList getHandlerList() {
