@@ -1,7 +1,5 @@
 package com.github.ness.api;
 
-import org.bukkit.entity.Player;
-
 /**
  * Officially supported NESS API.
  *

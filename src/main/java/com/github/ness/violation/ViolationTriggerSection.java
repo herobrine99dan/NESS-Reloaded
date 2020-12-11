@@ -6,7 +6,6 @@ import java.util.logging.Level;
 
 import com.github.ness.NessAnticheat;
 import com.github.ness.NessLogger;
-import com.github.ness.NessPlayer;
 import com.github.ness.api.Infraction;
 import com.github.ness.api.InfractionTrigger;
 import com.github.ness.check.InfractionImpl;
