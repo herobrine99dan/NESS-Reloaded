@@ -1,11 +1,7 @@
 package com.github.ness.check.world;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;

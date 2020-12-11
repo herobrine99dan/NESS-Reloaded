@@ -1,6 +1,5 @@
 package com.github.ness.check.movement;
 
-import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerMoveEvent;
 

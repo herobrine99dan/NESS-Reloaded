@@ -2,7 +2,6 @@ package com.github.ness.check.required;
 
 import java.time.Duration;
 
-import org.bukkit.Location;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import com.github.ness.NessPlayer;

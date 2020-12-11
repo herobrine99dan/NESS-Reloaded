@@ -9,7 +9,6 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
-import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.ReceivedPacketEvent;
 
 public class OmniSprint extends ListeningCheck<ReceivedPacketEvent> {

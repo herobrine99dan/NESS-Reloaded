@@ -1,6 +1,5 @@
 package com.github.ness.check.world;
 
-import org.bukkit.Material;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.github.ness.NessPlayer;
