@@ -2,9 +2,10 @@ package com.github.ness.check;
 
 import java.time.Duration;
 
-import com.github.ness.NessAnticheat;
-
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.ness.NessAnticheat;
+import com.github.ness.blockgetter.MaterialAccess;
 
 public class BaseCheck {
 
@@ -28,6 +29,10 @@ public class BaseCheck {
 	
 	protected NessAnticheat ness() {
 		return manager().getNess();
+	}
+	
+	protected MaterialAccess materialAccess() {
+		return ness().getMaterialAccess();
 	}
 	
 	/**

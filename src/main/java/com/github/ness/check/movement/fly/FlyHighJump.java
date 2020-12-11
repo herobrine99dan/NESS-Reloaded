@@ -36,7 +36,7 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		final MovementValues movementValues = nessPlayer.getMovementValues();
 		double y = movementValues.yDiff;
-		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || Utility.hasflybypass(p)
+		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || Utility.isOnGround(e.getTo(), this.materialAccess()) || Utility.hasflybypass(p)
 				|| movementValues.isAroundSlime() || p.getAllowFlight() || Utility.isInWater(p)
 				|| movementValues.isAroundLily() || Utility.specificBlockNear(e.getTo().clone(), "SEA")
 				|| movementValues.isAroundSlabs() || movementValues.isAroundStairs() || movementValues.isAroundLiquids()
@@ -53,6 +53,7 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500) {
 			y -= Math.abs(nessPlayer.getLastVelocity().getY());
 		}
+
 		if (y > 0) {
 			flyYSum += y;
 			double max = 1.30;

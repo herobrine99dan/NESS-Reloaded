@@ -18,6 +18,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import com.github.ness.blockgetter.MaterialAccess;
+
 public class Utility {
 
 	public final static Set<Material> occludingMaterials = new HashSet<Material>();
@@ -40,7 +42,7 @@ public class Utility {
 	public static double round(double value, int precision) {
 		return (double) Math.round(value * precision) / precision;
 	}
-	
+
 	public static Location getEyeLocation(LivingEntity player) {
 		final Location eye = player.getLocation();
 		eye.setY(eye.getY() + player.getEyeHeight());
@@ -57,7 +59,7 @@ public class Utility {
 	 */
 	public static double getAngle(Player player, Location target, Vector direction) {
 		Location eye = player.getEyeLocation();
-		if(direction == null) {
+		if (direction == null) {
 			direction = player.getLocation().getDirection();
 		}
 		Vector toEntity = target.toVector().subtract(eye.toVector());
@@ -178,8 +180,34 @@ public class Utility {
 		return false;
 	}
 
-	public static boolean isOnGround(Location loc) {
-		return loc.clone().subtract(0, 0.002, 0).getBlock().getType().isSolid();
+	public static boolean isOnGround(Location loc, MaterialAccess access) {
+		final Location cloned = loc.clone().subtract(0, 0.003, 0);
+		Material material = access.getMaterial(cloned);
+		boolean solidBlock = material.isSolid();
+		boolean fence = material.name().contains("FENCE");
+		boolean gate = material.name().contains("FENCE");
+		boolean walls = material.name().contains("WALLS");
+		return solidBlock || fence || walls || gate;
+	}
+
+	public static boolean isOnGroundUsingCollider(Location loc, MaterialAccess access, Double d) {
+		final Location cloned = loc.clone().subtract(0, 0.03, 0);
+		double limit = 0.3;
+		if(d == null) {
+			limit = 0.3;
+		} else {
+			limit = d;
+		}
+		boolean onGround = false;
+		for (double x = -limit; x < limit + 0.1; x += limit) {
+			for (double z = -limit; z < limit + 0.1; z += limit) {
+				Material material = access.getMaterial(cloned.clone().add(x, 0, z).getBlock());
+				if(material.isSolid()) {
+					onGround = true;
+				}
+			}
+		}
+		return onGround;
 	}
 
 	public static List<Block> getBlocksAround(Location loc, int radius) {
