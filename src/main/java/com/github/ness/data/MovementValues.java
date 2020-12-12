@@ -60,6 +60,8 @@ public class MovementValues {
 
 	private final boolean groundAround;
 
+	private final boolean onGroundCollider;
+
 	private final boolean aroundWeb;
 
 	private final ImmutableVector serverVelocity;
@@ -128,6 +130,7 @@ public class MovementValues {
 				}
 			}
 			AroundSnow = snow;
+			onGroundCollider = Utility.isOnGroundUsingCollider(to.toBukkitLocation(), access, 0.4);
 			blockUnderHead = Utility.groundAround(to.toBukkitLocation().add(0, 1.8, 0));
 			AroundLadders = ladder;
 			AroundSlabs = slab;
@@ -155,6 +158,7 @@ public class MovementValues {
 			AroundLily = false;
 			aroundWeb = false;
 			blockUnderHead = false;
+			onGroundCollider = false;
 			AroundSnow = false;
 			insideVehicle = false;
 			gamemode = GameMode.SURVIVAL;
@@ -211,6 +215,7 @@ public class MovementValues {
 	public ImmutableLoc getFrom() {
 		return from;
 	}
+
 	public double getYawDiff() {
 		return yawDiff;
 	}
@@ -255,6 +260,10 @@ public class MovementValues {
 		return AroundSlabs;
 	}
 
+	public boolean isOnGroundCollider() {
+		return onGroundCollider;
+	}
+	
 	public boolean isAroundSnow() {
 		return AroundSnow;
 	}

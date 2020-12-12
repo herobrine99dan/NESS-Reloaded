@@ -24,6 +24,8 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	private double lastDeltaY;
+	private int airTicks;
+	private int buffer;
 
 	@Override
 	protected boolean shouldDragDown() {
@@ -45,18 +47,28 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		MovementValues values = np.getMovementValues();
 		double y = values.getyDiff();
+		if (values.isOnGroundCollider()) {
+			airTicks = 0;
+		} else {
+			airTicks++;
+		}
 		if (Utility.hasflybypass(p) || p.getAllowFlight() || values.isAroundLiquids() || Utility.hasVehicleNear(p, 3)
-				|| Utility.hasVehicleNear(p, 3) || values.isAroundWeb() || values.hasBlockNearHead() || np.isTeleported()) {
+				|| values.isAroundWeb() || values.hasBlockNearHead()) {
 			return;
 		}
-		double yPredicted = Math.abs((lastDeltaY - 0.08D) * 0.9800000190734863D);
-		if (np.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
-			yPredicted = np.getLastVelocity().getY();
-		}
+		double yPredicted = (lastDeltaY - 0.08D) * 0.9800000190734863D;
 		double yResult = Math.abs(y - yPredicted);
-		//TODO Needs better ground test
-		if (yResult > 0.004D && !values.isGroundAround()) {
-			np.sendDevMessage("Predicted: " + (float) yResult + " Y: " + (float) y);
+		if (yResult > 0.001 && Math.abs(yPredicted) > 0.004 && airTicks > 4) {
+			np.sendDevMessage("NotCheats: " + (float) yResult + " Y: " + (float) y + " AirTicks: " + airTicks
+					+ " Buffer: " + buffer);
+			if (airTicks > 10) {
+				buffer += 2;
+			}
+			if (++buffer > 3) {
+				np.sendDevMessage("Cheats: " + (float) yResult + " Y: " + (float) y + " AirTicks: " + airTicks);
+			}
+		} else if (buffer > 0 && airTicks > 4) {
+			buffer--;
 		}
 		lastDeltaY = y;
 	}

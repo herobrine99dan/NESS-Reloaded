@@ -180,16 +180,6 @@ public class Utility {
 		return false;
 	}
 
-	public static boolean isOnGround(Location loc, MaterialAccess access) {
-		final Location cloned = loc.clone().subtract(0, 0.003, 0);
-		Material material = access.getMaterial(cloned);
-		boolean solidBlock = material.isSolid();
-		boolean fence = material.name().contains("FENCE");
-		boolean gate = material.name().contains("FENCE");
-		boolean walls = material.name().contains("WALLS");
-		return solidBlock || fence || walls || gate;
-	}
-
 	public static boolean isOnGroundUsingCollider(Location loc, MaterialAccess access, Double d) {
 		final Location cloned = loc.clone().subtract(0, 0.03, 0);
 		double limit = 0.3;
@@ -202,7 +192,10 @@ public class Utility {
 		for (double x = -limit; x < limit + 0.1; x += limit) {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
 				Material material = access.getMaterial(cloned.clone().add(x, 0, z).getBlock());
-				if(material.isSolid()) {
+				boolean fence = material.name().contains("FENCE");
+				boolean gate = material.name().contains("FENCE");
+				boolean walls = material.name().contains("WALLS");
+				if(material.isSolid() && !(fence || gate || walls)) {
 					onGround = true;
 				}
 			}
