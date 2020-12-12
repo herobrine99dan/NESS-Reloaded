@@ -78,6 +78,12 @@ public class MovementValues {
 
 	private final boolean ableFly;
 
+	private final boolean AroundFence;
+
+	private final boolean AroundGate;
+
+	private final boolean AroundWalls;
+
 	private final boolean sprinting;
 	private final boolean blockUnderHead;
 
@@ -94,6 +100,10 @@ public class MovementValues {
 			boolean carpet = false;
 			boolean ground = false;
 			boolean web = false;
+			boolean gate = false;
+			boolean walls = false;
+			boolean fence = false;
+			boolean onGroundCollider = false;
 			serverVelocity = new ImmutableVector(p.getVelocity().getX(), p.getVelocity().getY(),
 					p.getVelocity().getZ());
 			gamemode = p.getGameMode();
@@ -127,10 +137,15 @@ public class MovementValues {
 					carpet = true;
 				} else if (name.contains("WEB")) {
 					web = true;
+				} else if (name.contains("FENCE")) {
+					fence = true;
+				} else if (name.contains("GATE")) {
+					gate = true;
+				} else if (name.contains("WALL")) {
+					walls = true;
 				}
 			}
 			AroundSnow = snow;
-			onGroundCollider = Utility.isOnGroundUsingCollider(to.toBukkitLocation(), access, 0.4);
 			blockUnderHead = Utility.groundAround(to.toBukkitLocation().add(0, 1.8, 0));
 			AroundLadders = ladder;
 			AroundSlabs = slab;
@@ -147,6 +162,15 @@ public class MovementValues {
 			insideVehicle = p.isInsideVehicle();
 			AroundCarpet = carpet;
 			AroundLiquids = liquids;
+			AroundFence = fence;
+			AroundGate = gate;
+			AroundWalls = walls;
+			if (this.isAroundCarpet() || this.isAroundIce() || this.isAroundSlabs() || this.isAroundStairs()
+					|| this.isAroundSnow() || this.AroundFence || this.AroundGate || this.AroundWalls) {
+				onGroundCollider = true;
+			}
+			onGroundCollider = Utility.isOnGroundUsingCollider(to.toBukkitLocation(), access, 0.4);
+			this.onGroundCollider = onGroundCollider;
 		} else {
 			AroundIce = false;
 			AroundSlabs = false;
@@ -154,6 +178,8 @@ public class MovementValues {
 			AroundCarpet = false;
 			AroundLadders = false;
 			groundAround = false;
+			AroundGate = false;
+			AroundWalls = false;
 			sprinting = false;
 			AroundLily = false;
 			aroundWeb = false;
@@ -167,6 +193,7 @@ public class MovementValues {
 			AroundLiquids = false;
 			AroundSlime = false;
 			AroundStairs = false;
+			AroundFence = false;
 		}
 		yawDiff = to.getYaw() - from.getYaw();
 		pitchDiff = to.getPitch() - from.getPitch();
@@ -263,7 +290,15 @@ public class MovementValues {
 	public boolean isOnGroundCollider() {
 		return onGroundCollider;
 	}
-	
+
+	public boolean isAroundGate() {
+		return AroundGate;
+	}
+
+	public boolean isAroundFence() {
+		return AroundFence;
+	}
+
 	public boolean isAroundSnow() {
 		return AroundSnow;
 	}

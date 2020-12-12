@@ -193,9 +193,9 @@ public class Utility {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
 				Material material = access.getMaterial(cloned.clone().add(x, 0, z).getBlock());
 				boolean fence = material.name().contains("FENCE");
-				boolean gate = material.name().contains("FENCE");
+				boolean gate = material.name().contains("GATE");
 				boolean walls = material.name().contains("WALLS");
-				if(material.isSolid() && !(fence || gate || walls)) {
+				if(material.isSolid() || fence || gate || walls) {
 					onGround = true;
 				}
 			}

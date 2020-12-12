@@ -51,7 +51,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		@DefaultDouble(-0.2)
 		double minAngle();
 
-		@DefaultDouble(3.4)
+		@DefaultDouble(4)
 		double maxReach();
 	}
 
@@ -88,8 +88,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 			maxReach += 0.4D;
 		}
 		maxReach += (Utility.getPing(player) / 100) / 15;
-		if ((range > maxReach && range < 6.5D)
-				|| Utility.getDistance3D(player.getLocation(), entity.getLocation()) > 5) {
+		if (range > maxReach && range < 6.5D) {
 			punish(eventt, "Reach: " + range);
 		}
 	}

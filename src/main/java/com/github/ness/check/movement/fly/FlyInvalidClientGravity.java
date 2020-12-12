@@ -58,7 +58,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		}
 		double yPredicted = (lastDeltaY - 0.08D) * 0.9800000190734863D;
 		double yResult = Math.abs(y - yPredicted);
-		if (yResult > 0.001 && Math.abs(yPredicted) > 0.004 && airTicks > 4) {
+		if (yResult > 0.002 && Math.abs(yPredicted) > 0.004 && airTicks > 5) {
 			np.sendDevMessage("NotCheats: " + (float) yResult + " Y: " + (float) y + " AirTicks: " + airTicks
 					+ " Buffer: " + buffer);
 			if (airTicks > 10) {

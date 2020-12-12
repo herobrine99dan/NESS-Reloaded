@@ -57,7 +57,7 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 
 		if (y > 0) {
 			flyYSum += y;
-			double max = 1.30;
+			double max = 1.45;
 			double jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
 			max += jumpBoost * (max / 2);
 			if (flyYSum > max && p.getVelocity().getY() < 0) {

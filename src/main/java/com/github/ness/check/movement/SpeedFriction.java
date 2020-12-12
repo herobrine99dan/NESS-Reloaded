@@ -49,11 +49,10 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			airTicks = 0;
 		}
 		if (airTicks > 1) {
-			final double prediction = lastDeltaXZ * 0.91f + (player.isSprinting() ? 0.026 : 0.02);
+			final double prediction = (lastDeltaXZ * 0.91f) + (player.isSprinting() ? 0.026 : 0.02);
 			final double difference = xzDiff - prediction;
-			if (difference > 0.02) {
-				buffer++;
-				if(buffer > 3) {
+			if (difference > 0.027) {
+				if(++buffer > 3) {
 					this.flagEvent(event);
 				}
 			} else if(buffer > 0) {
