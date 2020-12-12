@@ -1,6 +1,14 @@
 package com.github.ness.check;
 
+import com.github.ness.NessPlayer;
+import com.github.ness.data.ImmutableLoc;
+import com.github.ness.data.MovementValues;
+import com.github.ness.data.PlayerAction;
+import com.github.ness.packets.ReceivedPacketEvent;
+import com.github.ness.utility.Utility;
+
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,16 +20,8 @@ import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.github.ness.NessPlayer;
-import com.github.ness.data.ImmutableLoc;
-import com.github.ness.data.MovementValues;
-import com.github.ness.data.PlayerAction;
-import com.github.ness.packets.ReceivedPacketEvent;
-import com.github.ness.utility.Utility;
 
 public class CoreListener implements Listener {
 
@@ -82,33 +82,33 @@ public class CoreListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onVelocity(PlayerVelocityEvent event) {
-		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(event.getPlayer());
+		Player player = event.getPlayer();
+		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(player);
 		if (nessPlayer == null) {
 			return;
 		}
-		nessPlayer.setLastVelocity(ImmutableLoc.of(event.getVelocity().toLocation(event.getPlayer().getWorld())));
 		nessPlayer.setPlayerAction(PlayerAction.VELOCITY);
+		nessPlayer.setLastVelocity(ImmutableLoc.of(event.getVelocity().toLocation(player.getWorld())));
 		if (nessPlayer.isDevMode()) {
-			event.getPlayer().sendMessage("Velocity: " + nessPlayer.getLastVelocity());
+			player.sendMessage("Velocity: " + nessPlayer.getLastVelocity());
 		}
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onVelocity(EntityDamageByEntityEvent event) {
-		if (event.getDamager() instanceof Player) {
-			NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer((Player) event.getDamager());
+		Entity damager = event.getDamager();
+		Entity victim = event.getEntity();
+
+		if (damager instanceof Player) {
+			NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer((Player) damager);
 			if (nessPlayer == null) {
 				return;
 			}
 			nessPlayer.setPlayerAction(PlayerAction.ATTACK);
-			nessPlayer.setLastEntityAttacked(event.getEntity().getUniqueId());
+			nessPlayer.setLastEntityAttacked(victim.getUniqueId());
 		}
-		if(event.getEntity() instanceof Player) {
-			NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer((Player) event.getEntity());
-			if (nessPlayer == null) {
-				return;
-			}
-			nessPlayer.setPlayerAction(PlayerAction.DAMAGE);
+		if (victim instanceof Player) {
+			setPlayerAction((Player) victim, PlayerAction.DAMAGE);
 		}
 	}
 
@@ -126,20 +126,20 @@ public class CoreListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlace(BlockPlaceEvent event) {
-		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(event.getPlayer());
-		if (nessPlayer == null) {
-			return;
-		}
-		nessPlayer.setPlayerAction(PlayerAction.BLOCKPLACED);
+		setPlayerAction(event.getPlayer(), PlayerAction.BLOCKPLACED);
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlace(PlayerAnimationEvent event) {
-		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(event.getPlayer());
+		setPlayerAction(event.getPlayer(), PlayerAction.ANIMATION);
+	}
+
+	private void setPlayerAction(Player player, PlayerAction action) {
+		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(player);
 		if (nessPlayer == null) {
 			return;
 		}
-		nessPlayer.setPlayerAction(PlayerAction.ANIMATION);
+		nessPlayer.setPlayerAction(action);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)

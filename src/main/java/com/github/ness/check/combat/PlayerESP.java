@@ -10,7 +10,6 @@ import com.github.ness.check.Check;
 import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.check.CheckInfos;
-import com.github.ness.data.ImmutableVector;
 import com.github.ness.utility.Utility;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;

@@ -2,13 +2,9 @@ package com.github.ness.check.packet;
 
 import java.time.Duration;
 
-import org.bukkit.Location;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.check.Check;
-import com.github.ness.check.CheckFactory;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -16,7 +12,6 @@ import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.ReceivedPacketEvent;
 
-import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
 public class Freecam extends ListeningCheck<ReceivedPacketEvent> {

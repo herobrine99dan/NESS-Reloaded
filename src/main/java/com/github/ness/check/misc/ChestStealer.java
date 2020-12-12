@@ -5,6 +5,7 @@ import java.time.Duration;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
 import com.github.ness.NessPlayer;
@@ -23,6 +24,7 @@ public class ChestStealer extends ListeningCheck<InventoryClickEvent> {
 			forEventWithAsyncPeriodic(InventoryClickEvent.class, Duration.ofMillis(500));
 	private long moveInvItemsLastTime;
 	private int movedInvItems;
+	private byte lastItemSlot = 0;
 	private Material lastItemType = Material.AIR;
 
 	public ChestStealer(ListeningCheckFactory<?, InventoryClickEvent> factory, NessPlayer player) {
@@ -31,12 +33,6 @@ public class ChestStealer extends ListeningCheck<InventoryClickEvent> {
 
 	@Override
 	protected void checkAsyncPeriodic() {
-		/*
-		 * if (player.movedInvItemsLastCount == player.movedInvItems) {
-		 * player.setViolation(new Violation("ChestStealer", "movedInventoryItems: " +
-		 * player.movedInvItems), null); } // BAD CHECK. player.movedInvItemsLastCount =
-		 * player.movedInvItems;
-		 */
 		movedInvItems = 0;
 	}
 
@@ -45,30 +41,32 @@ public class ChestStealer extends ListeningCheck<InventoryClickEvent> {
 		NessPlayer nessPlayer = player();
 		if (player().isNot(e.getWhoClicked()))
 			return;
-		final Inventory i1 = e.getWhoClicked().getInventory();
-		final Inventory i2 = e.getInventory();
+		final Inventory i1 = e.getInventory();
 		if(nessPlayer.getBukkitPlayer().getGameMode().equals(GameMode.CREATIVE) || e.getCurrentItem() == null) {
 			return;
 		}
 		final Material itemType = e.getCurrentItem().getType();
-		if (i1 != i2 && itemType != Material.AIR) {
-			if (!lastItemType.equals(itemType)) {
-				movedInvItems++;
-				if (movedInvItems > 4) {
-
-					//if(player().setViolation(new Violation("ChestStealer", "movedInventoryItems: " + movedInvItems))) e.setCancelled(true);
-					flagEvent(e, " movedInventoryItems: " + movedInvItems);
-					movedInvItems = 0;
+		if (!i1.getType().equals(InventoryType.CRAFTING) && itemType != Material.AIR) {
+			//if (i1.getType().equals(InventoryType.CHEST)) {
+			if (e.getRawSlot() < e.getInventory().getSize() + 26 && lastItemSlot != e.getRawSlot()) {
+				if (!lastItemType.equals(itemType)) {
+					movedInvItems++;
+					if (movedInvItems > 4) {
+						flagEvent(e, " movedInventoryItems: " + movedInvItems);
+						movedInvItems = 0;
+					}
+					final long now = System.currentTimeMillis();
+					final long result = now - moveInvItemsLastTime;
+					if (result < 60) {
+						flagEvent(e, " timeBetweenMovedItems: " + result);
+					}
+					moveInvItemsLastTime = System.currentTimeMillis();
 				}
-				final long now = System.currentTimeMillis();
-				final long result = now - moveInvItemsLastTime;
-				if (result < 80) {
-					flagEvent(e, " timeBetweenMovedItems: " + result);
-					//if(player().setViolation(new Violation("ChestStealer", "timeBetweenMovedItems: " + result))) e.setCancelled(true);
-				}
-				moveInvItemsLastTime = System.currentTimeMillis();
+				lastItemType = itemType;
+				lastItemSlot = (byte) e.getRawSlot();
+			} else {
+				lastItemType = Material.AIR;
 			}
-			lastItemType = itemType;
 		}
 	}
 
