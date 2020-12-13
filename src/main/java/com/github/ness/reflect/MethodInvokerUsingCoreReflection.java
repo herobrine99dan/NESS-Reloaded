@@ -6,14 +6,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
-class MethodInvokerImpl<R> implements MethodInvoker<R> {
+class MethodInvokerUsingCoreReflection<R> implements MethodInvoker<R> {
 
 	private final Lookup lookup;
 	private final Method method;
 
-	MethodInvokerImpl(Lookup lookup, Method method) {
-		this.lookup = lookup;
-		this.method = Objects.requireNonNull(method, "method");
+	MethodInvokerUsingCoreReflection(Lookup lookup, Method method) {
+		this.lookup = Objects.requireNonNull(lookup);
+		this.method = Objects.requireNonNull(method);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -42,7 +42,7 @@ class MethodInvokerImpl<R> implements MethodInvoker<R> {
 
 	@Override
 	public boolean equals(Object object) {
-		return this == object || object instanceof MethodInvokerImpl
-				&& method.equals(((MethodInvokerImpl<?>) object).method);
+		return this == object || object instanceof MethodInvokerUsingCoreReflection
+				&& method.equals(((MethodInvokerUsingCoreReflection<?>) object).method);
 	}
 }

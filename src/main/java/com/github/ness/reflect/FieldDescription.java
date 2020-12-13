@@ -2,28 +2,21 @@ package com.github.ness.reflect;
 
 import java.lang.reflect.Field;
 
-public class FieldDescription<T> implements MemberDescription<Field> {
-
-	private final String name;
-	private final Class<T> type;
-
-	private FieldDescription(String name, Class<T> type) {
-		this.name = name;
-		this.type = type;
-	}
-
-	public static <T> FieldDescription<T> create(String name, Class<T> type) {
-		return new FieldDescription<>(name, type);
-	}
+/**
+ * Description of a field
+ * 
+ * @author A248
+ *
+ * @param <T> the type of the field
+ */
+public interface FieldDescription<T> extends MemberDescription<Field> {
 
 	@Override
-	public boolean matches(Field field) {
-		return field.getName().equals(name) && field.getType().equals(type);
-	}
-
-	@Override
-	public String toString() {
-		return "FieldDescription [name=" + name + ", type=" + type + "]";
+	default FieldDescription<T> withOffset(int memberOffset) {
+		if (memberOffset == memberOffset()) {
+			return this;
+		}
+		return new FieldDescriptionWithOffset<>(this, memberOffset);
 	}
 
 }

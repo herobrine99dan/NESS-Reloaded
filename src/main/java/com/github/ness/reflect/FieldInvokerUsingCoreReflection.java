@@ -5,14 +5,14 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-class FieldInvokerImpl<T> implements FieldInvoker<T> {
+class FieldInvokerUsingCoreReflection<T> implements FieldInvoker<T> {
 
 	private transient final Lookup lookup;
 	private final Field field;
 
-	FieldInvokerImpl(Lookup lookup, Field field) {
-		this.lookup = lookup;
-		this.field = Objects.requireNonNull(field, "field");
+	FieldInvokerUsingCoreReflection(Lookup lookup, Field field) {
+		this.lookup = Objects.requireNonNull(lookup);
+		this.field = Objects.requireNonNull(field);
 	}
 
 	@Override
@@ -50,8 +50,8 @@ class FieldInvokerImpl<T> implements FieldInvoker<T> {
 
 	@Override
 	public boolean equals(Object object) {
-		return this == object || object instanceof FieldInvokerImpl
-				&& field.equals(((FieldInvokerImpl<?>) object).field);
+		return this == object || object instanceof FieldInvokerUsingCoreReflection
+				&& field.equals(((FieldInvokerUsingCoreReflection<?>) object).field);
 	}
 
 }
