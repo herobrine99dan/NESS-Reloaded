@@ -10,7 +10,7 @@ public class CachedReflection implements Reflection {
 
 	private final ConcurrentMap<Class<?>, Container> cache = new ConcurrentHashMap<>();
 
-	CachedReflection(Reflection delegate) {
+	public CachedReflection(Reflection delegate) {
 		this.delegate = Objects.requireNonNull(delegate);
 	}
 

@@ -23,7 +23,6 @@ import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.packets.NetworkReflection;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -167,8 +166,8 @@ public class NessPlayer implements AnticheatPlayer {
 	 * 
 	 */
 	public void kickThreadSafe() {
-		Object networkManager = NetworkReflection.getNetworkManager(getBukkitPlayer());
-		NetworkReflection.getChannel(networkManager).config().setAutoRead(false);
+		//Object networkManager = NetworkReflection.getNetworkManager(getBukkitPlayer());
+		//NetworkReflection.getChannel(networkManager).config().setAutoRead(false);
 		// NetworkReflection.clearPacketQueue(networkManager);
 	}
 

@@ -21,7 +21,14 @@ import com.github.ness.config.ConfigManager;
 import com.github.ness.config.NessConfig;
 import com.github.ness.config.NessMessages;
 import com.github.ness.listener.BungeeCordListener;
+import com.github.ness.packets.Networker;
+import com.github.ness.packets.NetworkReflectionCreation;
+import com.github.ness.packets.PacketActorInterceptor;
 import com.github.ness.packets.PacketListener;
+import com.github.ness.reflect.CachedReflection;
+import com.github.ness.reflect.ClassLocator;
+import com.github.ness.reflect.CoreReflection;
+import com.github.ness.reflect.Reflection;
 import com.github.ness.violation.ViolationManager;
 
 public class NessAnticheat {
@@ -34,6 +41,7 @@ public class NessAnticheat {
 
 	private final ConfigManager configManager;
 	private final CheckManager checkManager;
+	private final Networker networker;
 	private final ViolationManager violationManager;
 
 	private MaterialAccess materialAccess;
@@ -50,6 +58,12 @@ public class NessAnticheat {
 		checkManager = new CheckManager(this);
 		violationManager = new ViolationManager(this);
 		this.materialAccess = materialAccess;
+
+		Reflection reflection = new CachedReflection(new CoreReflection());
+		networker = new Networker(plugin,
+				new PacketListener(
+						new NetworkReflectionCreation(reflection, ClassLocator.create()).create(),
+						new PacketActorInterceptor(checkManager.createPacketActor(), reflection)));
 	}
 
 	private static int getVersion() {
@@ -91,7 +105,7 @@ public class NessAnticheat {
 
 		// Start packet listener except on Glowstone
 		if (!Bukkit.getName().toLowerCase().contains("glowstone")) {
-			plugin.getServer().getPluginManager().registerEvents(new PacketListener(this), plugin);
+			networker.start();
 		}
 		// Start plugin message listener if bungeecord notify-staff hook enabled
 		if (getMainConfig().getViolationHandling().notifyStaff().bungeecord()) {
@@ -144,6 +158,7 @@ public class NessAnticheat {
 	}
 
 	void close() {
+		networker.close();
 		checkManager.close();
 		try {
 			executor.shutdown();
