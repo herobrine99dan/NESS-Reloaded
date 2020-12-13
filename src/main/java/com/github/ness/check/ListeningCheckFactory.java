@@ -51,10 +51,12 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 			UUID uuid = getPlayerFunction.apply(event);
 			C check = getChecksMap().get(uuid);
 			if (check != null) {
-				check.checkEvent(event);
+				check.checkEventUnlessInvalid(event);
 			}
 		} else {
-			getChecksMap().values().forEach((check) -> check.checkEvent(event));
+			getChecksMap().values().forEach((check) -> {
+				check.checkEventUnlessInvalid(event);
+			});
 		}
 	}
 	

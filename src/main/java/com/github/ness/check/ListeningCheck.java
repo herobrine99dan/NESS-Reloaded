@@ -46,7 +46,14 @@ public abstract class ListeningCheck<E extends Event> extends Check {
 	 * @param evt        the event
 	 */
 	protected abstract void checkEvent(E evt);
-	
+
+	void checkEventUnlessInvalid(E event) {
+		if (player().isInvalid()) {
+			return;
+		}
+		checkEvent(event);
+	}
+
 	/**
 	 * Flags the player for cheating, and cancels the event if the violation count is too high (when configured)
 	 * 

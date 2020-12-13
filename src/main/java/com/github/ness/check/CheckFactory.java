@@ -67,7 +67,7 @@ public class CheckFactory<C extends Check> extends BaseCheckFactory<C> {
 		if (!started()) {
 			return;
 		}
-		checks.values().forEach((check) -> check.checkAsyncPeriodic());
+		checks.values().forEach((check) -> check.checkAsyncPeriodicUnlessInvalid());
 	}
 	
 	@Override

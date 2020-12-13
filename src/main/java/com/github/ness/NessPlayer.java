@@ -158,17 +158,29 @@ public class NessPlayer implements AnticheatPlayer {
 	}
 
 	/*
-	 * Thread safe disconnection
+	 * Effective 'concurrent' disconnection
 	 */
 
+	private volatile String kickMessage;
+
+	public boolean isInvalid() {
+		return kickMessage != null;
+	}
+
+	public void checkNeedsKick() {
+		String kickMessage = this.kickMessage;
+		if (kickMessage != null) {
+			player.kickPlayer(kickMessage);
+		}
+	}
+
 	/**
-	 * Disconnects the player just as the server would
-	 * 
+	 * Disconnects (effectively) the player. Thread safe
+	 *
+	 * @param kickMessage the kick message
 	 */
-	public void kickThreadSafe() {
-		//Object networkManager = NetworkReflection.getNetworkManager(getBukkitPlayer());
-		//NetworkReflection.getChannel(networkManager).config().setAutoRead(false);
-		// NetworkReflection.clearPacketQueue(networkManager);
+	public void kickThreadSafe(String kickMessage) {
+		this.kickMessage = kickMessage;
 	}
 
 	/*
