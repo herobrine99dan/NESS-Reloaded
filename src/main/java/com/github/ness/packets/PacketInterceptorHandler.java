@@ -15,12 +15,12 @@ class PacketInterceptorHandler extends ChannelDuplexHandler {
 		this.interceptor = actor;
 	}
 
-    @Override
-    public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
-    	if (interceptor.shouldDrop(uuid, packet)) {
-    		return;
-    	}
-    	super.channelRead(channelHandlerContext, packet);
-    }
+	@Override
+	public void channelRead(ChannelHandlerContext channelHandlerContext, Object packet) throws Exception {
+		if (interceptor.shouldDrop(uuid, packet)) {
+			return;
+		}
+		super.channelRead(channelHandlerContext, packet);
+	}
 
 }
