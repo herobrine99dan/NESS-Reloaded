@@ -8,7 +8,7 @@ import java.util.Objects;
 
 class MethodInvokerUsingCoreReflection<R> implements MethodInvoker<R> {
 
-	private final Lookup lookup;
+	private transient final Lookup lookup;
 	private final Method method;
 
 	MethodInvokerUsingCoreReflection(Lookup lookup, Method method) {
@@ -36,13 +36,8 @@ class MethodInvokerUsingCoreReflection<R> implements MethodInvoker<R> {
 	}
 
 	@Override
-	public int hashCode() {
-		return 31 + method.hashCode();
+	public String toString() {
+		return "MethodInvokerUsingCoreReflection [lookup=" + lookup + ", method=" + method + "]";
 	}
 
-	@Override
-	public boolean equals(Object object) {
-		return this == object || object instanceof MethodInvokerUsingCoreReflection
-				&& method.equals(((MethodInvokerUsingCoreReflection<?>) object).method);
-	}
 }

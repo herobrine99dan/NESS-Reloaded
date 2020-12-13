@@ -25,7 +25,8 @@ import com.github.ness.packets.Networker;
 import com.github.ness.packets.NetworkReflectionCreation;
 import com.github.ness.packets.PacketActorInterceptor;
 import com.github.ness.packets.PacketListener;
-import com.github.ness.reflect.CachedReflection;
+import com.github.ness.reflect.InvokerCachingReflection;
+import com.github.ness.reflect.MethodHandleReflection;
 import com.github.ness.reflect.ClassLocator;
 import com.github.ness.reflect.CoreReflection;
 import com.github.ness.reflect.Reflection;
@@ -59,7 +60,7 @@ public class NessAnticheat {
 		violationManager = new ViolationManager(this);
 		this.materialAccess = materialAccess;
 
-		Reflection reflection = new CachedReflection(new CoreReflection());
+		Reflection reflection = new InvokerCachingReflection(new MethodHandleReflection(new CoreReflection()));
 		networker = new Networker(plugin,
 				new PacketListener(
 						new NetworkReflectionCreation(reflection, ClassLocator.create()).create(),

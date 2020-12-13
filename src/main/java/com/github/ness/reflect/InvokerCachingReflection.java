@@ -1,34 +1,38 @@
 package com.github.ness.reflect;
 
+import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class CachedReflection implements Reflection {
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
+
+public class InvokerCachingReflection implements Reflection {
 
 	private final Reflection delegate;
+	private final LoadingCache<Class<?>, Container> cache;
 
-	private final ConcurrentMap<Class<?>, Container> cache = new ConcurrentHashMap<>();
-
-	public CachedReflection(Reflection delegate) {
+	public InvokerCachingReflection(Reflection delegate) {
 		this.delegate = Objects.requireNonNull(delegate);
+		cache = Caffeine.newBuilder().expireAfterAccess(Duration.ofMinutes(10L)).build(Container::new);
 	}
 
 	@Override
 	public <T> FieldInvoker<T> getField(Class<?> clazz, FieldDescription<T> description) {
-		return cache.computeIfAbsent(clazz, Container::new).getField(description);
+		return cache.get(clazz).getField(description);
 	}
 
 	@Override
 	public <R> MethodInvoker<R> getMethod(Class<?> clazz, MethodDescription<R> description) {
-		return cache.computeIfAbsent(clazz, Container::new).getMethod(description);
+		return cache.get(clazz).getMethod(description);
 	}
 
 	private class Container {
 
 		private final Class<?> clazz;
-		final ConcurrentMap<FieldDescription<?>, FieldInvoker<?>> fields = new ConcurrentHashMap<>();
-		final ConcurrentMap<MethodDescription<?>, MethodInvoker<?>> methods = new ConcurrentHashMap<>();
+		private final ConcurrentMap<FieldDescription<?>, FieldInvoker<?>> fields = new ConcurrentHashMap<>();
+		private final ConcurrentMap<MethodDescription<?>, MethodInvoker<?>> methods = new ConcurrentHashMap<>();
 
 		Container(Class<?> clazz) {
 			this.clazz = clazz;
