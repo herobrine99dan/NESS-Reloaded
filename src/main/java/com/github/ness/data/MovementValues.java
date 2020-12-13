@@ -165,12 +165,14 @@ public class MovementValues {
 			AroundFence = fence;
 			AroundGate = gate;
 			AroundWalls = walls;
-			if (this.isAroundCarpet() || this.isAroundIce() || this.isAroundSlabs() || this.isAroundStairs()
-					|| this.isAroundSnow() || this.AroundFence || this.AroundGate || this.AroundWalls) {
-				onGroundCollider = true;
+			onGroundCollider = this.isAroundCarpet() || this.isAroundSlabs() || this.isAroundStairs()
+					|| this.isAroundSnow() || this.AroundFence || this.AroundGate || this.AroundWalls;
+			if (onGroundCollider) {
+				this.onGroundCollider = onGroundCollider;
+			} else {
+				onGroundCollider = Utility.isOnGroundUsingCollider(to.toBukkitLocation(), access, 0.4);
+				this.onGroundCollider = onGroundCollider;
 			}
-			onGroundCollider = Utility.isOnGroundUsingCollider(to.toBukkitLocation(), access, 0.4);
-			this.onGroundCollider = onGroundCollider;
 		} else {
 			AroundIce = false;
 			AroundSlabs = false;

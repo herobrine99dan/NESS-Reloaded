@@ -7,7 +7,7 @@ import com.github.ness.check.combat.autoclick.AutoClickConfig;
 import com.github.ness.check.movement.ElytraCheats;
 import com.github.ness.check.movement.FastLadder;
 import com.github.ness.check.movement.Jesus;
-import com.github.ness.check.movement.fly.FlyInvalidGravity;
+import com.github.ness.check.movement.fly.FlyInvalidServerGravity;
 import com.github.ness.check.packet.Freecam;
 import com.github.ness.check.packet.MorePackets;
 import com.github.ness.check.packet.Timer;
@@ -107,7 +107,7 @@ public interface ChecksConfig {
 		"Effectiveness: High",
 		""})
 	@SubSection
-	FlyInvalidGravity.Config fly();
+	FlyInvalidServerGravity.Config fly();
 	@ConfKey("freecam")
 	@SubSection
 	Freecam.Config freecam();

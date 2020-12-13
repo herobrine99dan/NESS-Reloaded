@@ -14,14 +14,14 @@ import com.github.ness.utility.Utility;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 
-public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
+public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
 
     double maxInvalidVelocity;
     
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
 			.forEvent(PlayerMoveEvent.class);
 
-	public FlyInvalidGravity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
+	public FlyInvalidServerGravity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
         this.maxInvalidVelocity = this.ness().getMainConfig().getCheckSection().fly().maxGravity();
 	}

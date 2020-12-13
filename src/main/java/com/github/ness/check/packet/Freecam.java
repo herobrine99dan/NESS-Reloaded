@@ -29,7 +29,7 @@ public class Freecam extends ListeningCheck<ReceivedPacketEvent> {
 	}
 	
 	public interface Config {
-		@DefaultInteger(550)
+		@DefaultInteger(1100)
 		int maxDelay();
 	}
 

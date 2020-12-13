@@ -34,7 +34,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		double hozDist = dist - (to.getY() - from.getY());
 		if (to.getY() < from.getY())
 			hozDist = dist - (from.getY() - to.getY());
-		double maxSpd = 0.43;
+		double maxSpd = player.getWalkSpeed() * 2.15; // 0.43
 		if (player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 1800) {
 			hozDist -= Math.abs(player().getLastVelocity().getX());
 			hozDist -= Math.abs(player().getLastVelocity().getZ());
@@ -50,16 +50,16 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 						.getBlockAt(from.getBlockX() + x, player.getEyeLocation().getBlockY() + 1, from.getBlockZ() + z)
 						.getType();
 				if (mat.isSolid()) {
-					maxSpd = 0.50602;
+					maxSpd = player.getWalkSpeed() * 2.535; // 0.507
 					break;
 				}
 			}
 		}
 		if (movementValues.isAroundSlabs() || movementValues.isAroundStairs()) {
-			maxSpd += 0.1;
+			maxSpd += player.getWalkSpeed() * 0.5;
 		}
 		if (movementValues.isAroundIce() || nessPlayer.getTimeSinceLastWasOnIce() < 1000) {
-			maxSpd += 0.2;
+			maxSpd += player.getWalkSpeed();
 		}
 		if (player.isInsideVehicle() && player.getVehicle().getType().name().contains("BOAT"))
 			maxSpd = 2.787;
