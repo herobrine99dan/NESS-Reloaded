@@ -25,7 +25,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 
 	private double lastDeltaY;
 	private int airTicks;
-	private int buffer;
+	private double buffer;
 
 	@Override
 	protected boolean shouldDragDown() {
@@ -53,10 +53,10 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 			airTicks++;
 		}
 		if (Utility.hasflybypass(p) || p.getAllowFlight() || values.isAroundLiquids() || Utility.hasVehicleNear(p, 3)
-				|| values.isAroundWeb() || values.hasBlockNearHead()) {
+				|| values.isAroundWeb()) {
 			return;
 		}
-		double yPredicted = (lastDeltaY - 0.08D) * 0.9800000190734863D;
+		double yPredicted = (lastDeltaY - 0.08D) * 0.98D;
 		double yResult = Math.abs(y - yPredicted);
 		if (yResult > 0.002 && Math.abs(yPredicted) > 0.004 && airTicks > 5) {
 			np.sendDevMessage("NotCheats: " + (float) yResult + " Y: " + (float) y + " AirTicks: " + airTicks
@@ -68,7 +68,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 				np.sendDevMessage("Cheats: " + (float) yResult + " Y: " + (float) y + " AirTicks: " + airTicks);
 			}
 		} else if (buffer > 0 && airTicks > 4) {
-			buffer--;
+			buffer -= .25;
 		}
 		lastDeltaY = y;
 	}

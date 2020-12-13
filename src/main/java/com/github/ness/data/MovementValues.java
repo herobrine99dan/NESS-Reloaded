@@ -170,7 +170,7 @@ public class MovementValues {
 			if (onGroundCollider) {
 				this.onGroundCollider = onGroundCollider;
 			} else {
-				onGroundCollider = Utility.isOnGroundUsingCollider(to.toBukkitLocation(), access, 0.4);
+				onGroundCollider = Utility.isOnGroundUsingCollider(to.toBukkitLocation(), access, 0.5);
 				this.onGroundCollider = onGroundCollider;
 			}
 		} else {
