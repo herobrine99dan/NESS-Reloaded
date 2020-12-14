@@ -21,7 +21,6 @@ public class TestCheck extends ListeningCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		MovementValues values = player().getMovementValues();
-		player().sendDevMessage("xzDiff: " + (float) values.getXZDiff());
 	}
 
 }

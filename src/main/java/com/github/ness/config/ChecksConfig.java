@@ -107,7 +107,7 @@ public interface ChecksConfig {
 		"Effectiveness: High",
 		""})
 	@SubSection
-	FlyInvalidServerGravity.Config fly();
+	FlyInvalidServerGravity.Config flyInvalidServerGravity();
 	@ConfKey("freecam")
 	@SubSection
 	Freecam.Config freecam();

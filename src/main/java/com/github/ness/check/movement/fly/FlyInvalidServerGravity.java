@@ -23,7 +23,7 @@ public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
 
 	public FlyInvalidServerGravity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
-        this.maxInvalidVelocity = this.ness().getMainConfig().getCheckSection().fly().maxGravity();
+        this.maxInvalidVelocity = this.ness().getMainConfig().getCheckSection().flyInvalidServerGravity().maxGravity();
 	}
 	
 	@Override
