@@ -61,6 +61,9 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		if (movementValues.isAroundIce() || nessPlayer.getTimeSinceLastWasOnIce() < 1000) {
 			maxSpd += player.getWalkSpeed();
 		}
+		if (movementValues.hasBlockNearHead()) {
+			maxSpd += player.getWalkSpeed() * 0.45;
+		}
 		if (player.isInsideVehicle() && player.getVehicle().getType().name().contains("BOAT"))
 			maxSpd = 2.787;
 		if (hozDist > maxSpd && !player.isFlying() && !player.getAllowFlight()

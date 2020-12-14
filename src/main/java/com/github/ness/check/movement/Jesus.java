@@ -50,13 +50,14 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		double predictedXZ = lastXZDist * 0.8f;
 		double resultXZ = xzDist - predictedXZ;
 		// We start the check only if the player is in liquid
-		if (Utility.isNearWater(event.getTo(), this.manager().getNess().getMaterialAccess())) {
+		if (event.getTo().clone().add(0, -0.1, 0).getBlock().isLiquid() && event.getFrom().getBlock().isLiquid()
+				&& Utility.isNearWater(event.getTo(), this.manager().getNess().getMaterialAccess())) {
 			if (yDist > 0.301D) {
 				nessPlayer.sendDevMessage("Flag");
 			} else if (resultY > 0.05) {
 				nessPlayer.sendDevMessage("Flag1 " + (float) resultY);
 			}
-			if (resultXZ > 0.05) {
+			if (resultXZ > 0.06) {
 				nessPlayer.sendDevMessage("Flag2 " + (float) resultXZ);
 			}
 		}

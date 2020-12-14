@@ -196,13 +196,13 @@ public class Utility {
 
 	public static boolean isNearWater(Location loc, MaterialAccess access) {
 		int water = 0;
-		for (Block b : getCollidingBlocks(loc, 0.3, 0.1)) {
+		for (Block b : getCollidingBlocks(loc, 0.25, 0.1)) {
 			String material = access.getMaterial(b).name();
 			if (material.contains("WATER") || material.contains("LAVA")) {
 				water++;
 			}
 		}
-		return water > 3;
+		return water > 4;
 	}
 
 	/**
