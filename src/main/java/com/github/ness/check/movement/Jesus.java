@@ -74,21 +74,23 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 				nessPlayer.sendDevMessage("Flag2 " + (float) resultXZ);
 			}
 		}
-		if (yDistances.size() > 50) {
-			ExcelData data = new ExcelData(new File("./" + System.currentTimeMillis() + ".csv"), ";");
-			ArrayList<String> yDistances = new ArrayList<String>();
-			for (float f : this.yDistances) {
-				yDistances.add(Float.toString(f).replace(".", ","));
+		if (nessPlayer.isDebugMode()) {
+			if (yDistances.size() > 50) {
+				ExcelData data = new ExcelData(new File("./" + System.currentTimeMillis() + ".csv"), ";");
+				ArrayList<String> yDistances = new ArrayList<String>();
+				for (float f : this.yDistances) {
+					yDistances.add(Float.toString(f).replace(".", ","));
+				}
+				data.getCustomHashMap().putIfAbsent("yDistances", yDistances);
+				ArrayList<String> lastYDistances = new ArrayList<String>();
+				for (float f : this.lastYDistances) {
+					lastYDistances.add(Float.toString(f).replace(".", ","));
+				}
+				data.getCustomHashMap().putIfAbsent("lastYDistances", lastYDistances);
+				data.save();
+				this.yDistances.clear();
+				this.lastYDistances.clear();
 			}
-			data.getCustomHashMap().putIfAbsent("yDistances", yDistances);
-			ArrayList<String> lastYDistances = new ArrayList<String>();
-			for (float f : this.lastYDistances) {
-				lastYDistances.add(Float.toString(f).replace(".", ","));
-			}
-			data.getCustomHashMap().putIfAbsent("lastYDistances", lastYDistances);
-			data.save();
-			this.yDistances.clear();
-			this.lastYDistances.clear();
 		}
 		lastXZDist = xzDist;
 		lastYDist = yDist;
