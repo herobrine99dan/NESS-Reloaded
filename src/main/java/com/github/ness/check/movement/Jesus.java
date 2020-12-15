@@ -41,6 +41,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		double distmultiplier();
 	}
 
+	//TODO Implement Lava Movement
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
@@ -64,17 +65,16 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 				&& Utility.isNearWater(event.getTo(), this.manager().getNess().getMaterialAccess())) {
 			if (!nessPlayer.getMovementValues().isOnGroundCollider()) {
 				if (yDist > 0.301D) {
-					nessPlayer.sendDevMessage("Flag");
-				} else if (resultY > 0.055) {
-					nessPlayer.sendDevMessage("Flag1 " + (float) resultY);
-
+					this.flagEvent(event, "HighDistanceY");
+				} else if (resultY > 0.056) { //TODO This Check has problems with 1.13
+					this.flagEvent(event, "HighVarianceY");
 				}
 			}
 			if (resultXZ > 0.06) {
-				nessPlayer.sendDevMessage("Flag2 " + (float) resultXZ);
+				this.flagEvent(event, "HighDistanceXZ");
 			}
 		}
-		if (nessPlayer.isDebugMode()) {
+		if (nessPlayer.isDevMode()) {
 			if (yDistances.size() > 50) {
 				ExcelData data = new ExcelData(new File("./" + System.currentTimeMillis() + ".csv"), ";");
 				ArrayList<String> yDistances = new ArrayList<String>();

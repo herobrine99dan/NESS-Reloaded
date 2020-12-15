@@ -49,7 +49,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 			airTicks++;
 		}
 		if (Utility.hasflybypass(p) || p.getAllowFlight() || values.isAroundLiquids() || Utility.hasVehicleNear(p, 3)
-				|| values.isAroundWeb()) {
+				|| values.isAroundWeb() || values.isAroundLadders()) {
 			return;
 		}
 		double yPredicted = (lastDeltaY - 0.08D) * 0.98D;
@@ -59,7 +59,8 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 					+ " Buffer: " + buffer);
 			buffer += 2;
 			if (buffer > 3) {
-				np.sendDevMessage("Cheats: " + (float) yResult + " Y: " + (float) y + " AirTicks: " + airTicks);
+				this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
+				//np.sendDevMessage("Cheats: " + (float) yResult + " Y: " + (float) y + " AirTicks: " + airTicks);
 			}
 		} else if (buffer > 0) {
 			buffer -= .25;
