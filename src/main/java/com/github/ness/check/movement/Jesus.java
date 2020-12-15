@@ -1,12 +1,7 @@
 package com.github.ness.check.movement;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.text.NumberFormatter;
-
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NessPlayer;
@@ -14,8 +9,8 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.data.MovementValues;
 import com.github.ness.utility.Utility;
-import com.github.ness.utility.excel.ExcelData;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 
@@ -26,14 +21,10 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 	double distmultiplier = 0.75;
 	double lastXZDist;
 	double lastYDist;
-	private List<Float> yDistances;
-	private List<Float> lastYDistances;
 
 	public Jesus(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 		this.distmultiplier = this.ness().getMainConfig().getCheckSection().jesus().distmultiplier();
-		yDistances = new ArrayList<Float>();
-		lastYDistances = new ArrayList<Float>();
 	}
 
 	public interface Config {
@@ -41,59 +32,66 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		double distmultiplier();
 	}
 
-	//TODO Implement Lava Movement
+	// TODO Implement Lava Movement
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
-		if (Utility.hasflybypass(p) || Utility.hasVehicleNear(p, 3)) {
+		if (Utility.hasflybypass(p) || Utility.hasVehicleNear(p, 3) || p.getAllowFlight()) {
 			return;
 		}
 		// We handle Prediction for Y Value
 		double yDist = nessPlayer.getMovementValues().getyDiff();
-		double predictedY = lastYDist * 0.80D;
-		predictedY -= 0.02D;
-		double resultY = yDist - predictedY;
-		// We handle Prediction for XZ Values
 		double xzDist = nessPlayer.getMovementValues().getXZDiff();
-		double predictedXZ = lastXZDist * 0.8f;
-		double resultXZ = xzDist - predictedXZ;
-		// We start the check only if the player is in liquid
-		yDistances.add((float) yDist);
-		lastYDistances.add((float) lastYDist);
 		if (event.getTo().clone().add(0, -0.1, 0).getBlock().isLiquid() && event.getFrom().getBlock().isLiquid()
+				&& Utility.isNearLava(event.getTo(), this.manager().getNess().getMaterialAccess())) {
+			handleLava(nessPlayer.getMovementValues(), event);
+		} else if (event.getTo().clone().add(0, -0.1, 0).getBlock().isLiquid() && event.getFrom().getBlock().isLiquid()
 				&& Utility.isNearWater(event.getTo(), this.manager().getNess().getMaterialAccess())) {
-			if (!nessPlayer.getMovementValues().isOnGroundCollider()) {
-				if (yDist > 0.301D) {
-					this.flagEvent(event, "HighDistanceY");
-				} else if (resultY > 0.056) { //TODO This Check has problems with 1.13
-					this.flagEvent(event, "HighVarianceY");
-				}
-			}
-			if (resultXZ > 0.06) {
-				this.flagEvent(event, "HighDistanceXZ");
-			}
-		}
-		if (nessPlayer.isDevMode()) {
-			if (yDistances.size() > 50) {
-				ExcelData data = new ExcelData(new File("./" + System.currentTimeMillis() + ".csv"), ";");
-				ArrayList<String> yDistances = new ArrayList<String>();
-				for (float f : this.yDistances) {
-					yDistances.add(Float.toString(f).replace(".", ","));
-				}
-				data.getCustomHashMap().putIfAbsent("yDistances", yDistances);
-				ArrayList<String> lastYDistances = new ArrayList<String>();
-				for (float f : this.lastYDistances) {
-					lastYDistances.add(Float.toString(f).replace(".", ","));
-				}
-				data.getCustomHashMap().putIfAbsent("lastYDistances", lastYDistances);
-				data.save();
-				this.yDistances.clear();
-				this.lastYDistances.clear();
-			}
+			handleWater(nessPlayer.getMovementValues(), event);
 		}
 		lastXZDist = xzDist;
 		lastYDist = yDist;
+	}
+
+	public void handleWater(MovementValues values, Cancellable event) {
+		double yDist = values.getyDiff();
+		double predictedY = lastYDist * 0.80D;
+		predictedY -= 0.02D; // We handle Prediction for XZ Values
+		double resultY = yDist - predictedY;
+		double xzDist = values.getXZDiff();
+		double predictedXZ = lastXZDist * 0.8f;
+		double resultXZ = xzDist - predictedXZ;
+		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
+			if (yDist > 0.302D) {
+				this.flagEvent(event, "HighDistanceY");
+			} else if (resultY > 0.056) { // TODO This Check has problems with 1.13
+				this.flagEvent(event, "HighVarianceY");
+			} else if (resultXZ > 0.06) {
+				this.flagEvent(event, "HighDistanceXZ: " + resultXZ);
+			}
+		}
+	}
+
+	public void handleLava(MovementValues values, Cancellable event) {
+		double yDist = values.getyDiff();
+		double predictedY = lastYDist * 0.5D;
+		predictedY -= 0.02D; // We handle Prediction for XZ Values
+		double resultY = yDist - predictedY;
+		double xzDist = values.getXZDiff();
+		double predictedXZ = lastXZDist * 0.5D;
+		double resultXZ = xzDist - predictedXZ;
+		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
+			if (yDist > 0.302D) {
+				this.flagEvent(event, "HighDistanceY");
+			} else if (resultY > 0.13) { // TODO This Check has problems with 1.13
+				this.flagEvent(event, "HighVarianceY");
+				this.player().sendDevMessage("resultXZ: " + (float) resultXZ + " resultY: " + (float) resultY);
+			} else if (resultXZ > 0.155) {
+				this.flagEvent(event, "HighDistanceXZ");
+				this.player().sendDevMessage("resultXZ: " + (float) resultXZ + " resultY: " + (float) resultY);
+			}
+		}
 	}
 
 }

@@ -57,20 +57,6 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 			vertDist -= Math.abs(nessPlayer.getLastVelocity().getY());
 		}
 		boolean groundAround = Utility.groundAround(player.getLocation());
-
-		if (debugMode) {
-			nessPlayer
-					.sendDevMessage("&7X: &e" + player.getLocation().getX() + " &7V: &e" + player.getVelocity().getX());
-			nessPlayer
-					.sendDevMessage("&7Y: &e" + player.getLocation().getY() + " &7V: &e" + player.getVelocity().getY());
-			nessPlayer
-					.sendDevMessage("&7Z: &e" + player.getLocation().getZ() + " &7V: &e" + player.getVelocity().getZ());
-			nessPlayer.sendDevMessage(
-					"&7hozDist: &e" + hozDist + " &7vertDist: &e" + vertDist + " &7fallDist: &e" + fallDist);
-			nessPlayer.sendDevMessage("&7below: &e" + below.name());
-			nessPlayer.sendDevMessage("&7groundAround: &e" + groundAround
-					+ " &7onGround: " + player.isOnGround());
-		}
 		if (to.getY() != from.getY()) {
 			if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().contains("WATER")
 					&& !player.getLocation().getBlock().isLiquid()) {

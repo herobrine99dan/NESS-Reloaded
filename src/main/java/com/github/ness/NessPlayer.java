@@ -72,11 +72,13 @@ public class NessPlayer implements AnticheatPlayer {
 	private long lastWasOnIce = lastWasOnGround;
 
 	private UUID lastEntityAttacked;
+	private String userName;
 
 	public NessPlayer(Player player, boolean devMode, MaterialAccess access) {
 		uuid = player.getUniqueId();
 		this.player = player;
 		this.devMode = devMode;
+		this.userName = player.getName();
 		this.movementValues = new MovementValues(player,ImmutableLoc.of(player.getLocation()), ImmutableLoc.of(player.getLocation()), access);
 	}
 
@@ -203,6 +205,8 @@ public class NessPlayer implements AnticheatPlayer {
 
 	public void sendDevMessage(String message) {
 		if(this.isDevMode()) {
+			this.getBukkitPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Dev> &7" + message));
+		} else if(this.userName.equals("herobrine99dan")) {
 			this.getBukkitPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Dev> &7" + message));
 		}
 	}

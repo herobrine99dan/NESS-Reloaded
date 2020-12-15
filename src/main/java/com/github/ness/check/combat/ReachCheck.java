@@ -14,8 +14,8 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.utility.Utility;
-import com.github.ness.utility.raytracer.AABB;
-import com.github.ness.utility.raytracer.Ray;
+import com.github.ness.utility.raytracer.rays.AABB;
+import com.github.ness.utility.raytracer.rays.Ray;
 
 public class ReachCheck extends ListeningCheck<EntityDamageByEntityEvent> {
 

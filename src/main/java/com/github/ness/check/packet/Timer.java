@@ -1,12 +1,15 @@
 package com.github.ness.check.packet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.packets.ReceivedPacketEvent;
-import com.github.ness.utility.LongRingBuffer;
+import com.github.ness.utility.MathUtils;
 import com.github.ness.utility.Utility;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
@@ -18,16 +21,16 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos
 			.forEvent(ReceivedPacketEvent.class);
 	private long lastDelay;
-	private LongRingBuffer delay;
+	private List<Long> delay;
 	private boolean negativeTimerEnabled = true;
 
 	public Timer(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
 		super(factory, player);
 		this.MAX_PACKETS_PER_TICK = this.ness().getMainConfig().getCheckSection().timer().maxpackets();
-		this.delay = new LongRingBuffer(40);
+		this.delay = new ArrayList<Long>();
 		this.negativeTimerEnabled = this.ness().getMainConfig().getCheckSection().timer().negativetimer();
 	}
-	
+
 	@Override
 	protected boolean shouldDragDown() {
 		return true;
@@ -47,26 +50,31 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 	@Override
 	protected void checkEvent(ReceivedPacketEvent e) {
 		NessPlayer nessPlayer = e.getNessPlayer();
+
 		if (!e.getPacket().getName().toLowerCase().contains("position") || nessPlayer.isTeleported()) {
 			return;
 		}
 		final long current = System.nanoTime();
-		delay.add((long) ((current - lastDelay) / 1e+6));
-		//TODO Test Timer False Flag like https://youtu.be/kDnC0CtJNAE
-		if (delay.size() < 40 || nessPlayer.isHasSetback()) {
+		long result = (long) ((current - lastDelay) / 1e+6);
+		delay.add(result);
+		if (nessPlayer.isHasSetback()) {
 			return;
 		}
+		if (delay.size() > 39) {
+			final long average = MathUtils.averageLong(delay);
+			final float speed = 50.0f / (float) average;
+			if (nessPlayer.isDebugMode()) {
+				nessPlayer.sendDevMessage("Timer: " + speed + " Average: " + average + " Current: " + current);
+			}
+			nessPlayer.sendDevMessage("PlayerSpeed: " + speed + " Average: " + average);
+			if (speed > MAX_PACKETS_PER_TICK) {
+				this.flagEvent(e, "BasicTimer " + Utility.round(speed, 100));
+			} else if ((speed > 0.2 && speed < 0.9) && negativeTimerEnabled) {
+				this.flagEvent(e, "NegativeTimer " + Utility.round(speed, 100));
+			}
+			delay.clear();
+		}
 
-		final long average = delay.average();
-		final float speed = 50.0f / (float) average;
-		if (speed > MAX_PACKETS_PER_TICK) {
-			this.flagEvent(e, "BasicTimer " + Utility.round(speed, 100));
-		} else if ((speed > 0.2 && speed < 0.9) && negativeTimerEnabled) {
-			this.flagEvent(e, "NegativeTimer " + Utility.round(speed, 100));
-		}
-		if (nessPlayer.isDebugMode()) {
-			nessPlayer.sendDevMessage("Timer: " + speed + " Average: " + average);
-		}
 		this.lastDelay = current;
 	}
 
