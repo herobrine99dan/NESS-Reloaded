@@ -9,6 +9,7 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
+import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
 public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
@@ -39,9 +40,9 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 	 * @param e
 	 */
 	public void Check(PlayerMoveEvent e) {
-		NessPlayer np = this.player();
+		NessPlayer nessPlayer = this.player();
 		Player p = e.getPlayer();
-		MovementValues values = np.getMovementValues();
+		MovementValues values = nessPlayer.getMovementValues();
 		double y = values.getyDiff();
 		if (values.isOnGroundCollider()) {
 			airTicks = 0;
@@ -54,13 +55,15 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		}
 		double yPredicted = (lastDeltaY - 0.08D) * 0.98D;
 		double yResult = Math.abs(y - yPredicted);
-		if (yResult > 0.002 && Math.abs(yPredicted) > 0.004 && airTicks > 4) {
-			np.sendDevMessage("NotCheats: " + (float) yResult + " Y: " + (float) y + " AirTicks: " + airTicks
+		if (yResult > 0.002 && Math.abs(yPredicted) > 0.004 && airTicks > 4
+				&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000) {
+			nessPlayer.sendDevMessage("NotCheats: " + (float) yResult + " Y: " + (float) y + " AirTicks: " + airTicks
 					+ " Buffer: " + buffer);
 			buffer += 2;
 			if (buffer > 3) {
 				this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
-				//np.sendDevMessage("Cheats: " + (float) yResult + " Y: " + (float) y + " AirTicks: " + airTicks);
+				// np.sendDevMessage("Cheats: " + (float) yResult + " Y: " + (float) y + "
+				// AirTicks: " + airTicks);
 			}
 		} else if (buffer > 0) {
 			buffer -= .25;

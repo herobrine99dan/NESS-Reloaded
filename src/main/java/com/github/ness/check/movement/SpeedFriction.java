@@ -8,6 +8,7 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.data.ImmutableVector;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
@@ -34,8 +35,8 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues values = nessPlayer.getMovementValues();
 		double xDiff = values.getxDiff();
 		double zDiff = values.getzDiff();
-		if (Utility.hasflybypass(player) || values.isAroundLiquids()
-				|| values.isAroundSlime() || values.hasBlockNearHead()) {
+		if (Utility.hasflybypass(player) || values.isAroundLiquids() || values.isAroundSlime()
+				|| values.hasBlockNearHead()) {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
@@ -49,17 +50,45 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			airTicks = 0;
 		}
 		if (airTicks > 1) {
+			ImmutableVector flying = this.handleSpeedInAirValue(values.getTo().getYaw(), player.isSprinting());
+			float motionXZtoAdd = (float) (Math.hypot(flying.getX(), flying.getZ())); //TODO Test hypot vs getX()+getZ() and make real check
 			final double prediction = (lastDeltaXZ * 0.91f) + (player.isSprinting() ? 0.026 : 0.02);
 			final double difference = xzDiff - prediction;
 			if (difference > 0.005) {
-				if(++buffer > 3) {
+				if (++buffer > 3) {
 					this.flagEvent(event);
 				}
-			} else if(buffer > 0) {
+			} else if (buffer > 0) {
 				buffer--;
 			}
 		}
 		this.lastDeltaXZ = xzDiff;
+	}
+
+	public ImmutableVector handleSpeedInAirValue(float yaw, boolean isSprinting) {
+		float jumpMovementFactor = 0.02f;
+		if (isSprinting) {
+			jumpMovementFactor += 0.02d * 0.3D;
+		}
+		return this.moveFlying(1, 1, jumpMovementFactor, yaw);
+	}
+
+	public ImmutableVector moveFlying(float strafe, float forward, float friction, float yaw) {
+		float f = strafe * strafe + forward * forward;
+		if (f >= 1.0E-4F) {
+			f = (float) Math.sqrt(f);
+			if (f < 1.0F)
+				f = 1.0F;
+			f = friction / f;
+			strafe *= f;
+			forward *= f;
+			float f1 = (float) Math.sin(yaw * 3.1415927F / 180.0F);
+			float f2 = (float) Math.cos(yaw * 3.1415927F / 180.0F);
+			double motionX = (strafe * f2 - forward * f1); // These values are added to the motionX/motionZ
+			double motionZ = (forward * f2 + strafe * f1);
+			return new ImmutableVector(motionX, 0, motionZ);
+		}
+		return new ImmutableVector(0, 0, 0);
 	}
 
 }

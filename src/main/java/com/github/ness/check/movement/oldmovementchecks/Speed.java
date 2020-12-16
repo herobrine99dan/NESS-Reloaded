@@ -56,7 +56,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 			}
 		}
 		if (movementValues.isAroundSlabs() || movementValues.isAroundStairs()) {
-			maxSpd += player.getWalkSpeed() * 0.5;
+			maxSpd += player.getWalkSpeed() * 0.25;
 		}
 		if (movementValues.isAroundIce() || nessPlayer.getTimeSinceLastWasOnIce() < 1000) {
 			maxSpd += player.getWalkSpeed();
