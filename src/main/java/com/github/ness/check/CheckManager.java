@@ -15,7 +15,7 @@ import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.ChecksManager;
 import com.github.ness.api.PlayersManager;
-import com.github.ness.packets.PacketActor;
+import com.github.ness.packets.Packet;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -167,8 +167,17 @@ public class CheckManager implements ChecksManager {
 		}
 	}
 
-	public PacketActor createPacketActor() {
-		throw new UnsupportedOperationException("TODO");
+	/**
+	 * Receives a packet and passes it to checks
+	 *
+	 * @param packet the packet
+	 */
+	public void receivePacket(Packet packet) {
+		for (BaseCheckFactory<?> checkFactory : checkFactories) {
+			if (checkFactory instanceof PacketCheckFactory) {
+				((PacketCheckFactory<?>) checkFactory).receivePacket(packet);
+			}
+		}
 	}
 
 }

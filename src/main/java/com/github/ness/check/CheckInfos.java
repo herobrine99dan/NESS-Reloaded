@@ -19,9 +19,21 @@ public final class CheckInfos {
 	 * 
 	 * @param asyncInterval the interval of the periodic task
 	 * @return the check info
+	 * @deprecated Use {@link #withTask(PeriodicTaskInfo)}
 	 */
+	@Deprecated
 	public static CheckInfo asyncPeriodic(Duration asyncInterval) {
-		return new CheckInfo(asyncInterval);
+		return withTask(PeriodicTaskInfo.asyncTask(asyncInterval));
+	}
+
+	/**
+	 * Gets a check info with the given periodic task info
+	 *
+	 * @param taskInfo the periodic task info
+	 * @return the check info
+	 */
+	public static CheckInfo withTask(PeriodicTaskInfo taskInfo) {
+		return new CheckInfo(taskInfo);
 	}
 
 	/**
@@ -32,10 +44,12 @@ public final class CheckInfos {
 	 * @param event         the event class
 	 * @param asyncInterval the interval of the periodic task
 	 * @return the listening check info
+	 * @deprecated Use {@link #forEventWithTask(Class, PeriodicTaskInfo)}
 	 */
+	@Deprecated
 	public static <E extends Event> ListeningCheckInfo<E> forEventWithAsyncPeriodic(Class<E> event,
 			Duration asyncInterval) {
-		return new ListeningCheckInfo<>(asyncInterval, event);
+		return forEventWithTask(event, PeriodicTaskInfo.asyncTask(asyncInterval));
 	}
 
 	/**
@@ -47,6 +61,19 @@ public final class CheckInfos {
 	 */
 	public static <E extends Event> ListeningCheckInfo<E> forEvent(Class<E> event) {
 		return new ListeningCheckInfo<>(event);
+	}
+
+	/**
+	 * Gets a check info to listen to a certain event, plus a periodic sync or async task.
+	 *
+	 * @param <E>   the event
+	 * @param event the event class
+	 * @param taskInfo the periodic task info
+	 * @return the listening check info
+	 */
+	public static <E extends Event> ListeningCheckInfo<E> forEventWithTask(Class<E> event,
+																		   PeriodicTaskInfo taskInfo) {
+		return new ListeningCheckInfo<>(taskInfo, event);
 	}
 	
 }

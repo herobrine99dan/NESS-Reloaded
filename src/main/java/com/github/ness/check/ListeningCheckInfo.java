@@ -1,9 +1,8 @@
 package com.github.ness.check;
 
-import java.time.Duration;
-import java.util.Objects;
-
 import org.bukkit.event.Event;
+
+import java.util.Objects;
 
 /**
  * Check info relating to listening of events
@@ -14,22 +13,22 @@ import org.bukkit.event.Event;
  */
 public class ListeningCheckInfo<E extends Event> extends CheckInfo {
 
-    /**
-     * Event to listen to
-     */
-    private final Class<E> event;
-    
-    ListeningCheckInfo(Class<E> event) {
-    	this.event = Objects.requireNonNull(event, "event");
-    }
-    
-    ListeningCheckInfo(Duration asyncInterval, Class<E> event) {
-    	super(asyncInterval);
-    	this.event = Objects.requireNonNull(event, "event");
-    }
-    
-    Class<E> getEvent() {
-    	return event;
-    }
+	/**
+	 * Event to listen to
+	 */
+	private final Class<E> event;
+
+	ListeningCheckInfo(Class<E> event) {
+		this.event = Objects.requireNonNull(event, "event");
+	}
+
+	ListeningCheckInfo(PeriodicTaskInfo taskInfo, Class<E> event) {
+		super(taskInfo);
+		this.event = Objects.requireNonNull(event, "event");
+	}
+
+	Class<E> getEvent() {
+		return event;
+	}
 	
 }

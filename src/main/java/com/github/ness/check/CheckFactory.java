@@ -1,19 +1,15 @@
 package com.github.ness.check;
 
-import java.lang.reflect.Constructor;
-import java.time.Duration;
+import com.github.ness.NessPlayer;
+import com.github.ness.api.AnticheatPlayer;
+import com.github.ness.api.FlagResult;
+import com.github.ness.api.Infraction;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
-import com.github.ness.NessPlayer;
-import com.github.ness.api.AnticheatPlayer;
-import com.github.ness.api.FlagResult;
-import com.github.ness.api.Infraction;
 
 /**
  * Check factory for all per player checks
@@ -25,18 +21,12 @@ import com.github.ness.api.Infraction;
 public class CheckFactory<C extends Check> extends BaseCheckFactory<C> {
 
 	private final CheckInstantiator<C> instantiator;
+
+	private final TasksHolder tasksHolder = new TasksHolder();
+	private final ConcurrentMap<UUID, C> checks = new ConcurrentHashMap<>();
 	
-	private transient ScheduledFuture<?> scheduledFuture;
-	
-	private transient final ConcurrentMap<UUID, C> checks = new ConcurrentHashMap<>();
-	
-	CheckFactory(Constructor<C> constructor, CheckManager manager, CheckInfo checkInfo) {
-		this(CheckInstantiators.fromFactoryAndPlayerConstructor(constructor),
-				constructor.getDeclaringClass().getSimpleName(),
-				manager, checkInfo);
-	}
-	
-	protected CheckFactory(CheckInstantiator<C> instantiator, String checkName, CheckManager manager, CheckInfo checkInfo) {
+	protected CheckFactory(CheckInstantiator<C> instantiator, String checkName,
+						   CheckManager manager, CheckInfo checkInfo) {
 		super(checkName, manager, checkInfo);
 		this.instantiator = instantiator;
 	}
@@ -62,12 +52,16 @@ public class CheckFactory<C extends Check> extends BaseCheckFactory<C> {
 	/*
 	 * Framework infrastructure
 	 */
-	
+
+	private void checkSyncPeriodic() {
+		checks.values().forEach(Check::checkSyncPeriodicUnlessInvalid);
+	}
+
 	private void checkAsyncPeriodic() {
 		if (!started()) {
 			return;
 		}
-		checks.values().forEach((check) -> check.checkAsyncPeriodicUnlessInvalid());
+		checks.values().forEach(Check::checkAsyncPeriodicUnlessInvalid);
 	}
 	
 	@Override
@@ -127,24 +121,16 @@ public class CheckFactory<C extends Check> extends BaseCheckFactory<C> {
 	
 	@Override
 	protected synchronized void start() {
-		if (getCheckInfo().hasAsyncInterval()) {
-			Duration asyncInterval = getCheckInfo().getAsyncInterval();
-			scheduledFuture = getCheckManager().getNess().getExecutor().scheduleWithFixedDelay(
-					this::checkAsyncPeriodic, 0L, asyncInterval.toNanos(), TimeUnit.NANOSECONDS);
-
-		} else {
-			scheduledFuture = null;
-		}
+		PeriodicTaskInfo taskInfo = getCheckInfo().taskInfo();
+		tasksHolder.startSync(taskInfo, getCheckManager(), this::checkSyncPeriodic);
+		tasksHolder.startAsync(taskInfo, getCheckManager(), this::checkAsyncPeriodic);
 
 		super.start();
 	}
 	
 	@Override
 	protected synchronized void close() {
-		if (scheduledFuture != null) {
-			scheduledFuture.cancel(false);
-		}
-
+		tasksHolder.close();
 		super.close();
 	}
 	

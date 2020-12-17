@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.github.ness.reflect.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,11 +26,6 @@ import com.github.ness.packets.Networker;
 import com.github.ness.packets.NetworkReflectionCreation;
 import com.github.ness.packets.PacketActorInterceptor;
 import com.github.ness.packets.PacketListener;
-import com.github.ness.reflect.InvokerCachingReflection;
-import com.github.ness.reflect.MethodHandleReflection;
-import com.github.ness.reflect.ClassLocator;
-import com.github.ness.reflect.CoreReflection;
-import com.github.ness.reflect.Reflection;
 import com.github.ness.violation.ViolationManager;
 
 public class NessAnticheat {
@@ -44,8 +40,8 @@ public class NessAnticheat {
 	private final CheckManager checkManager;
 	private final Networker networker;
 	private final ViolationManager violationManager;
-
-	private MaterialAccess materialAccess;
+	private final MaterialAccess materialAccess;
+	private final ReflectHelper reflectHelper;
 
 	static {
 		minecraftVersion = getVersion();
@@ -60,20 +56,18 @@ public class NessAnticheat {
 		violationManager = new ViolationManager(this);
 		this.materialAccess = materialAccess;
 
+		ClassLocator locator = SimpleClassLocator.create();
 		Reflection reflection = new InvokerCachingReflection(new MethodHandleReflection(new CoreReflection()));
 		networker = new Networker(plugin,
 				new PacketListener(
-						new NetworkReflectionCreation(reflection, ClassLocator.create()).create(),
-						new PacketActorInterceptor(checkManager.createPacketActor(), reflection)));
+						new NetworkReflectionCreation(reflection, locator).create(),
+						new PacketActorInterceptor(checkManager::receivePacket, reflection)));
+		reflectHelper = new ReflectHelper(locator, reflection);
 	}
 
 	private static int getVersion() {
 		String first = Bukkit.getVersion().substring(Bukkit.getVersion().indexOf("(MC: "));
 		return Integer.valueOf(first.replace("(MC: ", "").replace(")", "").replace(" ", "").replace(".", ""));
-	}
-
-	public MaterialAccess getMaterialAccess() {
-		return materialAccess;
 	}
 
 	void start() {
@@ -148,6 +142,14 @@ public class NessAnticheat {
 
 	public ViolationManager getViolationManager() {
 		return violationManager;
+	}
+
+	public MaterialAccess getMaterialAccess() {
+		return materialAccess;
+	}
+
+	public ReflectHelper getReflectHelper() {
+		return reflectHelper;
 	}
 
 	public NessConfig getMainConfig() {

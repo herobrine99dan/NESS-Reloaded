@@ -15,7 +15,7 @@ public abstract class BaseCheckFactory<C extends BaseCheck> implements Anticheat
 	private final CheckManager manager;
 	private final BaseCheckInfo checkInfo;
 	
-	private transient boolean started;
+	private volatile boolean started;
 	
 	protected BaseCheckFactory(String checkName, CheckManager manager, BaseCheckInfo checkInfo) {
 		this.checkName = checkName;
@@ -40,7 +40,7 @@ public abstract class BaseCheckFactory<C extends BaseCheck> implements Anticheat
 	
 	abstract void removeCheck(NessPlayer nessPlayer);
 	
-	synchronized boolean started() {
+	boolean started() {
 		return started;
 	}
 	
