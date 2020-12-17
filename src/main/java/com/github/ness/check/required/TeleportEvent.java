@@ -22,6 +22,7 @@ public class TeleportEvent extends ListeningCheck<PlayerTeleportEvent> {
 	@Override
 	protected void checkAsyncPeriodic() {
 		player().setTeleported(false);
+		player().setHasSetback(false);
 	}
 
 	protected void checkEvent(PlayerTeleportEvent e) {

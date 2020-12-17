@@ -2,6 +2,7 @@ package com.github.ness.data;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -86,6 +87,7 @@ public class MovementValues {
 
 	private final boolean sprinting;
 	private final boolean blockUnderHead;
+	private final boolean occluding;
 
 	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from, MaterialAccess access) {
 		if (Bukkit.isPrimaryThread()) {
@@ -109,8 +111,10 @@ public class MovementValues {
 			gamemode = p.getGameMode();
 			isFlying = p.isFlying();
 			ableFly = p.getAllowFlight();
+			boolean occluding = false;
 			for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 2)) {
-				String name = access.getMaterial(b).name();
+				Material material = access.getMaterial(b);
+				String name = material.name();
 				if (b.isLiquid()) {
 					liquids = true;
 				}
@@ -144,6 +148,9 @@ public class MovementValues {
 				} else if (name.contains("WALL")) {
 					walls = true;
 				}
+				if(material.isSolid() && !material.isOccluding()) {
+					occluding = true;
+				}
 			}
 			AroundSnow = snow;
 			blockUnderHead = Utility.groundAround(to.toBukkitLocation().add(0, 1.8, 0));
@@ -164,6 +171,7 @@ public class MovementValues {
 			AroundLiquids = liquids;
 			AroundFence = fence;
 			AroundGate = gate;
+			this.occluding = occluding;
 			AroundWalls = walls;
 			onGroundCollider = this.isAroundCarpet() || this.isAroundSlabs() || this.isAroundStairs()
 					|| this.isAroundSnow() || this.AroundFence || this.AroundGate || this.AroundWalls;
@@ -188,6 +196,7 @@ public class MovementValues {
 			blockUnderHead = false;
 			onGroundCollider = false;
 			AroundSnow = false;
+			occluding = false;
 			insideVehicle = false;
 			gamemode = GameMode.SURVIVAL;
 			isFlying = false;
@@ -271,6 +280,10 @@ public class MovementValues {
 
 	public boolean isAroundIce() {
 		return AroundIce;
+	}
+	
+	public boolean isOccluding() {
+		return occluding;
 	}
 
 	public boolean isAroundLiquids() {

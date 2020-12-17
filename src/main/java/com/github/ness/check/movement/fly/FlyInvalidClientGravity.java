@@ -50,7 +50,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 			airTicks++;
 		}
 		if (Utility.hasflybypass(p) || p.getAllowFlight() || values.isAroundLiquids() || Utility.hasVehicleNear(p, 3)
-				|| values.isAroundWeb() || values.isAroundLadders() || values.hasBlockNearHead()) {
+				|| values.isAroundWeb() || values.isAroundLadders() || values.hasBlockNearHead() || values.isOccluding()) {
 			return;
 		}
 		double yPredicted = (lastDeltaY - 0.08D) * 0.98D;
