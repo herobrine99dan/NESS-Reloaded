@@ -5,6 +5,7 @@ import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
@@ -32,7 +33,12 @@ public class Step extends ListeningCheck<PlayerMoveEvent> {
 				|| player().isTeleported()) {
 			return;
 		}
-		if (to.getY() - from.getY() > 0.6 && values.isGroundAround() && !values.isAroundSlime()) {
+		double jumpBoost = Utility.getPotionEffectLevel(player, PotionEffectType.JUMP);
+		double yDiffUpper = to.getY() - from.getY();
+		double yDiffDowner = from.getY() - to.getY();
+		yDiffUpper -= jumpBoost * (yDiffUpper);
+		yDiffDowner -= jumpBoost * (yDiffDowner);
+		if (yDiffUpper > 0.6 && values.isGroundAround() && !values.isAroundSlime()) {
 			boolean boatNear = false;
 			for (Entity ent : player.getNearbyEntities(2, 2, 2)) {
 				if (ent instanceof Boat)
@@ -42,7 +48,7 @@ public class Step extends ListeningCheck<PlayerMoveEvent> {
 				flagEvent(e);
 				//if(player().setViolation(new Violation("Step", "(OnMove)"))) e.setCancelled(true);
 			}
-		} else if (from.getY() - to.getY() > 1.5 && player.getFallDistance() == 0.0 && player.getVelocity().getY() < 0.43) {
+		} else if (yDiffDowner > 1.5 && player.getFallDistance() == 0.0 && player.getVelocity().getY() < 0.43) {
 			flagEvent(e);
 			//if(player().setViolation(new Violation("Step", "(OnMove)"))) e.setCancelled(true);
 		}

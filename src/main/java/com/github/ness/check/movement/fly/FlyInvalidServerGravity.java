@@ -2,6 +2,7 @@ package com.github.ness.check.movement.fly;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
@@ -32,7 +33,7 @@ public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
 	}
 	
 	public interface Config {
-		@DefaultDouble(1.3)
+		@DefaultDouble(1.5)
 		double maxGravity();
 	}
 
@@ -59,7 +60,9 @@ public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
         double max = maxInvalidVelocity;
         float pingresult = Utility.getPing(p) / 100;
         float toAdd = pingresult / 6;
+		double jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
         max += toAdd;
+        y -= jumpBoost * (y);
         if (np.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2500) {
             y -= Math.abs(np.getLastVelocity().getY());
         }

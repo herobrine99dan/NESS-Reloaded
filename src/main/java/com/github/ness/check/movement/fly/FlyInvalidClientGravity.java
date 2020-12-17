@@ -50,12 +50,12 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 			airTicks++;
 		}
 		if (Utility.hasflybypass(p) || p.getAllowFlight() || values.isAroundLiquids() || Utility.hasVehicleNear(p, 3)
-				|| values.isAroundWeb() || values.isAroundLadders()) {
+				|| values.isAroundWeb() || values.isAroundLadders() || values.hasBlockNearHead()) {
 			return;
 		}
 		double yPredicted = (lastDeltaY - 0.08D) * 0.98D;
 		double yResult = Math.abs(y - yPredicted);
-		if (yResult > 0.002 && Math.abs(yPredicted) > 0.004 && airTicks > 4
+		if (yResult > 0.002 && Math.abs(yPredicted) > 0.004 && airTicks > 5
 				&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000) {
 			nessPlayer.sendDevMessage("NotCheats: " + (float) yResult + " Y: " + (float) y + " AirTicks: " + airTicks
 					+ " Buffer: " + buffer);

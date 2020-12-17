@@ -52,6 +52,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		if (airTicks > 1) {
 			ImmutableVector flying = this.handleSpeedInAirValue(values.getTo().getYaw(), player.isSprinting());
 			float motionXZtoAdd = (float) (Math.hypot(flying.getX(), flying.getZ())); //TODO Test hypot vs getX()+getZ() and make real check
+			nessPlayer.sendDevMessage("motionXZ: " + motionXZtoAdd);
 			final double prediction = (lastDeltaXZ * 0.91f) + (player.isSprinting() ? 0.026 : 0.02);
 			final double difference = xzDiff - prediction;
 			if (difference > 0.005) {
