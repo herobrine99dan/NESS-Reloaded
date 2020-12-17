@@ -66,7 +66,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 			if (yDist > 0.302D) {
 				this.flagEvent(event, "HighDistanceY");
 			} else if (resultY > 0.056) { // TODO This Check has problems with 1.13
-				this.flagEvent(event, "HighVarianceY");
+				this.flagEvent(event, "HighVarianceY: " + (float) resultY);
 			} else if (resultXZ > 0.06) {
 				this.flagEvent(event, "HighDistanceXZ: " + resultXZ);
 			}

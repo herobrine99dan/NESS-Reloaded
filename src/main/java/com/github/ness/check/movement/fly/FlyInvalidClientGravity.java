@@ -2,6 +2,7 @@ package com.github.ness.check.movement.fly;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
@@ -54,11 +55,15 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		double yPredicted = (lastDeltaY - 0.08D) * 0.98D;
+		int jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
+		if(jumpBoost > 0) {
+			yPredicted += yPredicted * 0.1F;
+		}
 		double yResult = Math.abs(y - yPredicted);
 		if (yResult > 0.002 && Math.abs(yPredicted) > 0.004 && airTicks > 5
-				&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000) {
+				&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000 && p.getVelocity().getY() < 0) {
 			nessPlayer.sendDevMessage("NotCheats: " + (float) yResult + " Y: " + (float) y + " AirTicks: " + airTicks
-					+ " Buffer: " + buffer);
+					+ " Buffer: " + buffer + " PredictedY: " + (float) yPredicted + " velocity:" + (float) p.getVelocity().getY());
 			buffer += 2;
 			if (buffer > 3) {
 				this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);

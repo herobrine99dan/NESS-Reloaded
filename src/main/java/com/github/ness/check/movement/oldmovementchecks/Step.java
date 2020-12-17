@@ -35,9 +35,7 @@ public class Step extends ListeningCheck<PlayerMoveEvent> {
 		}
 		double jumpBoost = Utility.getPotionEffectLevel(player, PotionEffectType.JUMP);
 		double yDiffUpper = to.getY() - from.getY();
-		double yDiffDowner = from.getY() - to.getY();
-		yDiffUpper -= jumpBoost * (yDiffUpper);
-		yDiffDowner -= jumpBoost * (yDiffDowner);
+		yDiffUpper -= jumpBoost * 0.1;
 		if (yDiffUpper > 0.6 && values.isGroundAround() && !values.isAroundSlime()) {
 			boolean boatNear = false;
 			for (Entity ent : player.getNearbyEntities(2, 2, 2)) {
@@ -45,11 +43,11 @@ public class Step extends ListeningCheck<PlayerMoveEvent> {
 					boatNear = true;
 			}
 			if (player.getVelocity().getY() < 0.43 && !boatNear) {
-				flagEvent(e);
+				flagEvent(e, "High Distance: " + yDiffUpper);
 				//if(player().setViolation(new Violation("Step", "(OnMove)"))) e.setCancelled(true);
 			}
-		} else if (yDiffDowner > 1.5 && player.getFallDistance() == 0.0 && player.getVelocity().getY() < 0.43) {
-			flagEvent(e);
+		} else if (yDiffUpper < -1.5 && player.getFallDistance() == 0.0 && player.getVelocity().getY() < 0.43) {
+			flagEvent(e, "HighDistance1");
 			//if(player().setViolation(new Violation("Step", "(OnMove)"))) e.setCancelled(true);
 		}
 	}
