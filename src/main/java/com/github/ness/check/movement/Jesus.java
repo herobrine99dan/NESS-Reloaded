@@ -21,6 +21,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 	double distmultiplier = 0.75;
 	double lastXZDist;
 	double lastYDist;
+	int liquidTicks = 0;
 
 	public Jesus(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
@@ -40,21 +41,26 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		if (Utility.hasflybypass(p) || Utility.hasVehicleNear(p, 3) || p.getAllowFlight()) {
 			return;
 		}
+		if (p.getLocation().getBlock().isLiquid()) {
+			liquidTicks++;
+		} else {
+			liquidTicks = 0;
+		}
 		// We handle Prediction for Y Value
 		double yDist = nessPlayer.getMovementValues().getyDiff();
 		double xzDist = nessPlayer.getMovementValues().getXZDiff();
 		if (event.getTo().clone().add(0, -0.1, 0).getBlock().isLiquid() && event.getFrom().getBlock().isLiquid()
 				&& Utility.isNearLava(event.getTo(), this.manager().getNess().getMaterialAccess())) {
-			handleLava(nessPlayer.getMovementValues(), event);
+			handleLava(nessPlayer.getMovementValues(), event, nessPlayer);
 		} else if (event.getTo().clone().add(0, -0.1, 0).getBlock().isLiquid() && event.getFrom().getBlock().isLiquid()
 				&& Utility.isNearWater(event.getTo(), this.manager().getNess().getMaterialAccess())) {
-			handleWater(nessPlayer.getMovementValues(), event);
+			handleWater(nessPlayer.getMovementValues(), event, nessPlayer);
 		}
 		lastXZDist = xzDist;
 		lastYDist = yDist;
 	}
 
-	public void handleWater(MovementValues values, Cancellable event) {
+	public void handleWater(MovementValues values, Cancellable event, NessPlayer nessPlayer) {
 		double yDist = values.getyDiff();
 		double predictedY = lastYDist * 0.80D;
 		predictedY -= 0.02D; // We handle Prediction for XZ Values
@@ -62,10 +68,11 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		double xzDist = values.getXZDiff();
 		double predictedXZ = lastXZDist * 0.8f;
 		double resultXZ = xzDist - predictedXZ;
+		//nessPlayer.sendDevMessage("WaterTicks: " + this.liquidTicks + " resultY: " + resultY);
 		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
 			if (yDist > 0.302D) {
 				this.flagEvent(event, "HighDistanceY");
-			} else if (resultY > 0.056) { // TODO This Check has problems with 1.13
+			} else if (resultY > 0.095 && !values.isGroundAround()) {
 				this.flagEvent(event, "HighVarianceY: " + (float) resultY);
 			} else if (resultXZ > 0.06) {
 				this.flagEvent(event, "HighDistanceXZ: " + resultXZ);
@@ -73,7 +80,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		}
 	}
 
-	public void handleLava(MovementValues values, Cancellable event) {
+	public void handleLava(MovementValues values, Cancellable event, NessPlayer nessPlayer) {
 		double yDist = values.getyDiff();
 		double predictedY = lastYDist * 0.5D;
 		predictedY -= 0.02D; // We handle Prediction for XZ Values
@@ -81,12 +88,12 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		double xzDist = values.getXZDiff();
 		double predictedXZ = lastXZDist * 0.5D;
 		double resultXZ = xzDist - predictedXZ;
+		//nessPlayer.sendDevMessage("LavaTicks: " + this.liquidTicks + " resultY: " + resultY);
 		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
 			if (yDist > 0.302D) {
 				this.flagEvent(event, "HighDistanceY");
-			} else if (resultY > 0.13) { // TODO This Check has problems with 1.13
+			} else if (resultY > 0.13) {
 				this.flagEvent(event, "HighVarianceY");
-				this.player().sendDevMessage("resultXZ: " + (float) resultXZ + " resultY: " + (float) resultY);
 			} else if (resultXZ > 0.155) {
 				this.flagEvent(event, "HighDistanceXZ");
 				this.player().sendDevMessage("resultXZ: " + (float) resultXZ + " resultY: " + (float) resultY);
