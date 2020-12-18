@@ -57,7 +57,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		double yPredicted = (lastDeltaY - 0.08D) * 0.98D;
 		int jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
 		if(jumpBoost > 0) {
-			yPredicted += yPredicted * 0.1F;
+			//y -= jumpBoost * (y / 2);
 		}
 		double yResult = Math.abs(y - yPredicted);
 		if (yResult > 0.002 && Math.abs(yPredicted) > 0.004 && airTicks > 5
@@ -66,9 +66,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 					+ " Buffer: " + buffer + " PredictedY: " + (float) yPredicted + " velocity:" + (float) p.getVelocity().getY());
 			buffer += 2;
 			if (buffer > 3) {
-				this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
-				// np.sendDevMessage("Cheats: " + (float) yResult + " Y: " + (float) y + "
-				// AirTicks: " + airTicks);
+				//this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
 			}
 		} else if (buffer > 0) {
 			buffer -= .25;
