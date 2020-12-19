@@ -58,6 +58,11 @@ class ReusablePacket implements Packet {
 	}
 
 	@Override
+	public <T> FieldInvoker<T> getField(Class<T> fieldType, int memberOffset) {
+		return reflection.getField(getClass(), MemberDescriptions.forField(fieldType, memberOffset));
+	}
+
+	@Override
 	public <T> T invokeField(Class<T> fieldType, String fieldName) {
 		return getField(fieldType, fieldName).get(this);
 	}
@@ -65,6 +70,11 @@ class ReusablePacket implements Packet {
 	@Override
 	public Object invokeField(String fieldName) {
 		return getField(fieldName).get(this);
+	}
+
+	@Override
+	public <T> T invokeField(Class<T> fieldType, int memberOffset) {
+		return getField(fieldType, memberOffset).get(this);
 	}
 
 	@Override
@@ -95,6 +105,11 @@ class ReusablePacket implements Packet {
 	@Override
 	public <R> R invokeMethod(Class<R> returnType, String methodName, Class<?>[] parameterTypes, Object... arguments) {
 		return getMethod(returnType, methodName, parameterTypes).invoke(this, arguments);
+	}
+
+	@Override
+	public Object invokeMethod(String methodName) {
+		return getMethod(methodName).invoke(this, EMPTY_ARGUMENTS);
 	}
 
 }

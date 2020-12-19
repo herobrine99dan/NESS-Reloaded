@@ -19,6 +19,10 @@ public final class MemberDescriptions {
 		return new FieldDescriptionForName<>(name);
 	}
 
+	public static <T> FieldDescription<T> forField(Class<T> type, int memberOffset) {
+		return new FieldDescriptionTypeAndOffset<>(type, memberOffset);
+	}
+
 	public static <R> MethodDescription<R> forMethod(Class<R> returnType, String name, Class<?>... parameterTypes) {
 		return new MethodDescriptionPlusReturnType<>(
 				new MethodDescriptionSimple<>(name, parameterTypes, false), returnType);

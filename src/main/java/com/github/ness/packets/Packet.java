@@ -3,12 +3,18 @@ package com.github.ness.packets;
 import java.util.UUID;
 
 import com.github.ness.reflect.FieldInvoker;
+import com.github.ness.reflect.MemberDescription;
 import com.github.ness.reflect.MethodInvoker;
+import com.github.ness.reflect.Reflection;
 
 /**
  * An individual sent packet which is associated with a player, and can be cancelled. <br>
  * <br>
- * Instances of this interface should not be persisted in collections.
+ * Instances of this interface should not be persisted in collections. <br>
+ * <br>
+ * There are many convenience methods for aiding in reflective access to the underlying
+ * packet. For fuller documentation on the implications of the parameters of these methods,
+ * see {@link Reflection} and {@link MemberDescription}
  * 
  * @author A248
  *
@@ -60,12 +66,22 @@ public interface Packet {
 	FieldInvoker<?> getField(String fieldName);
 
 	/**
+	 * Gets a field invoker for a field in this packet
+	 *
+	 * @param fieldType the field type class
+	 * @param memberOffset the amount of matching members to initially skip
+	 * @param <T> the field type
+	 * @return the field invoker
+	 */
+	<T> FieldInvoker<T> getField(Class<T> fieldType, int memberOffset);
+
+	/**
 	 * Reflectively gets the value of a field in this packet
-	 * 
+	 *
 	 * @param <T> the field type
 	 * @param fieldType the field type class
 	 * @param fieldName the field name
-	 * @return the field invoker
+	 * @return the value
 	 */
 	<T> T invokeField(Class<T> fieldType, String fieldName);
 
@@ -73,9 +89,19 @@ public interface Packet {
 	 * Reflectively gets the value of a field in this packet
 	 * 
 	 * @param fieldName the field name
-	 * @return the field invoker
+	 * @return the value
 	 */
 	Object invokeField(String fieldName);
+
+	/**
+	 * Reflectively gets the value of a field in this packet
+	 *
+	 * @param fieldType the field type class
+	 * @param memberOffset the amount of matching members to initially skip
+	 * @param <T> the field type
+	 * @return the value
+	 */
+	<T> T invokeField(Class<T> fieldType, int memberOffset);
 
 	// Methods
 
@@ -138,5 +164,13 @@ public interface Packet {
 	 * @return the return value
 	 */
 	<R> R invokeMethod(Class<R> returnType, String methodName, Class<?>[] parameterTypes, Object...arguments);
+
+	/**
+	 * Reflectively calls a method on this packet, with no arguments
+	 *
+	 * @param methodName the method name
+	 * @return the return value
+	 */
+	Object invokeMethod(String methodName);
 
 }

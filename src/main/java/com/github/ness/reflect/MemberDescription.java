@@ -2,7 +2,12 @@ package com.github.ness.reflect;
 
 import java.lang.reflect.Member;
 
-interface MemberDescription<M extends Member> {
+/**
+ * A description of a field or method
+ *
+ * @param <M> the member type
+ */
+public interface MemberDescription<M extends Member> {
 
 	/**
 	 * Whether this description matches a member in its details
