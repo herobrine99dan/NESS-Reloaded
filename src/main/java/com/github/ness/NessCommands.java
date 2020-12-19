@@ -3,6 +3,7 @@ package com.github.ness;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.github.ness.check.Check;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -59,15 +60,16 @@ class NessCommands implements CommandExecutor {
 		}
 		switch (args[0].toLowerCase()) {
 		case "reload":
-			ness.getConfigManager().reload().thenCompose((ignore) -> ness.getCheckManager().reload())
-					.whenComplete((ignore, ex) -> {
-				if (ex != null) {
-					logger.log(Level.WARNING, "Error while reloading", ex);
-					sendMessage(sender, "&cError reloading NESS, check your server console for details.");
-					return;
-				}
-				sendMessage(sender, "&aReloaded NESS!");
-			});
+			ness.getConfigManager().reload()
+					.thenCompose((ignore) -> ness.getCheckManager().reload())
+					.thenRun(() -> {
+						sendMessage(sender, "&aReloaded NESS!");
+
+					}).exceptionally((ex) -> {
+						logger.log(Level.WARNING, "Error while reloading", ex);
+						sendMessage(sender, "&cError reloading NESS, check your server console for details.");
+						return null;
+					});
 			break;
 		case "violations":
 			showViolations(sender, (args.length >= 2) ? Bukkit.getPlayer(args[1]) : null);
@@ -101,7 +103,7 @@ class NessCommands implements CommandExecutor {
 			if (sender instanceof Player) {
 				Player p = (Player) sender;
 				if (args.length > 1) {
-					p.setVelocity(p.getLocation().getDirection().multiply(Double.valueOf(args[1])));
+					p.setVelocity(p.getLocation().getDirection().multiply(Double.parseDouble(args[1])));
 					p.sendMessage("Done!");
 				}
 			} else {
@@ -112,7 +114,6 @@ class NessCommands implements CommandExecutor {
 			usage(sender);
 			break;
 		}
-		return;
 	}
 
 	private void showViolations(CommandSender sender, Player target) {
@@ -147,7 +148,7 @@ class NessCommands implements CommandExecutor {
 			sendUnknownTarget(sender);
 			return;
 		}
-		ness.getCheckManager().forEachCheck(target.getUniqueId(), (check) -> check.clearViolationCount());
+		ness.getCheckManager().forEachCheck(target.getUniqueId(), Check::clearViolationCount);
 		sendMessage(sender, "&7Cleared violations for &e%TARGET%".replace("%TARGET%", target.getName()));
 	}
 	

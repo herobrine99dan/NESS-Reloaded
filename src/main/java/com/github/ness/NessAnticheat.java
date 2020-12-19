@@ -8,7 +8,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.github.ness.reflect.*;
+import com.github.ness.reflect.ClassLocator;
+import com.github.ness.reflect.CoreReflection;
+import com.github.ness.reflect.InvokerCachingReflection;
+import com.github.ness.reflect.MethodHandleReflection;
+import com.github.ness.reflect.ReflectHelper;
+import com.github.ness.reflect.Reflection;
+import com.github.ness.reflect.SimpleClassLocator;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
