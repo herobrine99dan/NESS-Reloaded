@@ -72,9 +72,9 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
 			if (yDist > 0.302D) {
 				this.flagEvent(event, "HighDistanceY");
-			} else if (resultY > 0.095 && !values.isGroundAround()) {
+			} else if (resultY > 0.105 && !values.isGroundAround()) {
 				this.flagEvent(event, "HighVarianceY: " + (float) resultY);
-			} else if (resultXZ > 0.06) {
+			} else if (resultXZ > 0.066) {
 				this.flagEvent(event, "HighDistanceXZ: " + resultXZ);
 			}
 		}
@@ -94,7 +94,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 				this.flagEvent(event, "HighDistanceY");
 			} else if (resultY > 0.13) {
 				this.flagEvent(event, "HighVarianceY");
-			} else if (resultXZ > 0.155) {
+			} else if (resultXZ > 0.159) {
 				this.flagEvent(event, "HighDistanceXZ");
 				this.player().sendDevMessage("resultXZ: " + (float) resultXZ + " resultY: " + (float) resultY);
 			}
