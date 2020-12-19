@@ -33,7 +33,7 @@ public class FieldInvokerWithCachedMethodHandle<T> implements FieldInvoker<T> {
 	@Override
 	public T get(Object object) {
 		try {
-			return (T) methodHandle.invokeWithArguments(object);
+			return (T) methodHandle.invoke(object);
 		} catch (RuntimeException | Error ex) {
 			throw ex;
 		} catch (Throwable ex) {
