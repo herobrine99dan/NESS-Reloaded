@@ -204,7 +204,7 @@ public class Utility {
 		}
 		return water > 4;
 	}
-	
+
 	public static boolean isNearLava(Location loc, MaterialAccess access) {
 		int water = 0;
 		for (Block b : getCollidingBlocks(loc, 0.5, 0.1)) {
@@ -243,6 +243,15 @@ public class Utility {
 			}
 		}
 		return blocks;
+	}
+
+	public static boolean isCollidingLadder(Location loc, MaterialAccess access) {
+		for (Block b : getCollidingBlocks(loc, 0.2, 0.1)) {
+			if(access.getMaterial(b).name().contains("LADDER") || access.getMaterial(b).name().contains("VINE")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static List<Block> getBlocksAround(Location loc, int radius) {

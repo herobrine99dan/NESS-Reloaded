@@ -53,7 +53,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			ImmutableVector flying = this.handleSpeedInAirValue(values.getTo().getYaw(), player.isSprinting());
 			final double prediction = (lastDeltaXZ * 0.91f) + (player.isSprinting() ? 0.026 : 0.02);
 			final double difference = xzDiff - prediction;
-			if (difference > 0.005) {
+			if (difference > 0.001) {
 				if (++buffer > 3) {
 					this.flagEvent(event);
 				}
