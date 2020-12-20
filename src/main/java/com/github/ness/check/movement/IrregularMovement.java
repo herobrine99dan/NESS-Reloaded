@@ -62,7 +62,7 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 
 	public boolean levitationEffect() {
 		if (!Bukkit.getVersion().contains("1.8")) {
-			this.player().sendDevMessage("YDiff: " + (float) this.player().getMovementValues().getyDiff());
+			//this.player().sendDevMessage("YDiff: " + (float) this.player().getMovementValues().getyDiff());
 			int effect = Utility.getPotionEffectLevel(this.player().getBukkitPlayer(), PotionEffectType.LEVITATION);
 			// this.motY += (0.05D * (getEffect(MobEffects.LEVITATION).getAmplifier() + 1) -
 			// this.motY) * 0.2D;

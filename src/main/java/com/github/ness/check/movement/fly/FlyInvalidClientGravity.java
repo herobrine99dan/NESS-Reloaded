@@ -65,8 +65,8 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 			nessPlayer.sendDevMessage("NotCheats: " + (float) yResult + " Y: " + (float) y + " AirTicks: " + airTicks
 					+ " Buffer: " + buffer + " PredictedY: " + (float) yPredicted + " velocity:" + (float) p.getVelocity().getY());
 			buffer += 2;
-			if (buffer > 3) {
-				//this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
+			if (buffer > 4) {
+				this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
 			}
 		} else if (buffer > 0) {
 			buffer -= .25;

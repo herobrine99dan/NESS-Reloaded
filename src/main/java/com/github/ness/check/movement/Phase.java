@@ -28,7 +28,7 @@ public class Phase extends ListeningCheck<PlayerMoveEvent> {
         	return;
         }
         Material material = this.ness().getMaterialAccess().getMaterial(b);
-        boolean occluder = material.isOccluding() || material.name().contains("GLASS");
+        boolean occluder = material.isOccluding() || (material.name().contains("GLASS") && !material.name().contains("STAINED"));
         if (occluder && !Utility.hasVehicleNear(event.getPlayer(), 3)
                 && Utility.groundAround(event.getTo().clone()) && !nessPlayer.isTeleported()
                 && nessPlayer.getMovementValues().getXZDiff() > 0.25) {
