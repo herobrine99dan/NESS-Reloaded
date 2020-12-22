@@ -54,7 +54,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 				|| values.isAroundWeb() || values.isAroundLadders() || values.hasBlockNearHead() || values.isOccluding()) {
 			return;
 		}
-		double yPredicted = (lastDeltaY - 0.08D) * 0.98D;
+		double yPredicted = (lastDeltaY - 0.08D) * 0.9800000190734863D;
 		int jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
 		if(jumpBoost > 0) {
 			//y -= jumpBoost * (y / 2);
