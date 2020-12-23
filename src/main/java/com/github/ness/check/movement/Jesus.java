@@ -10,6 +10,7 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
+import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
@@ -38,7 +39,8 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
-		if (Utility.hasflybypass(p) || Utility.hasVehicleNear(p, 3) || p.getAllowFlight()) {
+		if (Utility.hasflybypass(p) || Utility.hasVehicleNear(p, 3) || p.getAllowFlight()
+				|| nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) < 2000) {
 			return;
 		}
 		if (p.getLocation().getBlock().isLiquid()) {
@@ -68,7 +70,8 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		double xzDist = values.getXZDiff();
 		double predictedXZ = lastXZDist * 0.8f;
 		double resultXZ = xzDist - predictedXZ;
-		//nessPlayer.sendDevMessage("WaterTicks: " + this.liquidTicks + " resultY: " + resultY);
+		// nessPlayer.sendDevMessage("WaterTicks: " + this.liquidTicks + " resultY: " +
+		// resultY);
 		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
 			if (yDist > 0.302D) {
 				this.flagEvent(event, "HighDistanceY");
@@ -88,7 +91,8 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		double xzDist = values.getXZDiff();
 		double predictedXZ = lastXZDist * 0.5D;
 		double resultXZ = xzDist - predictedXZ;
-		//nessPlayer.sendDevMessage("LavaTicks: " + this.liquidTicks + " resultY: " + resultY);
+		// nessPlayer.sendDevMessage("LavaTicks: " + this.liquidTicks + " resultY: " +
+		// resultY);
 		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
 			if (yDist > 0.302D) {
 				this.flagEvent(event, "HighDistanceY");
