@@ -2,6 +2,8 @@ package com.github.ness.check;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.packets.Packet;
+import com.github.ness.packets.wrapper.PacketTypeRegistry;
+import com.github.ness.reflect.ReflectHelper;
 
 /**
  * A check which listens to packets
@@ -31,6 +33,14 @@ public abstract class PacketCheck extends Check {
 			return;
 		}
 		checkPacket(packet);
+	}
+
+	protected PacketTypeRegistry getPacketTypeRegistry() {
+		return ness().getPacketTypeRegistry();
+	}
+
+	protected ReflectHelper getReflectHelper() {
+		return ness().getReflectHelper();
 	}
 
 }

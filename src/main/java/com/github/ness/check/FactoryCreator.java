@@ -1,13 +1,14 @@
 package com.github.ness.check;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.reflect.ReflectHelper;
 import com.github.ness.utility.UncheckedReflectiveOperationException;
 import org.bukkit.event.Event;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.List;
 
 class FactoryCreator<C extends BaseCheck> {
 
@@ -60,13 +61,11 @@ class FactoryCreator<C extends BaseCheck> {
 			return checkClass.getDeclaredConstructor(BaseCheckFactory.class);
 		} catch (NoSuchMethodException ignored) {}
 
-		Class<?>[] checkFactoryClasses = new Class<?>[] {CheckFactory.class, ListeningCheckFactory.class};
+		List<Class<?>> checkFactoryClasses = Arrays.asList(
+				CheckFactory.class, ListeningCheckFactory.class, PacketCheckFactory.class);
 		for (Class<?> checkFactoryClass : checkFactoryClasses) {
 			try {
 				return checkClass.getDeclaredConstructor(checkFactoryClass, NessPlayer.class);
-			} catch (NoSuchMethodException ignored) {}
-			try {
-				return checkClass.getDeclaredConstructor(checkFactoryClass, NessPlayer.class, ReflectHelper.class);
 			} catch (NoSuchMethodException ignored) {}
 		}
 		throw new IllegalStateException("Unable to find check constructor");

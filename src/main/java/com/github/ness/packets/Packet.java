@@ -42,6 +42,27 @@ public interface Packet {
 	Object getRawPacket();
 
 	/*
+	 * Packet wrapping
+	 */
+
+	/**
+	 * Whether this packet matches the specified packet type
+	 *
+	 * @param packetType the packet type
+	 * @return true if this packet is of the specified type, false otherwise
+	 */
+	boolean isPacketType(PacketType<?> packetType);
+
+	/**
+	 * Converts this packet to the specific packet type.
+	 *
+	 * @param <P> the wrapper type
+	 * @param packetType the packet type
+	 * @return the packet wrapper
+	 */
+	<P> P toPacketWrapper(PacketType<P> packetType);
+
+	/*
 	 * Reflection helpers
 	 */
 

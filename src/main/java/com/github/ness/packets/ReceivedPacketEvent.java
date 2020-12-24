@@ -1,7 +1,7 @@
 package com.github.ness.packets;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.packets.wrappers.SimplePacket;
+import com.github.ness.packets.wrapper.SimplePacket;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;

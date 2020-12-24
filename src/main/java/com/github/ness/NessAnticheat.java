@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.github.ness.packets.wrapper.PacketTypeRegistry;
+import com.github.ness.packets.wrapper.SimplePacketTypeRegistry;
 import com.github.ness.reflect.ClassLocator;
 import com.github.ness.reflect.CoreReflection;
 import com.github.ness.reflect.InvokerCachingReflection;
@@ -15,6 +17,7 @@ import com.github.ness.reflect.MethodHandleReflection;
 import com.github.ness.reflect.ReflectHelper;
 import com.github.ness.reflect.Reflection;
 import com.github.ness.reflect.SimpleClassLocator;
+import com.github.ness.reflect.SimpleReflectHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -48,6 +51,7 @@ public class NessAnticheat {
 	private final ViolationManager violationManager;
 	private final MaterialAccess materialAccess;
 	private final ReflectHelper reflectHelper;
+	private final PacketTypeRegistry packetTypeRegistry;
 
 	static {
 		minecraftVersion = getVersion();
@@ -68,7 +72,8 @@ public class NessAnticheat {
 				new PacketListener(
 						new NetworkReflectionCreation(reflection, locator).create(),
 						new PacketActorInterceptor(checkManager::receivePacket, reflection)));
-		reflectHelper = new ReflectHelper(locator, reflection);
+		reflectHelper = new SimpleReflectHelper(locator, reflection);
+		packetTypeRegistry = new SimplePacketTypeRegistry(reflectHelper);
 	}
 
 	private static int getVersion() {
@@ -156,6 +161,10 @@ public class NessAnticheat {
 
 	public ReflectHelper getReflectHelper() {
 		return reflectHelper;
+	}
+
+	public PacketTypeRegistry getPacketTypeRegistry() {
+		return packetTypeRegistry;
 	}
 
 	public NessConfig getMainConfig() {

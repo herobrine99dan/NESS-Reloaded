@@ -1,4 +1,4 @@
-package com.github.ness.packets.wrappers;
+package com.github.ness.packets.wrapper;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;

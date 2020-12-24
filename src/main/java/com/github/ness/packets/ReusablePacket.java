@@ -48,6 +48,16 @@ class ReusablePacket implements Packet {
 	}
 
 	@Override
+	public boolean isPacketType(PacketType<?> packetType) {
+		return packetType.isPacket(this);
+	}
+
+	@Override
+	public <P> P toPacketWrapper(PacketType<P> packetType) {
+		return packetType.convertPacket(this);
+	}
+
+	@Override
 	public <T> FieldInvoker<T> getField(Class<T> fieldType, String fieldName) {
 		return reflection.getField(getClass(), MemberDescriptions.forField(fieldName, fieldType));
 	}
