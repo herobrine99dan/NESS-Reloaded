@@ -4,8 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
-import com.github.ness.utility.ReflectionUtility;
-
+@Deprecated
 public class SimplePacket {
 	private final Object packet;
 
@@ -22,7 +21,7 @@ public class SimplePacket {
 	}
 
 	Object getField(String field) {
-		return ReflectionUtility.getField(packet, field);
+		throw new UnsupportedOperationException("Must migrate to PacketCheck/PacketCheckFactory");
 	}
 
 	<T> Field getField(Class<?> target, Class<T> fieldType, int index) {
@@ -45,7 +44,7 @@ public class SimplePacket {
 	}
 
 	Object getDeclaredField(String field) {
-		return ReflectionUtility.getDeclaredField(packet, field);
+		throw new UnsupportedOperationException("Must migrate to PacketCheck/PacketCheckFactory");
 	}
 
 }

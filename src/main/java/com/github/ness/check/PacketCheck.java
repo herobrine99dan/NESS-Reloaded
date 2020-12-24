@@ -35,11 +35,11 @@ public abstract class PacketCheck extends Check {
 		checkPacket(packet);
 	}
 
-	protected PacketTypeRegistry getPacketTypeRegistry() {
+	protected PacketTypeRegistry packetTypeRegistry() {
 		return ness().getPacketTypeRegistry();
 	}
 
-	protected ReflectHelper getReflectHelper() {
+	protected ReflectHelper reflectHelper() {
 		return ness().getReflectHelper();
 	}
 
