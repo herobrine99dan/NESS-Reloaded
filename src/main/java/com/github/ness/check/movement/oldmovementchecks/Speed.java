@@ -35,8 +35,9 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
         if (to.getY() < from.getY())
             hozDist = dist - (from.getY() - to.getY());
         double maxSpd = player.getWalkSpeed() * 2.15; // 0.43
-        final double velocity = Math.hypot(player().getLastVelocity().getX(), player().getLastVelocity().getZ());
+        double velocity = 0;
         if (player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
+            velocity = Math.hypot(player().getLastVelocity().getX(), player().getLastVelocity().getZ());
             hozDist -= velocity;
         }
         if (player.hasPotionEffect(PotionEffectType.SPEED)) {

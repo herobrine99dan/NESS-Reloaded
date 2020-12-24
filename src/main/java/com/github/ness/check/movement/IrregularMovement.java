@@ -2,6 +2,7 @@ package com.github.ness.check.movement;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 
@@ -22,7 +23,6 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		super(factory, player);
 	}
 
-	private double lastDeltaY;
 	private int airTicks;
 	private double buffer;
 
@@ -43,47 +43,45 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 	 */
 	public void Check(PlayerMoveEvent e) {
 		NessPlayer nessPlayer = this.player();
-		Player p = e.getPlayer();
 		MovementValues values = nessPlayer.getMovementValues();
-		double y = values.getyDiff();
 		if (values.isOnGroundCollider()) {
 			airTicks = 0;
 		} else {
 			airTicks++;
 		}
-		if (jumpBoost()) {
-			this.flagEvent(e, "HighJumpBoost");
-		}
-		if (levitationEffect()) {
-			this.flagEvent(e, "NoLevitation");
-		}
-		lastDeltaY = y;
+		jumpBoost(e);
+		levitationEffect(e);
 	}
 
-	public boolean levitationEffect() {
+	public void levitationEffect(Cancellable e) {
 		if (!Bukkit.getVersion().contains("1.8")) {
-			//this.player().sendDevMessage("YDiff: " + (float) this.player().getMovementValues().getyDiff());
 			int effect = Utility.getPotionEffectLevel(this.player().getBukkitPlayer(), PotionEffectType.LEVITATION);
-			// this.motY += (0.05D * (getEffect(MobEffects.LEVITATION).getAmplifier() + 1) -
-			// this.motY) * 0.2D;
-			double predictedY = this.lastDeltaY + (0.05D * effect - this.lastDeltaY) * 0.2D;
 			if (effect > 0) {
-				return false;
+				float yDiff = (float) this.player().getMovementValues().getyDiff();
+				float superPrediction = 0.045370374f * effect;
+				float resultY = superPrediction - yDiff;
+				if (resultY > 0.005) {
+					if (++buffer > 50) {
+						this.flagEvent(e, "NoLevitation ResultY: " + resultY);
+					}
+				} else if (buffer > 0) {
+					buffer -= 0.25;
+				}
+			} else if (buffer > 0) {
+				buffer -= 0.25;
 			}
 		}
-		return false;
 	}
 
-	public boolean jumpBoost() {
+	public void jumpBoost(Cancellable e) {
 		int jumpBoost = Utility.getPotionEffectLevel(this.player().getBukkitPlayer(), PotionEffectType.JUMP);
 		double max = 0.42F + (jumpBoost * 0.1);
-		if(this.player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 1700) {
+		if (this.player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 1700) {
 			max += this.player().getLastVelocity().getY();
 		}
 		if ((float) this.player().getMovementValues().getyDiff() > max && jumpBoost > 0) {
-			return true;
+			this.flagEvent(e, "HighJumpBoost");
 		}
-		return false;
 	}
 
 }
