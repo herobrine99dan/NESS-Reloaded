@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -124,7 +125,8 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 			return;
 		}
 		Block b = player.getTargetBlock(null, 5);
-		if (b.getType().isSolid() && b.getType().isOccluding()) {
+		Material material = b.getType();
+		if (b.getType().isSolid() && (material.isOccluding() && !material.name().contains("GLASS"))) {
 			punish(event, "WallHit");
 		}
 	}
