@@ -1,7 +1,8 @@
 package com.github.ness.packets.wrapper;
 
-import com.github.ness.packets.Packet;
 import com.github.ness.packets.PacketType;
+import com.github.ness.reflect.FieldInvoker;
+import com.github.ness.reflect.MemberDescriptions;
 import com.github.ness.reflect.ReflectHelper;
 
 public final class PlayInFlying {
@@ -28,24 +29,28 @@ public final class PlayInFlying {
 	}
 
 	static PacketType<PlayInFlying> type(ReflectHelper helper) {
-		Class<?> nmsClass = helper.getNmsClass("PacketPlayInFlying");
-		return new PacketType<PlayInFlying>() {
-			@Override
-			public boolean isPacket(Packet packet) {
-				return nmsClass.isInstance(packet.getRawPacket());
-			}
+		Class<?> packetClass = helper.getNmsClass("PacketPlayInFlying");
+
+		FieldInvoker<Double> x = helper.getField(packetClass, MemberDescriptions.forField(double.class, "x"));
+		FieldInvoker<Double> y = helper.getField(packetClass, MemberDescriptions.forField(double.class, "y"));
+		FieldInvoker<Double> z = helper.getField(packetClass, MemberDescriptions.forField(double.class, "z"));
+		FieldInvoker<Float> yaw = helper.getField(packetClass, MemberDescriptions.forField(float.class, "yaw"));
+		FieldInvoker<Float> pitch = helper.getField(packetClass, MemberDescriptions.forField(float.class, "pitch"));
+		@SuppressWarnings("unchecked")
+		FieldInvoker<Boolean> onGround = helper.getField(packetClass,
+				MemberDescriptions.forField(boolean.class, "onGround"),
+				MemberDescriptions.forField(boolean.class, "f")); // The field name is 'f' in some versions
+		FieldInvoker<Boolean> hasPosition = helper.getField(packetClass, MemberDescriptions.forField(boolean.class, "hasPos"));
+		FieldInvoker<Boolean> hasLook = helper.getField(packetClass, MemberDescriptions.forField(boolean.class, "hasLook"));
+
+		return new RawPacketType<PlayInFlying>(packetClass) {
 
 			@Override
-			public PlayInFlying convertPacket(Packet packet) {
+			public PlayInFlying convertPacket(Object packet) {
 				return new PlayInFlying(
-						packet.invokeField(double.class, "x"),
-						packet.invokeField(double.class, "y"),
-						packet.invokeField(double.class, "z"),
-						packet.invokeField(float.class, "yaw"),
-						packet.invokeField(float.class, "pitch"),
-						packet.invokeField(boolean.class, "f"),
-						packet.invokeField(boolean.class, "hasPos"),
-						packet.invokeField(boolean.class, "hasLook"));
+						x.get(packet), y.get(packet), z.get(packet),
+						yaw.get(packet), pitch.get(packet),
+						onGround.get(packet), hasPosition.get(packet), hasLook.get(packet));
 			}
 		};
 	}

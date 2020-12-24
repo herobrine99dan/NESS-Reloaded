@@ -10,7 +10,7 @@ public final class MemberDescriptions {
 
 	private MemberDescriptions() {}
 
-	public static <T> FieldDescription<T> forField(String name, Class<T> type) {
+	public static <T> FieldDescription<T> forField(Class<T> type, String name) {
 		return new FieldDescriptionPlusType<>(
 				new FieldDescriptionForName<>(name), type);
 	}

@@ -59,7 +59,7 @@ class ReusablePacket implements Packet {
 
 	@Override
 	public <T> FieldInvoker<T> getField(Class<T> fieldType, String fieldName) {
-		return reflection.getField(getClass(), MemberDescriptions.forField(fieldName, fieldType));
+		return reflection.getField(getClass(), MemberDescriptions.forField(fieldType, fieldName));
 	}
 
 	@Override
@@ -74,17 +74,17 @@ class ReusablePacket implements Packet {
 
 	@Override
 	public <T> T invokeField(Class<T> fieldType, String fieldName) {
-		return getField(fieldType, fieldName).get(this);
+		return getField(fieldType, fieldName).get(rawPacket);
 	}
 
 	@Override
 	public Object invokeField(String fieldName) {
-		return getField(fieldName).get(this);
+		return getField(fieldName).get(rawPacket);
 	}
 
 	@Override
 	public <T> T invokeField(Class<T> fieldType, int memberOffset) {
-		return getField(fieldType, memberOffset).get(this);
+		return getField(fieldType, memberOffset).get(rawPacket);
 	}
 
 	@Override
@@ -109,17 +109,17 @@ class ReusablePacket implements Packet {
 
 	@Override
 	public <R> R invokeMethod(Class<R> returnType, String methodName) {
-		return getMethod(returnType, methodName, EMPTY_CLASSES).invoke(this, EMPTY_ARGUMENTS);
+		return getMethod(returnType, methodName, EMPTY_CLASSES).invoke(rawPacket, EMPTY_ARGUMENTS);
 	}
 
 	@Override
 	public <R> R invokeMethod(Class<R> returnType, String methodName, Class<?>[] parameterTypes, Object... arguments) {
-		return getMethod(returnType, methodName, parameterTypes).invoke(this, arguments);
+		return getMethod(returnType, methodName, parameterTypes).invoke(rawPacket, arguments);
 	}
 
 	@Override
 	public Object invokeMethod(String methodName) {
-		return getMethod(methodName).invoke(this, EMPTY_ARGUMENTS);
+		return getMethod(methodName).invoke(rawPacket, EMPTY_ARGUMENTS);
 	}
 
 }

@@ -37,7 +37,7 @@ public class CoreReflection implements Reflection {
 
 			currentClass = currentClass.getSuperclass();
 		}
-		throw new ReflectionException("No member found in " + clazz + " for description " + description);
+		throw MemberNotFoundException.INSTANCE;
 	}
 
 }
