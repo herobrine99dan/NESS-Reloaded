@@ -88,9 +88,11 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 				|| MathUtils.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
 			maxReach += 0.4D;
 		}
-		maxReach += (Utility.getPing(player) / 100) / 15;
 		if (range > maxReach && range < 6.5D) {
 			punish(eventt, "Reach: " + range);
+		}
+		if(range > 5) {
+			punish(eventt, "SuperReach: " + range);
 		}
 	}
 
