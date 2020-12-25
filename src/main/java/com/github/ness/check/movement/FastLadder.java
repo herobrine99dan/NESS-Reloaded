@@ -17,6 +17,7 @@ public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
 
     double maxDist;
     int jumped = 0;
+    double buffer;
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
 			.forEvent(PlayerMoveEvent.class);
@@ -42,11 +43,14 @@ public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
                 && !Utility.hasflybypass(p) && !np.isTeleported() && !np.isHasSetback()) {
             double distance = np.getMovementValues().getyDiff();
             if (distance > maxDist && p.getVelocity().getY() < 0) {
-            	flagEvent(event, "HighDistance Dist: " + (float) distance);
-            	//if(player().setViolation(new Violation("FastLadder", "Dist: " + distance))) event.setCancelled(true);
+            	if(++buffer > 4) {
+                	flagEvent(event, "HighDistance Dist: " + (float) distance);
+            	}
             } else if(distance < -0.192D && p.getVelocity().getY() < 0) {
             	flagEvent(event, "LowDistance Dist: " + (float) distance);
-            }
+            } else if (buffer > 0) {
+    			buffer -= .25;
+    		}
         }
     }
 }
