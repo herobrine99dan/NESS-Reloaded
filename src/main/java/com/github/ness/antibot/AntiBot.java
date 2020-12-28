@@ -8,6 +8,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Scheduler;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -51,7 +52,7 @@ public class AntiBot {
 		@EventHandler(priority = EventPriority.LOWEST)
 		public void interceptLogins(AsyncPlayerPreLoginEvent event) {
 			if (counter.incrementAndGet() > maxPlayersPerSecond
-					&& whitelist.getIfPresent(event.getUniqueId()) != null) {
+					&& whitelist.getIfPresent(event.getUniqueId()) == null) {
 				event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, kickMessage);
 			}
 		}

@@ -44,7 +44,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		NessPlayer nessPlayer = this.player();
 		Player p = e.getPlayer();
 		MovementValues values = nessPlayer.getMovementValues();
-		double y = values.getyDiff();
+		double deltaY = values.getyDiff();
 		if (values.isOnGroundCollider()) {
 			airTicks = 0;
 		} else {
@@ -55,20 +55,20 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		double yPredicted = (lastDeltaY - 0.08D) * 0.9800000190734863D;
-		int jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
-		if(jumpBoost > 0) {
-			//y -= jumpBoost * (y / 2);
+		boolean resetting = (Math.abs(deltaY) + 0.098 < 0.06D);
+		if(resetting) {
+			return;
 		}
-		double yResult = Math.abs(y - yPredicted);
+		double yResult = Math.abs(deltaY - yPredicted);
 		if (yResult > 0.005 && Math.abs(yPredicted) > 0.005 && airTicks > 15
 				&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000 && p.getVelocity().getY() < 0) {
-			nessPlayer.sendDevMessage("NotCheats: " + (float) yResult + " Y: " + (float) y + " PredictedY: " + (float) yPredicted + " velocity:" + (float) p.getVelocity().getY());
+			nessPlayer.sendDevMessage("NotCheats: " + (float) yResult + " Y: " + (float) deltaY + " PredictedY: " + (float) yPredicted + " velocity:" + (float) p.getVelocity().getY());
 			if (++buffer > 4) {
 				this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
 			}
 		} else if (buffer > 0) {
 			buffer -= 0.5;
 		}
-		lastDeltaY = y;
+		lastDeltaY = deltaY;
 	}
 }

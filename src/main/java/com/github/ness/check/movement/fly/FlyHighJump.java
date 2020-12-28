@@ -18,6 +18,7 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
 	private double flyYSum;
+	private double buffer = 0;
 
 	public FlyHighJump(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
@@ -59,10 +60,16 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 			double jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
 			max += jumpBoost * (max / 2);
 			if (flyYSum > max && p.getVelocity().getY() < 0) {
-				flagEvent(e, " ySum: " + flyYSum);
+				if (++buffer > 1) {
+					flagEvent(e, " ySum: " + flyYSum);
+				}
 				// if(player().setViolation(new Violation("Fly", "HighJump ySum: " + flyYSum)))
 				// e.setCancelled(true);
+			} else if (buffer > 0) {
+				buffer -= 0.5;
 			}
+		} else if (buffer > 0) {
+			buffer -= 0.5;
 		}
 	}
 
