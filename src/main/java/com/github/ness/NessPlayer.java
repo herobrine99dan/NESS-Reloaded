@@ -72,7 +72,7 @@ public class NessPlayer implements AnticheatPlayer {
 	private long lastWasOnIce = lastWasOnGround;
 
 	private UUID lastEntityAttacked;
-	private String userName;
+	private final String userName;
 
 	public NessPlayer(Player player, boolean devMode, MaterialAccess access) {
 		uuid = player.getUniqueId();

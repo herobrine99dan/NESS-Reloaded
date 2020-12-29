@@ -18,6 +18,7 @@ import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
 
     double maxInvalidVelocity;
+    private double buffer;
     
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
 			.forEvent(PlayerMoveEvent.class);
@@ -33,7 +34,7 @@ public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
 	}
 	
 	public interface Config {
-		@DefaultDouble(1.5)
+		@DefaultDouble(0.9)
 		double maxGravity();
 	}
 
@@ -68,9 +69,13 @@ public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
         if (np.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2500) {
             y -= Math.abs(np.getLastVelocity().getY());
         }
-        if (Math.abs(yresult) > max && !np.isTeleported()) {
-        	flagEvent(e, " " + yresult);
+        if (Math.abs(yresult) > max && !np.isTeleported() && !np.isHasSetback()) {
+        	if(++buffer > 1) {
+        		flagEvent(e, " " + yresult);
+        	}
         	//if(player().setViolation(new Violation("Fly", "InvalidVelocity: " + yresult))) e.setCancelled(true);
+        } else if(buffer > 0) {
+        	buffer -= 0.5;
         }
     }
 }
