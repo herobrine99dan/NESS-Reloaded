@@ -36,30 +36,11 @@ public class ScaffoldFalseTarget extends ListeningCheck<BlockPlaceEvent> {
 		if (target == null) {
 			return;
 		}
-		//TODO Test this with getLastTwoTargetBlocks
 		if (underMaterial.name().contains("AIR")) {
 			if (!event.getBlock().getLocation().equals(target.getLocation()) && !event.isCancelled()
 					&& targetMaterial.isSolid() && player.getLocation().getY() > event.getBlock().getLocation().getY()
 					&& targetMaterial.isOccluding()) {
-				if (++buffer > 1) {
-					flagEvent(event);
-				}
-				// if(player().setViolation(new Violation("Scaffold", "FalseTarget")))
-				// event.setCancelled(true);
-			} else if (buffer > 0) {
-				buffer -= 0.25;
-			}
-		}
-		if (Utility
-				.getMaterialName(event.getBlock().getWorld()
-						.getBlockAt(event.getBlock().getLocation().subtract(0.0D, 1.0D, 0.0D)).getLocation())
-				.contains("AIR")) {
-			if (!event.getBlock().getLocation().equals(target.getLocation()) && !event.isCancelled()
-					&& target.getType().isSolid() && !target.getType().name().toLowerCase().contains("sign")
-					&& !target.getType().toString().toLowerCase().contains("fence")
-					&& player.getLocation().getY() > event.getBlock().getLocation().getY()
-					&& target.getType().isOccluding()) {
-				if (++buffer > 1) {
+				if (++buffer > 2) {
 					flagEvent(event);
 				}
 				// if(player().setViolation(new Violation("Scaffold", "FalseTarget")))

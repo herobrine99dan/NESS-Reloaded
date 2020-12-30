@@ -1,51 +1,50 @@
 package com.github.ness.utility.raytracer;
 
-import org.bukkit.Location;
+import java.util.Set;
+
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
-
-import com.github.ness.utility.Utility;
 
 public class RayCaster {
 
-    private Location origin;
-    private double maxDistance;
-    private Player player;
-    private Block blockFounded;
-    private Entity entityFounded;
+	private double maxDistance;
+	private Player player;
+	private Block blockFounded;
+	private Entity entityFounded;
 
-    public RayCaster(Player player, Location origin, double maxDistance) {
-        this.origin = origin;
-        this.player = player;
-        this.maxDistance = maxDistance;
-    }
+	public RayCaster(Player player, double maxDistance) {
+		this.player = player;
+		this.maxDistance = maxDistance;
+	}
 
-    public void compute(RayCaster.RaycastType type) {
-        if (type == RayCaster.RaycastType.ENTITY) {
-            for (Entity e : this.origin.getWorld().getNearbyEntities(origin, maxDistance, maxDistance, maxDistance)) {
-                if (e instanceof LivingEntity) {
-                    if(player.hasLineOfSight(e)) {
-                        entityFounded = e;
-                    }
-                }
-            }
-        } else if (type == RayCaster.RaycastType.BLOCK) {
-            Location loc = player.getEyeLocation();
-            Vector v = loc.getDirection().normalize();
-            for (double i = 1; i <= maxDistance; i += 0.1) {
-                loc.add(v);
-                if (loc.getBlock().getType().isOccluding()) {
-                    blockFounded = loc.getBlock();
-                }
-            }
-        }
-    }
+	public void compute(RayCaster.RaycastType type) {
+		if (type == RayCaster.RaycastType.ENTITY) {
+			for (Entity e : this.player.getWorld().getNearbyEntities(this.player.getLocation(), maxDistance,
+					maxDistance, maxDistance)) {
+				if (e instanceof LivingEntity) {
+					if (player.hasLineOfSight(e) && !e.equals(player)) {
+						entityFounded = e;
+					}
+				}
+			}
+		} else if (type == RayCaster.RaycastType.BLOCK) {
+			blockFounded = player.getTargetBlock((Set<Material>) null, (int) maxDistance);
+		}
+	}
 
-    public static enum RaycastType {
-        ENTITY, BLOCK;
-    }
+	public Block getBlockFounded() {
+		return blockFounded;
+	}
+
+	public Entity getEntityFounded() {
+		return entityFounded;
+	}
+
+	public static enum RaycastType {
+		ENTITY, BLOCK;
+	}
 
 }
