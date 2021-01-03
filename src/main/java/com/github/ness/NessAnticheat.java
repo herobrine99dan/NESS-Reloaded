@@ -29,7 +29,7 @@ public class NessAnticheat {
 	private static final Logger logger = NessLogger.getLogger(NessAnticheat.class);
 
 	private final JavaPlugin plugin;
-	private final static int minecraftVersion;
+	private final int minecraftVersion;
 	private final ScheduledExecutorService executor;
 
 	private final ConfigManager configManager;
@@ -38,14 +38,10 @@ public class NessAnticheat {
 
 	private MaterialAccess materialAccess;
 
-	static {
-		minecraftVersion = getVersion();
-	}
-
 	NessAnticheat(JavaPlugin plugin, Path folder, MaterialAccess materialAccess) {
 		this.plugin = plugin;
 		executor = Executors.newSingleThreadScheduledExecutor();
-
+		this.minecraftVersion = getVersion();
 		configManager = new ConfigManager(folder);
 		checkManager = new CheckManager(this);
 		violationManager = new ViolationManager(this);
@@ -115,7 +111,7 @@ public class NessAnticheat {
 	 * 
 	 * @return the version number
 	 */
-	public static int getMinecraftVersion() {
+	public int getMinecraftVersion() {
 		return minecraftVersion;
 	}
 
