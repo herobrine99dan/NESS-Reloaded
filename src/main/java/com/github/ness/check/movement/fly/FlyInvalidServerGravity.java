@@ -49,13 +49,13 @@ public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
      * @param e
      */
     public void Check(PlayerMoveEvent e) {
-        NessPlayer np = this.player();
+        NessPlayer nessPlayer = this.player();
         Player p = e.getPlayer();
-        MovementValues values = np.getMovementValues();
+        MovementValues values = nessPlayer.getMovementValues();
         double y = values.getyDiff();
         double yresult = y - p.getVelocity().getY();
         if (Utility.hasflybypass(p) || values.isAroundSlime() || p.getAllowFlight()
-                || values.isAroundLily() || Utility.hasVehicleNear(p, 3)) {
+                || values.isAroundLily() || nessPlayer.getMovementValues().getHelper().isVehicleNear()) {
             return;
         }
         double max = maxInvalidVelocity;
@@ -66,10 +66,10 @@ public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
         if(!e.getTo().getBlock().isLiquid()) {
         	y -= jumpBoost * (y / 2);
         }
-        if (np.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2500) {
-            y -= Math.abs(np.getLastVelocity().getY());
+        if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2500) {
+            y -= Math.abs(nessPlayer.getLastVelocity().getY());
         }
-        if (Math.abs(yresult) > max && !np.isTeleported() && !np.isHasSetback()) {
+        if (Math.abs(yresult) > max && !nessPlayer.isTeleported() && !nessPlayer.isHasSetback()) {
         	if(++buffer > 1) {
         		flagEvent(e, " " + yresult);
         	}

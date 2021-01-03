@@ -42,7 +42,7 @@ public class AimbotGCD extends ListeningCheck<PlayerMoveEvent> {
 			}
 			double result = Math.abs(gcd - lastGCD);
 			final int sensitivity =  (int) Math.round(MathUtils.getSensitivity(gcd) * 200);
-			player.sendDevMessage("GCD: " + Utility.round(gcd, 100) + "Sensitivity: " + sensitivity);
+			player.sendDevMessage("GCD: " + (float) gcd + "Sensitivity: " + sensitivity);
 			if (result < 0.007) {
 				if (Math.abs(sensitivity - lastSensitivity) == 0) {
 					player.setSensitivity(sensitivity);

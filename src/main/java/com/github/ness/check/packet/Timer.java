@@ -62,9 +62,9 @@ public class Timer extends ListeningCheck<ReceivedPacketEvent> {
 		final float speed = 50.0f / (float) average;
 		if (delay.size() > (this.ness().getMainConfig().getCheckSection().timer().delaysSize() - 1)) {
 			if (speed > MAX_PACKETS_PER_TICK) {
-				this.flagEvent(e, "BasicTimer " + Utility.round(speed, 100));
+				this.flagEvent(e, "BasicTimer " + (float) speed);
 			} else if ((speed > 0.2 && speed < 0.9) && negativeTimerEnabled) {
-				this.flagEvent(e, "NegativeTimer " + Utility.round(speed, 100));
+				this.flagEvent(e, "NegativeTimer " +  (float) speed);
 			}
 		}
 		this.lastDelay = current;

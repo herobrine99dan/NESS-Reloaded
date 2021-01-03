@@ -13,7 +13,6 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.utility.PlayerManager;
 import com.github.ness.utility.Utility;
 
 public class NoFall extends ListeningCheck<PlayerMoveEvent> {
@@ -41,13 +40,12 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 		Player player = event.getPlayer();
 		Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0, 1, 0)).getType();
 		NessPlayer nessPlayer = this.player();
-		final boolean debugMode = nessPlayer.isDebugMode();
 		Location from = event.getFrom(), to = event.getTo();
 		MovementValues values = nessPlayer.getMovementValues();
 		Double hozDist = values.getXZDiff();
 		Double fallDist = (double) player.getFallDistance();
 		MovementValues movementValues = nessPlayer.getMovementValues();
-		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
+		if (Utility.hasflybypass(player) || player.getAllowFlight() || nessPlayer.getMovementValues().getHelper().isVehicleNear()
 				|| nessPlayer.isTeleported()) {
 			return;
 		}
@@ -56,12 +54,11 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 			hozDist -= Math.abs(nessPlayer.getLastVelocity().getX()) + Math.abs(nessPlayer.getLastVelocity().getZ());
 			vertDist -= Math.abs(nessPlayer.getLastVelocity().getY());
 		}
-		boolean groundAround = Utility.groundAround(player.getLocation());
 		if (to.getY() != from.getY()) {
 			if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().contains("WATER")
 					&& !player.getLocation().getBlock().isLiquid()) {
-				if (hozDist < .2 || !groundAround) {
-					if (PlayerManager.timeSince("breakTime", player) >= 2000 && !nessPlayer.isTeleported()
+				if (hozDist < .2 || !movementValues.isGroundAround()) {
+					if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKBROKED) >= 2000 && !nessPlayer.isTeleported()
 							&& !below.name().contains("PISTON")) {
 						if ((!player.isInsideVehicle()
 								|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))
@@ -69,8 +66,7 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 							if (!movementValues.isAroundSlime() && !Utility.hasBlock(player, "water")
 									&& !Utility.isInWater(player) && !movementValues.isAroundLiquids()
 									&& !Utility.specificBlockNear(event.getTo(), "fire")
-									&& !Utility.getMaterialName(event.getTo()).contains("FIRE") && !Utility
-											.getMaterialName(event.getTo().clone().add(0, 0.4, 0)).contains("FIRE")) {
+									&& !values.isAroundFire()) {
 								boolean gotFire = false;
 								if (player.getLastDamageCause() != null) {
 									if (player.getLastDamageCause().getCause() != null) {

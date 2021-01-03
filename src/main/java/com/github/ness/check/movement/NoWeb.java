@@ -35,8 +35,8 @@ public class NoWeb extends ListeningCheck<PlayerMoveEvent> {
 			xDiff -= Math.abs(nessPlayer.getLastVelocity().getX());
 			zDiff -= Math.abs(nessPlayer.getLastVelocity().getZ());
 		}
-		if (Utility.getMaterialName(event.getTo()).contains("WEB")
-				&& Utility.getMaterialName(event.getFrom()).contains("WEB") && !Utility.hasflybypass(p)
+		if (event.getTo().getBlock().getType().name().contains("WEB")
+				&& event.getFrom().getBlock().getType().name().contains("WEB") && !Utility.hasflybypass(p)
 				&& nessPlayer.milliSecondTimeDifference(PlayerAction.WEBBREAKED) > 1300) {
 			nessPlayer.sendDevMessage("X: " + (float) xDiff + " Z: " + (float) zDiff);
 			if ((xDiff > walkSpeed || zDiff > walkSpeed)) {

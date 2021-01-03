@@ -1,6 +1,7 @@
 package com.github.ness.check.combat;
 
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -49,11 +50,11 @@ public class ReachCheck extends ListeningCheck<EntityDamageByEntityEvent> {
 		if (d.getAllowFlight() || d.getGameMode().equals(GameMode.CREATIVE)) {
 			return;
 		}
-		double yDist = Math.abs(Utility.getEyeLocation(d).getY() - Utility.getEyeLocation(p).getY()) > 0.5
-				? Math.abs(Utility.getEyeLocation(d).getY() - Utility.getEyeLocation(p).getY())
+		double yDist = Math.abs(getEyeLocation(d).getY() - getEyeLocation(p).getY()) > 0.5
+				? Math.abs(getEyeLocation(d).getY() - getEyeLocation(p).getY())
 				: 0;
 		double yawDiff = Math.abs(180 - Math.abs(d.getLocation().getYaw() - p.getLocation().getYaw()));
-		double reach = (Utility.getEyeLocation(d).distance(p.getEyeLocation()) - yDist) - 0.32;
+		double reach = (getEyeLocation(d).distance(p.getEyeLocation()) - yDist) - 0.32;
 		if (reach > 6.5)
 			return;
 		double maxReach = 3.1;
@@ -80,6 +81,12 @@ public class ReachCheck extends ListeningCheck<EntityDamageByEntityEvent> {
 		} else if (buffer > 0) {
 			buffer--;
 		}
+	}
+	
+	private Location getEyeLocation(LivingEntity player) {
+		final Location eye = player.getLocation();
+		eye.setY(eye.getY() + player.getEyeHeight());
+		return eye;
 	}
 
 	public void Check2(EntityDamageByEntityEvent e) {

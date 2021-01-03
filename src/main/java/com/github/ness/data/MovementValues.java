@@ -51,6 +51,8 @@ public class MovementValues {
 
 	private final boolean AroundSlabs;
 
+	private final boolean AroundChorus;
+
 	private final boolean AroundSnow;
 
 	private final boolean AroundLadders;
@@ -84,12 +86,16 @@ public class MovementValues {
 	private final boolean AroundGate;
 
 	private final boolean AroundWalls;
+	private final boolean AroundFire;
 
 	private final boolean sprinting;
 	private final boolean blockUnderHead;
 	private final boolean occluding;
+	private final MovementValuesHelper helper;
+	private final Player player; // Not Thread Safe
 
 	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from, MaterialAccess access) {
+		this.helper = MovementValuesHelper.makeHelper(this);
 		if (Bukkit.isPrimaryThread()) {
 			boolean liquids = false;
 			boolean ice = false;
@@ -97,11 +103,13 @@ public class MovementValues {
 			boolean stairs = false;
 			boolean slab = false;
 			boolean ladder = false;
+			boolean fire = false;
 			boolean snow = false;
 			boolean lily = false;
 			boolean carpet = false;
 			boolean ground = false;
 			boolean web = false;
+			boolean chorus = false;
 			boolean gate = false;
 			boolean walls = false;
 			boolean fence = false;
@@ -147,13 +155,17 @@ public class MovementValues {
 					gate = true;
 				} else if (name.contains("WALL")) {
 					walls = true;
+				} else if (name.contains("FIRE")) {
+					fire = true;
+				} else if (name.contains("CHORUS")) {
+					chorus = true;
 				}
-				if(material.isSolid() && !material.isOccluding()) {
+				if (material.isSolid() && !material.isOccluding()) {
 					occluding = true;
 				}
 			}
 			AroundSnow = snow;
-			blockUnderHead = Utility.groundAround(to.toBukkitLocation().add(0, 1.8, 0));
+			blockUnderHead = helper.groundAround(to.toBukkitLocation().add(0, 1.8, 0));
 			AroundLadders = ladder;
 			AroundSlabs = slab;
 			aroundWeb = web;
@@ -168,8 +180,10 @@ public class MovementValues {
 			groundAround = ground;
 			insideVehicle = p.isInsideVehicle();
 			AroundCarpet = carpet;
+			AroundChorus = chorus;
 			AroundLiquids = liquids;
 			AroundFence = fence;
+			AroundFire = fire;
 			AroundGate = gate;
 			this.occluding = occluding;
 			AroundWalls = walls;
@@ -179,7 +193,7 @@ public class MovementValues {
 				this.onGroundCollider = onGroundCollider;
 			} else {
 				onGroundCollider = Utility.isOnGroundUsingCollider(to.toBukkitLocation(), access, 0.5);
-				if(!onGroundCollider) {
+				if (!onGroundCollider) {
 					onGroundCollider = Utility.isOnGroundUsingCollider(from.toBukkitLocation(), access, 0.5);
 				}
 				this.onGroundCollider = onGroundCollider;
@@ -195,6 +209,7 @@ public class MovementValues {
 			AroundWalls = false;
 			sprinting = false;
 			AroundLily = false;
+			AroundFire = false;
 			aroundWeb = false;
 			blockUnderHead = false;
 			onGroundCollider = false;
@@ -203,6 +218,7 @@ public class MovementValues {
 			insideVehicle = false;
 			gamemode = GameMode.SURVIVAL;
 			isFlying = false;
+			AroundChorus = false;
 			ableFly = false;
 			AroundLiquids = false;
 			AroundSlime = false;
@@ -217,6 +233,7 @@ public class MovementValues {
 		XZDiff = Math.hypot(xDiff, zDiff);
 		this.to = to;
 		this.from = from;
+		this.player = p;
 	}
 
 	public boolean hasBlockNearHead() {
@@ -284,7 +301,7 @@ public class MovementValues {
 	public boolean isAroundIce() {
 		return AroundIce;
 	}
-	
+
 	public boolean isOccluding() {
 		return occluding;
 	}
@@ -365,7 +382,30 @@ public class MovementValues {
 		return sprinting;
 	}
 
-	public boolean isBlockUnderHead() {
-		return blockUnderHead;
+	public MovementValuesHelper getHelper() {
+		return helper;
+	}
+
+	public boolean isAroundWalls() {
+		return AroundWalls;
+	}
+
+	public boolean isAroundFire() {
+		return AroundFire;
+	}
+
+	public boolean isAroundChorus() {
+		return AroundChorus;
+	}
+
+	/**
+	 * Executing actions on Player object in another thread isn't thread safe.
+	 * Please, if you can, use values already calculated on MovementValues or on
+	 * MovementValuesHelper
+	 * 
+	 * @return Player Object of this MovementValues object
+	 */
+	public Player getPlayer() {
+		return player;
 	}
 }

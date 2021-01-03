@@ -160,7 +160,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		}
 		NessPlayer nessPlayer = player();
 		Player player = (Player) event.getDamager();
-		float angle = (float) Utility.getAngle(player, event.getEntity().getLocation(), makeDirection(nessPlayer));
+		float angle = (float) nessPlayer.getMovementValues().getHelper().getAngle(player, event.getEntity().getLocation(), makeDirection(nessPlayer));
 		angleList.add(angle);
 		if (angleList.size() > 19) {
 			final double average = MathUtils.average(angleList);

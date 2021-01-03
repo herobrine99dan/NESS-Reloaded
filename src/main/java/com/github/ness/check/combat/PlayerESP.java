@@ -35,7 +35,7 @@ public class PlayerESP extends Check {
 		runTaskLater(() -> {
 			for (Player cheater : Bukkit.getOnlinePlayers()) {
 				for (Player tohide : Bukkit.getOnlinePlayers()) {
-					if ((Utility.getAngle(cheater, tohide.getLocation(), null) < minangle
+					if ((this.player().getMovementValues().getHelper().getAngle(cheater, tohide.getLocation(), null) < minangle
 							|| !cheater.hasLineOfSight(tohide))
 							&& cheater.getLocation().distance(tohide.getLocation()) > 13) {
 						cheater.hidePlayer(ness().getPlugin(), tohide);

@@ -25,20 +25,18 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		Location to = event.getTo().clone();
-		Location from = event.getFrom().clone();
 		double yDiff = event.getTo().getY() - event.getFrom().getY();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
-		if (Utility.getMaterialName(event.getTo().clone().add(0, -0.3, 0)).contains("SLAB")
+		if (movementValues.isAroundSlabs()
 				|| event.getTo().getBlock().isLiquid() || movementValues.isAroundLiquids() || movementValues.isAroundSnow()
-				|| Utility.groundAround(to.clone().add(0, 1.8, 0))
+				|| movementValues.hasBlockNearHead()
 				|| Utility.specificBlockNear(to.clone(), "CHEST")
 				|| Utility.specificBlockNear(to.clone(), "LADDER")
 				|| Utility.specificBlockNear(to.clone(), "POT")
 				|| Utility.specificBlockNear(to.clone(), "BED")
 				|| Utility.specificBlockNear(to.clone(), "DETECTOR") || movementValues.isAroundStairs()
-				|| Utility.getMaterialName(to.clone().add(0, 1.8, 0)).contains("CHORUS")
-				|| Utility.getMaterialName(from.clone().add(0, 1.6, 0)).contains("CHORUS")
+				|| movementValues.isAroundChorus()
 				|| movementValues.isAroundIce() || movementValues.isAroundSlime() || Utility.hasflybypass(player)) {
 			return;
 		}
@@ -46,7 +44,7 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 			yDiff -= Math.abs(nessPlayer.getLastVelocity().getY());
 		}
 		// !player.getNearbyEntities(4, 4, 4).isEmpty()
-		if (yDiff > 0 && !Utility.hasVehicleNear(player, 3)) {
+		if (yDiff > 0 && !nessPlayer.getMovementValues().getHelper().isVehicleNear()) {
 			if (player.getVelocity().getY() == 0.42f && !Utility.isMathematicallyOnGround(event.getTo().getY())
 					&& Utility.isMathematicallyOnGround(event.getFrom().getY())) {
 				double yResult = Math.abs(yDiff - player.getVelocity().getY());

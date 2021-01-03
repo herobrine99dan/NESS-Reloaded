@@ -9,14 +9,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Vehicle;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
 import com.github.ness.blockgetter.MaterialAccess;
 
@@ -30,105 +25,6 @@ public class Utility {
 				occludingMaterials.add(m);
 			}
 		}
-	}
-
-	/**
-	 * Round a value
-	 *
-	 * @param value
-	 * @param precision (For example 100 will round 0.25065 to 0.25)
-	 * @return
-	 */
-	public static double round(double value, int precision) {
-		return (double) Math.round(value * precision) / precision;
-	}
-
-	public static Location getEyeLocation(LivingEntity player) {
-		final Location eye = player.getLocation();
-		eye.setY(eye.getY() + player.getEyeHeight());
-		return eye;
-	}
-
-	/**
-	 * Get Angle (in Radians) beetween a player and the target
-	 * 
-	 * @param player
-	 * @param target
-	 * @param direction (if it is null, will be replaced with player direction)
-	 * @return the angle in radians
-	 */
-	public static double getAngle(Player player, Location target, Vector direction) {
-		Location eye = player.getEyeLocation();
-		if (direction == null) {
-			direction = player.getLocation().getDirection();
-		}
-		Vector toEntity = target.toVector().subtract(eye.toVector());
-		double dot = toEntity.normalize().dot(direction);
-		return dot;
-	}
-
-	@SuppressWarnings("deprecation")
-	public static boolean isItemInHand(Player p, String m) {
-		if (Bukkit.getVersion().contains("1.8")) {
-			return p.getItemInHand().getType().name().contains(m); // 1.8 Version doesn't have the second hand!
-		} else {
-			PlayerInventory inventory = p.getInventory();
-			return inventory.getItemInMainHand().getType().name().contains(m)
-					|| inventory.getItemInOffHand().getType().name().contains(m);
-		}
-	}
-
-	/**
-	 * Get the material name from the location and convert it to lowercase
-	 *
-	 * @param loc
-	 * @return the material name
-	 */
-	public static String getMaterialName(Location loc) {
-		return loc.getBlock().getType().name();
-	}
-
-	/**
-	 * Check if a block is climbable
-	 *
-	 * @param b
-	 * @return
-	 */
-	public static boolean isClimbableBlock(Block b) {
-		String block = Utility.getMaterialName(b.getLocation());
-		return block.contains("LADDER") || block.contains("VINE");
-	}
-
-	/**
-	 * Check if a player has Vehicles near
-	 * 
-	 * @param p
-	 * @param range
-	 * @return
-	 */
-	public static boolean hasVehicleNear(Player p, int range) {
-		if (p.isInsideVehicle()) {
-			return true;
-		}
-		for (Entity e : p.getNearbyEntities(range, range, range)) {
-			if (e instanceof Vehicle) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public static boolean hasLivingEntityNear(Player p, int range) {
-		for (Entity e : p.getNearbyEntities(range, range, range)) {
-			if (e instanceof LivingEntity) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public static Block getPlayerUnderBlock(Player p) {
-		return p.getLocation().add(0, -0.7, 0).getBlock();
 	}
 
 	/**
@@ -149,37 +45,6 @@ public class Utility {
 		return ping;
 	}
 
-	public static double getDistanceFromGround(final Location loc) {
-		double dTG = 0; // Distance to ground
-		for (int x = -1; x <= 1; x++) {
-			for (int z = -1; z <= 1; z++) {
-				int y = 0;
-				while (!loc.clone().subtract(x, y, z).getBlock().getType().isSolid() && y < 20) {
-					y++;
-				}
-				if (y < dTG || dTG == 0)
-					dTG = y;
-			}
-		}
-		dTG += loc.getY() % 1;
-		return dTG;
-	}
-
-	public static boolean groundAround(Location loc) {
-		int radius = 2;
-		for (int x = -radius; x < radius; x++) {
-			for (int y = -radius; y < radius; y++) {
-				for (int z = -radius; z < radius; z++) {
-					Block block = loc.getWorld().getBlockAt(loc.clone().add(x, y, z));
-					if (block.getType().isSolid()) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
 	public static boolean isOnGroundUsingCollider(Location loc, MaterialAccess access, Double d) {
 		boolean onGround = false;
 		for (Block b : getCollidingBlocks(loc, d, 0.1)) {
@@ -192,28 +57,6 @@ public class Utility {
 			}
 		}
 		return onGround;
-	}
-
-	public static boolean isNearWater(Location loc, MaterialAccess access) {
-		int water = 0;
-		for (Block b : getCollidingBlocks(loc, 0.3, 0.1)) {
-			String material = access.getMaterial(b).name();
-			if (material.contains("WATER")) {
-				water++;
-			}
-		}
-		return water > 4;
-	}
-
-	public static boolean isNearLava(Location loc, MaterialAccess access) {
-		int water = 0;
-		for (Block b : getCollidingBlocks(loc, 0.5, 0.1)) {
-			String material = access.getMaterial(b).name();
-			if (material.contains("LAVA")) {
-				water++;
-			}
-		}
-		return water > 4;
 	}
 
 	/**
@@ -243,15 +86,6 @@ public class Utility {
 			}
 		}
 		return blocks;
-	}
-
-	public static boolean isCollidingLadder(Location loc, MaterialAccess access) {
-		for (Block b : getCollidingBlocks(loc, 0.2, 0.1)) {
-			if(access.getMaterial(b).name().contains("LADDER") || access.getMaterial(b).name().contains("VINE")) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public static List<Block> getBlocksAround(Location loc, int radius) {

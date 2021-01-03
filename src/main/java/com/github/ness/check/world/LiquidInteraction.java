@@ -11,7 +11,6 @@ import com.github.ness.utility.Utility;
 
 public class LiquidInteraction extends ListeningCheck<BlockPlaceEvent> {
 
-
 	public static final ListeningCheckInfo<BlockPlaceEvent> checkInfo = CheckInfos.forEvent(BlockPlaceEvent.class);
 
 	public LiquidInteraction(ListeningCheckFactory<?, BlockPlaceEvent> factory, NessPlayer player) {
@@ -24,12 +23,7 @@ public class LiquidInteraction extends ListeningCheck<BlockPlaceEvent> {
 		if (e.getBlockAgainst().isLiquid() && !e.isCancelled()) {
 			String type = e.getBlock().getType().name();
 			if (!type.contains("LILY") || !type.contains("SEA")) {
-				if(!Utility.isItemInHand(e.getPlayer(), "LILY")) {
-					flagEvent(e);
-				}
-				//if (player().setViolation(new Violation("LiquidInteraction",
-				//		e.getPlayer().getName() + " isn't a god (Block: " + type + ")")))
-					//e.setCancelled(true);
+				flagEvent(e);
 			}
 		}
 	}
