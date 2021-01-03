@@ -31,7 +31,7 @@ public class NetworkReflectionCreation {
 				.unreflectGetter();
 
 		MethodHandle channelField = reflection
-				.getField(networkManagerField.type().returnType(), MemberDescriptions.forField("channel", Channel.class))
+				.getField(networkManagerField.type().returnType(), MemberDescriptions.forField(Channel.class, "channel"))
 				.unreflectGetter();
 		return new NetworkReflection(getHandleMethod, playerConnectionField, networkManagerField, channelField);
 	}
