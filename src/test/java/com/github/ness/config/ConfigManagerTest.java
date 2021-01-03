@@ -3,11 +3,13 @@ package com.github.ness.config;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+@Disabled("#117 - Static state breaks testing")
 public class ConfigManagerTest {
 
 	@TempDir
