@@ -19,7 +19,7 @@ public class ReflectionMethodsTest extends ReflectionTest {
 		assertEquals(
 				getMethod(Superclass.class, "newObject"),
 				reflection.getMethod(Superclass.class, MemberDescriptions.forMethod(Object.class, "newObject")));
-		assertThrows(ReflectionException.class, () -> {
+		assertThrows(MemberNotFoundException.class, () -> {
 			reflection.getMethod(Superclass.class, MemberDescriptions
 					.forMethod(Object.class, "newObject").withOffset(randomPositiveIndex()));
 		});
@@ -37,6 +37,13 @@ public class ReflectionMethodsTest extends ReflectionTest {
 		assertEquals(
 				getMethod(Superclass.class, "newObject"),
 				reflection.getMethod(Subclass.class, MemberDescriptions.forMethod(Object.class, "newObject")));
+	}
+
+	@Test
+	public void methodInSubclass() throws NoSuchMethodException, SecurityException {
+		assertEquals(
+				getMethod(Subclass.class, "methodInSubclass"),
+				reflection.getMethod(Subclass.class, MemberDescriptions.forMethod(Object.class, "methodInSubclass")));
 	}
 
 }

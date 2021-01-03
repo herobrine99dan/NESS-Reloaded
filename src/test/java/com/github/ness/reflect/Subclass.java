@@ -7,4 +7,8 @@ public class Subclass extends Superclass {
 	@SuppressWarnings("unused")
 	private Object privateFieldWithSameName;
 
+	public Object methodInSubclass() {
+		return new Object();
+	}
+
 }

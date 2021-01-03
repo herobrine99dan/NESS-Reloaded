@@ -17,10 +17,10 @@ public class ReflectionFieldsTest extends ReflectionTest {
 	public void publicFields() throws NoSuchFieldException, SecurityException {
 		assertEquals(
 				getField(Superclass.class, "referenceField"),
-				reflection.getField(Superclass.class, MemberDescriptions.forField("referenceField", Object.class)));
-		assertThrows(ReflectionException.class, () -> {
+				reflection.getField(Superclass.class, MemberDescriptions.forField(Object.class, "referenceField")));
+		assertThrows(MemberNotFoundException.class, () -> {
 			reflection.getField(Superclass.class, MemberDescriptions
-					.forField("referenceField", Object.class).withOffset(randomPositiveIndex()));
+					.forField(Object.class, "referenceField").withOffset(randomPositiveIndex()));
 		});
 	}
 
@@ -28,24 +28,24 @@ public class ReflectionFieldsTest extends ReflectionTest {
 	public void locatePrivateFields() throws NoSuchFieldException, SecurityException {
 		assertEquals(
 				getField(Superclass.class, "privateReferenceField"), reflection.getField(Superclass.class,
-				MemberDescriptions.forField("privateReferenceField", Boolean.class)));
+				MemberDescriptions.forField(Boolean.class, "privateReferenceField")));
 	}
 
 	@Test
 	public void possiblyAmbiguousPrimitiveAndBoxedField() throws NoSuchFieldException, SecurityException {
 		assertEquals(
 				getField(Superclass.class, "primitiveField"),
-				reflection.getField(Superclass.class, MemberDescriptions.forField("primitiveField", int.class)));
-		assertThrows(ReflectionException.class, () -> {
+				reflection.getField(Superclass.class, MemberDescriptions.forField(int.class, "primitiveField")));
+		assertThrows(MemberNotFoundException.class, () -> {
 			reflection.getField(Superclass.class, MemberDescriptions
-					.forField("primitiveField", int.class).withOffset(randomPositiveIndex()));
+					.forField(int.class, "primitiveField").withOffset(randomPositiveIndex()));
 		});
 		assertEquals(
 				getField(Superclass.class, "possiblyAmbiguousBoxedField"), reflection.getField(Superclass.class,
-				MemberDescriptions.forField("possiblyAmbiguousBoxedField", Integer.class)));
-		assertThrows(ReflectionException.class, () -> {
+				MemberDescriptions.forField(Integer.class, "possiblyAmbiguousBoxedField")));
+		assertThrows(MemberNotFoundException.class, () -> {
 			reflection.getField(Superclass.class, MemberDescriptions
-					.forField("possiblyAmbiguousBoxedField", Integer.class).withOffset(randomPositiveIndex()));
+					.forField(Integer.class, "possiblyAmbiguousBoxedField").withOffset(randomPositiveIndex()));
 		});
 	}
 
@@ -53,23 +53,23 @@ public class ReflectionFieldsTest extends ReflectionTest {
 	public void inheritedFields() throws NoSuchFieldException, SecurityException {
 		assertEquals(
 				getField(Superclass.class, "referenceField"),
-				reflection.getField(Subclass.class, MemberDescriptions.forField("referenceField", Object.class)));
+				reflection.getField(Subclass.class, MemberDescriptions.forField(Object.class, "referenceField")));
 	}
 
 	@Test
 	public void inheritedFieldWithSameType() throws NoSuchFieldException, SecurityException {
 		assertEquals(
 				getField(Subclass.class, "fieldWithSameType"),
-				reflection.getField(Subclass.class, MemberDescriptions.forField("fieldWithSameType", Integer.class)));
+				reflection.getField(Subclass.class, MemberDescriptions.forField(Integer.class, "fieldWithSameType")));
 	}
 
 	@Test
 	public void privateFieldSameName() throws NoSuchFieldException, SecurityException {
 		assertEquals(
 				getField(Subclass.class, "privateFieldWithSameName"), reflection.getField(Subclass.class,
-				MemberDescriptions.forField("privateFieldWithSameName", Object.class)));
+				MemberDescriptions.forField(Object.class, "privateFieldWithSameName")));
 		assertEquals(
 				getField(Superclass.class, "privateFieldWithSameName"), reflection.getField(Subclass.class,
-				MemberDescriptions.forField("privateFieldWithSameName", Object.class).withOffset(1)));
+				MemberDescriptions.forField(Object.class, "privateFieldWithSameName").withOffset(1)));
 	}
 }
