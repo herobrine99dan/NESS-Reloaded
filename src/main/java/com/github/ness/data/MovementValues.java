@@ -172,7 +172,7 @@ public class MovementValues {
 			AroundStairs = stairs;
 			sprinting = p.isSprinting();
 			if (!slime) {
-				slime = Utility.hasBlock(p, "SLIME");
+				slime = helper.hasBlock(p, "SLIME");
 			}
 			AroundSlime = slime;
 			AroundIce = ice;

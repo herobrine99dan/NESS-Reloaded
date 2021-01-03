@@ -108,27 +108,6 @@ public class Utility {
 		}
 	}
 
-	public static boolean hasBlock(Player p, String m) {
-		m = m.toUpperCase();
-		boolean done = false;
-		Location loc = p.getLocation().clone();
-		int min = (int) loc.getY() - 15;
-		int max = (int) (loc.getY() + 15);
-		if (min < 0) {
-			min = 0;
-		}
-		if (max > 255) {
-			max = 255;
-		}
-		for (int i = min; i < max; i++) {
-			loc.setY(i);
-			if (loc.getBlock().getType().name().contains(m)) {
-				return true;
-			}
-		}
-		return done;
-	}
-
 	public static Block getPlayerUpperBlock(Player p) {
 		return p.getLocation().add(0, 1.9, 0).getBlock();
 	}

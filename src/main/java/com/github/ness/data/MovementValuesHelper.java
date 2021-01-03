@@ -40,7 +40,7 @@ public class MovementValuesHelper {
 		double dot = toEntity.normalize().dot(direction);
 		return dot;
 	}
-	
+
 	public boolean groundAround(Location loc) {
 		int radius = 2;
 		for (int x = -radius; x < radius; x++) {
@@ -55,7 +55,7 @@ public class MovementValuesHelper {
 		}
 		return false;
 	}
-	
+
 	public List<Block> getCollidingBlocks(Location loc, Double distance, Double subtraction) {
 		if (subtraction == null) {
 			subtraction = 0.1;
@@ -74,6 +74,27 @@ public class MovementValuesHelper {
 			}
 		}
 		return blocks;
+	}
+	
+	public boolean hasBlock(Player p, String m) {
+		m = m.toUpperCase();
+		boolean done = false;
+		Location loc = p.getLocation().clone();
+		int min = (int) loc.getY() - 15;
+		int max = (int) (loc.getY() + 15);
+		if (min < 0) {
+			min = 0;
+		}
+		if (max > 255) {
+			max = 255;
+		}
+		for (int i = min; i < max; i++) {
+			loc.setY(i);
+			if (loc.getBlock().getType().name().contains(m)) {
+				return true;
+			}
+		}
+		return done;
 	}
 
 	public static MovementValuesHelper makeHelper(MovementValues values) {
