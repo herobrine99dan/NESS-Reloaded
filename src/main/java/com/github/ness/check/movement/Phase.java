@@ -9,30 +9,37 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.data.MovementValues;
 
 public class Phase extends ListeningCheck<PlayerMoveEvent> {
 
-	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
-			.forEvent(PlayerMoveEvent.class);
+	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
 	public Phase(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 
-    @Override
-    protected void checkEvent(PlayerMoveEvent event) {
-        Block b = event.getTo().clone().add(0, event.getPlayer().getEyeHeight(), 0).getBlock();
-        NessPlayer nessPlayer = this.player();
-        if(event.getPlayer().getGameMode().name().contains("SPECTATOR")) {
-        	return;
-        }
-        Material material = this.ness().getMaterialAccess().getMaterial(b);
-        boolean occluder = material.isOccluding() || (material.name().contains("GLASS") && !material.name().contains("STAINED"));
-        if (occluder && !nessPlayer.getMovementValues().getHelper().isVehicleNear()
-                && nessPlayer.getMovementValues().isGroundAround() && !nessPlayer.isTeleported()
-                && nessPlayer.getMovementValues().getXZDiff() > 0.25) {
-        	flagEvent(event);
-        	//if(player().setViolation(new Violation("Phase", ""))) event.setCancelled(true);
-        }
-    }
+	@Override
+	protected void checkEvent(PlayerMoveEvent event) {
+		Block b = event.getTo().clone().add(0, event.getPlayer().getEyeHeight(), 0).getBlock();
+		NessPlayer nessPlayer = this.player();
+		MovementValues values = nessPlayer.getMovementValues();
+		if (event.getPlayer().getGameMode().name().contains("SPECTATOR")) {
+			return;
+		}
+		Material material = this.ness().getMaterialAccess().getMaterial(b);
+		boolean occluder = material.isOccluding()
+				|| (material.name().contains("GLASS") && !material.name().contains("STAINED"));
+		if (occluder && !values.getHelper().isVehicleNear() && values.isGroundAround() && !nessPlayer.isTeleported()
+				&& values.getXZDiff() > 0.25) {
+			flagEvent(event);
+			// if(player().setViolation(new Violation("Phase", "")))
+			// event.setCancelled(true);
+		}
+		if (values.isGroundAround()) {
+			if (values.getyDiff() < -2 && event.getPlayer().getFallDistance() == 0) {
+				flagEvent(event, "IllegalDist");
+			}
+		}
+	}
 }

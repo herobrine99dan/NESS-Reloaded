@@ -1,5 +1,6 @@
 package com.github.ness.check.movement.oldmovementchecks;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -28,16 +29,24 @@ public class FlyHighDistance extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues values = player().getMovementValues();
 		Player player = e.getPlayer();
 		double dist = values.getXZDiff();
-		if (Utility.hasflybypass(player) || player.getAllowFlight()
-				|| values.getHelper().isVehicleNear() || player().isTeleported()) {
+		if (Utility.hasflybypass(player) || player.getAllowFlight() || values.getHelper().isVehicleNear()
+				|| player().isTeleported()) {
 			return;
 		}
 		if (player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 1600) {
 			dist -= Math.abs(player().getLastVelocity().getX()) + Math.abs(player().getLastVelocity().getZ());
 		}
+		Material below = this.ness().getMaterialAccess().getMaterial(e.getTo().clone().subtract(0, 1, 0));
 		if (!values.isGroundAround() && dist > 0.35 && values.getyDiff() == 0.0
 				&& this.player().getTimeSinceLastWasOnIce() >= 1000) {
 			if (preVL++ > 1) {
+				flagEvent(e);
+			}
+		} else if (player.getLocation().getY() % .5 != 0.0 && !player.isFlying() && !values.isGroundAround()
+				&& !values.isAroundFence() && below.isOccluding() && !values.isAroundWalls() && !values.isAroundWeb()
+				&& !values.isAroundCarpet() && !values.isAroundSnow() && !values.isAroundLily()
+				&& !values.isAroundLiquids()) {
+			if (preVL++ > 2) {
 				flagEvent(e);
 			}
 		} else if (preVL > 0) {
