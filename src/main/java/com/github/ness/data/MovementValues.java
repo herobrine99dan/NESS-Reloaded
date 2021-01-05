@@ -95,6 +95,9 @@ public class MovementValues {
 	private final Player player; // Not Thread Safe
 
 	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from, MaterialAccess access) {
+		this.to = to;
+		this.from = from;
+		this.player = p;
 		this.helper = MovementValuesHelper.makeHelper(this);
 		if (Bukkit.isPrimaryThread()) {
 			boolean liquids = false;
@@ -231,9 +234,6 @@ public class MovementValues {
 		yDiff = to.getY() - from.getY();
 		zDiff = to.getZ() - from.getZ();
 		XZDiff = Math.hypot(xDiff, zDiff);
-		this.to = to;
-		this.from = from;
-		this.player = p;
 	}
 
 	public boolean hasBlockNearHead() {
