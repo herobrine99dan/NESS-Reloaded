@@ -47,7 +47,9 @@ public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
 					flagEvent(event, "HighDistance Dist: " + (float) distance);
 				}
 			} else if (distance < -0.192D && p.getVelocity().getY() < 0) {
-				flagEvent(event, "LowDistance Dist: " + (float) distance);
+				if(++buffer > 2) {
+					flagEvent(event, "LowDistance Dist: " + (float) distance);
+				}
 			} else if (buffer > 0) {
 				buffer -= .25;
 			}
