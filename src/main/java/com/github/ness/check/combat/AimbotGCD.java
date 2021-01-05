@@ -35,15 +35,18 @@ public class AimbotGCD extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		pitchDiff.add(pitchDelta);
-		if (pitchDiff.size() >= 10) {
+		if (pitchDiff.size() >= 5) {
 			final double gcd = MathUtils.gcdRational(pitchDiff);
 			if (lastGCD == 0.0) {
 				lastGCD = gcd;
 			}
 			double result = Math.abs(gcd - lastGCD);
-			final int sensitivity =  (int) Math.round(MathUtils.getSensitivity(gcd) * 200);
+			final int sensitivity = (int) Math.round(MathUtils.getSensitivity(gcd) * 200);
 			player.sendDevMessage("GCD: " + (float) gcd + "Sensitivity: " + sensitivity);
-			if (result < 0.007) {
+			if (result > 0.001 || gcd < 0.00001) {
+				// this.flag();
+			}
+			if (result < 0.01) {
 				if (Math.abs(sensitivity - lastSensitivity) == 0) {
 					player.setSensitivity(sensitivity);
 				}

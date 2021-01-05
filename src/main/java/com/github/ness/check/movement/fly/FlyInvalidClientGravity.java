@@ -45,7 +45,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		MovementValues values = nessPlayer.getMovementValues();
 		double deltaY = values.getyDiff();
-		if (values.isOnGroundCollider()) {
+		if (Utility.isMathematicallyOnGround(values.getTo().getY())) {
 			airTicks = 0;
 		} else {
 			airTicks++;
