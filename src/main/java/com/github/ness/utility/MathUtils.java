@@ -54,8 +54,10 @@ public class MathUtils {
 	 * @author Islandscout
 	 */
 	public static double gcdRational(double a, double b) {
-		if (a == 0) {
+		if (Math.abs(a) < 0.001) {
 			return b;
+		} else if (Math.abs(b) < 0.001) {
+			return a;
 		}
 		int quotient = getIntQuotient(b, a);
 		double remainder = ((b / a) - quotient) * a;
@@ -86,15 +88,15 @@ public class MathUtils {
 		for (float f : angles) {
 			sum += f;
 		}
-		return sum/angles.size();
+		return sum / angles.size();
 	}
-	
+
 	public static long averageLong(List<Long> angles) {
 		long sum = 0;
 		for (long f : angles) {
 			sum += f;
 		}
-		return sum/angles.size();
+		return sum / angles.size();
 	}
 
 	public static double gcdRational(List<Double> numbers) {

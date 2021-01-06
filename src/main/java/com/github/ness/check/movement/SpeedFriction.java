@@ -43,13 +43,13 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		double xzDiff = Math.hypot(xDiff, zDiff);
-
-		if (!player.isOnGround()) {
+		if (!Utility.isMathematicallyOnGround(values.getTo().getY())) {
 			airTicks++;
 		} else {
 			airTicks = 0;
 		}
 		if (airTicks > 1) {
+			//TODO Maybe add only 0.026 without the process so we can fix false flags attacking an entity
 			final double prediction = (lastDeltaXZ * 0.91f) + (player.isSprinting() ? 0.026 : 0.02);
 			final double difference = xzDiff - prediction;
 			if (difference > 0.001) {
