@@ -88,6 +88,14 @@ public class MathUtils {
 		}
 		return sum/angles.size();
 	}
+	
+	public static long averageLong(List<Long> angles) {
+		long sum = 0;
+		for (long f : angles) {
+			sum += f;
+		}
+		return sum/angles.size();
+	}
 
 	public static double gcdRational(List<Double> numbers) {
 		double result = numbers.get(0);

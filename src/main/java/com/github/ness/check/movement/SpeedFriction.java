@@ -8,6 +8,7 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.data.ImmutableVector;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
@@ -34,8 +35,8 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues values = nessPlayer.getMovementValues();
 		double xDiff = values.getxDiff();
 		double zDiff = values.getzDiff();
-		if (Utility.hasflybypass(player) || values.isAroundLiquids()
-				|| values.isAroundSlime() || values.hasBlockNearHead()) {
+		if (Utility.hasflybypass(player) || values.isAroundLiquids() || values.isAroundSlime()
+				|| values.hasBlockNearHead()) {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
@@ -49,18 +50,16 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			airTicks = 0;
 		}
 		if (airTicks > 1) {
-			final double prediction = lastDeltaXZ * 0.91f + (player.isSprinting() ? 0.026 : 0.02);
+			final double prediction = (lastDeltaXZ * 0.91f) + (player.isSprinting() ? 0.026 : 0.02);
 			final double difference = xzDiff - prediction;
-			if (difference > 0.02) {
-				buffer++;
-				if(buffer > 3) {
+			if (difference > 0.001) {
+				if (++buffer > 3) {
 					this.flagEvent(event);
 				}
-			} else if(buffer > 0) {
+			} else if (buffer > 0) {
 				buffer--;
 			}
 		}
 		this.lastDeltaXZ = xzDiff;
 	}
-
 }

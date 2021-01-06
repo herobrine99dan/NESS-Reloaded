@@ -33,8 +33,8 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
 		ness();
-		if (Bukkit.getVersion().contains("1.8") || movementValues.isAroundLily() || movementValues.isAroundCarpet()
-				|| movementValues.isAroundSnow() || NessAnticheat.getMinecraftVersion() > 1152
+		if (movementValues.isAroundLily() || movementValues.isAroundCarpet()
+				|| movementValues.isAroundSnow() || this.ness().getMinecraftVersion() > 1152
 				|| this.ness().getMaterialAccess().getMaterial(player.getLocation().clone().add(0, -0.5, 0)).name().contains("SCAFFOLD")) {
 			return;
 		}
@@ -43,13 +43,13 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		if (!nessPlayer.isTeleported() && player.getNearbyEntities(2, 2, 2).isEmpty() && !Utility.hasflybypass(player)
-				&& player.isOnline() && !movementValues.isAroundSlime() && !player.isInsideVehicle()
+				&& player.isOnline() && !movementValues.isAroundSlime() && !Utility.hasVehicleNear(player, 3)
 				&& !player().getMovementValues().isAroundWeb()) {
 			if (player.isOnGround() && !Utility.groundAround(e.getTo()) && !movementValues.isAroundLadders()) {
 				flagEvent(e, " FalseGround");
 				// if(player().setViolation(new Violation("Fly", "FalseGround")))
 				// e.setCancelled(true);
-			} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY())) {
+			} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY()) && this.ness().getMinecraftVersion() > 189) {
 				flagEvent(e, " FalseGround1");
 				// if(player().setViolation(new Violation("Fly", "FalseGround1")))
 				// e.setCancelled(true);

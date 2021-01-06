@@ -2,6 +2,7 @@ package com.github.ness.check.movement.fly;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
@@ -14,16 +15,15 @@ import com.github.ness.utility.Utility;
 
 public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 
-	double maxInvalidVelocity;
-
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
 	public FlyInvalidClientGravity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
-		this.maxInvalidVelocity = this.ness().getMainConfig().getCheckSection().fly().maxGravity();
 	}
 
 	private double lastDeltaY;
+	private int airTicks;
+	private double buffer;
 
 	@Override
 	protected boolean shouldDragDown() {
@@ -41,23 +41,34 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 	 * @param e
 	 */
 	public void Check(PlayerMoveEvent e) {
-		NessPlayer np = this.player();
+		NessPlayer nessPlayer = this.player();
 		Player p = e.getPlayer();
-		MovementValues values = np.getMovementValues();
-		double y = values.getyDiff();
+		MovementValues values = nessPlayer.getMovementValues();
+		double deltaY = values.getyDiff();
+		if (values.isOnGroundCollider()) {
+			airTicks = 0;
+		} else {
+			airTicks++;
+		}
 		if (Utility.hasflybypass(p) || p.getAllowFlight() || values.isAroundLiquids() || Utility.hasVehicleNear(p, 3)
-				|| Utility.hasVehicleNear(p, 3) || values.isAroundWeb() || values.hasBlockNearHead() || np.isTeleported()) {
+				|| values.isAroundWeb() || values.isAroundLadders() || values.hasBlockNearHead() || values.isOccluding()) {
 			return;
 		}
-		double yPredicted = Math.abs((lastDeltaY - 0.08D) * 0.9800000190734863D);
-		if (np.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
-			yPredicted = np.getLastVelocity().getY();
+		double yPredicted = (lastDeltaY - 0.08D) * 0.9800000190734863D;
+		boolean resetting = (Math.abs(deltaY) + 0.098 < 0.06D);
+		if(resetting) {
+			return;
 		}
-		double yResult = Math.abs(y - yPredicted);
-		//TODO Needs better ground test
-		if (yResult > 0.004D && !values.isGroundAround()) {
-			np.sendDevMessage("Predicted: " + (float) yResult + " Y: " + (float) y);
+		double yResult = Math.abs(deltaY - yPredicted);
+		if (yResult > 0.005 && Math.abs(yPredicted) > 0.005 && airTicks > 15
+				&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000 && p.getVelocity().getY() < 0) {
+			nessPlayer.sendDevMessage("NotCheats: " + (float) yResult + " Y: " + (float) deltaY + " PredictedY: " + (float) yPredicted + " velocity:" + (float) p.getVelocity().getY());
+			if (++buffer > 4) {
+				this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
+			}
+		} else if (buffer > 0) {
+			buffer -= 0.5;
 		}
-		lastDeltaY = y;
+		lastDeltaY = deltaY;
 	}
 }

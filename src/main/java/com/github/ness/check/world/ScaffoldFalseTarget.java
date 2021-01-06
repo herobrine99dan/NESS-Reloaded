@@ -1,5 +1,6 @@
 package com.github.ness.check.world;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -13,32 +14,40 @@ import com.github.ness.utility.Utility;
 
 public class ScaffoldFalseTarget extends ListeningCheck<BlockPlaceEvent> {
 
-	public static final ListeningCheckInfo<BlockPlaceEvent> checkInfo = CheckInfos
-			.forEvent(BlockPlaceEvent.class);
+	public static final ListeningCheckInfo<BlockPlaceEvent> checkInfo = CheckInfos.forEvent(BlockPlaceEvent.class);
 
 	public ScaffoldFalseTarget(ListeningCheckFactory<?, BlockPlaceEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 
-    @Override
-    protected void checkEvent(BlockPlaceEvent e) {
-        Check1(e);
-    }
+	private double buffer;
 
-    public void Check1(BlockPlaceEvent event) {
-        Player player = event.getPlayer();
-        Block target = player.getTargetBlock(null, 5);
-        if (target == null) {
-            return;
-        }
-        if (Utility.getMaterialName(event.getBlock().getWorld().getBlockAt(event.getBlock().getLocation().subtract(0.0D, 1.0D, 0.0D)).getLocation()).contains("AIR")) {
-            if (!event.getBlock().getLocation().equals(target.getLocation()) && !event.isCancelled()
-                    && target.getType().isSolid() && !target.getType().name().toLowerCase().contains("sign")
-                    && !target.getType().toString().toLowerCase().contains("fence")
-                    && player.getLocation().getY() > event.getBlock().getLocation().getY() && target.getType().isOccluding()) {
-            	flagEvent(event);
-            	//if(player().setViolation(new Violation("Scaffold", "FalseTarget"))) event.setCancelled(true);
-            }
-        }
-    }
+	@Override
+	protected void checkEvent(BlockPlaceEvent e) {
+		Check1(e);
+	}
+
+	public void Check1(BlockPlaceEvent event) {
+		Player player = event.getPlayer();
+		Block target = player.getTargetBlock(null, 6);
+		Material targetMaterial = this.ness().getMaterialAccess().getMaterial(target);
+		Material underMaterial = this.ness().getMaterialAccess()
+				.getMaterial(event.getBlock().getLocation().subtract(0.0D, 1.0D, 0.0D));
+		if (target == null) {
+			return;
+		}
+		if (underMaterial.name().contains("AIR")) {
+			if (!event.getBlock().getLocation().equals(target.getLocation()) && !event.isCancelled()
+					&& targetMaterial.isSolid() && player.getLocation().getY() > event.getBlock().getLocation().getY()
+					&& targetMaterial.isOccluding()) {
+				if (++buffer > 2) {
+					flagEvent(event);
+				}
+				// if(player().setViolation(new Violation("Scaffold", "FalseTarget")))
+				// event.setCancelled(true);
+			} else if (buffer > 0) {
+				buffer -= 0.25;
+			}
+		}
+	}
 }

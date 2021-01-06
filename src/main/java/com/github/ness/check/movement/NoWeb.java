@@ -20,26 +20,34 @@ public class NoWeb extends ListeningCheck<PlayerMoveEvent> {
 		super(factory, player);
 	}
 
+	private int buffer;
+
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		double xDiff = Math.abs(nessPlayer.getMovementValues().getxDiff());
 		double zDiff = Math.abs(nessPlayer.getMovementValues().getzDiff());
-		final double walkSpeed = p.getWalkSpeed() * 0.85;
+		final double walkSpeed = p.getWalkSpeed() * 0.625;
 		xDiff -= (xDiff / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);
 		zDiff -= (zDiff / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1300) {
 			xDiff -= Math.abs(nessPlayer.getLastVelocity().getX());
 			zDiff -= Math.abs(nessPlayer.getLastVelocity().getZ());
 		}
-		if ((xDiff > walkSpeed || zDiff > walkSpeed) && Utility.getMaterialName(event.getTo()).contains("WEB")
+		if (Utility.getMaterialName(event.getTo()).contains("WEB")
 				&& Utility.getMaterialName(event.getFrom()).contains("WEB") && !Utility.hasflybypass(p)
 				&& nessPlayer.milliSecondTimeDifference(PlayerAction.WEBBREAKED) > 1300) {
-			flagEvent(event);
-			// if(player().setViolation(new Violation("NoWeb", "Dist: " + dist)))
-			// event.setCancelled(true);
+			nessPlayer.sendDevMessage("X: " + (float) xDiff + " Z: " + (float) zDiff);
+			if ((xDiff > walkSpeed || zDiff > walkSpeed)) {
+				if (++buffer > 2) {
+					flagEvent(event);
+				}
+			} else if(buffer > 0) {
+				buffer = 0;
+			}
 		}
+
 	}
 
 }

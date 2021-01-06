@@ -16,6 +16,8 @@ import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
 
     double maxDist;
+    int jumped = 0;
+    double buffer;
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
 			.forEvent(PlayerMoveEvent.class);
@@ -34,13 +36,21 @@ public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
     protected void checkEvent(PlayerMoveEvent event) {
         Player p = event.getPlayer();
         NessPlayer np = this.player();
+        if((float) event.getTo().getY() == 0.42F) {
+        	jumped++;
+        }
         if (Utility.isClimbableBlock(p.getLocation().getBlock()) && !p.hasPotionEffect(PotionEffectType.JUMP)
-                && !Utility.hasflybypass(p) && !np.isTeleported()) {
+                && !Utility.hasflybypass(p) && !np.isTeleported() && !np.isHasSetback()) {
             double distance = np.getMovementValues().getyDiff();
-            if (distance > 0.155D && p.getVelocity().getY() < 0) {
-            	flagEvent(event);
-            	//if(player().setViolation(new Violation("FastLadder", "Dist: " + distance))) event.setCancelled(true);
-            }
+            if (distance > maxDist && p.getVelocity().getY() < 0) {
+            	if(++buffer > 4) {
+                	flagEvent(event, "HighDistance Dist: " + (float) distance);
+            	}
+            } else if(distance < -0.192D && p.getVelocity().getY() < 0) {
+            	flagEvent(event, "LowDistance Dist: " + (float) distance);
+            } else if (buffer > 0) {
+    			buffer -= .25;
+    		}
         }
     }
 }

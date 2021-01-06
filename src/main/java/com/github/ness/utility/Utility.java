@@ -180,34 +180,78 @@ public class Utility {
 		return false;
 	}
 
-	public static boolean isOnGround(Location loc, MaterialAccess access) {
-		final Location cloned = loc.clone().subtract(0, 0.003, 0);
-		Material material = access.getMaterial(cloned);
-		boolean solidBlock = material.isSolid();
-		boolean fence = material.name().contains("FENCE");
-		boolean gate = material.name().contains("FENCE");
-		boolean walls = material.name().contains("WALLS");
-		return solidBlock || fence || walls || gate;
-	}
-
 	public static boolean isOnGroundUsingCollider(Location loc, MaterialAccess access, Double d) {
-		final Location cloned = loc.clone().subtract(0, 0.03, 0);
-		double limit = 0.3;
-		if(d == null) {
-			limit = 0.3;
-		} else {
-			limit = d;
-		}
 		boolean onGround = false;
-		for (double x = -limit; x < limit + 0.1; x += limit) {
-			for (double z = -limit; z < limit + 0.1; z += limit) {
-				Material material = access.getMaterial(cloned.clone().add(x, 0, z).getBlock());
-				if(material.isSolid()) {
-					onGround = true;
-				}
+		for (Block b : getCollidingBlocks(loc, d, 0.1)) {
+			Material material = access.getMaterial(b);
+			boolean fence = material.name().contains("FENCE");
+			boolean gate = material.name().contains("GATE");
+			boolean walls = material.name().contains("WALLS");
+			if (material.isSolid() || fence || gate || walls) {
+				onGround = true;
 			}
 		}
 		return onGround;
+	}
+
+	public static boolean isNearWater(Location loc, MaterialAccess access) {
+		int water = 0;
+		for (Block b : getCollidingBlocks(loc, 0.3, 0.1)) {
+			String material = access.getMaterial(b).name();
+			if (material.contains("WATER")) {
+				water++;
+			}
+		}
+		return water > 4;
+	}
+
+	public static boolean isNearLava(Location loc, MaterialAccess access) {
+		int water = 0;
+		for (Block b : getCollidingBlocks(loc, 0.5, 0.1)) {
+			String material = access.getMaterial(b).name();
+			if (material.contains("LAVA")) {
+				water++;
+			}
+		}
+		return water > 4;
+	}
+
+	/**
+	 * Get Blocks near Location
+	 * 
+	 * @param Location loc
+	 * @param double   distance indicates the border
+	 * @param double   subtraction indicates what value should it subtract from Y
+	 *                 coord
+	 * @return List<Block> that contains colliding blocks
+	 */
+	public static List<Block> getCollidingBlocks(Location loc, Double distance, Double subtraction) {
+		if (subtraction == null) {
+			subtraction = 0.1;
+		}
+		List<Block> blocks = new ArrayList<Block>();
+		final Location cloned = loc.clone().subtract(0, subtraction, 0);
+		double limit;
+		if (distance == null) {
+			limit = 0.3;
+		} else {
+			limit = distance;
+		}
+		for (double x = -limit; x < limit + 0.1; x += limit) {
+			for (double z = -limit; z < limit + 0.1; z += limit) {
+				blocks.add(cloned.clone().add(x, 0, z).getBlock());
+			}
+		}
+		return blocks;
+	}
+
+	public static boolean isCollidingLadder(Location loc, MaterialAccess access) {
+		for (Block b : getCollidingBlocks(loc, 0.2, 0.1)) {
+			if(access.getMaterial(b).name().contains("LADDER") || access.getMaterial(b).name().contains("VINE")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static List<Block> getBlocksAround(Location loc, int radius) {

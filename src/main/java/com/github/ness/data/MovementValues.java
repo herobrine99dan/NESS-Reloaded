@@ -2,6 +2,7 @@ package com.github.ness.data;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -60,6 +61,8 @@ public class MovementValues {
 
 	private final boolean groundAround;
 
+	private final boolean onGroundCollider;
+
 	private final boolean aroundWeb;
 
 	private final ImmutableVector serverVelocity;
@@ -76,8 +79,15 @@ public class MovementValues {
 
 	private final boolean ableFly;
 
+	private final boolean AroundFence;
+
+	private final boolean AroundGate;
+
+	private final boolean AroundWalls;
+
 	private final boolean sprinting;
 	private final boolean blockUnderHead;
+	private final boolean occluding;
 
 	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from, MaterialAccess access) {
 		if (Bukkit.isPrimaryThread()) {
@@ -92,13 +102,19 @@ public class MovementValues {
 			boolean carpet = false;
 			boolean ground = false;
 			boolean web = false;
+			boolean gate = false;
+			boolean walls = false;
+			boolean fence = false;
+			boolean onGroundCollider = false;
 			serverVelocity = new ImmutableVector(p.getVelocity().getX(), p.getVelocity().getY(),
 					p.getVelocity().getZ());
 			gamemode = p.getGameMode();
 			isFlying = p.isFlying();
 			ableFly = p.getAllowFlight();
+			boolean occluding = false;
 			for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 2)) {
-				String name = access.getMaterial(b).name();
+				Material material = access.getMaterial(b);
+				String name = material.name();
 				if (b.isLiquid()) {
 					liquids = true;
 				}
@@ -125,6 +141,15 @@ public class MovementValues {
 					carpet = true;
 				} else if (name.contains("WEB")) {
 					web = true;
+				} else if (name.contains("FENCE")) {
+					fence = true;
+				} else if (name.contains("GATE")) {
+					gate = true;
+				} else if (name.contains("WALL")) {
+					walls = true;
+				}
+				if(material.isSolid() && !material.isOccluding()) {
+					occluding = true;
 				}
 			}
 			AroundSnow = snow;
@@ -144,6 +169,21 @@ public class MovementValues {
 			insideVehicle = p.isInsideVehicle();
 			AroundCarpet = carpet;
 			AroundLiquids = liquids;
+			AroundFence = fence;
+			AroundGate = gate;
+			this.occluding = occluding;
+			AroundWalls = walls;
+			onGroundCollider = this.isAroundCarpet() || this.isAroundSlabs() || this.isAroundStairs()
+					|| this.isAroundSnow() || this.AroundFence || this.AroundGate || this.AroundWalls;
+			if (onGroundCollider) {
+				this.onGroundCollider = onGroundCollider;
+			} else {
+				onGroundCollider = Utility.isOnGroundUsingCollider(to.toBukkitLocation(), access, 0.5);
+				if(!onGroundCollider) {
+					onGroundCollider = Utility.isOnGroundUsingCollider(from.toBukkitLocation(), access, 0.5);
+				}
+				this.onGroundCollider = onGroundCollider;
+			}
 		} else {
 			AroundIce = false;
 			AroundSlabs = false;
@@ -151,11 +191,15 @@ public class MovementValues {
 			AroundCarpet = false;
 			AroundLadders = false;
 			groundAround = false;
+			AroundGate = false;
+			AroundWalls = false;
 			sprinting = false;
 			AroundLily = false;
 			aroundWeb = false;
 			blockUnderHead = false;
+			onGroundCollider = false;
 			AroundSnow = false;
+			occluding = false;
 			insideVehicle = false;
 			gamemode = GameMode.SURVIVAL;
 			isFlying = false;
@@ -163,6 +207,7 @@ public class MovementValues {
 			AroundLiquids = false;
 			AroundSlime = false;
 			AroundStairs = false;
+			AroundFence = false;
 		}
 		yawDiff = to.getYaw() - from.getYaw();
 		pitchDiff = to.getPitch() - from.getPitch();
@@ -211,6 +256,7 @@ public class MovementValues {
 	public ImmutableLoc getFrom() {
 		return from;
 	}
+
 	public double getYawDiff() {
 		return yawDiff;
 	}
@@ -238,6 +284,10 @@ public class MovementValues {
 	public boolean isAroundIce() {
 		return AroundIce;
 	}
+	
+	public boolean isOccluding() {
+		return occluding;
+	}
 
 	public boolean isAroundLiquids() {
 		return AroundLiquids;
@@ -253,6 +303,18 @@ public class MovementValues {
 
 	public boolean isAroundSlabs() {
 		return AroundSlabs;
+	}
+
+	public boolean isOnGroundCollider() {
+		return onGroundCollider;
+	}
+
+	public boolean isAroundGate() {
+		return AroundGate;
+	}
+
+	public boolean isAroundFence() {
+		return AroundFence;
 	}
 
 	public boolean isAroundSnow() {

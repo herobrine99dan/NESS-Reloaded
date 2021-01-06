@@ -1,5 +1,6 @@
 package com.github.ness.check.movement;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -26,7 +27,9 @@ public class Phase extends ListeningCheck<PlayerMoveEvent> {
         if(event.getPlayer().getGameMode().name().contains("SPECTATOR")) {
         	return;
         }
-        if (b.getType().isOccluding() && !Utility.hasVehicleNear(event.getPlayer(), 3)
+        Material material = this.ness().getMaterialAccess().getMaterial(b);
+        boolean occluder = material.isOccluding() || (material.name().contains("GLASS") && !material.name().contains("STAINED"));
+        if (occluder && !Utility.hasVehicleNear(event.getPlayer(), 3)
                 && Utility.groundAround(event.getTo().clone()) && !nessPlayer.isTeleported()
                 && nessPlayer.getMovementValues().getXZDiff() > 0.25) {
         	flagEvent(event);

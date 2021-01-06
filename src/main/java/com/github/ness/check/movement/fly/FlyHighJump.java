@@ -18,6 +18,7 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
 	private double flyYSum;
+	private double buffer = 0;
 
 	public FlyHighJump(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
@@ -34,16 +35,17 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		final MovementValues movementValues = nessPlayer.getMovementValues();
 		double y = movementValues.getyDiff();
-		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || Utility.isOnGround(e.getTo(), this.materialAccess()) || Utility.hasflybypass(p)
-				|| movementValues.isAroundSlime() || p.getAllowFlight() || Utility.isInWater(p)
-				|| movementValues.isAroundLily() || Utility.specificBlockNear(e.getTo().clone(), "SEA")
-				|| movementValues.isAroundSlabs() || movementValues.isAroundStairs() || movementValues.isAroundLiquids()
+		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || movementValues.isOnGroundCollider()
+				|| Utility.hasflybypass(p) || movementValues.isAroundSlime() || p.getAllowFlight()
+				|| Utility.isInWater(p) || movementValues.isAroundLily()
+				|| Utility.specificBlockNear(e.getTo().clone(), "SEA") || movementValues.isAroundSlabs()
+				|| movementValues.isAroundStairs() || movementValues.isAroundLiquids()
 				|| this.ness().getMaterialAccess().getMaterial(e.getTo().clone().add(0, -0.5, 0)).name()
 						.contains("SCAFFOLD")
 				|| this.ness().getMaterialAccess().getMaterial(e.getTo().clone().add(0, 0.5, 0)).name()
 						.contains("SCAFFOLD")
 				|| movementValues.isAroundSnow() || movementValues.isAroundLadders() || nessPlayer.isTeleported()
-				|| Utility.hasVehicleNear(p, 3)
+				|| movementValues.hasBlockNearHead() || Utility.hasVehicleNear(p, 3)
 				|| nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 1000) {
 			flyYSum = 0;
 			return;
@@ -54,14 +56,20 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 
 		if (y > 0) {
 			flyYSum += y;
-			double max = 1.30;
+			double max = 1.45;
 			double jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
 			max += jumpBoost * (max / 2);
 			if (flyYSum > max && p.getVelocity().getY() < 0) {
-				flagEvent(e, " ySum: " + flyYSum);
+				if (++buffer > 1) {
+					flagEvent(e, " ySum: " + flyYSum);
+				}
 				// if(player().setViolation(new Violation("Fly", "HighJump ySum: " + flyYSum)))
 				// e.setCancelled(true);
+			} else if (buffer > 0) {
+				buffer -= 0.5;
 			}
+		} else if (buffer > 0) {
+			buffer -= 0.5;
 		}
 	}
 

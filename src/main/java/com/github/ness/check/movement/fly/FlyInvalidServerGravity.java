@@ -2,6 +2,7 @@ package com.github.ness.check.movement.fly;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
@@ -14,16 +15,17 @@ import com.github.ness.utility.Utility;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 
-public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
+public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
 
     double maxInvalidVelocity;
+    private double buffer;
     
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
 			.forEvent(PlayerMoveEvent.class);
 
-	public FlyInvalidGravity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
+	public FlyInvalidServerGravity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
-        this.maxInvalidVelocity = this.ness().getMainConfig().getCheckSection().fly().maxGravity();
+        this.maxInvalidVelocity = this.ness().getMainConfig().getCheckSection().flyInvalidServerGravity().maxGravity();
 	}
 	
 	@Override
@@ -32,7 +34,7 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
 	}
 	
 	public interface Config {
-		@DefaultDouble(1)
+		@DefaultDouble(0.9)
 		double maxGravity();
 	}
 
@@ -59,13 +61,21 @@ public class FlyInvalidGravity extends ListeningCheck<PlayerMoveEvent> {
         double max = maxInvalidVelocity;
         float pingresult = Utility.getPing(p) / 100;
         float toAdd = pingresult / 6;
+		double jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
         max += toAdd;
+        if(!e.getTo().getBlock().isLiquid()) {
+        	y -= jumpBoost * (y / 2);
+        }
         if (np.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2500) {
             y -= Math.abs(np.getLastVelocity().getY());
         }
-        if (Math.abs(yresult) > max && !np.isTeleported()) {
-        	flagEvent(e, " " + yresult);
+        if (Math.abs(yresult) > max && !np.isTeleported() && !np.isHasSetback()) {
+        	if(++buffer > 1) {
+        		flagEvent(e, " " + yresult);
+        	}
         	//if(player().setViolation(new Violation("Fly", "InvalidVelocity: " + yresult))) e.setCancelled(true);
+        } else if(buffer > 0) {
+        	buffer -= 0.5;
         }
     }
 }

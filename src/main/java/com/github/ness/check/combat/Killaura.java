@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -51,7 +52,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		@DefaultDouble(-0.2)
 		double minAngle();
 
-		@DefaultDouble(3.4)
+		@DefaultDouble(4)
 		double maxReach();
 	}
 
@@ -87,10 +88,11 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 				|| MathUtils.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
 			maxReach += 0.4D;
 		}
-		maxReach += (Utility.getPing(player) / 100) / 15;
-		if ((range > maxReach && range < 6.5D)
-				|| Utility.getDistance3D(player.getLocation(), entity.getLocation()) > 5) {
+		if (range > maxReach && range < 6.5D) {
 			punish(eventt, "Reach: " + range);
+		}
+		if(range > 5) {
+			punish(eventt, "SuperReach: " + range);
 		}
 	}
 
@@ -125,7 +127,8 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 			return;
 		}
 		Block b = player.getTargetBlock(null, 5);
-		if (b.getType().isSolid() && b.getType().isOccluding()) {
+		Material material = b.getType();
+		if (b.getType().isSolid() && (material.isOccluding() && !material.name().contains("GLASS"))) {
 			punish(event, "WallHit");
 		}
 	}
