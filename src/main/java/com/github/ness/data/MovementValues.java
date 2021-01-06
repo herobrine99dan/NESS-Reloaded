@@ -173,7 +173,7 @@ public class MovementValues {
 				}
 			}
 			AroundSnow = snow;
-			blockUnderHead = helper.groundAround(to.toBukkitLocation().add(0, 1.8, 0));
+			blockUnderHead = helper.groundAround(to.toBukkitLocation().add(0, 2.5, 0));
 			AroundLadders = ladder;
 			AroundSlabs = slab;
 			AroundNonOccludingBlocks = nonOccludingBlocks;

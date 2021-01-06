@@ -57,7 +57,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		double yPredicted = (lastDeltaY - 0.08D) * 0.9800000190734863D;
 		double yResult = Math.abs(deltaY - yPredicted);
 		if (yResult > 0.005 && Math.abs(yPredicted) > 0.005 && airTicks > 15
-				&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000 && p.getVelocity().getY() < 0) {
+				&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000) {
 			nessPlayer.sendDevMessage("NotCheats: " + (float) yResult + " Y: " + (float) deltaY + " PredictedY: " + (float) yPredicted + " velocity:" + (float) p.getVelocity().getY());
 			if (++buffer > 4) {
 				this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);

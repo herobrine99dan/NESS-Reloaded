@@ -81,8 +81,8 @@ public class MovementValuesHelper {
 		return blocks;
 	}
 	
-	public boolean isMathematicallyOnGround(double y) {
-		return y % (0.015625) == 0;
+	public boolean isMathematicallyOnGround(double y) {	
+		return y % (1D / 64D) == 0;	
 	}
 	
 	public boolean hasflybypass(Player player) {
@@ -155,7 +155,7 @@ public class MovementValuesHelper {
 			if (e instanceof Vehicle) {
 				vehicleNear = true;
 			}
-			if (e instanceof LivingEntity) {
+			if (e instanceof LivingEntity && !(e instanceof Player)) {
 				livingEntityNear = true;
 			}
 		}

@@ -67,6 +67,10 @@ public class MathUtils {
 		double error = Math.max(dividend, divisor) * 1E-3F;
 		return (int) (ans + error);
 	}
+	
+    public static double smartSqrt(double N, double I) {
+        return Math.exp(Math.log(N)/I);
+    }
 
 	/**
 	 * From
@@ -76,7 +80,9 @@ public class MathUtils {
 	 * @return the sensitivity
 	 */
 	public static double getSensitivity(double gcd) {
-		return (1.655 * Math.cbrt(0.8333 * gcd)) - 0.3333;
+	    double f1 = smartSqrt(gcd / .15 / 8, 3);
+	    double sensitivity = (f1 - 0.2) / .6 * 200;
+	    return sensitivity;
 	}
 
 	public static double average(List<Float> angles) {
