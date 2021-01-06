@@ -35,10 +35,10 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		final MovementValues movementValues = nessPlayer.getMovementValues();
 		double y = movementValues.getyDiff();
-		if (Utility.isMathematicallyOnGround(e.getTo().getY()) || movementValues.isOnGroundCollider()
-				|| Utility.hasflybypass(p) || movementValues.isAroundSlime() || p.getAllowFlight()
-				|| Utility.isInWater(p) || movementValues.isAroundLily()
-				|| Utility.specificBlockNear(e.getTo().clone(), "SEA") || movementValues.isAroundSlabs()
+		if (movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY()) || movementValues.isOnGroundCollider()
+				|| movementValues.getHelper().hasflybypass(p) || movementValues.isAroundSlime() || p.getAllowFlight()
+				|| movementValues.isAroundLiquids() || movementValues.isAroundLily()
+				|| movementValues.isAroundSeaBlocks() || movementValues.isAroundSlabs()
 				|| movementValues.isAroundStairs() || movementValues.isAroundLiquids()
 				|| this.ness().getMaterialAccess().getMaterial(e.getTo().clone().add(0, -0.5, 0)).name()
 						.contains("SCAFFOLD")

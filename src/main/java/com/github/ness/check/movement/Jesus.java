@@ -42,7 +42,8 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
-		if (Utility.hasflybypass(p) || nessPlayer.getMovementValues().getHelper().isVehicleNear() || p.getAllowFlight()
+		MovementValues movementValues = nessPlayer.getMovementValues();
+		if (movementValues.getHelper().hasflybypass(p) || nessPlayer.getMovementValues().getHelper().isVehicleNear() || p.getAllowFlight()
 				|| nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) < 2000) {
 			return;
 		}
@@ -52,14 +53,14 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 			liquidTicks = 0;
 		}
 		// We handle Prediction for Y Value
-		double yDist = nessPlayer.getMovementValues().getyDiff();
-		double xzDist = nessPlayer.getMovementValues().getXZDiff();
+		double yDist = movementValues.getyDiff();
+		double xzDist = movementValues.getXZDiff();
 		if (event.getTo().clone().add(0, -0.1, 0).getBlock().isLiquid() && event.getFrom().getBlock().isLiquid()
 				&& isNearLava(event.getTo(), this.manager().getNess().getMaterialAccess())) {
-			handleLava(nessPlayer.getMovementValues(), event, nessPlayer);
+			handleLava(movementValues, event, nessPlayer);
 		} else if (event.getTo().clone().add(0, -0.1, 0).getBlock().isLiquid() && event.getFrom().getBlock().isLiquid()
 				&& isNearWater(event.getTo(), this.manager().getNess().getMaterialAccess())) {
-			handleWater(nessPlayer.getMovementValues(), event, nessPlayer);
+			handleWater(movementValues, event, nessPlayer);
 		}
 		lastXZDist = xzDist;
 		lastYDist = yDist;

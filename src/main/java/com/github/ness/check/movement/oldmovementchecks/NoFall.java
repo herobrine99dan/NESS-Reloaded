@@ -18,10 +18,10 @@ import com.github.ness.utility.Utility;
 public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
-	public NoFall(ListeningCheckFactory<?,PlayerMoveEvent> factory, NessPlayer player) {
+	public NoFall(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
-	
+
 	@Override
 	protected boolean shouldDragDown() {
 		return true;
@@ -41,15 +41,14 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 		Material below = player.getWorld().getBlockAt(player.getLocation().subtract(0, 1, 0)).getType();
 		NessPlayer nessPlayer = this.player();
 		Location from = event.getFrom(), to = event.getTo();
-		MovementValues values = nessPlayer.getMovementValues();
-		Double hozDist = values.getXZDiff();
-		Double fallDist = (double) player.getFallDistance();
 		MovementValues movementValues = nessPlayer.getMovementValues();
-		if (Utility.hasflybypass(player) || player.getAllowFlight() || nessPlayer.getMovementValues().getHelper().isVehicleNear()
-				|| nessPlayer.isTeleported()) {
+		Double hozDist = movementValues.getXZDiff();
+		Double fallDist = (double) player.getFallDistance();
+		if (movementValues.getHelper().hasflybypass(player) || player.getAllowFlight()
+				|| nessPlayer.getMovementValues().getHelper().isVehicleNear() || nessPlayer.isTeleported()) {
 			return;
 		}
-		Double vertDist = values.getyDiff();
+		Double vertDist = movementValues.getyDiff();
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500) {
 			hozDist -= Math.abs(nessPlayer.getLastVelocity().getX()) + Math.abs(nessPlayer.getLastVelocity().getZ());
 			vertDist -= Math.abs(nessPlayer.getLastVelocity().getY());
@@ -58,15 +57,14 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 			if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().contains("WATER")
 					&& !player.getLocation().getBlock().isLiquid()) {
 				if (hozDist < .2 || !movementValues.isGroundAround()) {
-					if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKBROKED) >= 2000 && !nessPlayer.isTeleported()
-							&& !below.name().contains("PISTON")) {
+					if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKBROKED) >= 2000
+							&& !nessPlayer.isTeleported() && !below.name().contains("PISTON")) {
 						if ((!player.isInsideVehicle()
 								|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))
 								&& !player.isFlying() && to.getY() > 0) {
-							if (!movementValues.isAroundSlime() && !values.isAroundLiquids()
-									&& !Utility.isInWater(player) && !movementValues.isAroundLiquids()
-									&& !Utility.specificBlockNear(event.getTo(), "fire")
-									&& !values.isAroundFire()) {
+							if (!movementValues.isAroundSlime() && !movementValues.isAroundLiquids()
+									&& !movementValues.isAroundLiquids() && !movementValues.isAroundLiquids()
+									&& !movementValues.isAroundFire() && !movementValues.isAroundFire()) {
 								boolean gotFire = false;
 								if (player.getLastDamageCause() != null) {
 									if (player.getLastDamageCause().getCause() != null) {
@@ -78,8 +76,10 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 								}
 								if (!gotFire) {
 									punish(event, "NoFall", "(OnMove)");
-									player.damage(
-											Math.abs(Utility.calcDamage((3.5 * player.getVelocity().getY()) / -0.71)));
+									double fallDamage = movementValues.getHelper().calcDamageFall(3);
+									if(fallDamage > 0) {
+										player.damage(fallDamage);
+									}
 								}
 							}
 						}

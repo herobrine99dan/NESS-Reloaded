@@ -35,7 +35,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues values = nessPlayer.getMovementValues();
 		double xDiff = values.getxDiff();
 		double zDiff = values.getzDiff();
-		if (Utility.hasflybypass(player) || values.isAroundLiquids() || values.isAroundSlime()
+		if (values.getHelper().hasflybypass(player) || values.isAroundLiquids() || values.isAroundSlime()
 				|| values.hasBlockNearHead()) {
 			return;
 		}
@@ -43,7 +43,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		double xzDiff = Math.hypot(xDiff, zDiff);
-		if (!Utility.isMathematicallyOnGround(values.getTo().getY())) {
+		if (!values.getHelper().isMathematicallyOnGround(values.getTo().getY())) {
 			airTicks++;
 		} else {
 			airTicks = 0;

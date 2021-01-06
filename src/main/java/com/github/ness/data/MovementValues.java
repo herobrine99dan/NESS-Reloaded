@@ -83,6 +83,8 @@ public class MovementValues {
 
 	private final boolean AroundFence;
 
+	private final boolean AroundNonOccludingBlocks;
+
 	private final boolean AroundGate;
 
 	private final boolean AroundWalls;
@@ -90,7 +92,7 @@ public class MovementValues {
 
 	private final boolean sprinting;
 	private final boolean blockUnderHead;
-	private final boolean occluding;
+	private final boolean AroundSeaBlocks;
 	private final MovementValuesHelper helper;
 	private final Player player; // Not Thread Safe
 
@@ -116,13 +118,14 @@ public class MovementValues {
 			boolean gate = false;
 			boolean walls = false;
 			boolean fence = false;
-			boolean onGroundCollider = false;
+			boolean onGroundCollider = false;			
+			boolean sea = false;
+			boolean nonOccludingBlocks = false;
 			serverVelocity = new ImmutableVector(p.getVelocity().getX(), p.getVelocity().getY(),
 					p.getVelocity().getZ());
 			gamemode = p.getGameMode();
 			isFlying = p.isFlying();
 			ableFly = p.getAllowFlight();
-			boolean occluding = false;
 			for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 2)) {
 				Material material = access.getMaterial(b);
 				String name = material.name();
@@ -162,15 +165,18 @@ public class MovementValues {
 					fire = true;
 				} else if (name.contains("CHORUS")) {
 					chorus = true;
+				} else if (name.contains("SEA")) {
+					sea = true;
 				}
-				if (material.isSolid() && !material.isOccluding()) {
-					occluding = true;
+				if(material.isSolid() && !material.isOccluding()) {
+					nonOccludingBlocks = true;
 				}
 			}
 			AroundSnow = snow;
 			blockUnderHead = helper.groundAround(to.toBukkitLocation().add(0, 1.8, 0));
 			AroundLadders = ladder;
 			AroundSlabs = slab;
+			AroundNonOccludingBlocks = nonOccludingBlocks;
 			aroundWeb = web;
 			AroundStairs = stairs;
 			sprinting = p.isSprinting();
@@ -187,17 +193,17 @@ public class MovementValues {
 			AroundLiquids = liquids;
 			AroundFence = fence;
 			AroundFire = fire;
+			AroundSeaBlocks = sea;
 			AroundGate = gate;
-			this.occluding = occluding;
 			AroundWalls = walls;
 			onGroundCollider = this.isAroundCarpet() || this.isAroundSlabs() || this.isAroundStairs()
-					|| this.isAroundSnow() || this.AroundFence || this.AroundGate || this.AroundWalls;
+					|| this.isAroundSnow() || this.isAroundFence() || this.isAroundGate() || this.isAroundWalls();
 			if (onGroundCollider) {
 				this.onGroundCollider = onGroundCollider;
 			} else {
-				onGroundCollider = Utility.isOnGroundUsingCollider(to.toBukkitLocation(), access, 0.5);
+				onGroundCollider = this.getHelper().isOnGroundUsingCollider(to.toBukkitLocation(), access);
 				if (!onGroundCollider) {
-					onGroundCollider = Utility.isOnGroundUsingCollider(from.toBukkitLocation(), access, 0.5);
+					onGroundCollider = this.getHelper().isOnGroundUsingCollider(from.toBukkitLocation(), access);
 				}
 				this.onGroundCollider = onGroundCollider;
 			}
@@ -211,13 +217,13 @@ public class MovementValues {
 			AroundGate = false;
 			AroundWalls = false;
 			sprinting = false;
+			AroundNonOccludingBlocks = false;
 			AroundLily = false;
 			AroundFire = false;
 			aroundWeb = false;
 			blockUnderHead = false;
 			onGroundCollider = false;
 			AroundSnow = false;
-			occluding = false;
 			insideVehicle = false;
 			gamemode = GameMode.SURVIVAL;
 			isFlying = false;
@@ -227,6 +233,7 @@ public class MovementValues {
 			AroundSlime = false;
 			AroundStairs = false;
 			AroundFence = false;
+			AroundSeaBlocks = false;
 		}
 		yawDiff = to.getYaw() - from.getYaw();
 		pitchDiff = to.getPitch() - from.getPitch();
@@ -257,11 +264,7 @@ public class MovementValues {
 	public boolean isClientFalling() {
 		return this.yDiff < 0;
 	}
-
-	public void doCalculations() {
-
-	}
-
+	
 	public ImmutableVector getDirection() {
 		return this.getTo().getDirectionVector();
 	}
@@ -300,10 +303,6 @@ public class MovementValues {
 
 	public boolean isAroundIce() {
 		return AroundIce;
-	}
-
-	public boolean isOccluding() {
-		return occluding;
 	}
 
 	public boolean isAroundLiquids() {
@@ -407,5 +406,13 @@ public class MovementValues {
 	 */
 	public Player getPlayer() {
 		return player;
+	}
+
+	public boolean isAroundSeaBlocks() {
+		return AroundSeaBlocks;
+	}
+
+	public boolean isAroundNonOccludingBlocks() {
+		return AroundNonOccludingBlocks;
 	}
 }

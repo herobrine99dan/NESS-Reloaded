@@ -5,10 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-import com.github.ness.utility.ReflectionUtility;
-import com.github.ness.utility.UncheckedReflectiveOperationException;
-
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import com.github.ness.utility.UncheckedReflectiveOperationException;
 
 import io.netty.channel.Channel;
 
@@ -30,7 +30,7 @@ public final class NetworkReflection {
 		Class<?> craftPlayerClass;
 		try {
 			craftPlayerClass = Class
-					.forName("org.bukkit.craftbukkit." + ReflectionUtility.ver() + ".entity.CraftPlayer");
+					.forName("org.bukkit.craftbukkit." + ver() + ".entity.CraftPlayer");
 			getHandleMethod = craftPlayerClass.getMethod("getHandle");
 			playerConnectionField = getHandleMethod.getReturnType().getDeclaredField("playerConnection");
 			networkManagerField = playerConnectionField.getType().getDeclaredField("networkManager");
@@ -45,6 +45,11 @@ public final class NetworkReflection {
 			throw new ExceptionInInitializerError(ex);
 		}
 	}
+	
+    public static String ver() {
+        String pkg = Bukkit.getServer().getClass().getPackage().getName();
+        return pkg.substring(pkg.lastIndexOf(".") + 1);
+    }
 
 	private NetworkReflection() {
 	}

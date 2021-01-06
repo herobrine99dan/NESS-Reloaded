@@ -45,13 +45,13 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		MovementValues values = nessPlayer.getMovementValues();
 		double deltaY = values.getyDiff();
-		if (Utility.isMathematicallyOnGround(values.getTo().getY())) {
+		if (values.getHelper().isMathematicallyOnGround(values.getTo().getY())) {
 			airTicks = 0;
 		} else {
 			airTicks++;
 		}
-		if (Utility.hasflybypass(p) || p.getAllowFlight() || values.isAroundLiquids() || nessPlayer.getMovementValues().getHelper().isVehicleNear()
-				|| values.isAroundWeb() || values.isAroundLadders() || values.hasBlockNearHead() || values.isOccluding()) {
+		if (values.getHelper().hasflybypass(p) || p.getAllowFlight() || values.isAroundLiquids() || nessPlayer.getMovementValues().getHelper().isVehicleNear()
+				|| values.isAroundWeb() || values.isAroundLadders() || values.hasBlockNearHead() || values.isAroundNonOccludingBlocks()) {
 			return;
 		}
 		double yPredicted = (lastDeltaY - 0.08D) * 0.9800000190734863D;

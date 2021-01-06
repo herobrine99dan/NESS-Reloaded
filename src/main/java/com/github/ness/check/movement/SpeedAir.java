@@ -9,6 +9,7 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
@@ -49,19 +50,20 @@ public class SpeedAir extends ListeningCheck<PlayerMoveEvent> {
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
-		double xDiff = nessPlayer.getMovementValues().getxDiff();
-		double zDiff = nessPlayer.getMovementValues().getzDiff();
+		MovementValues values = nessPlayer.getMovementValues();
+		double xDiff = values.getxDiff();
+		double zDiff = values.getzDiff();
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2200) {
 			xDiff -= Math.abs(nessPlayer.getLastVelocity().getX());
 			zDiff -= Math.abs(nessPlayer.getLastVelocity().getZ());
 		}
-		if (!Utility.isMathematicallyOnGround(event.getTo().getY())) {
+		if (!values.getHelper().isMathematicallyOnGround(event.getTo().getY())) {
 			airTicks++;
 		} else {
 			airTicks = 0;
 		}
 		final double maxDist = getBaseSpeed(nessPlayer);
-		if (airTicks > 4 && (Math.abs(xDiff) > maxDist || Math.abs(zDiff) > maxDist) && !Utility.hasflybypass(player)
+		if (airTicks > 4 && (Math.abs(xDiff) > maxDist || Math.abs(zDiff) > maxDist) && !values.getHelper().hasflybypass(player)
 				&& !player.getAllowFlight() && !nessPlayer.getMovementValues().getHelper().isVehicleNear()) {
 			flagEvent(event);
 		}

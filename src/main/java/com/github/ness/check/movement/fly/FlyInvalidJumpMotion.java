@@ -31,13 +31,10 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 		if (movementValues.isAroundSlabs()
 				|| event.getTo().getBlock().isLiquid() || movementValues.isAroundLiquids() || movementValues.isAroundSnow()
 				|| movementValues.hasBlockNearHead()
-				|| Utility.specificBlockNear(to.clone(), "CHEST")
-				|| Utility.specificBlockNear(to.clone(), "LADDER")
-				|| Utility.specificBlockNear(to.clone(), "POT")
-				|| Utility.specificBlockNear(to.clone(), "BED")
-				|| Utility.specificBlockNear(to.clone(), "DETECTOR") || movementValues.isAroundStairs()
+				|| movementValues.isAroundLadders()
+				|| movementValues.isAroundNonOccludingBlocks() || movementValues.isAroundStairs()
 				|| movementValues.isAroundChorus()
-				|| movementValues.isAroundIce() || movementValues.isAroundSlime() || Utility.hasflybypass(player)) {
+				|| movementValues.isAroundIce() || movementValues.isAroundSlime() || movementValues.getHelper().hasflybypass(player)) {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1300) {
@@ -45,8 +42,8 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 		}
 		// !player.getNearbyEntities(4, 4, 4).isEmpty()
 		if (yDiff > 0 && !nessPlayer.getMovementValues().getHelper().isVehicleNear()) {
-			if (player.getVelocity().getY() == 0.42f && !Utility.isMathematicallyOnGround(event.getTo().getY())
-					&& Utility.isMathematicallyOnGround(event.getFrom().getY())) {
+			if (player.getVelocity().getY() == 0.42f && !movementValues.getHelper().isMathematicallyOnGround(event.getTo().getY())
+					&& movementValues.getHelper().isMathematicallyOnGround(event.getFrom().getY())) {
 				double yResult = Math.abs(yDiff - player.getVelocity().getY());
 				if (yResult != 0.0 && nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) > 1700
 						&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 1700) {

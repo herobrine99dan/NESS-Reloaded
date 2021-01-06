@@ -49,8 +49,8 @@ public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
 
 	@Override
 	protected void checkEvent(ReceivedPacketEvent e) {
-		int ping = Utility.getPing(e.getNessPlayer().getBukkitPlayer());
-		int maxPackets = this.maxPackets + ((ping / 100) * 6);
+		//int ping = Utility.getPing(e.getNessPlayer().getBukkitPlayer());
+		//int maxPackets = this.maxPackets + ((ping / 100) * 6);
 		NessPlayer np = e.getNessPlayer();
 		if (np == null) {
 			return;

@@ -5,13 +5,18 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+
+import com.github.ness.blockgetter.MaterialAccess;
+import com.github.ness.utility.Utility;
 
 public class MovementValuesHelper {
 
@@ -74,6 +79,51 @@ public class MovementValuesHelper {
 			}
 		}
 		return blocks;
+	}
+	
+	public boolean isMathematicallyOnGround(double y) {
+		return y % (0.015625) == 0;
+	}
+	
+	public boolean hasflybypass(Player player) {
+		if (!Bukkit.getVersion().contains("1.8")) {
+			return player.hasPotionEffect(PotionEffectType.LEVITATION) || player.isGliding() || player.isFlying();
+		} else {
+			return player.isFlying();
+		}
+	}
+	
+	public boolean specificBlockNear(Location loc, String m) {
+		m = m.toUpperCase();
+		for (Block b : Utility.getBlocksAround(loc, 2)) {
+			if (m.equals("LIQUID")) {
+				if (b.isLiquid()) {
+					return true;
+				}
+			}
+			if (b.getType().name().contains(m)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public double calcDamageFall(double dist) {
+		return (dist * 0.5) - 1.5;
+	}
+	
+	public boolean isOnGroundUsingCollider(Location loc, MaterialAccess access) {
+		final double limit = 0.5;
+		for (double x = -limit; x < limit + 0.1; x += limit) {
+			for (double z = -limit; z < limit + 0.1; z += limit) {
+				Block block = loc.clone().add(x, 0, z).getBlock();
+				Material material = access.getMaterial(block);
+				if (material.isSolid()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	public boolean hasBlock(Player p, String m) {

@@ -37,7 +37,7 @@ public class NoGround extends ListeningCheck<PlayerMoveEvent> {
 		Player player = e.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = this.player().getMovementValues();
-		if (Utility.hasflybypass(player) || player.getAllowFlight() || nessPlayer.getMovementValues().getHelper().isVehicleNear()
+		if (movementValues.getHelper().hasflybypass(player) || player.getAllowFlight() || nessPlayer.getMovementValues().getHelper().isVehicleNear()
 				|| player().isTeleported()) {
 			return;
 		}

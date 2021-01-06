@@ -84,14 +84,14 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		if (player.getGameMode().equals(GameMode.CREATIVE)) {
 			maxReach = 5.5D;
 		}
-		if (Utility.specificBlockNear(eventt.getDamager().getLocation(), "water")
+		if (this.player().getMovementValues().isAroundLiquids()
 				|| MathUtils.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
 			maxReach += 0.4D;
 		}
 		if (range > maxReach && range < 6.5D) {
 			punish(eventt, "Reach: " + range);
 		}
-		if(range > 5) {
+		if (range > 5) {
 			punish(eventt, "SuperReach: " + range);
 		}
 	}
@@ -160,7 +160,8 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		}
 		NessPlayer nessPlayer = player();
 		Player player = (Player) event.getDamager();
-		float angle = (float) nessPlayer.getMovementValues().getHelper().getAngle(player, event.getEntity().getLocation(), makeDirection(nessPlayer));
+		float angle = (float) nessPlayer.getMovementValues().getHelper().getAngle(player,
+				event.getEntity().getLocation(), makeDirection(nessPlayer));
 		angleList.add(angle);
 		if (angleList.size() > 19) {
 			final double average = MathUtils.average(angleList);

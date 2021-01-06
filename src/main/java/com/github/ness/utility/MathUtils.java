@@ -22,10 +22,6 @@ public class MathUtils {
 		return table[(int) (f * 10430.378F) & '\uffff'];
 	}
 
-	public static boolean isExponentiallySmall(double d) {
-		return d < .0001 && d > 0;
-	}
-
 	/**
 	 * Get the cosine of a double value from the table
 	 * 
@@ -91,14 +87,6 @@ public class MathUtils {
 		return sum / angles.size();
 	}
 
-	public static long averageLong(List<Long> angles) {
-		long sum = 0;
-		for (long f : angles) {
-			sum += f;
-		}
-		return sum / angles.size();
-	}
-
 	public static double gcdRational(List<Double> numbers) {
 		double result = numbers.get(0);
 		for (int i = 1; i < numbers.size(); i++) {
@@ -108,16 +96,6 @@ public class MathUtils {
 	}
 
 	public static float yawTo180F(float flub) {
-		if ((flub %= 360.0f) >= 180.0f) {
-			flub -= 360.0f;
-		}
-		if (flub < -180.0f) {
-			flub += 360.0f;
-		}
-		return flub;
-	}
-
-	public static float pitchTo100F(float flub) {
 		if ((flub %= 360.0f) >= 180.0f) {
 			flub -= 360.0f;
 		}

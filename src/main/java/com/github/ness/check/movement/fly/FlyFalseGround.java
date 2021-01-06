@@ -42,14 +42,14 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 				&& nessPlayer.getLastVelocity().getY() > 0.35) {
 			return;
 		}
-		if (!nessPlayer.isTeleported() && player.getNearbyEntities(2, 2, 2).isEmpty() && !Utility.hasflybypass(player)
+		if (!nessPlayer.isTeleported() && player.getNearbyEntities(2, 2, 2).isEmpty() && !movementValues.getHelper().hasflybypass(player)
 				&& player.isOnline() && !movementValues.isAroundSlime() && !nessPlayer.getMovementValues().getHelper().isVehicleNear()
 				&& !player().getMovementValues().isAroundWeb()) {
 			if (player.isOnGround() && !movementValues.isGroundAround() && !movementValues.isAroundLadders()) {
 				flagEvent(e, " FalseGround");
 				// if(player().setViolation(new Violation("Fly", "FalseGround")))
 				// e.setCancelled(true);
-			} else if (player.isOnGround() && !Utility.isMathematicallyOnGround(e.getTo().getY()) && this.ness().getMinecraftVersion() > 189) {
+			} else if (player.isOnGround() && !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY()) && this.ness().getMinecraftVersion() > 189) {
 				flagEvent(e, " FalseGround1");
 				// if(player().setViolation(new Violation("Fly", "FalseGround1")))
 				// e.setCancelled(true);
