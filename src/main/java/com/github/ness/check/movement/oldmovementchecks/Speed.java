@@ -23,7 +23,6 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		super(factory, player);
 	}
 
-	@Override
 	protected void checkEvent(PlayerMoveEvent e) {
 		Location to = e.getTo();
 		Location from = e.getFrom();
