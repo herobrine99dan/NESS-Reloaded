@@ -48,7 +48,29 @@ public class Check extends BaseCheck {
 	protected void checkAsyncPeriodic() {
 		throw new UnsupportedOperationException("Not implemented - checkAsyncPeriodic");
 	}
-	
+
+	void checkAsyncPeriodicUnlessInvalid() {
+		if (player().isInvalid()) {
+			return;
+		}
+		checkAsyncPeriodic();
+	}
+
+	/**
+	 * Called sync and periodically, if defined by {@link CheckInfo}
+	 *
+	 */
+	protected void checkSyncPeriodic() {
+		throw new UnsupportedOperationException("Not implemented - checkSyncPeriodic");
+	}
+
+	void checkSyncPeriodicUnlessInvalid() {
+		if (player().isInvalid()) {
+			return;
+		}
+		checkSyncPeriodic();
+	}
+
 	/**
 	 * Flags the player for cheating
 	 * 

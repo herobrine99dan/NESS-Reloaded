@@ -27,20 +27,3 @@ public interface CheckInstantiator<C extends Check> {
 	C newCheck(CheckFactory<C> factory, NessPlayer nessPlayer);
 	
 }
-
-class CheckInstantiators {
-	
-	private CheckInstantiators() {}
-	
-	static <C extends Check> CheckInstantiator<C> fromFactoryAndPlayerConstructor(Constructor<C> constructor) {
-		return (factory, nessPlayer) -> {
-			try {
-				return constructor.newInstance(factory, nessPlayer);
-			} catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
-				throw new UncheckedReflectiveOperationException(
-						"Unable to instantiate check " + constructor.getDeclaringClass().getName(), ex);
-			}
-		};
-	}
-	
-}

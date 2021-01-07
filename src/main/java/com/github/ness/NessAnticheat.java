@@ -8,6 +8,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.github.ness.packets.wrapper.PacketTypeRegistry;
+import com.github.ness.packets.wrapper.SimplePacketTypeRegistry;
+import com.github.ness.reflect.ClassLocator;
+import com.github.ness.reflect.CoreReflection;
+import com.github.ness.reflect.InvokerCachingReflection;
+import com.github.ness.reflect.MethodHandleReflection;
+import com.github.ness.reflect.ReflectHelper;
+import com.github.ness.reflect.Reflection;
+import com.github.ness.reflect.SimpleClassLocator;
+import com.github.ness.reflect.SimpleReflectHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,6 +31,9 @@ import com.github.ness.config.ConfigManager;
 import com.github.ness.config.NessConfig;
 import com.github.ness.config.NessMessages;
 import com.github.ness.listener.BungeeCordListener;
+import com.github.ness.packets.Networker;
+import com.github.ness.packets.NetworkReflectionCreation;
+import com.github.ness.packets.PacketActorInterceptor;
 import com.github.ness.packets.PacketListener;
 import com.github.ness.violation.ViolationManager;
 
@@ -34,9 +47,11 @@ public class NessAnticheat {
 
 	private final ConfigManager configManager;
 	private final CheckManager checkManager;
+	private final Networker networker;
 	private final ViolationManager violationManager;
-
-	private MaterialAccess materialAccess;
+	private final MaterialAccess materialAccess;
+	private final ReflectHelper reflectHelper;
+	private final PacketTypeRegistry packetTypeRegistry;
 
 	NessAnticheat(JavaPlugin plugin, Path folder, MaterialAccess materialAccess) {
 		this.plugin = plugin;
@@ -46,15 +61,20 @@ public class NessAnticheat {
 		checkManager = new CheckManager(this);
 		violationManager = new ViolationManager(this);
 		this.materialAccess = materialAccess;
+
+		ClassLocator locator = SimpleClassLocator.create();
+		Reflection reflection = new InvokerCachingReflection(new MethodHandleReflection(new CoreReflection()));
+		networker = new Networker(plugin,
+				new PacketListener(
+						new NetworkReflectionCreation(reflection, locator).create(),
+						new PacketActorInterceptor(checkManager::receivePacket, reflection)));
+		reflectHelper = new SimpleReflectHelper(locator, reflection);
+		packetTypeRegistry = new SimplePacketTypeRegistry(reflectHelper);
 	}
 
 	private static int getVersion() {
 		String first = Bukkit.getVersion().substring(Bukkit.getVersion().indexOf("(MC: "));
 		return Integer.valueOf(first.replace("(MC: ", "").replace(")", "").replace(" ", "").replace(".", ""));
-	}
-
-	public MaterialAccess getMaterialAccess() {
-		return materialAccess;
 	}
 
 	void start() {
@@ -87,7 +107,7 @@ public class NessAnticheat {
 
 		// Start packet listener except on Glowstone
 		if (!Bukkit.getName().toLowerCase().contains("glowstone")) {
-			plugin.getServer().getPluginManager().registerEvents(new PacketListener(this), plugin);
+			networker.start();
 		}
 		// Start plugin message listener if bungeecord notify-staff hook enabled
 		if (getMainConfig().getViolationHandling().notifyStaff().bungeecord()) {
@@ -131,6 +151,18 @@ public class NessAnticheat {
 		return violationManager;
 	}
 
+	public MaterialAccess getMaterialAccess() {
+		return materialAccess;
+	}
+
+	public ReflectHelper getReflectHelper() {
+		return reflectHelper;
+	}
+
+	public PacketTypeRegistry getPacketTypeRegistry() {
+		return packetTypeRegistry;
+	}
+
 	public NessConfig getMainConfig() {
 		return configManager.getConfig();
 	}
@@ -140,6 +172,7 @@ public class NessAnticheat {
 	}
 
 	void close() {
+		networker.close();
 		checkManager.close();
 		try {
 			executor.shutdown();

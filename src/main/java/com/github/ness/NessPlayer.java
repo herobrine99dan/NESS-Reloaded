@@ -23,7 +23,6 @@ import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.packets.NetworkReflection;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -161,17 +160,29 @@ public class NessPlayer implements AnticheatPlayer {
 	}
 
 	/*
-	 * Thread safe disconnection
+	 * Effective 'concurrent' disconnection
 	 */
 
+	private volatile String kickMessage;
+
+	public boolean isInvalid() {
+		return kickMessage != null;
+	}
+
+	public void checkNeedsKick() {
+		String kickMessage = this.kickMessage;
+		if (kickMessage != null) {
+			player.kickPlayer(kickMessage);
+		}
+	}
+
 	/**
-	 * Disconnects the player just as the server would
-	 * 
+	 * Disconnects (effectively) the player. Thread safe
+	 *
+	 * @param kickMessage the kick message
 	 */
-	public void kickThreadSafe() {
-		Object networkManager = NetworkReflection.getNetworkManager(getBukkitPlayer());
-		NetworkReflection.getChannel(networkManager).config().setAutoRead(false);
-		// NetworkReflection.clearPacketQueue(networkManager);
+	public void kickThreadSafe(String kickMessage) {
+		this.kickMessage = kickMessage;
 	}
 
 	/*

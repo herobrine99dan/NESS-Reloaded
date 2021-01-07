@@ -15,10 +15,12 @@ import com.github.ness.NessLogger;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.ChecksManager;
 import com.github.ness.api.PlayersManager;
+import com.github.ness.packets.Packet;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 public class CheckManager implements ChecksManager {
 
@@ -26,7 +28,8 @@ public class CheckManager implements ChecksManager {
 
 	private final NessAnticheat ness;
 	private final PlayerManager playerManager;
-	
+
+	private BukkitTask kickTask;
 	private volatile Set<BaseCheckFactory<?>> checkFactories;
 
 	public CheckManager(NessAnticheat ness) {
@@ -50,13 +53,16 @@ public class CheckManager implements ChecksManager {
 		logger.log(Level.FINE, "CheckManager starting...");
 		JavaPlugin plugin = ness.getPlugin();
 		plugin.getServer().getPluginManager().registerEvents(playerManager.getListener(), plugin);
+		kickTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+			forEachPlayer(NessPlayer::checkNeedsKick);
+		}, 1L, 1L);
 
 		return loadFactories(() -> {});
 	}
 	
 	public CompletableFuture<?> reload() {
 		Set<BaseCheckFactory<?>> factories = checkFactories;
-		factories.forEach((factory) -> factory.close());
+		factories.forEach(BaseCheckFactory::close);
 
 		playerManager.getPlayerCache().synchronous().invalidateAll();
 		return loadFactories(() -> {
@@ -70,8 +76,9 @@ public class CheckManager implements ChecksManager {
 	}
 
 	public void close() {
+		kickTask.cancel();
 		HandlerList.unregisterAll(playerManager.getListener());
-		checkFactories.forEach((factory) -> factory.close());
+		checkFactories.forEach(BaseCheckFactory::close);
 	}
 	
 	@Override
@@ -97,22 +104,18 @@ public class CheckManager implements ChecksManager {
 		Collection<String> enabledCheckNames = ness.getMainConfig().getEnabledChecks();
 		logger.log(Level.FINE, "Loading all check factories: {0}", enabledCheckNames);
 
-		CompletableFuture<Set<BaseCheckFactory<?>>> checkCreationFuture;
-		checkCreationFuture = CompletableFuture.supplyAsync(() -> {
+		return CompletableFuture.supplyAsync(() -> {
 			return new FactoryLoader(this, enabledCheckNames).createAllFactories();
-		}, ness.getExecutor());
-		return checkCreationFuture.whenComplete((checkFactories, ex) -> {
-
-			if (ex != null) {
-				logger.log(Level.SEVERE, "Failed to load check factories", ex);
-				return;
-			}
+		}, ness.getExecutor()).thenAccept((checkFactories) -> {
 			for (BaseCheckFactory<?> factory : checkFactories) {
 				factory.start();
 			}
 			logger.log(Level.FINE, "Started all check factories");
 			this.checkFactories = checkFactories;
 			whenComplete.run();
+		}).exceptionally((ex) -> {
+			logger.log(Level.SEVERE, "Failed to load check factories", ex);
+			return null;
 		});
 	}
 	
@@ -160,6 +163,19 @@ public class CheckManager implements ChecksManager {
 				if (check != null) {
 					action.accept(check);
 				}
+			}
+		}
+	}
+
+	/**
+	 * Receives a packet and passes it to checks
+	 *
+	 * @param packet the packet
+	 */
+	public void receivePacket(Packet packet) {
+		for (BaseCheckFactory<?> checkFactory : checkFactories) {
+			if (checkFactory instanceof PacketCheckFactory) {
+				((PacketCheckFactory<?>) checkFactory).receivePacket(packet);
 			}
 		}
 	}

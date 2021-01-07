@@ -2,7 +2,6 @@ package com.github.ness.check;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.UUID;
 import java.util.function.Function;
@@ -28,14 +27,8 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 	private final Class<E> eventClass;
 	private final Function<E, UUID> getPlayerFunction;
 	
-	ListeningCheckFactory(Constructor<C> constructor, CheckManager manager, ListeningCheckInfo<E> checkInfo) {
-		super(constructor, manager, checkInfo);
-		scalableListener = new ScalableRegisteredListener<>(manager, this);
-		eventClass = checkInfo.getEvent();
-		getPlayerFunction = findGetPlayerFunction(eventClass);
-	}
-	
-	protected ListeningCheckFactory(CheckInstantiator<C> instantiator, String checkName, CheckManager manager, ListeningCheckInfo<E> checkInfo) {
+	protected ListeningCheckFactory(CheckInstantiator<C> instantiator, String checkName,
+									CheckManager manager, ListeningCheckInfo<E> checkInfo) {
 		super(instantiator, checkName, manager, checkInfo);
 		scalableListener = new ScalableRegisteredListener<>(manager, this);
 		eventClass = checkInfo.getEvent();
@@ -51,10 +44,12 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 			UUID uuid = getPlayerFunction.apply(event);
 			C check = getChecksMap().get(uuid);
 			if (check != null) {
-				check.checkEvent(event);
+				check.checkEventUnlessInvalid(event);
 			}
 		} else {
-			getChecksMap().values().forEach((check) -> check.checkEvent(event));
+			getChecksMap().values().forEach((check) -> {
+				check.checkEventUnlessInvalid(event);
+			});
 		}
 	}
 	
@@ -90,7 +85,7 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 		return null;
 	}
 	
-	private static class PlayerEventUUIDFunction<E extends Event> implements Function<E, UUID> {
+	private static final class PlayerEventUUIDFunction<E extends Event> implements Function<E, UUID> {
 
 		private static final PlayerEventUUIDFunction<?> INSTANCE = new PlayerEventUUIDFunction<>();
 		
@@ -108,7 +103,8 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 		
 	}
 	
-	private static class ReceivedPacketEventUUIDFunction<E extends Event> implements Function<E, UUID> {
+	private static final class ReceivedPacketEventUUIDFunction<E extends Event>
+			implements Function<E, UUID> {
 
 		private static final ReceivedPacketEventUUIDFunction<?> INSTANCE = new ReceivedPacketEventUUIDFunction<>();
 		
@@ -126,7 +122,8 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 		
 	}
 	
-	private static class ReflectionGetPlayerUUIDFunction<E extends Event> implements Function<E, UUID> {
+	private static final class ReflectionGetPlayerUUIDFunction<E extends Event>
+			implements Function<E, UUID> {
 		
 		private final MethodHandle getPlayerHandle;
 		

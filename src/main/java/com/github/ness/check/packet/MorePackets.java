@@ -1,7 +1,5 @@
 package com.github.ness.check.packet;
 
-import java.time.Duration;
-
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
@@ -12,34 +10,44 @@ import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.Utility;
 
 import space.arim.dazzleconf.annote.ConfComments;
+import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
+
+import java.time.Duration;
 
 public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
 
-	private int maxPackets;
-	private int serverCrasherMaxPackets;
+	private final int maxPackets;
+	private final int serverCrasherMaxPackets;
+	private final String kickMessage;
 
 	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos
 			.forEventWithAsyncPeriodic(ReceivedPacketEvent.class, Duration.ofSeconds(1));
-	int normalPacketsCounter; // For MorePackets
+
+	private volatile int normalPacketsCounter;
 
 	public MorePackets(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
 		super(factory, player);
-		this.maxPackets = this.ness().getMainConfig().getCheckSection().morePackets().maxPackets();
-		this.serverCrasherMaxPackets = this.ness().getMainConfig().getCheckSection().morePackets()
-				.serverCrasherMaxPackets();
+		Config config = ness().getMainConfig().getCheckSection().morePackets();
+		this.maxPackets = config.maxPackets();
+		this.serverCrasherMaxPackets = config.serverCrasherMaxPackets();
+		this.kickMessage = config.kickMessage();
 		normalPacketsCounter = -5;
 	}
 
 	public interface Config {
 		@DefaultInteger(85)
+		@ConfComments("The threshold at which to flag the player for cheating")
 		int maxPackets();
 
 		@DefaultInteger(250)
-		@ConfComments({
-				"NESS Reloaded can async kick players (using Netty, NESS Reloaded can disable the autoRead config option)",
-				"This feature is experimental, to disable set this to -1, else change this number to something bigger (A normal PLayer sends at most 100 packets per second" })
+		@ConfComments({"The threshold at which to kick the player ASAP" })
 		int serverCrasherMaxPackets();
+
+		@ConfDefault.DefaultString("Too many packets sent")
+		@ConfComments({"The kick message when a player is kicked for too many packets"})
+		String kickMessage();
+
 	}
 
 	@Override
@@ -58,12 +66,13 @@ public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
 		if (np.getMovementValues().isInsideVehicle()) {
 			return;
 		}
+		int normalPacketsCounter = this.normalPacketsCounter;
+		normalPacketsCounter++;
+		this.normalPacketsCounter = normalPacketsCounter;
 		if (normalPacketsCounter++ > maxPackets && np.milliSecondTimeDifference(PlayerAction.JOIN) > 5000) {
 			if (normalPacketsCounter > serverCrasherMaxPackets) {
 				e.setCancelled(true);
-				np.kickThreadSafe();
-				return;
-				// np.kickThreadSafe();
+				np.kickThreadSafe(kickMessage);
 			} else {
 				flagEvent(e);
 			}

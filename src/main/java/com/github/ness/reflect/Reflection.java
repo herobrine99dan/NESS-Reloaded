@@ -1,73 +1,71 @@
 package com.github.ness.reflect;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Member;
-import java.util.function.Function;
-
 /**
  * Entry point for obtaining reflective objects
  * 
  * @author A248
  *
  */
-public class Reflection {
-
-	private final MethodHandles.Lookup lookup = MethodHandles.lookup();
+public interface Reflection {
 
 	/**
-	 * Finds a method matching the given description. May locate inherited methods and non public methods. <br>
-	 * <br>
-	 * The first {@code memberIndex} methods matching the given method description will be skipped.
-	 * If zero, the first matching method is returned. Methods in subclasses are searched first.
-	 * 
-	 * @param <R> the method return type
-	 * @param clazz the class in which to search
-	 * @param description the method description
-	 * @param memberIndex the amount of matching methods to initially skip
-	 * @return the method invoker
-	 * @throws ReflectionException if not found
-	 */
-	public <R> MethodInvoker<R> getMethod(Class<?> clazz, MethodDescription<R> description, int memberIndex) {
-		return new MethodInvokerImpl<>(lookup, getMember(clazz, description, memberIndex, Class::getDeclaredMethods));
-	}
-
-	/**
-	 * Finds a method matching the given description. May locate inherited and non public fields. <br>
-	 * <br>
-	 * The first {@code memberIndex} fields matching the given field description will be skipped.
-	 * If zero, the first matching field is returned. Fields in subclasses are searched first.
+	 * Finds a method matching the given description. May locate inherited and non public fields.
 	 * 
 	 * @param <T> the field type
 	 * @param clazz the class in which to search
 	 * @param description the field description
-	 * @param memberIndex the amount of matching fields to initially skip
 	 * @return the field invoker
-	 * @throws ReflectionException if not found
+	 * @throws MemberNotFoundException if not found
 	 */
-	public <T> FieldInvoker<T> getField(Class<?> clazz, FieldDescription<T> description, int memberIndex) {
-		return new FieldInvokerImpl<>(lookup, getMember(clazz, description, memberIndex, Class::getDeclaredFields));
+	<T> FieldInvoker<T> getField(Class<?> clazz, FieldDescription<T> description);
+
+	/**
+	 * Finds a method matching any of the given descriptions, in order. This is a convenience method
+	 * to attempt to find a field matching any one of the descriptions.
+	 *
+	 * @param <T> the field type
+	 * @param clazz the class in which to search
+	 * @param descriptions the field descriptions to try
+	 * @return the field invoker
+	 * @throws MemberNotFoundException if not found
+	 */
+	default <T> FieldInvoker<T> getField(Class<?> clazz, FieldDescription<T>...descriptions) {
+		for (FieldDescription<T> description : descriptions) {
+			try {
+				return getField(clazz, description);
+			} catch (MemberNotFoundException ignored) {}
+		}
+		throw MemberNotFoundException.INSTANCE;
 	}
 
-	private <M extends AccessibleObject & Member> M getMember(Class<?> clazz, MemberDescription<M> description,
-			int memberIndex, Function<Class<?>, M[]> getDeclaredMembers) {
-		Class<?> currentClass = clazz;
-		while (!currentClass.equals(Object.class)) {
+	/**
+	 * Finds a method matching the given description. May locate inherited methods and non public methods.
+	 * 
+	 * @param <R> the method return type
+	 * @param clazz the class in which to search
+	 * @param description the method description
+	 * @return the method invoker
+	 * @throws MemberNotFoundException if not found
+	 */
+	<R> MethodInvoker<R> getMethod(Class<?> clazz, MethodDescription<R> description);
 
-			for (M member : getDeclaredMembers.apply(currentClass)) {
-				if (!description.matches(member)) {
-					continue;
-				}
-				if (memberIndex-- <= 0) {
-					member.setAccessible(true);
-					return member;
-				}
-			}
-
-			currentClass = currentClass.getSuperclass();
+	/**
+	 * Finds a method matching any of the given descriptions. This is a convenience method
+	 * to attempt to find a method matching any one of the descriptions.
+	 *
+	 * @param <R> the method return type
+	 * @param clazz the class in which to search
+	 * @param descriptions the method descriptions to try
+	 * @return the method invoker
+	 * @throws MemberNotFoundException if not found
+	 */
+	default <R> MethodInvoker<R> getMethod(Class<?> clazz, MethodDescription<R>...descriptions) {
+		for (MethodDescription<R> description : descriptions) {
+			try {
+				return getMethod(clazz, description);
+			} catch (MemberNotFoundException ignored) {}
 		}
-		throw new ReflectionException("No member found in " + clazz.getName() + " for description "
-				+ description + " and member index " + memberIndex);
+		throw MemberNotFoundException.INSTANCE;
 	}
 
 }

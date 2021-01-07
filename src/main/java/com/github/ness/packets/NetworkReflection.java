@@ -1,57 +1,29 @@
 package com.github.ness.packets;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Collection;
+import java.lang.invoke.MethodHandle;
 
-import org.bukkit.Bukkit;
+import com.github.ness.reflect.ReflectionException;
+
 import org.bukkit.entity.Player;
-
-import com.github.ness.utility.UncheckedReflectiveOperationException;
 
 import io.netty.channel.Channel;
 
-public final class NetworkReflection {
+public class NetworkReflection {
 
 	// player.getHandle().playerConnection.networkManager
-	private static final Method getHandleMethod;
-	private static final Field playerConnectionField;
-	private static final Field networkManagerField;
+	private final MethodHandle getHandleMethod;
+	private final MethodHandle playerConnectionField;
+	private final MethodHandle networkManagerField;
 
-	// Fields in NetworkManager
-	private static final Field channelField;
-	private static final Field packetQueueField;
+	// Field in NetworkManager
+	private final MethodHandle channelField;
 
-	// Collection.clear()
-	private static final Method clearMethod;
-
-	static {
-		Class<?> craftPlayerClass;
-		try {
-			craftPlayerClass = Class
-					.forName("org.bukkit.craftbukkit." + ver() + ".entity.CraftPlayer");
-			getHandleMethod = craftPlayerClass.getMethod("getHandle");
-			playerConnectionField = getHandleMethod.getReturnType().getDeclaredField("playerConnection");
-			networkManagerField = playerConnectionField.getType().getDeclaredField("networkManager");
-
-			Class<?> networkManagerClass = networkManagerField.getType();
-			channelField = networkManagerClass.getDeclaredField("channel");
-			// Unfortunally packetQueue field is obfuscated in some versions
-			// packetQueueField = networkManagerClass.getDeclaredField("packetQueue");
-			packetQueueField = null;
-			clearMethod = Collection.class.getMethod("clear");
-		} catch (ClassNotFoundException | NoSuchMethodException | NoSuchFieldException ex) {
-			throw new ExceptionInInitializerError(ex);
-		}
-	}
-	
-    public static String ver() {
-        String pkg = Bukkit.getServer().getClass().getPackage().getName();
-        return pkg.substring(pkg.lastIndexOf(".") + 1);
-    }
-
-	private NetworkReflection() {
+	NetworkReflection(MethodHandle getHandleMethod, MethodHandle playerConnectionField,
+			MethodHandle networkManagerField, MethodHandle channelField) {
+		this.getHandleMethod = getHandleMethod;
+		this.playerConnectionField = playerConnectionField;
+		this.networkManagerField = networkManagerField;
+		this.channelField = channelField;
 	}
 
 	/**
@@ -61,14 +33,16 @@ public final class NetworkReflection {
 	 * @return the networkManager, never {@code null}
 	 * @throws UncheckedReflectiveOperationException if reflection failed
 	 */
-	public static Object getNetworkManager(Player player) {
+	Object getNetworkManager(Player player) {
 		try {
 			Object handle = getHandleMethod.invoke(player);
-			Object playerConnection = playerConnectionField.get(handle);
-			Object networkManager = networkManagerField.get(playerConnection);
+			Object playerConnection = playerConnectionField.invokeWithArguments(handle);
+			Object networkManager = networkManagerField.invokeWithArguments(playerConnection);
 			return networkManager;
-		} catch (IllegalAccessException | InvocationTargetException ex) {
-			throw new UncheckedReflectiveOperationException(ex);
+		} catch (RuntimeException | Error ex) {
+			throw ex;
+		} catch (Throwable ex) {
+			throw new ReflectionException(ex);
 		}
 	}
 
@@ -79,26 +53,13 @@ public final class NetworkReflection {
 	 * @return the channel
 	 * @throws UncheckedReflectiveOperationException if reflection failed
 	 */
-	public static Channel getChannel(Object networkManager) {
+	Channel getChannel(Object networkManager) {
 		try {
-			return (Channel) channelField.get(networkManager);
-		} catch (IllegalAccessException ex) {
-			throw new UncheckedReflectiveOperationException(ex);
-		}
-	}
-
-	/**
-	 * Clears the packet queue of a network manager
-	 * 
-	 * @param networkManager the network manager
-	 * @throws UncheckedReflectiveOperationException if reflection failed
-	 */
-	public static void clearPacketQueu(Object networkManager) {
-		try {
-			Object packetQueue = packetQueueField.get(networkManager);
-			clearMethod.invoke(packetQueue);
-		} catch (IllegalAccessException | InvocationTargetException ex) {
-			throw new UncheckedReflectiveOperationException(ex);
+			return (Channel) channelField.invokeWithArguments(networkManager);
+		} catch (RuntimeException | Error ex) {
+			throw ex;
+		} catch (Throwable ex) {
+			throw new ReflectionException(ex);
 		}
 	}
 

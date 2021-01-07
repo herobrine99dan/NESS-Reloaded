@@ -4,6 +4,13 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Field;
 
+/**
+ * Reflective setter/getter for a field
+ * 
+ * @author A248
+ *
+ * @param <T> the type of the field
+ */
 public interface FieldInvoker<T> {
 
 	void set(Object object, T value);

@@ -1,9 +1,10 @@
-package com.github.ness.packets.wrappers;
+package com.github.ness.packets.wrapper;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
+@Deprecated
 public class SimplePacket {
 	private final Object packet;
 
@@ -17,6 +18,10 @@ public class SimplePacket {
 
 	public Object getPacket() {
 		return this.packet;
+	}
+
+	Object getField(String field) {
+		throw new UnsupportedOperationException("Must migrate to PacketCheck/PacketCheckFactory");
 	}
 
 	<T> Field getField(Class<?> target, Class<T> fieldType, int index) {
@@ -36,6 +41,10 @@ public class SimplePacket {
 
 	public void process() throws IllegalArgumentException, IllegalAccessException {
 		return;
+	}
+
+	Object getDeclaredField(String field) {
+		throw new UnsupportedOperationException("Must migrate to PacketCheck/PacketCheckFactory");
 	}
 
 }
