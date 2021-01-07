@@ -36,7 +36,6 @@ public final class PlayInFlying {
 		FieldInvoker<Double> z = helper.getField(packetClass, MemberDescriptions.forField(double.class, "z"));
 		FieldInvoker<Float> yaw = helper.getField(packetClass, MemberDescriptions.forField(float.class, "yaw"));
 		FieldInvoker<Float> pitch = helper.getField(packetClass, MemberDescriptions.forField(float.class, "pitch"));
-		@SuppressWarnings("unchecked")
 		FieldInvoker<Boolean> onGround = helper.getField(packetClass,
 				MemberDescriptions.forField(boolean.class, "onGround"),
 				MemberDescriptions.forField(boolean.class, "f")); // The field name is 'f' in some versions
