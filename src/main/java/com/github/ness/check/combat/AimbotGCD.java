@@ -20,6 +20,7 @@ public class AimbotGCD extends ListeningCheck<PlayerMoveEvent> {
 	private List<Double> pitchDiff = new ArrayList<Double>();
 	private double lastGCD = 0;
 	private int lastSensitivity;
+	private double buffer;
 
 	public AimbotGCD(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
@@ -35,15 +36,22 @@ public class AimbotGCD extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		pitchDiff.add(pitchDelta);
-		if (pitchDiff.size() >= 10) {
-			final double gcd = MathUtils.gcdRational(pitchDiff);
+		if (pitchDiff.size() >= 15) {
+			final float gcd = (float) MathUtils.gcdRational(pitchDiff);
 			if (lastGCD == 0.0) {
 				lastGCD = gcd;
 			}
 			double result = Math.abs(gcd - lastGCD);
-			final int sensitivity =  (int) Math.round(MathUtils.getSensitivity(gcd) * 200);
-			player.sendDevMessage("GCD: " + Utility.round(gcd, 100) + "Sensitivity: " + sensitivity);
-			if (result < 0.007) {
+			final int sensitivity = (int) Math.round(MathUtils.getSensitivity(gcd) * 200);
+			player.sendDevMessage("GCD: " + gcd + " Sensitivity: " + sensitivity);
+			if (result > 0.001 || gcd < 0.00001) {
+				if (++buffer > 1) {
+					this.flag("sensitivity: " + sensitivity);
+				}
+			} else if(buffer > 0) {
+				buffer -= 0.5;
+			}
+			if (result < 0.01) {
 				if (Math.abs(sensitivity - lastSensitivity) == 0) {
 					player.setSensitivity(sensitivity);
 				}

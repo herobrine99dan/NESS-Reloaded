@@ -60,7 +60,7 @@ public interface AutoClickConfig {
 			"For example, '30:8' means that if the standard deviation in the intervals between clicks in a sample",
 			"divided by the average interval, is less than 30%, trigger a violation if the sample size is at least 8."
 		})
-		@DefaultStrings({"30:10"})
+		@DefaultStrings({"10:20"})
 		Set<DeviationEntry> deviationRequirements();
 		
 		@ConfKey("superdeviation-and-supersample")
@@ -70,7 +70,7 @@ public interface AutoClickConfig {
 			"These are conceptually similar to the previous. However, this measures the standard deviations between",
 			"the standard deviations. Thus, it is called the \"super deviation\"."
 		})
-		@DefaultStrings({"60:10"})
+		@DefaultStrings({"10:20"})
 		Set<DeviationEntry> superDeviationRequirements();
 		
 	}

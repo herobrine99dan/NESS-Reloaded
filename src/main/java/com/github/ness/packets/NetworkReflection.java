@@ -3,7 +3,6 @@ package com.github.ness.packets;
 import java.lang.invoke.MethodHandle;
 
 import com.github.ness.reflect.ReflectionException;
-import com.github.ness.utility.UncheckedReflectiveOperationException;
 
 import org.bukkit.entity.Player;
 

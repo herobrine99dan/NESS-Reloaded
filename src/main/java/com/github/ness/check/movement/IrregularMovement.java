@@ -1,7 +1,6 @@
 package com.github.ness.check.movement;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -23,7 +22,6 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		super(factory, player);
 	}
 
-	private int airTicks;
 	private double buffer;
 
 	@Override
@@ -42,15 +40,29 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 	 * @param e
 	 */
 	public void Check(PlayerMoveEvent e) {
-		NessPlayer nessPlayer = this.player();
-		MovementValues values = nessPlayer.getMovementValues();
-		if (values.isOnGroundCollider()) {
-			airTicks = 0;
-		} else {
-			airTicks++;
-		}
 		jumpBoost(e);
 		levitationEffect(e);
+		illegalDist(e);
+	}
+
+	public void illegalDist(PlayerMoveEvent e) {
+		MovementValues values = player().getMovementValues();
+		double dist = values.getTo().distance(values.getFrom());
+		if (Math.abs(values.getyDiff()) > 0.001) {
+			double maxSpd = 2;
+			if (values.getFrom().getY() < values.getTo().getY()) {
+				maxSpd = 1.52;
+			} else {
+				maxSpd = 10.0;
+			}
+			if (!values.isGroundAround() && !values.isFlying()) {
+				if (dist > maxSpd && !player().getBukkitPlayer().hasPotionEffect(PotionEffectType.JUMP)
+						&& !values.isAroundSlime()) {
+					this.flagEvent(e, "IllegalDistance");
+				}
+			}
+		}
+
 	}
 
 	public void levitationEffect(Cancellable e) {

@@ -23,7 +23,7 @@ public class AutoClickFactory extends ListeningCheckFactory<AutoClick, PlayerInt
 	
 	private final long totalRetentionMillis;
 
-	protected AutoClickFactory(CheckManager manager) {
+	public AutoClickFactory(CheckManager manager) {
 		super((factory, nessPlayer) -> new AutoClick((AutoClickFactory) factory, nessPlayer),
 				"AutoClick", manager, CHECK_INFO);
 

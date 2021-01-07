@@ -37,7 +37,7 @@ public class NoGround extends ListeningCheck<PlayerMoveEvent> {
 		Player player = e.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = this.player().getMovementValues();
-		if (Utility.hasflybypass(player) || player.getAllowFlight() || Utility.hasVehicleNear(player, 4)
+		if (movementValues.getHelper().hasflybypass(player) || player.getAllowFlight() || nessPlayer.getMovementValues().getHelper().isVehicleNear()
 				|| player().isTeleported()) {
 			return;
 		}
@@ -46,7 +46,7 @@ public class NoGround extends ListeningCheck<PlayerMoveEvent> {
 				&& !to.clone().add(0, -0.3, 0).getBlock().getType().name().contains("LADDER")) && !player.isOnGround()
 				&& to.getY() % 1.0 == 0 && nessPlayer.milliSecondTimeDifference(PlayerAction.JOIN) >= 1000
 				&& !movementValues.isAroundStairs() && !movementValues.isAroundSlime()) {
-			if (!Utility.groundAround(to.clone().add(0, 2, 0))) {
+			if (!movementValues.hasBlockNearHead()) {
 				int failed = flags++;
 				if (failed > 3) {
 					flagEvent(e);

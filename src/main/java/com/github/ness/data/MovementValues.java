@@ -51,6 +51,8 @@ public class MovementValues {
 
 	private final boolean AroundSlabs;
 
+	private final boolean AroundChorus;
+
 	private final boolean AroundSnow;
 
 	private final boolean AroundLadders;
@@ -81,15 +83,24 @@ public class MovementValues {
 
 	private final boolean AroundFence;
 
+	private final boolean AroundNonOccludingBlocks;
+
 	private final boolean AroundGate;
 
 	private final boolean AroundWalls;
+	private final boolean AroundFire;
 
 	private final boolean sprinting;
 	private final boolean blockUnderHead;
-	private final boolean occluding;
+	private final boolean AroundSeaBlocks;
+	private final MovementValuesHelper helper;
+	private final Player player; // Not Thread Safe
 
 	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from, MaterialAccess access) {
+		this.to = to;
+		this.from = from;
+		this.player = p;
+		this.helper = MovementValuesHelper.makeHelper(this);
 		if (Bukkit.isPrimaryThread()) {
 			boolean liquids = false;
 			boolean ice = false;
@@ -97,21 +108,24 @@ public class MovementValues {
 			boolean stairs = false;
 			boolean slab = false;
 			boolean ladder = false;
+			boolean fire = false;
 			boolean snow = false;
 			boolean lily = false;
 			boolean carpet = false;
 			boolean ground = false;
 			boolean web = false;
+			boolean chorus = false;
 			boolean gate = false;
 			boolean walls = false;
 			boolean fence = false;
-			boolean onGroundCollider = false;
+			boolean onGroundCollider = false;			
+			boolean sea = false;
+			boolean nonOccludingBlocks = false;
 			serverVelocity = new ImmutableVector(p.getVelocity().getX(), p.getVelocity().getY(),
 					p.getVelocity().getZ());
 			gamemode = p.getGameMode();
 			isFlying = p.isFlying();
 			ableFly = p.getAllowFlight();
-			boolean occluding = false;
 			for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 2)) {
 				Material material = access.getMaterial(b);
 				String name = material.name();
@@ -147,20 +161,27 @@ public class MovementValues {
 					gate = true;
 				} else if (name.contains("WALL")) {
 					walls = true;
+				} else if (name.contains("FIRE")) {
+					fire = true;
+				} else if (name.contains("CHORUS")) {
+					chorus = true;
+				} else if (name.contains("SEA")) {
+					sea = true;
 				}
 				if(material.isSolid() && !material.isOccluding()) {
-					occluding = true;
+					nonOccludingBlocks = true;
 				}
 			}
 			AroundSnow = snow;
-			blockUnderHead = Utility.groundAround(to.toBukkitLocation().add(0, 1.8, 0));
+			blockUnderHead = helper.groundAround(to.toBukkitLocation().add(0, 2.5, 0));
 			AroundLadders = ladder;
 			AroundSlabs = slab;
+			AroundNonOccludingBlocks = nonOccludingBlocks;
 			aroundWeb = web;
 			AroundStairs = stairs;
 			sprinting = p.isSprinting();
 			if (!slime) {
-				slime = Utility.hasBlock(p, "SLIME");
+				slime = helper.hasBlock(p, "SLIME");
 			}
 			AroundSlime = slime;
 			AroundIce = ice;
@@ -168,19 +189,21 @@ public class MovementValues {
 			groundAround = ground;
 			insideVehicle = p.isInsideVehicle();
 			AroundCarpet = carpet;
+			AroundChorus = chorus;
 			AroundLiquids = liquids;
 			AroundFence = fence;
+			AroundFire = fire;
+			AroundSeaBlocks = sea;
 			AroundGate = gate;
-			this.occluding = occluding;
 			AroundWalls = walls;
 			onGroundCollider = this.isAroundCarpet() || this.isAroundSlabs() || this.isAroundStairs()
-					|| this.isAroundSnow() || this.AroundFence || this.AroundGate || this.AroundWalls;
+					|| this.isAroundSnow() || this.isAroundFence() || this.isAroundGate() || this.isAroundWalls();
 			if (onGroundCollider) {
 				this.onGroundCollider = onGroundCollider;
 			} else {
-				onGroundCollider = Utility.isOnGroundUsingCollider(to.toBukkitLocation(), access, 0.5);
-				if(!onGroundCollider) {
-					onGroundCollider = Utility.isOnGroundUsingCollider(from.toBukkitLocation(), access, 0.5);
+				onGroundCollider = this.getHelper().isOnGroundUsingCollider(to.toBukkitLocation(), access);
+				if (!onGroundCollider) {
+					onGroundCollider = this.getHelper().isOnGroundUsingCollider(from.toBukkitLocation(), access);
 				}
 				this.onGroundCollider = onGroundCollider;
 			}
@@ -194,20 +217,23 @@ public class MovementValues {
 			AroundGate = false;
 			AroundWalls = false;
 			sprinting = false;
+			AroundNonOccludingBlocks = false;
 			AroundLily = false;
+			AroundFire = false;
 			aroundWeb = false;
 			blockUnderHead = false;
 			onGroundCollider = false;
 			AroundSnow = false;
-			occluding = false;
 			insideVehicle = false;
 			gamemode = GameMode.SURVIVAL;
 			isFlying = false;
+			AroundChorus = false;
 			ableFly = false;
 			AroundLiquids = false;
 			AroundSlime = false;
 			AroundStairs = false;
 			AroundFence = false;
+			AroundSeaBlocks = false;
 		}
 		yawDiff = to.getYaw() - from.getYaw();
 		pitchDiff = to.getPitch() - from.getPitch();
@@ -215,8 +241,6 @@ public class MovementValues {
 		yDiff = to.getY() - from.getY();
 		zDiff = to.getZ() - from.getZ();
 		XZDiff = Math.hypot(xDiff, zDiff);
-		this.to = to;
-		this.from = from;
 	}
 
 	public boolean hasBlockNearHead() {
@@ -240,11 +264,7 @@ public class MovementValues {
 	public boolean isClientFalling() {
 		return this.yDiff < 0;
 	}
-
-	public void doCalculations() {
-
-	}
-
+	
 	public ImmutableVector getDirection() {
 		return this.getTo().getDirectionVector();
 	}
@@ -283,10 +303,6 @@ public class MovementValues {
 
 	public boolean isAroundIce() {
 		return AroundIce;
-	}
-	
-	public boolean isOccluding() {
-		return occluding;
 	}
 
 	public boolean isAroundLiquids() {
@@ -365,7 +381,38 @@ public class MovementValues {
 		return sprinting;
 	}
 
-	public boolean isBlockUnderHead() {
-		return blockUnderHead;
+	public MovementValuesHelper getHelper() {
+		return helper;
+	}
+
+	public boolean isAroundWalls() {
+		return AroundWalls;
+	}
+
+	public boolean isAroundFire() {
+		return AroundFire;
+	}
+
+	public boolean isAroundChorus() {
+		return AroundChorus;
+	}
+
+	/**
+	 * Executing actions on Player object in another thread isn't thread safe.
+	 * Please, if you can, use values already calculated on MovementValues or on
+	 * MovementValuesHelper
+	 * 
+	 * @return Player Object of this MovementValues object
+	 */
+	public Player getPlayer() {
+		return player;
+	}
+
+	public boolean isAroundSeaBlocks() {
+		return AroundSeaBlocks;
+	}
+
+	public boolean isAroundNonOccludingBlocks() {
+		return AroundNonOccludingBlocks;
 	}
 }

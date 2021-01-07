@@ -22,10 +22,6 @@ public class MathUtils {
 		return table[(int) (f * 10430.378F) & '\uffff'];
 	}
 
-	public static boolean isExponentiallySmall(double d) {
-		return d < .0001 && d > 0;
-	}
-
 	/**
 	 * Get the cosine of a double value from the table
 	 * 
@@ -54,8 +50,10 @@ public class MathUtils {
 	 * @author Islandscout
 	 */
 	public static double gcdRational(double a, double b) {
-		if (a == 0) {
+		if (Math.abs(a) < 0.001) {
 			return b;
+		} else if (Math.abs(b) < 0.001) {
+			return a;
 		}
 		int quotient = getIntQuotient(b, a);
 		double remainder = ((b / a) - quotient) * a;
@@ -69,6 +67,10 @@ public class MathUtils {
 		double error = Math.max(dividend, divisor) * 1E-3F;
 		return (int) (ans + error);
 	}
+	
+    public static double smartSqrt(double N, double I) {
+        return Math.exp(Math.log(N)/I);
+    }
 
 	/**
 	 * From
@@ -78,7 +80,9 @@ public class MathUtils {
 	 * @return the sensitivity
 	 */
 	public static double getSensitivity(double gcd) {
-		return (1.655 * Math.cbrt(0.8333 * gcd)) - 0.3333;
+	    double f1 = smartSqrt(gcd / .15 / 8, 3);
+	    double sensitivity = (f1 - 0.2) / .6 * 200;
+	    return sensitivity;
 	}
 
 	public static double average(List<Float> angles) {
@@ -86,15 +90,7 @@ public class MathUtils {
 		for (float f : angles) {
 			sum += f;
 		}
-		return sum/angles.size();
-	}
-	
-	public static long averageLong(List<Long> angles) {
-		long sum = 0;
-		for (long f : angles) {
-			sum += f;
-		}
-		return sum/angles.size();
+		return sum / angles.size();
 	}
 
 	public static double gcdRational(List<Double> numbers) {
@@ -106,16 +102,6 @@ public class MathUtils {
 	}
 
 	public static float yawTo180F(float flub) {
-		if ((flub %= 360.0f) >= 180.0f) {
-			flub -= 360.0f;
-		}
-		if (flub < -180.0f) {
-			flub += 360.0f;
-		}
-		return flub;
-	}
-
-	public static float pitchTo100F(float flub) {
 		if ((flub %= 360.0f) >= 180.0f) {
 			flub -= 360.0f;
 		}

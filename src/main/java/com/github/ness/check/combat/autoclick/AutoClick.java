@@ -94,6 +94,7 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 		List<Long> clicksCopy2 = new ArrayList<>(clicksCopy1);
 
 		if (checkHardLimits(clicksCopy1)) {
+			this.clickHistory.clear();
 			flag();
 			return;
 		}
@@ -109,6 +110,7 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 
 			int cps = clicksCopy.size() / hardLimitEntry.retentionSecs();
 			if (cps > hardLimitEntry.maxCps()) {
+				this.player().sendDevMessage("CPS: " + cps + " max: " + hardLimitEntry.maxCps());
 				return true;
 			}
 		}
@@ -151,6 +153,8 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 				if (subPeriods.size() == deviationRequirement.sampleCount()) {
 					int stdDevPercent = getStdDevPercent(subPeriods);
 					if (stdDevPercent < deviationRequirement.deviationPercentage()) {
+						this.player().sendDevMessage("percentage: " + stdDevPercent + " min: " + deviationRequirement.deviationPercentage());
+						this.clickHistory.clear();
 						flag();
 						return;
 					}
@@ -172,7 +176,9 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 				}
 				int superStdDevPercent = getStdDevPercent(standardDeviations);
 				if (superStdDevPercent < superDeviationRequirement.deviationPercentage()) {
+					this.clickHistory.clear();
 					flag();
+					this.player().sendDevMessage("SuperPercentage: " + superStdDevPercent + " min: " + superDeviationRequirement.deviationPercentage());
 					return;
 				}
 			}

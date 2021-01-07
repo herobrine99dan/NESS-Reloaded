@@ -25,30 +25,25 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		Location to = event.getTo().clone();
-		Location from = event.getFrom().clone();
 		double yDiff = event.getTo().getY() - event.getFrom().getY();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
-		if (Utility.getMaterialName(event.getTo().clone().add(0, -0.3, 0)).contains("SLAB")
+		if (movementValues.isAroundSlabs()
 				|| event.getTo().getBlock().isLiquid() || movementValues.isAroundLiquids() || movementValues.isAroundSnow()
-				|| Utility.groundAround(to.clone().add(0, 1.8, 0))
-				|| Utility.specificBlockNear(to.clone(), "CHEST")
-				|| Utility.specificBlockNear(to.clone(), "LADDER")
-				|| Utility.specificBlockNear(to.clone(), "POT")
-				|| Utility.specificBlockNear(to.clone(), "BED")
-				|| Utility.specificBlockNear(to.clone(), "DETECTOR") || movementValues.isAroundStairs()
-				|| Utility.getMaterialName(to.clone().add(0, 1.8, 0)).contains("CHORUS")
-				|| Utility.getMaterialName(from.clone().add(0, 1.6, 0)).contains("CHORUS")
-				|| movementValues.isAroundIce() || movementValues.isAroundSlime() || Utility.hasflybypass(player)) {
+				|| movementValues.hasBlockNearHead()
+				|| movementValues.isAroundLadders()
+				|| movementValues.isAroundNonOccludingBlocks() || movementValues.isAroundStairs()
+				|| movementValues.isAroundChorus()
+				|| movementValues.isAroundIce() || movementValues.isAroundSlime() || movementValues.getHelper().hasflybypass(player)) {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1300) {
 			yDiff -= Math.abs(nessPlayer.getLastVelocity().getY());
 		}
 		// !player.getNearbyEntities(4, 4, 4).isEmpty()
-		if (yDiff > 0 && !Utility.hasVehicleNear(player, 3)) {
-			if (player.getVelocity().getY() == 0.42f && !Utility.isMathematicallyOnGround(event.getTo().getY())
-					&& Utility.isMathematicallyOnGround(event.getFrom().getY())) {
+		if (yDiff > 0 && !nessPlayer.getMovementValues().getHelper().isVehicleNear()) {
+			if (player.getVelocity().getY() == 0.42f && !movementValues.getHelper().isMathematicallyOnGround(event.getTo().getY())
+					&& movementValues.getHelper().isMathematicallyOnGround(event.getFrom().getY())) {
 				double yResult = Math.abs(yDiff - player.getVelocity().getY());
 				if (yResult != 0.0 && nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) > 1700
 						&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 1700) {
