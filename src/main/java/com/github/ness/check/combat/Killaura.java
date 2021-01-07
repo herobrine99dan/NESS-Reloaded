@@ -112,7 +112,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	public void Check2(EntityDamageByEntityEvent event) {
 		Player player = (Player) event.getDamager();
 		if ((player.getLocation().getPitch() == Math.round(player.getLocation().getPitch()))
-				&& Math.abs(player.getLocation().getPitch()) == 90.0) {
+				&& Math.abs(player.getLocation().getPitch()) != 90.0) {
 			punish(event, "PerfectAngle");
 		} else if (player.getLocation().getYaw() == Math.round(player.getLocation().getYaw())) {
 			punish(event, "PerfectAngle1");

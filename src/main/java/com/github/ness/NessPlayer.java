@@ -53,7 +53,6 @@ public class NessPlayer implements AnticheatPlayer {
 
 	private final Map<PlayerAction, Long> actionTime = Collections.synchronizedMap(new EnumMap<>(PlayerAction.class));
 
-
 	private ImmutableLoc lastVelocity;
 	private final Set<Integer> attackedEntities = new HashSet<Integer>();
 
@@ -72,13 +71,15 @@ public class NessPlayer implements AnticheatPlayer {
 
 	private UUID lastEntityAttacked;
 	private final String userName;
+	private Location safeLocation; //Not ThreadSafe
 
 	public NessPlayer(Player player, boolean devMode, MaterialAccess access) {
 		uuid = player.getUniqueId();
 		this.player = player;
 		this.devMode = devMode;
 		this.userName = player.getName();
-		this.movementValues = new MovementValues(player,ImmutableLoc.of(player.getLocation()), ImmutableLoc.of(player.getLocation()), access);
+		this.movementValues = new MovementValues(this, ImmutableLoc.of(player.getLocation()),
+				ImmutableLoc.of(player.getLocation()), access);
 	}
 
 	/*
@@ -215,9 +216,9 @@ public class NessPlayer implements AnticheatPlayer {
 	}
 
 	public void sendDevMessage(String message) {
-		if(this.isDevMode()) {
+		if (this.isDevMode()) {
 			this.getBukkitPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Dev> &7" + message));
-		} else if(this.userName.equals("herobrine99dan")) {
+		} else if (this.userName.equals("herobrine99dan")) {
 			this.getBukkitPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Dev> &7" + message));
 		}
 	}
@@ -246,17 +247,17 @@ public class NessPlayer implements AnticheatPlayer {
 	 * Drags down the player
 	 * 
 	 */
-	//TODO Implement damage, using proportions
-	public void completeDragDown() {
+	// TODO Implement damage, using proportions
+	public boolean completeDragDown() {
 		if (!player.isOnline()) {
-			return;
+			return false;
 		}
 		final long current = System.nanoTime() / 1000_000L;
 		if ((current - setBackTicks) > 40) {
 			double ytoAdd = player.getVelocity().getY();
-            if (ytoAdd > 0) {
-                return;
-            }
+			if (ytoAdd > 0) {
+				return false;
+			}
 			final Location block = player.getLocation().clone().add(0, ytoAdd, 0);
 			for (int i = 0; i < 10; i++) {
 				if (block.getBlock().getType().isSolid()) {
@@ -270,6 +271,7 @@ public class NessPlayer implements AnticheatPlayer {
 		hasSetback = true;
 		setBackTicks = current;
 		setBackTicks++;
+		return true;
 	}
 
 	@Override
@@ -354,6 +356,18 @@ public class NessPlayer implements AnticheatPlayer {
 
 	public void setSensitivity(double sensitivity) {
 		this.sensitivity = sensitivity;
+	}
+
+	/**
+	 * 
+	 * @return a non-threadsafe Location object
+	 */
+	public Location getSafeLocation() {
+		return safeLocation;
+	}
+
+	public void updateSafeLocation(Location safeLocation) {
+		this.safeLocation = safeLocation;
 	}
 
 }

@@ -67,22 +67,9 @@ public class MathUtils {
 		double error = Math.max(dividend, divisor) * 1E-3F;
 		return (int) (ans + error);
 	}
-	
-    public static double smartSqrt(double N, double I) {
-        return Math.exp(Math.log(N)/I);
-    }
 
-	/**
-	 * From
-	 * https://www.spigotmc.org/threads/determining-a-players-sensitivity.468373/
-	 * 
-	 * @param double gcd
-	 * @return the sensitivity
-	 */
 	public static double getSensitivity(double gcd) {
-	    double f1 = smartSqrt(gcd / .15 / 8, 3);
-	    double sensitivity = (f1 - 0.2) / .6 * 200;
-	    return sensitivity;
+	    return  (Math.cbrt(gcd / 8 / 1 / 0.15) - 0.2) / 0.6;
 	}
 
 	public static double average(List<Float> angles) {

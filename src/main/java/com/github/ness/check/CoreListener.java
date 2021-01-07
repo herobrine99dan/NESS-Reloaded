@@ -75,7 +75,7 @@ public class CoreListener implements Listener {
 			return;
 		}
 
-		MovementValues values = new MovementValues(player, ImmutableLoc.of(destination, destinationWorld),
+		MovementValues values = new MovementValues(nessPlayer, ImmutableLoc.of(destination, destinationWorld),
 				ImmutableLoc.of(source, sourceWorld), this.manager.ness().getMaterialAccess());
 		nessPlayer.updateMovementValue(values);
 	}

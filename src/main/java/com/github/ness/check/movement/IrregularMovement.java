@@ -22,7 +22,9 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		super(factory, player);
 	}
 
-	private double buffer;
+	private double levitationBuffer;
+	private double lastDeltaY;
+	private double equalYMotionBuffer;
 
 	@Override
 	protected boolean shouldDragDown() {
@@ -31,18 +33,26 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 
 	@Override
 	protected void checkEvent(PlayerMoveEvent e) {
-		Check(e);
-	}
-
-	/**
-	 * Check for Invalid Gravity
-	 *
-	 * @param e
-	 */
-	public void Check(PlayerMoveEvent e) {
 		jumpBoost(e);
 		levitationEffect(e);
 		illegalDist(e);
+		equalYMotion(e);
+	}
+
+	public void equalYMotion(Cancellable e) {
+		MovementValues values = player().getMovementValues();
+		if (values.isAbleFly() || values.isFlying() || values.isAroundLiquids() || values.isAroundLadders()
+				|| values.isAroundStairs() || values.isAroundNonOccludingBlocks()) {
+			return;
+		}
+		if (Math.abs(lastDeltaY - values.getyDiff()) < 1e-6) {
+			if (++equalYMotionBuffer > 2) {
+				this.flagEvent(e);
+			}
+		} else if (equalYMotionBuffer > 0) {
+			equalYMotionBuffer -= 0.25;
+		}
+		this.lastDeltaY = values.getyDiff();
 	}
 
 	public void illegalDist(PlayerMoveEvent e) {
@@ -73,14 +83,14 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 				float superPrediction = 0.045370374f * effect;
 				float resultY = superPrediction - yDiff;
 				if (resultY > 0.005) {
-					if (++buffer > 50) {
+					if (++levitationBuffer > 50) {
 						this.flagEvent(e, "NoLevitation ResultY: " + resultY);
 					}
-				} else if (buffer > 0) {
-					buffer -= 0.25;
+				} else if (levitationBuffer > 0) {
+					levitationBuffer -= 0.25;
 				}
-			} else if (buffer > 0) {
-				buffer -= 0.25;
+			} else if (levitationBuffer > 0) {
+				levitationBuffer -= 0.25;
 			}
 		}
 	}

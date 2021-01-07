@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import com.github.ness.NessPlayer;
 import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.utility.Utility;
 
@@ -96,7 +97,8 @@ public class MovementValues {
 	private final MovementValuesHelper helper;
 	private final Player player; // Not Thread Safe
 
-	public MovementValues(Player p, ImmutableLoc to, ImmutableLoc from, MaterialAccess access) {
+	public MovementValues(NessPlayer nessPlayer, ImmutableLoc to, ImmutableLoc from, MaterialAccess access) {
+		Player p = nessPlayer.getBukkitPlayer();
 		this.to = to;
 		this.from = from;
 		this.player = p;
@@ -117,8 +119,11 @@ public class MovementValues {
 			boolean chorus = false;
 			boolean gate = false;
 			boolean walls = false;
+			if(this.helper.isMathematicallyOnGround(to.getY()) && this.helper.isOnGroundUsingCollider(to.toBukkitLocation(), access)) {
+				nessPlayer.updateSafeLocation(to.toBukkitLocation());
+			}
 			boolean fence = false;
-			boolean onGroundCollider = false;			
+			boolean onGroundCollider = false;
 			boolean sea = false;
 			boolean nonOccludingBlocks = false;
 			serverVelocity = new ImmutableVector(p.getVelocity().getX(), p.getVelocity().getY(),
@@ -168,7 +173,7 @@ public class MovementValues {
 				} else if (name.contains("SEA")) {
 					sea = true;
 				}
-				if(material.isSolid() && !material.isOccluding()) {
+				if (material.isSolid() && !material.isOccluding()) {
 					nonOccludingBlocks = true;
 				}
 			}
@@ -264,7 +269,7 @@ public class MovementValues {
 	public boolean isClientFalling() {
 		return this.yDiff < 0;
 	}
-	
+
 	public ImmutableVector getDirection() {
 		return this.getTo().getDirectionVector();
 	}
