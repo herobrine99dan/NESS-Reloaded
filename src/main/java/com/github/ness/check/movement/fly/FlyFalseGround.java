@@ -42,7 +42,7 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 				&& nessPlayer.getLastVelocity().getY() > 0.35) {
 			return;
 		}
-		if (!nessPlayer.isTeleported() && player.getNearbyEntities(2, 2, 2).isEmpty() && !movementValues.getHelper().hasflybypass(player)
+		if (!nessPlayer.isTeleported() && !nessPlayer.getMovementValues().getHelper().isLivingEntityNear() && !movementValues.getHelper().hasflybypass(player)
 				&& !movementValues.isAroundSlime() && !nessPlayer.getMovementValues().getHelper().isVehicleNear()
 				&& !player().getMovementValues().isAroundWeb()) {
 			if (player.isOnGround() && !movementValues.isGroundAround() && !movementValues.isAroundLadders()) {

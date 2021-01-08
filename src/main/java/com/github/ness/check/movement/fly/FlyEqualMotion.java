@@ -36,7 +36,7 @@ public class FlyEqualMotion extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		double result = yDiff - lastYDiff;
-		if (Math.abs(result) < 0.001) {
+		if (Math.abs(result) < 1e-6) {
 			if (++buffer > 2) {
 				this.flagEvent(event);
 			}

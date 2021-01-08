@@ -23,8 +23,7 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	private double levitationBuffer;
-	private double lastDeltaY;
-	private double equalYMotionBuffer;
+	private double flyYSum;
 
 	@Override
 	protected boolean shouldDragDown() {
@@ -36,23 +35,26 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		jumpBoost(e);
 		levitationEffect(e);
 		illegalDist(e);
-		equalYMotion(e);
+		stepYCheck(e);
 	}
 
-	public void equalYMotion(Cancellable e) {
+	// Thanks funkemunky for the idea
+	public void stepYCheck(PlayerMoveEvent e) {
 		MovementValues values = player().getMovementValues();
-		if (values.isAbleFly() || values.isFlying() || values.isAroundLiquids() || values.isAroundLadders()
-				|| values.isAroundStairs() || values.isAroundNonOccludingBlocks()) {
-			return;
+		double yDelta = values.getyDiff();
+		if (values.isAroundStairs() || player().isTeleported() || player().isHasSetback()
+				|| player().getMovementValues().getHelper().isVehicleNear()) {
+			flyYSum = 0.0;
 		}
-		if (Math.abs(lastDeltaY - values.getyDiff()) < 1e-6) {
-			if (++equalYMotionBuffer > 2) {
-				this.flagEvent(e);
+		if (yDelta > 0) {
+			this.player().sendDevMessage("FlyYSum: " + (float) flyYSum + " Delta: " + (float) yDelta);
+			flyYSum += yDelta;
+			if (flyYSum % 0.5 == 0 && flyYSum > 0.52) {
+				this.flagEvent(e, "flyYSum: " + flyYSum);
 			}
-		} else if (equalYMotionBuffer > 0) {
-			equalYMotionBuffer -= 0.25;
+		} else {
+			flyYSum = 0.0;
 		}
-		this.lastDeltaY = values.getyDiff();
 	}
 
 	public void illegalDist(PlayerMoveEvent e) {

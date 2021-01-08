@@ -11,7 +11,6 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.utility.MathUtils;
-import com.github.ness.utility.Utility;
 
 public class AimbotGCD extends ListeningCheck<PlayerMoveEvent> {
 

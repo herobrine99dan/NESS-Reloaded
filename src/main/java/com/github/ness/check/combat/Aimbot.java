@@ -18,9 +18,10 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos
 			.forEvent(ReceivedPacketEvent.class);
 
-	private float lastYaw;
-	private float lastPitch;
+	private double lastYaw;
+	private double lastPitch;
 	private int buffer;
+	private double equalRotationsBuffer;
 
 	public Aimbot(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
 		super(factory, player);
@@ -39,6 +40,8 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 		Check1(e);
 		Check2(e);
 		Check3(e);
+		lastYaw = (float) e.getNessPlayer().getMovementValues().getYawDiff();
+		lastPitch = (float) e.getNessPlayer().getMovementValues().getPitchDiff();
 	}
 
 	private void Check1(ReceivedPacketEvent e) {
@@ -57,8 +60,6 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 		float mouseDeltaY = (float) pitchResult / (secondvar * 1.2f);
 		// float x = (float) (thirdvar - Math.floor(thirdvar));
 		np.sendDevMessage("mouseDeltaX: " + mouseDeltaX + " mouseDeltaY: " + mouseDeltaY);
-		lastYaw = (float) np.getMovementValues().getYawDiff();
-		lastPitch = (float) np.getMovementValues().getPitchDiff();
 	}
 
 	/**
@@ -68,9 +69,9 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 		NessPlayer player = e.getNessPlayer();
 		float yawChange = (float) Math.abs(player.getMovementValues().getYawDiff());
 		float pitchChange = (float) Math.abs(player.getMovementValues().getPitchDiff());
-		if (yawChange >= 1.0f && yawChange % 0.1f == 0.0f) {
+		if (yawChange >= 0.1 && yawChange % 0.1f == 0.0f) {
 			flag(" PerfectAura");
-		} else if (pitchChange >= 1.0f && pitchChange % 0.1f == 0.0f) {
+		} else if (pitchChange >= 0.1 && pitchChange % 0.1f == 0.0f) {
 			flag(" PerfectAura1");
 		}
 	}
@@ -90,6 +91,21 @@ public class Aimbot extends ListeningCheck<ReceivedPacketEvent> {
 			} else if (buffer > 0) {
 				buffer--;
 			}
+		}
+	}
+
+	private void Check4(ReceivedPacketEvent e) {
+		NessPlayer player = e.getNessPlayer();
+		if(lastYaw == player.getMovementValues().getYawDiff()) {
+			if(++equalRotationsBuffer > 2) {
+				this.flag("EqualsRotations");
+			}
+		} else if(lastPitch == player.getMovementValues().getPitchDiff()) {
+			if(++equalRotationsBuffer > 2) {
+				this.flag("EqualsRotations");
+			}
+		} else if(equalRotationsBuffer > 0) {
+			equalRotationsBuffer -= 0.25;
 		}
 	}
 }

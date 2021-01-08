@@ -66,6 +66,7 @@ public interface NessConfig {
 		"MorePackets",
 		"NoSlowBow",
 		"NoSlowFood",
+		"IrregularMovement",
 		"NoWeb",
 		"NoGround",
 		"NoFall",
