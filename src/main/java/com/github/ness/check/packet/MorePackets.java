@@ -1,32 +1,31 @@
 package com.github.ness.check.packet;
 
+import java.time.Duration;
+
 import com.github.ness.NessPlayer;
+import com.github.ness.check.CheckInfo;
 import com.github.ness.check.CheckInfos;
-import com.github.ness.check.ListeningCheck;
-import com.github.ness.check.ListeningCheckFactory;
-import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.check.PacketCheck;
+import com.github.ness.check.PacketCheckFactory;
+import com.github.ness.check.PeriodicTaskInfo;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.packets.ReceivedPacketEvent;
-import com.github.ness.utility.Utility;
+import com.github.ness.packets.Packet;
 
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
-import java.time.Duration;
-
-public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
+public class MorePackets extends PacketCheck {
 
 	private final int maxPackets;
 	private final int serverCrasherMaxPackets;
 	private final String kickMessage;
 
-	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos
-			.forEventWithAsyncPeriodic(ReceivedPacketEvent.class, Duration.ofSeconds(1));
+	public static final CheckInfo checkInfo = CheckInfos.forPacketsWithTask(PeriodicTaskInfo.asyncTask(Duration.ofSeconds(1)));
 
 	private volatile int normalPacketsCounter;
 
-	public MorePackets(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
+	public MorePackets(PacketCheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
 		Config config = ness().getMainConfig().getCheckSection().morePackets();
 		this.maxPackets = config.maxPackets();
@@ -56,10 +55,10 @@ public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
 	}
 
 	@Override
-	protected void checkEvent(ReceivedPacketEvent e) {
+	protected void checkPacket(Packet packet) {
 		//int ping = Utility.getPing(e.getNessPlayer().getBukkitPlayer());
 		//int maxPackets = this.maxPackets + ((ping / 100) * 6);
-		NessPlayer np = e.getNessPlayer();
+		NessPlayer np = player();
 		if (np == null) {
 			return;
 		}
@@ -71,10 +70,10 @@ public class MorePackets extends ListeningCheck<ReceivedPacketEvent> {
 		this.normalPacketsCounter = normalPacketsCounter;
 		if (normalPacketsCounter++ > maxPackets && np.milliSecondTimeDifference(PlayerAction.JOIN) > 5000) {
 			if (normalPacketsCounter > serverCrasherMaxPackets) {
-				e.setCancelled(true);
+				packet.cancel();
 				np.kickThreadSafe(kickMessage);
 			} else {
-				flagEvent(e);
+				this.flagEvent(packet, "");
 			}
 		}
 	}

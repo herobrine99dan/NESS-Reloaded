@@ -1,12 +1,5 @@
 package com.github.ness.check;
 
-import com.github.ness.NessPlayer;
-import com.github.ness.data.ImmutableLoc;
-import com.github.ness.data.MovementValues;
-import com.github.ness.data.PlayerAction;
-import com.github.ness.packets.ReceivedPacketEvent;
-import com.github.ness.utility.Utility;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -22,6 +15,11 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.ness.NessPlayer;
+import com.github.ness.data.ImmutableLoc;
+import com.github.ness.data.MovementValues;
+import com.github.ness.data.PlayerAction;
 
 public class CoreListener implements Listener {
 
@@ -140,14 +138,6 @@ public class CoreListener implements Listener {
 			return;
 		}
 		nessPlayer.setPlayerAction(action);
-	}
-
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onTick(ReceivedPacketEvent event) {
-		final String packetName = event.getPacket().getName().toLowerCase();
-		if (packetName.contains("flying") || packetName.contains("position") || packetName.contains("look")) {
-			event.getNessPlayer().onClientTick();
-		}
 	}
 
 }

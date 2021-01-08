@@ -1,5 +1,6 @@
 package com.github.ness.check.movement;
 
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;
@@ -9,19 +10,18 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
-import com.github.ness.packets.ReceivedPacketEvent;
 
-public class OmniSprint extends ListeningCheck<ReceivedPacketEvent> {
+public class OmniSprint extends ListeningCheck<PlayerMoveEvent> {
 
-	public static final ListeningCheckInfo<ReceivedPacketEvent> checkInfo = CheckInfos.forEvent(ReceivedPacketEvent.class);
+	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
-	public OmniSprint(ListeningCheckFactory<?, ReceivedPacketEvent> factory, NessPlayer player) {
+	public OmniSprint(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 
 	@Override
-	protected void checkEvent(ReceivedPacketEvent event) {
-		NessPlayer nessPlayer = event.getNessPlayer();
+	protected void checkEvent(PlayerMoveEvent event) {
+		NessPlayer nessPlayer = player();
 		// Vector result =
 		// event.getTo().toVector().subtract(event.getFrom().toVector());
 		MovementValues values = nessPlayer.getMovementValues();
@@ -34,7 +34,8 @@ public class OmniSprint extends ListeningCheck<ReceivedPacketEvent> {
 			double angle = moving.angle(getDirection(values.getTo()));
 			if (angle < 1.58 && values.getHelper().isMathematicallyOnGround(values.getTo().getY())) {
 				flagEvent(event);
-				//if(player().setViolation(new Violation("OmniSprint", ""))) event.setCancelled(true);
+				// if(player().setViolation(new Violation("OmniSprint", "")))
+				// event.setCancelled(true);
 			}
 		}
 	}

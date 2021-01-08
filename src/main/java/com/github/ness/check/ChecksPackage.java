@@ -15,14 +15,14 @@ public enum ChecksPackage {
 	 * Class names of checks in the required checks package. <br>
 	 * Do not mutate the array
 	 */
-	static final String[] REQUIRED_CHECKS = { "TeleportEvent" };
+	static final String[] REQUIRED_CHECKS = { "TeleportEvent" , "OnTickEvent" };
 
 	private final String prefix;
 
 	ChecksPackage(String prefix) {
 		this.prefix = prefix;
 	}
-	
+
 	String prefix() {
 		return prefix;
 	}

@@ -26,7 +26,7 @@ public final class PeriodicTaskInfo {
 
 	private static final PeriodicTaskInfo NONE = new PeriodicTaskInfo(null, null);
 
-	static PeriodicTaskInfo none() {
+	public static PeriodicTaskInfo none() {
 		return NONE;
 	}
 

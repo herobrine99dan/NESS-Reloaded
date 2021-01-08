@@ -28,7 +28,7 @@ public final class PlayInFlying {
 		this.hasLook = hasLook;
 	}
 
-	static PacketType<PlayInFlying> type(ReflectHelper helper) {
+	public static PacketType<PlayInFlying> type(ReflectHelper helper) {
 		Class<?> packetClass = helper.getNmsClass("PacketPlayInFlying");
 
 		FieldInvoker<Double> x = helper.getField(packetClass, MemberDescriptions.forField(double.class, "x"));

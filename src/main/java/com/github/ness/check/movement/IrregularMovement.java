@@ -47,7 +47,6 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 			flyYSum = 0.0;
 		}
 		if (yDelta > 0) {
-			this.player().sendDevMessage("FlyYSum: " + (float) flyYSum + " Delta: " + (float) yDelta);
 			flyYSum += yDelta;
 			if (flyYSum % 0.5 == 0 && flyYSum > 0.52) {
 				this.flagEvent(e, "flyYSum: " + flyYSum);
