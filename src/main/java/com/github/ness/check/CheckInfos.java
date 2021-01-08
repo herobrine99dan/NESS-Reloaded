@@ -75,5 +75,28 @@ public final class CheckInfos {
 																		   PeriodicTaskInfo taskInfo) {
 		return new ListeningCheckInfo<>(taskInfo, event);
 	}
-	
+
+	/*
+	 * There is currently no separate CheckInfo for packet checks, so in implementation,
+	 * the following are equivalent to #withTask
+	 */
+
+	/**
+	 * Gets a check info to be used with packet checks
+	 *
+	 * @return a check info for packet checks
+	 */
+	public static CheckInfo forPackets() {
+		return withTask(PeriodicTaskInfo.none());
+	}
+
+	/**
+	 * Gets a check info to be used with packet checks, plus a periodic sync or async task.
+	 *
+	 * @param taskInfo the periodic task info
+	 * @return a check info for packet checks
+	 */
+	public static CheckInfo forPacketsWithTask(PeriodicTaskInfo taskInfo) {
+		return withTask(taskInfo);
+	}
 }
