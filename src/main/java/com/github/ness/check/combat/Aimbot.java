@@ -23,19 +23,20 @@ public class Aimbot extends PacketCheck {
 		lastYaw = 0;
 		lastPitch = 0;
 	}
-	
+
 	@Override
 	protected void checkPacket(Packet packet) {
 		if (!packet.isPacketType(this.packetTypeRegistry().playInFlying()) || player().isTeleported()) {
 			return;
 		}
 		PlayInFlying wrapper = packet.toPacketWrapper(this.packetTypeRegistry().playInFlying());
-		if(!wrapper.hasLook()) {
+		if (!wrapper.hasLook()) {
 			return;
 		}
 		Check1(packet);
 		Check2(packet);
 		Check3(packet);
+		Check4(packet);
 		lastYaw = (float) player().getMovementValues().getYawDiff();
 		lastPitch = (float) player().getMovementValues().getPitchDiff();
 	}
@@ -69,6 +70,9 @@ public class Aimbot extends PacketCheck {
 			flag(" PerfectAura");
 		} else if (pitchChange >= 0.1 && pitchChange % 0.1f == 0.0f) {
 			flag(" PerfectAura1");
+		} else if (pitchChange < 0.01 && yawChange > 4f && player.getMovementValues().getTo().getPitch() != 90.0F
+				&& player.getMovementValues().getFrom().getPitch() != 90.0F) {
+			this.flagEvent(e, "PerfectAura2");
 		}
 	}
 
@@ -92,15 +96,15 @@ public class Aimbot extends PacketCheck {
 
 	private void Check4(Packet e) {
 		NessPlayer player = player();
-		if(lastYaw == player.getMovementValues().getYawDiff()) {
-			if(++equalRotationsBuffer > 2) {
+		if (lastYaw == player.getMovementValues().getYawDiff()) {
+			if (++equalRotationsBuffer > 2) {
 				this.flag("EqualsRotations");
 			}
-		} else if(lastPitch == player.getMovementValues().getPitchDiff()) {
-			if(++equalRotationsBuffer > 2) {
+		} else if (lastPitch == player.getMovementValues().getPitchDiff()) {
+			if (++equalRotationsBuffer > 2) {
 				this.flag("EqualsRotations");
 			}
-		} else if(equalRotationsBuffer > 0) {
+		} else if (equalRotationsBuffer > 0) {
 			equalRotationsBuffer -= 0.25;
 		}
 	}
