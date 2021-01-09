@@ -1,11 +1,15 @@
 package com.github.ness.check.required;
 
 import com.github.ness.NessPlayer;
+import com.github.ness.check.CheckInfo;
+import com.github.ness.check.CheckInfos;
 import com.github.ness.check.PacketCheck;
 import com.github.ness.check.PacketCheckFactory;
-import com.github.ness.packets.Packet;import com.github.ness.packets.wrapper.PlayInFlying;
+import com.github.ness.packets.Packet;
 
 public class OnTickEvent extends PacketCheck {
+	
+	public static final CheckInfo checkInfo = CheckInfos.forPackets();
 
 	public OnTickEvent(PacketCheckFactory<?> factory, NessPlayer nessPlayer) {
 		super(factory, nessPlayer);
