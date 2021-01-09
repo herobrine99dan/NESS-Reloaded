@@ -101,11 +101,11 @@ public class Aimbot extends PacketCheck {
 
 	private void Check4(Packet e) {
 		NessPlayer player = player();
-		if (lastYaw == player.getMovementValues().getYawDiff()) {
+		if (lastYaw == player.getMovementValues().getYawDiff() && player.getMovementValues().getYawDiff() != 0.0) {
 			if (++equalRotationsBuffer > 2) {
 				this.flag("EqualsRotations");
 			}
-		} else if (lastPitch == player.getMovementValues().getPitchDiff()) {
+		} else if (lastPitch == player.getMovementValues().getPitchDiff() && player.getMovementValues().getPitchDiff() != 0.0) {
 			if (++equalRotationsBuffer > 2) {
 				this.flag("EqualsRotations");
 			}
