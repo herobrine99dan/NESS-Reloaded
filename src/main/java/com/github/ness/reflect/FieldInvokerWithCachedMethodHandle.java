@@ -1,6 +1,7 @@
 package com.github.ness.reflect;
 
 import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Field;
 import java.util.Objects;
 
 /**
@@ -44,6 +45,22 @@ public class FieldInvokerWithCachedMethodHandle<T> implements FieldInvoker<T> {
 	@Override
 	public MethodHandle unreflectGetter() {
 		return methodHandle;
+	}
+
+	@Override
+	public Field reflect() {
+		return delegate.reflect();
+	}
+
+	@Override
+	public int hashCode() {
+		return 31 + reflect().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		return this == object || object instanceof FieldInvoker
+				&& reflect().equals(((FieldInvoker<?>) object).reflect());
 	}
 
 	@Override

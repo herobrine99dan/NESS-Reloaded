@@ -76,7 +76,7 @@
 				<version>3.0.0-M5</version>
 				<configuration>
 					<trimStackTrace>false</trimStackTrace>
-					<argLine>-Xverify:none -XX:TieredStopAtLevel=1 -XX:-TieredCompilation</argLine>
+					<argLine>-XX:TieredStopAtLevel=1 -XX:-TieredCompilation</argLine>
 					<systemPropertyVariables>
 						<java.util.logging.config.file>src/test/resources/logging.properties</java.util.logging.config.file>
 					</systemPropertyVariables>
@@ -142,6 +142,12 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>

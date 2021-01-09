@@ -1,6 +1,7 @@
 package com.github.ness.reflect;
 
 import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Method;
 
 /**
  * Reflective invoker for a method
@@ -19,5 +20,22 @@ public interface MethodInvoker<R> {
 	 * @return a method handle for the method
 	 */
 	MethodHandle unreflect();
+
+	/**
+	 * Obtains the method
+	 *
+	 * @return the method
+	 */
+	Method reflect();
+
+	/**
+	 * Whether this method invoker is equal to another object. Should be implemented using {@link #reflect()}
+	 * such that any 2 method invokers are equal if they reflect to the same method
+	 *
+	 * @param object the object to determine equality with
+	 * @return true if equal, false otherwise
+	 */
+	@Override
+	boolean equals(Object object);
 
 }

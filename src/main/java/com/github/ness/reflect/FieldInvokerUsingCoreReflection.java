@@ -44,14 +44,19 @@ class FieldInvokerUsingCoreReflection<T> implements FieldInvoker<T> {
 	}
 
 	@Override
+	public Field reflect() {
+		return field;
+	}
+
+	@Override
 	public int hashCode() {
-		return 31 + field.hashCode();
+		return 31 + reflect().hashCode();
 	}
 
 	@Override
 	public boolean equals(Object object) {
-		return this == object || object instanceof FieldInvokerUsingCoreReflection
-				&& field.equals(((FieldInvokerUsingCoreReflection<?>) object).field);
+		return this == object || object instanceof FieldInvoker
+				&& reflect().equals(((FieldInvoker<?>) object).reflect());
 	}
 
 	@Override

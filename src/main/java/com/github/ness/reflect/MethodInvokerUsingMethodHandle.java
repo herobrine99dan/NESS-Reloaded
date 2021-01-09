@@ -1,18 +1,21 @@
 package com.github.ness.reflect;
 
 import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Method;
 import java.util.Objects;
 
 public class MethodInvokerUsingMethodHandle<R> implements MethodInvoker<R> {
 
+	private final Method method;
 	private final MethodHandle methodHandle;
 
-	public MethodInvokerUsingMethodHandle(MethodHandle methodHandle) {
+	public MethodInvokerUsingMethodHandle(Method method, MethodHandle methodHandle) {
+		this.method = Objects.requireNonNull(method);
 		this.methodHandle = Objects.requireNonNull(methodHandle);
 	}
 
 	public MethodInvokerUsingMethodHandle(MethodInvoker<R> delegate) {
-		this(delegate.unreflect());
+		this(delegate.reflect(), delegate.unreflect());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -33,8 +36,26 @@ public class MethodInvokerUsingMethodHandle<R> implements MethodInvoker<R> {
 	}
 
 	@Override
-	public String toString() {
-		return "MethodInvokerUsingMethodHandle [methodHandle=" + methodHandle + "]";
+	public Method reflect() {
+		return method;
 	}
 
+	@Override
+	public int hashCode() {
+		return 31 + reflect().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		return this == object || object instanceof MethodInvoker
+				&& reflect().equals(((MethodInvoker<?>) object).reflect());
+	}
+
+	@Override
+	public String toString() {
+		return "MethodInvokerUsingMethodHandle{" +
+				"method=" + method +
+				", methodHandle=" + methodHandle +
+				'}';
+	}
 }

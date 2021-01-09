@@ -36,14 +36,19 @@ class MethodInvokerUsingCoreReflection<R> implements MethodInvoker<R> {
 	}
 
 	@Override
+	public Method reflect() {
+		return method;
+	}
+
+	@Override
 	public int hashCode() {
-		return 31 + method.hashCode();
+		return 31 + reflect().hashCode();
 	}
 
 	@Override
 	public boolean equals(Object object) {
-		return this == object || object instanceof MethodInvokerUsingCoreReflection
-				&& method.equals(((MethodInvokerUsingCoreReflection<?>) object).method);
+		return this == object || object instanceof MethodInvoker
+				&& reflect().equals(((MethodInvoker<?>) object).reflect());
 	}
 
 	@Override
