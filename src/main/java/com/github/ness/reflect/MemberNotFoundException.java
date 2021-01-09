@@ -1,11 +1,16 @@
 package com.github.ness.reflect;
 
-public final class MemberNotFoundException extends RuntimeException {
+public class MemberNotFoundException extends RuntimeException {
 
-	public static final MemberNotFoundException INSTANCE = new MemberNotFoundException();
-
-	private MemberNotFoundException() {
-		super("Member not found", null, false, false);
+	public MemberNotFoundException(String message) {
+		super(message);
 	}
 
+	public MemberNotFoundException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public MemberNotFoundException(Throwable cause) {
+		super(cause);
+	}
 }

@@ -1,5 +1,7 @@
 package com.github.ness.reflect;
 
+import java.util.Arrays;
+
 /**
  * Entry point for obtaining reflective objects
  * 
@@ -35,7 +37,8 @@ public interface Reflection {
 				return getField(clazz, description);
 			} catch (MemberNotFoundException ignored) {}
 		}
-		throw MemberNotFoundException.INSTANCE;
+		throw new MemberNotFoundException(
+				"Finding field in " + clazz.getName() + " for descriptions " + Arrays.toString(descriptions));
 	}
 
 	/**
@@ -65,7 +68,8 @@ public interface Reflection {
 				return getMethod(clazz, description);
 			} catch (MemberNotFoundException ignored) {}
 		}
-		throw MemberNotFoundException.INSTANCE;
+		throw new MemberNotFoundException(
+				"Finding method in " + clazz.getName() + " for descriptions " + Arrays.toString(descriptions));
 	}
 
 }
