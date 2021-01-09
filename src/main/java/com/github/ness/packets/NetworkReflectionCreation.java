@@ -29,10 +29,10 @@ public class NetworkReflectionCreation {
 		System.out.println("Found Method " + getHandleInvoker.reflect());
 		MethodHandle getHandleMethod = getHandleInvoker.unreflect();
 		System.out.println("Found MethodHandle " + getHandleMethod);
-		if (getHandleInvoker.unreflect().type().returnType() != entityPlayerClass) {
+		if (getHandleMethod.type().returnType() != entityPlayerClass) {
 			throw new AssertionError("Expected return type to be " + entityPlayerClass);
 		}
-		
+
 		MethodHandle playerConnectionField = reflection
 				.getField(entityPlayerClass, MemberDescriptions.forField("playerConnection"))
 				.unreflectGetter();
