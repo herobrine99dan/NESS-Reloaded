@@ -4,6 +4,7 @@ import java.lang.invoke.MethodHandle;
 
 import com.github.ness.reflect.ClassLocator;
 import com.github.ness.reflect.MemberDescriptions;
+import com.github.ness.reflect.MethodInvoker;
 import com.github.ness.reflect.Reflection;
 
 import io.netty.channel.Channel;
@@ -20,10 +21,18 @@ public class NetworkReflectionCreation {
 
 	public NetworkReflection create() {
 		Class<?> craftPlayerClass = classLocator.getObcClass("entity.CraftPlayer");
-		MethodHandle getHandleMethod = reflection
-				.getMethod(craftPlayerClass, MemberDescriptions.forMethod("getHandle")).unreflect();
+		MethodInvoker<?> getHandleInvoker = reflection
+				.getMethod(craftPlayerClass, MemberDescriptions.forMethod("getHandle"));
 
 		Class<?> entityPlayerClass = classLocator.getNmsClass("EntityPlayer");
+		System.out.println("Found MethodInvoker " + getHandleInvoker);
+		System.out.println("Found Method " + getHandleInvoker.reflect());
+		MethodHandle getHandleMethod = getHandleInvoker.unreflect();
+		System.out.println("Found MethodHandle " + getHandleMethod);
+		if (getHandleInvoker.unreflect().type().returnType() != entityPlayerClass) {
+			throw new AssertionError("Expected return type to be " + entityPlayerClass);
+		}
+		
 		MethodHandle playerConnectionField = reflection
 				.getField(entityPlayerClass, MemberDescriptions.forField("playerConnection"))
 				.unreflectGetter();
