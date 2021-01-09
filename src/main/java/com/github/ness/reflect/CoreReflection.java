@@ -24,7 +24,6 @@ public class CoreReflection implements Reflection {
 		int memberIndex = description.memberOffset();
 		Class<?> currentClass = clazz;
 		while (!currentClass.equals(Object.class)) {
-
 			for (M member : getDeclaredMembers.apply(currentClass)) {
 				if (!description.matches(member)) {
 					continue;

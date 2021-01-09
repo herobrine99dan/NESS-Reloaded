@@ -3,12 +3,15 @@ package com.github.ness;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.StringJoiner;
 
 import com.github.ness.blockgetter.MaterialAccess;
 
 import com.github.ness.packets.NetworkReflectionCreation;
+import com.github.ness.reflect.ClassLocator;
 import com.github.ness.reflect.CoreReflection;
 import com.github.ness.reflect.SimpleClassLocator;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -41,7 +44,13 @@ public class NessPlugin extends JavaPlugin {
 	}
 
 	private void debugReflection() {
-		new NetworkReflectionCreation(new CoreReflection(), SimpleClassLocator.create()).create();
+		ClassLocator locator = SimpleClassLocator.create();
+		StringJoiner joiner = new StringJoiner("\n");
+		for (Method method : locator.getObcClass("entity.CraftPlayer").getDeclaredMethods()) {
+			joiner.add(method.getReturnType() + " " + method.getName());
+		}
+		System.out.println("Names and return types: \n" + joiner);
+		new NetworkReflectionCreation(new CoreReflection(), locator).create();
 	}
 
 	private NessClassLoader createMaterialAccessClassLoader() {
