@@ -24,7 +24,7 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 
 	private final ScalableRegisteredListener<E> scalableListener;
 	private final Class<E> eventClass;
-	private final Function<E, UUID> getPlayerFunction;
+	private final GetPlayerFunction<E> getPlayerFunction;
 	
 	protected ListeningCheckFactory(CheckInstantiator<C> instantiator, String checkName,
 									CheckManager manager, ListeningCheckInfo<E> checkInfo) {
@@ -40,7 +40,7 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 	
 	void checkEvent(E event) {
 		if (getPlayerFunction != null) {
-			UUID uuid = getPlayerFunction.apply(event);
+			UUID uuid = getPlayerFunction.getPlayer(event);
 			C check = getChecksMap().get(uuid);
 			if (check != null) {
 				check.checkEventUnlessInvalid(event);
@@ -66,7 +66,7 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 		super.close();
 	}
 	
-	private static <E extends Event> Function<E, UUID> findGetPlayerFunction(Class<E> eventClass) {
+	private static <E extends Event> GetPlayerFunction<E> findGetPlayerFunction(Class<E> eventClass) {
 		if (PlayerEvent.class.isAssignableFrom(eventClass)) {
 			return PlayerEventUUIDFunction.instance();
 		}
@@ -80,8 +80,12 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 		} catch (NoSuchMethodException ignored) {}
 		return null;
 	}
+
+	private interface GetPlayerFunction<E extends Event> {
+		UUID getPlayer(E event);
+	}
 	
-	private static final class PlayerEventUUIDFunction<E extends Event> implements Function<E, UUID> {
+	private static final class PlayerEventUUIDFunction<E extends Event> implements GetPlayerFunction<E> {
 
 		private static final PlayerEventUUIDFunction<?> INSTANCE = new PlayerEventUUIDFunction<>();
 		
@@ -93,14 +97,14 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 		}
 		
 		@Override
-		public UUID apply(E evt) {
+		public UUID getPlayer(E evt) {
 			return ((PlayerEvent) evt).getPlayer().getUniqueId();
 		}
 		
 	}
 	
 	private static final class ReflectionGetPlayerUUIDFunction<E extends Event>
-			implements Function<E, UUID> {
+			implements GetPlayerFunction<E> {
 		
 		private final MethodHandle getPlayerHandle;
 		
@@ -113,7 +117,7 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 		}
 
 		@Override
-		public UUID apply(E evt) {
+		public UUID getPlayer(E evt) {
 			Player player;
 			try {
 				player = (Player) getPlayerHandle.invoke(evt);
