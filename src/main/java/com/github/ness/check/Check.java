@@ -46,7 +46,7 @@ public class Check extends BaseCheck {
 	 *
 	 */
 	protected void checkAsyncPeriodic() {
-		throw new UnsupportedOperationException("Not implemented - checkAsyncPeriodic");
+		throw new UnsupportedOperationException("Not implemented - checkAsyncPeriodic. Check: " + getClass().getName());
 	}
 
 	void checkAsyncPeriodicUnlessInvalid() {
@@ -61,7 +61,7 @@ public class Check extends BaseCheck {
 	 *
 	 */
 	protected void checkSyncPeriodic() {
-		throw new UnsupportedOperationException("Not implemented - checkSyncPeriodic");
+		throw new UnsupportedOperationException("Not implemented - checkSyncPeriodic. Check: " + getClass().getName());
 	}
 
 	void checkSyncPeriodicUnlessInvalid() {
