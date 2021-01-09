@@ -24,6 +24,7 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 
 	private double levitationBuffer;
 	private double flyYSum;
+	private double illegalXZBuffer;
 
 	@Override
 	protected boolean shouldDragDown() {
@@ -36,10 +37,28 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		levitationEffect(e);
 		illegalDist(e);
 		stepYCheck(e);
+		IllegalXZDistance(e);
+	}
+
+	public void IllegalXZDistance(Cancellable e) {
+		MovementValues values = player().getMovementValues();
+		if (values.isOnGroundCollider() || values.isAbleFly() || values.isFlying() || values.isInsideVehicle()
+				|| values.getHelper().isVehicleNear() || values.isAroundLiquids()) {
+			return;
+		}
+		double xzDiff = values.getXZDiff();
+		double yDiff = values.getyDiff();
+		if (xzDiff > 0.0D && yDiff == 0.0D) {
+			if (++illegalXZBuffer > 1) {
+				this.flagEvent(e, "IllegalXZDistance");
+			}
+		} else if(illegalXZBuffer > 0) {
+			illegalXZBuffer -= 0.25;
+		}
 	}
 
 	// Thanks funkemunky for the idea
-	public void stepYCheck(PlayerMoveEvent e) {
+	public void stepYCheck(Cancellable e) {
 		MovementValues values = player().getMovementValues();
 		double yDelta = values.getyDiff();
 		if (values.isAroundStairs() || player().isTeleported() || player().isHasSetback()
@@ -49,14 +68,14 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		if (yDelta > 0) {
 			flyYSum += yDelta;
 			if (flyYSum % 0.5 == 0 && flyYSum > 0.52) {
-				this.flagEvent(e, "flyYSum: " + flyYSum);
+				this.flagEvent(e, "flyYSum: " + (float) flyYSum);
 			}
 		} else {
 			flyYSum = 0.0;
 		}
 	}
 
-	public void illegalDist(PlayerMoveEvent e) {
+	public void illegalDist(Cancellable e) {
 		MovementValues values = player().getMovementValues();
 		double dist = values.getTo().distance(values.getFrom());
 		if (Math.abs(values.getyDiff()) > 0.001) {

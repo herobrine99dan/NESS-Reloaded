@@ -37,9 +37,6 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 				|| movementValues.isAroundIce() || movementValues.isAroundSlime() || movementValues.getHelper().hasflybypass(player)) {
 			return;
 		}
-		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1300) {
-			yDiff -= Math.abs(nessPlayer.getLastVelocity().getY());
-		}
 		// !player.getNearbyEntities(4, 4, 4).isEmpty()
 		if (yDiff > 0 && !nessPlayer.getMovementValues().getHelper().isVehicleNear()) {
 			if (player.getVelocity().getY() == 0.42f && !movementValues.getHelper().isMathematicallyOnGround(event.getTo().getY())

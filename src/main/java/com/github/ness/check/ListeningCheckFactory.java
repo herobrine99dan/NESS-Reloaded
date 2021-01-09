@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerEvent;
 
-import com.github.ness.packets.ReceivedPacketEvent;
 import com.github.ness.utility.UncheckedReflectiveOperationException;
 
 /**
@@ -71,9 +70,6 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 		if (PlayerEvent.class.isAssignableFrom(eventClass)) {
 			return PlayerEventUUIDFunction.instance();
 		}
-		if (ReceivedPacketEvent.class.isAssignableFrom(eventClass)) {
-			return ReceivedPacketEventUUIDFunction.instance();
-		}
 		/*
 		 * Bukkit does not implement some sort of "IPlayerEvent" on events with getPlayer
 		 * Therefore reflection is necessary
@@ -99,25 +95,6 @@ public class ListeningCheckFactory<C extends ListeningCheck<E>, E extends Event>
 		@Override
 		public UUID apply(E evt) {
 			return ((PlayerEvent) evt).getPlayer().getUniqueId();
-		}
-		
-	}
-	
-	private static final class ReceivedPacketEventUUIDFunction<E extends Event>
-			implements Function<E, UUID> {
-
-		private static final ReceivedPacketEventUUIDFunction<?> INSTANCE = new ReceivedPacketEventUUIDFunction<>();
-		
-		private ReceivedPacketEventUUIDFunction() {}
-		
-		@SuppressWarnings("unchecked")
-		static <E extends Event> ReceivedPacketEventUUIDFunction<E> instance() {
-			return (ReceivedPacketEventUUIDFunction<E>) INSTANCE;
-		}
-		
-		@Override
-		public UUID apply(E evt) {
-			return ((ReceivedPacketEvent) evt).getNessPlayer().getUniqueId();
 		}
 		
 	}
