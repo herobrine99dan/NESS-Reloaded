@@ -10,7 +10,6 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.utility.Utility;
 
 public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 
@@ -20,6 +19,8 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 	public InventoryHack(ListeningCheckFactory<?, InventoryClickEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
+
+	private double buffer;
 
 	@Override
 	protected void checkEvent(InventoryClickEvent e) {
@@ -39,12 +40,13 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 		}
 		Player player = (Player) e.getWhoClicked();
 		NessPlayer nessPlayer = player();
-		if(player.getGameMode().name().contains("CREATIVE")) {
+		if (player.getGameMode().name().contains("CREATIVE")) {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) < 1500
-				|| nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500 || nessPlayer.getMovementValues().getHelper().hasflybypass(player)
-				|| nessPlayer.isTeleported() || nessPlayer.isHasSetback()) {
+				|| nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500
+				|| nessPlayer.getMovementValues().getHelper().hasflybypass(player) || nessPlayer.isTeleported()
+				|| nessPlayer.isHasSetback()) {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 100
@@ -65,7 +67,11 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 			Location to = player.getLocation();
 			double distance = (Math.abs(to.getX() - from.getX())) + (Math.abs(to.getZ() - from.getZ()));
 			if (distance > 0.15) {
-				flagEvent(e);
+				if (++buffer > 2) {
+					flagEvent(e);
+				}
+			} else if (buffer > 0) {
+				buffer -= 0.25;
 			}
 		}, durationOfTicks(2));
 	}

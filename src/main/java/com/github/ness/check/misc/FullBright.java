@@ -15,6 +15,13 @@ public class FullBright extends ListeningCheck<BlockPlaceEvent> {
 	public FullBright(ListeningCheckFactory<?, BlockPlaceEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
+	
+	
+	/**
+	 * @author herobrine99dan
+	 * This is an advanced FullBright Detection with Advanced Heuristics
+	 * It can catch every Fullbright cheat
+	 */
 
 	@Override
 	protected void checkEvent(BlockPlaceEvent e) {

@@ -19,6 +19,8 @@ public class OmniSprint extends ListeningCheck<PlayerMoveEvent> {
 		super(factory, player);
 	}
 
+	private double buffer;
+
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		NessPlayer nessPlayer = player();
@@ -33,9 +35,11 @@ public class OmniSprint extends ListeningCheck<PlayerMoveEvent> {
 					.subtract(values.getTo().toBukkitLocation().clone()).toVector();
 			double angle = moving.angle(getDirection(values.getTo()));
 			if (angle < 1.58 && values.getHelper().isMathematicallyOnGround(values.getTo().getY())) {
-				flagEvent(event);
-				// if(player().setViolation(new Violation("OmniSprint", "")))
-				// event.setCancelled(true);
+				if (++buffer > 3) {
+					flagEvent(event, "Angle: " + (float) angle);
+				}
+			} else if (buffer > 0) {
+				buffer -= 0.25;
 			}
 		}
 	}

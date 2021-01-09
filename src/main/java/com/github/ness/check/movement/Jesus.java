@@ -26,6 +26,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 	double lastXZDist;
 	double lastYDist;
 	int liquidTicks = 0;
+	private double noGravityBuffer;
 
 	public Jesus(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
@@ -43,8 +44,8 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		Player p = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
-		if (movementValues.getHelper().hasflybypass(p) || nessPlayer.getMovementValues().getHelper().isVehicleNear() || p.getAllowFlight()
-				|| nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) < 2000) {
+		if (movementValues.getHelper().hasflybypass(p) || nessPlayer.getMovementValues().getHelper().isVehicleNear()
+				|| p.getAllowFlight() || nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) < 2000) {
 			return;
 		}
 		if (p.getLocation().getBlock().isLiquid()) {
@@ -83,6 +84,12 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 				this.flagEvent(event, "HighVarianceY: " + (float) resultY);
 			} else if (resultXZ > 0.11) {
 				this.flagEvent(event, "HighDistanceXZ: " + resultXZ);
+			} else if (yDist == 0.0) {
+				if (++noGravityBuffer > 4) {
+					this.flagEvent(event, "NoGravityY");
+				}
+			} else if (noGravityBuffer > 0) {
+				noGravityBuffer -= 0.25;
 			}
 		}
 	}
@@ -105,10 +112,16 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 			} else if (resultXZ > 0.17) {
 				this.flagEvent(event, "HighDistanceXZ");
 				this.player().sendDevMessage("resultXZ: " + (float) resultXZ + " resultY: " + (float) resultY);
+			} else if (yDist == 0.0) {
+				if (++noGravityBuffer > 4) {
+					this.flagEvent(event, "NoGravityY");
+				}
+			} else if (noGravityBuffer > 0) {
+				noGravityBuffer -= 0.25;
 			}
 		}
 	}
-	
+
 	private boolean isNearWater(Location loc, MaterialAccess access) {
 		int water = 0;
 		for (Block b : this.player().getMovementValues().getHelper().getCollidingBlocks(loc, 0.3, 0.1)) {
