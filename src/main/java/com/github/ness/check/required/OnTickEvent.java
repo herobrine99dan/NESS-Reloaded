@@ -1,4 +1,4 @@
-package com.github.ness.check.packet;
+package com.github.ness.check.required;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.PacketCheck;

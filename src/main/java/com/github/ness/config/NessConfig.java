@@ -76,10 +76,10 @@ public interface NessConfig {
 		"SpeedFriction",
 		"Jesus",
 		"Step",
-		"Phase",
+		"Phase", 
+		"OmniSprint",
 		"ImpossibleBreak",
 		"ScaffoldFalseTarget",
-		"ScaffoldIllegalTarget",
 		"ScaffoldDownWard",
 		"ScaffoldAngle"})
 	List<String> getEnabledChecks();
