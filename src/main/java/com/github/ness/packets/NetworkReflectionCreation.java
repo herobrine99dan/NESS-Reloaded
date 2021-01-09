@@ -23,8 +23,9 @@ public class NetworkReflectionCreation {
 		MethodHandle getHandleMethod = reflection
 				.getMethod(craftPlayerClass, MemberDescriptions.forMethod("getHandle")).unreflect();
 
+		Class<?> entityPlayerClass = classLocator.getNmsClass("EntityPlayer");
 		MethodHandle playerConnectionField = reflection
-				.getField(getHandleMethod.type().returnType(), MemberDescriptions.forField("playerConnection"))
+				.getField(entityPlayerClass, MemberDescriptions.forField("playerConnection"))
 				.unreflectGetter();
 		MethodHandle networkManagerField = reflection
 				.getField(playerConnectionField.type().returnType(), MemberDescriptions.forField("networkManager"))
