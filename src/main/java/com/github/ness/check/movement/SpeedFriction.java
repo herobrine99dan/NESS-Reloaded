@@ -8,10 +8,8 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
-import com.github.ness.data.ImmutableVector;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.utility.Utility;
 
 public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 
@@ -33,7 +31,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		Player player = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues values = nessPlayer.getMovementValues();
-		if (values.getHelper().hasflybypass(nessPlayer) || values.isAroundLiquids() || values.isAroundSlime()
+		if (player.isFlying() || values.isAroundLiquids() || values.isAroundSlime()
 				|| values.hasBlockNearHead()) {
 			return;
 		}
@@ -55,7 +53,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 					this.flagEvent(event);
 				}
 			} else if (buffer > 0) {
-				buffer--;
+				buffer -= 0.5;
 			}
 		}
 		this.lastDeltaXZ = xzDiff;

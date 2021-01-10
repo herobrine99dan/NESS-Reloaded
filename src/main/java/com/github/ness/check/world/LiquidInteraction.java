@@ -7,7 +7,6 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
-import com.github.ness.utility.Utility;
 
 public class LiquidInteraction extends ListeningCheck<BlockPlaceEvent> {
 

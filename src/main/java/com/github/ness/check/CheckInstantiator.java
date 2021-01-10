@@ -1,10 +1,6 @@
 package com.github.ness.check;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
 import com.github.ness.NessPlayer;
-import com.github.ness.utility.UncheckedReflectiveOperationException;
 
 /**
  * Instantiator of new checks

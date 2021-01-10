@@ -7,7 +7,6 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.check.CheckInfos;
-import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.PacketCheck;
 import com.github.ness.check.PacketCheckFactory;
 import com.github.ness.check.PeriodicTaskInfo;

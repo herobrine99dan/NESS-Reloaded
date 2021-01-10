@@ -19,7 +19,6 @@ final class CheckInstantiators {
 		}
 		return (factory, nessPlayer) -> {
 			try {
-				@SuppressWarnings("unchecked")
 				C check = (C) methodHandle.invoke(factory, nessPlayer);
 				return check;
 			} catch (RuntimeException | Error ex) {

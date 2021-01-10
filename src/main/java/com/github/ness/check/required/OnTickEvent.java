@@ -18,7 +18,6 @@ public class OnTickEvent extends PacketCheck {
 
 	@Override
 	protected void checkPacket(Packet packet) {
-		final boolean packetName = packet.isPacketType(packetTypeRegistry().playInFlying());
 		if (packet.isPacketType(packetTypeRegistry().playInFlying())) {
 			player().onClientTick();
 		}

@@ -2,7 +2,6 @@ package com.github.ness.check.movement.fly;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
@@ -11,7 +10,6 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.utility.Utility;
 
 public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 

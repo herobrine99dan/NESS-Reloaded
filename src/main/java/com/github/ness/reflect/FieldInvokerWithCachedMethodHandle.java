@@ -30,7 +30,6 @@ public class FieldInvokerWithCachedMethodHandle<T> implements FieldInvoker<T> {
 		delegate.set(object, value);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public T get(Object object) {
 		try {

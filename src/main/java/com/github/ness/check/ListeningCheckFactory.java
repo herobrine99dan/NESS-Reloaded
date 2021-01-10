@@ -4,7 +4,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.UUID;
-import java.util.function.Function;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;

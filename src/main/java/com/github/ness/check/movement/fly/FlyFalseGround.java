@@ -1,10 +1,8 @@
 package com.github.ness.check.movement.fly;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import com.github.ness.NessAnticheat;
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
@@ -12,7 +10,6 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.utility.Utility;
 
 public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 

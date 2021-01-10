@@ -1,8 +1,6 @@
 package com.github.ness.check.misc;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -12,7 +10,6 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
-import com.github.ness.utility.excel.ExcelData;
 
 public class TestCheck extends ListeningCheck<PlayerMoveEvent> {
 

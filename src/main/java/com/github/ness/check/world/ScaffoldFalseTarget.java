@@ -10,7 +10,6 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
-import com.github.ness.utility.Utility;
 
 public class ScaffoldFalseTarget extends ListeningCheck<BlockPlaceEvent> {
 
@@ -40,13 +39,13 @@ public class ScaffoldFalseTarget extends ListeningCheck<BlockPlaceEvent> {
 			if (!event.getBlock().getLocation().equals(target.getLocation()) && !event.isCancelled()
 					&& targetMaterial.isSolid() && player.getLocation().getY() > event.getBlock().getLocation().getY()
 					&& targetMaterial.isOccluding()) {
-				if (++buffer > 2) {
+				if (++buffer > 3) {
 					flagEvent(event);
 				}
 				// if(player().setViolation(new Violation("Scaffold", "FalseTarget")))
 				// event.setCancelled(true);
 			} else if (buffer > 0) {
-				buffer -= 0.25;
+				buffer -= 0.5;
 			}
 		}
 	}

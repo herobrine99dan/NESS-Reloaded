@@ -1,9 +1,5 @@
 package com.github.ness.check;
 
-import java.time.Duration;
-
-import org.bukkit.event.Cancellable;
-
 import com.github.ness.NessPlayer;
 import com.github.ness.config.NessConfig;
 import com.github.ness.packets.Packet;

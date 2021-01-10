@@ -1,6 +1,5 @@
 package com.github.ness.check.movement.fly;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -11,7 +10,6 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.utility.Utility;
 
 public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 
@@ -24,7 +22,6 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-		Location to = event.getTo().clone();
 		double yDiff = event.getTo().getY() - event.getFrom().getY();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
