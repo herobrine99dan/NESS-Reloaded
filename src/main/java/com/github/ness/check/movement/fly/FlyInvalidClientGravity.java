@@ -50,7 +50,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		} else {
 			airTicks++;
 		}
-		if (values.getHelper().hasflybypass(p) || p.getAllowFlight() || values.isAroundLiquids() || nessPlayer.getMovementValues().getHelper().isVehicleNear()
+		if (values.getHelper().hasflybypass(nessPlayer) || p.getAllowFlight() || values.isAroundLiquids() || nessPlayer.getMovementValues().getHelper().isVehicleNear()
 				|| values.isAroundWeb() || values.isAroundLadders() || values.hasBlockNearHead() || values.isAroundNonOccludingBlocks()) {
 			return;
 		}

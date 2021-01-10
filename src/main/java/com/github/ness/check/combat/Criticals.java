@@ -34,7 +34,7 @@ public class Criticals extends ListeningCheck<EntityDamageByEntityEvent> {
 
 			Player player = (Player) event.getDamager();
 			MovementValues values = player().getMovementValues();
-			if (!player.isOnGround() && player.getFallDistance() > 0 && !values.getHelper().hasflybypass(player)
+			if (!player.isOnGround() && player.getFallDistance() > 0 && !values.getHelper().hasflybypass(nessPlayer)
 					&& !player.getLocation().getBlock().getRelative(BlockFace.DOWN).isLiquid()
 					&& !player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid()
 					&& !nessPlayer.getMovementValues().getHelper().isVehicleNear() && !values.isAroundWeb()) {

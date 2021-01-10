@@ -32,7 +32,7 @@ public class FlyEqualMotion extends ListeningCheck<PlayerMoveEvent> {
 		double yDiff = values.getyDiff();
 		if (this.player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000 || yDiff == 0.0
 				|| values.isAroundSnow() || values.isAroundCarpet() || values.isAroundLadders()
-				|| values.isAroundSlabs() || values.isAroundStairs()) {
+				|| values.isAroundSlabs() || values.isAroundStairs() || values.getHelper().hasflybypass(player())) {
 			return;
 		}
 		double result = yDiff - lastYDiff;

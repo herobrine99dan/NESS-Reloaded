@@ -40,7 +40,7 @@ public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
 		}
 		final String name = event.getTo().getBlock().getType().name();
 		if ((name.contains("LADDER") || name.contains("VINE")) && !p.hasPotionEffect(PotionEffectType.JUMP)
-				&& !nessPlayer.getMovementValues().getHelper().hasflybypass(p) && !nessPlayer.isTeleported() && !nessPlayer.isHasSetback()) {
+				&& !nessPlayer.getMovementValues().getHelper().hasflybypass(nessPlayer) && !nessPlayer.isTeleported() && !nessPlayer.isHasSetback()) {
 			double distance = nessPlayer.getMovementValues().getyDiff();
 			if (distance > maxDist && p.getVelocity().getY() < 0) {
 				if (++buffer > 4) {

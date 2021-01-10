@@ -14,7 +14,6 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.utility.Utility;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 
@@ -44,7 +43,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		Player p = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
-		if (movementValues.getHelper().hasflybypass(p) || nessPlayer.getMovementValues().getHelper().isVehicleNear()
+		if (movementValues.getHelper().hasflybypass(nessPlayer) || nessPlayer.getMovementValues().getHelper().isVehicleNear()
 				|| p.getAllowFlight() || nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) < 2000) {
 			return;
 		}

@@ -76,6 +76,9 @@ public class CoreListener implements Listener {
 		MovementValues values = new MovementValues(nessPlayer, ImmutableLoc.of(destination, destinationWorld),
 				ImmutableLoc.of(source, sourceWorld), this.manager.ness().getMaterialAccess());
 		nessPlayer.updateMovementValue(values);
+		if(player.isGliding()) {
+			nessPlayer.setPlayerAction(PlayerAction.GLIDING);
+		}
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)

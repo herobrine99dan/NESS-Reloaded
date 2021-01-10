@@ -15,6 +15,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import com.github.ness.NessPlayer;
 import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.utility.Utility;
 
@@ -80,19 +81,21 @@ public class MovementValuesHelper {
 		}
 		return blocks;
 	}
-	
-	public boolean isMathematicallyOnGround(double y) {	
-		return y % (1D / 64D) == 0;	
+
+	public boolean isMathematicallyOnGround(double y) {
+		return y % (1D / 64D) == 0;
 	}
-	
-	public boolean hasflybypass(Player player) {
+
+	public boolean hasflybypass(NessPlayer nessPlayer) {
+		Player player = nessPlayer.getBukkitPlayer();
 		if (!Bukkit.getVersion().contains("1.8")) {
-			return player.hasPotionEffect(PotionEffectType.LEVITATION) || player.isGliding() || player.isFlying();
+			return player.hasPotionEffect(PotionEffectType.LEVITATION) || player.isGliding() || player.isFlying()
+					|| nessPlayer.milliSecondTimeDifference(PlayerAction.GLIDING) > 500 ;
 		} else {
 			return player.isFlying();
 		}
 	}
-	
+
 	public boolean specificBlockNear(Location loc, String m) {
 		m = m.toUpperCase();
 		for (Block b : Utility.getBlocksAround(loc, 2)) {
@@ -107,11 +110,11 @@ public class MovementValuesHelper {
 		}
 		return false;
 	}
-	
+
 	public double calcDamageFall(double dist) {
 		return (dist * 0.5) - 1.5;
 	}
-	
+
 	public boolean isOnGroundUsingCollider(Location loc, MaterialAccess access) {
 		final double limit = 0.5;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
@@ -125,7 +128,7 @@ public class MovementValuesHelper {
 		}
 		return false;
 	}
-	
+
 	public boolean hasBlock(Player p, String m) {
 		m = m.toUpperCase();
 		boolean done = false;

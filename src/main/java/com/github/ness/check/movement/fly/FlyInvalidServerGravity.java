@@ -53,7 +53,7 @@ public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues values = nessPlayer.getMovementValues();
 		double y = values.getyDiff();
 		double yresult = y - p.getVelocity().getY();
-		if (values.getHelper().hasflybypass(p) || values.isAroundSlime() || p.getAllowFlight() || values.isAroundLily()
+		if (values.getHelper().hasflybypass(nessPlayer) || values.isAroundSlime() || p.getAllowFlight() || values.isAroundLily()
 				|| nessPlayer.getMovementValues().getHelper().isVehicleNear()) {
 			return;
 		}

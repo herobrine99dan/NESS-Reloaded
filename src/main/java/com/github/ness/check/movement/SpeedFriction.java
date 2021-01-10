@@ -33,7 +33,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		Player player = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues values = nessPlayer.getMovementValues();
-		if (values.getHelper().hasflybypass(player) || values.isAroundLiquids() || values.isAroundSlime()
+		if (values.getHelper().hasflybypass(nessPlayer) || values.isAroundLiquids() || values.isAroundSlime()
 				|| values.hasBlockNearHead()) {
 			return;
 		}

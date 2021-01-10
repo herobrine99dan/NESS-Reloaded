@@ -34,7 +34,7 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 				|| movementValues.isAroundLadders()
 				|| movementValues.isAroundNonOccludingBlocks() || movementValues.isAroundStairs()
 				|| movementValues.isAroundChorus()
-				|| movementValues.isAroundIce() || movementValues.isAroundSlime() || movementValues.getHelper().hasflybypass(player)) {
+				|| movementValues.isAroundIce() || movementValues.isAroundSlime() || movementValues.getHelper().hasflybypass(nessPlayer)) {
 			return;
 		}
 		// !player.getNearbyEntities(4, 4, 4).isEmpty()

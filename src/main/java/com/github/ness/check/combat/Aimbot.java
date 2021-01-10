@@ -71,8 +71,7 @@ public class Aimbot extends PacketCheck {
 			flag(" PerfectAura");
 		} else if (pitchChange >= 0.1 && pitchChange % 0.1f == 0.0f) {
 			flag(" PerfectAura1");
-		} else if (pitchChange < 0.01 && yawChange > 4f && player.getMovementValues().getTo().getPitch() != 90.0F
-				&& player.getMovementValues().getFrom().getPitch() != 90.0F) {
+		} else if (pitchChange < 0.01 && yawChange > 4f && Math.abs(player.getMovementValues().getTo().getPitch()) < 90.0F) {
 			if(++patternBuffer > 7) {
 			this.flagEvent(e, "PerfectAura2");
 			}
@@ -84,7 +83,6 @@ public class Aimbot extends PacketCheck {
 	/**
 	 * @author Tecnio This check comes from AntiHaxerman
 	 *         (https://github.com/Tecnio/AntiHaxerman/blob/master/src/main/java/me/tecnio/antihaxerman/check/impl/aim/AimE.java)
-	 * @param e
 	 */
 	private void Check3(Packet e) {
 		NessPlayer player = player();

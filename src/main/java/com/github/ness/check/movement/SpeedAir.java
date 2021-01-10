@@ -27,8 +27,7 @@ public class SpeedAir extends ListeningCheck<PlayerMoveEvent> {
 		Player player = nessPlayer.getBukkitPlayer();
 		float max = 0.36f + (Utility.getPotionEffectLevel(player, PotionEffectType.SPEED) * 0.062f)
 				+ ((player.getWalkSpeed() - 0.2f) * 1.6f);
-		if (nessPlayer.getMovementValues().isAroundIce()
-				|| nessPlayer.getTimeSinceLastWasOnIce() < 1500) {
+		if (nessPlayer.getMovementValues().isAroundIce() || nessPlayer.getTimeSinceLastWasOnIce() < 1500) {
 			max *= 1.4;
 		}
 		if (nessPlayer.getMovementValues().isAroundSlime()) {
@@ -63,8 +62,9 @@ public class SpeedAir extends ListeningCheck<PlayerMoveEvent> {
 			airTicks = 0;
 		}
 		final double maxDist = getBaseSpeed(nessPlayer);
-		if (airTicks > 4 && (Math.abs(xDiff) > maxDist || Math.abs(zDiff) > maxDist) && !values.getHelper().hasflybypass(player)
-				&& !player.getAllowFlight() && !nessPlayer.getMovementValues().getHelper().isVehicleNear()) {
+		if (airTicks > 4 && (Math.abs(xDiff) > maxDist || Math.abs(zDiff) > maxDist)
+				&& !values.getHelper().hasflybypass(nessPlayer) && !player.getAllowFlight()
+				&& !nessPlayer.getMovementValues().getHelper().isVehicleNear()) {
 			flagEvent(event);
 		}
 	}
