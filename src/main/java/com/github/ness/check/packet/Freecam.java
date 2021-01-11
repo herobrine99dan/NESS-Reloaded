@@ -34,7 +34,7 @@ public class Freecam extends PacketCheck {
 	}
 
 	@Override
-	protected void checkAsyncPeriodic() {
+	protected void checkSyncPeriodic() {
 		if ((System.nanoTime() - lastPosition) / 1e+6 > maxDelay
 				&& player().milliSecondTimeDifference(PlayerAction.JOIN) > 2000) {
 			runTaskLater(() -> {

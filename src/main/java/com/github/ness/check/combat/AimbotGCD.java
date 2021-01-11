@@ -1,41 +1,54 @@
 package com.github.ness.check.combat;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.event.player.PlayerMoveEvent;
-
 import com.github.ness.NessPlayer;
+import com.github.ness.check.CheckInfo;
 import com.github.ness.check.CheckInfos;
-import com.github.ness.check.ListeningCheck;
-import com.github.ness.check.ListeningCheckFactory;
-import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.check.PacketCheck;
+import com.github.ness.check.PacketCheckFactory;
+import com.github.ness.packets.Packet;
+import com.github.ness.packets.wrapper.PlayInFlying;
 import com.github.ness.utility.MathUtils;
 
-public class AimbotGCD extends ListeningCheck<PlayerMoveEvent> {
+public class AimbotGCD extends PacketCheck {
 
-	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
-
+	public static final CheckInfo checkInfo = CheckInfos.forPackets();
 	private List<Double> pitchDiff = new ArrayList<Double>();
 	private double lastGCD = 0;
 	private int lastSensitivity;
 	private double buffer;
+	private Point2D.Float lastRotation = new Point2D.Float(0, 0);
 
-	public AimbotGCD(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
+	public AimbotGCD(PacketCheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
 		this.pitchDiff = new ArrayList<Double>();
 	}
 
 	@Override
-	protected void checkEvent(PlayerMoveEvent event) {
+	protected void checkPacket(Packet packet) {
+		if (!packet.isPacketType(packetTypeRegistry().playInFlying())) {
+			return;
+		}
+		PlayInFlying wrapper = packet.toPacketWrapper(packetTypeRegistry().playInFlying());
+		if (wrapper.hasLook()) {
+			Point2D.Float rotation = new Point2D.Float(wrapper.yaw(), wrapper.pitch());
+			process(rotation);
+			lastRotation = rotation;
+		}
+	}
+	
+	private void process(Point2D.Float rotation) {
 		NessPlayer player = player();
-		double pitchDelta = Math.abs(player.getMovementValues().getPitchDiff());
+		double pitchDelta = Math.abs(rotation.getY() - lastRotation.getY());
 		if (Math.abs(pitchDelta) >= 10 || Math.abs(pitchDelta) < 0.05 || pitchDelta == 0.0 || player.isTeleported()
-				|| player.isHasSetback() || Math.abs(player.getMovementValues().getTo().getPitch()) == 90) {
+				|| player.isHasSetback() || Math.abs(rotation.getY()) == 90) {
 			return;
 		}
 		pitchDiff.add(pitchDelta);
-		if (pitchDiff.size() >= 15) {
+		if (pitchDiff.size() >= 13) {
 			final float gcd = (float) MathUtils.gcdRational(pitchDiff);
 			if (lastGCD == 0.0) {
 				lastGCD = gcd;
@@ -43,11 +56,15 @@ public class AimbotGCD extends ListeningCheck<PlayerMoveEvent> {
 			double result = Math.abs(gcd - lastGCD);
 			final int sensitivity = (int) Math.round(MathUtils.getSensitivity(gcd) * 200);
 			player.sendDevMessage("GCD: " + gcd + " Sensitivity: " + sensitivity);
+			if (player.isCinematic()) {
+				pitchDiff.clear();
+				return;
+			}
 			if (result > 0.001 || gcd < 0.00001) {
-				if (++buffer > 1) {
+				if (++buffer > 0) {
 					this.flag("sensitivity: " + sensitivity);
 				}
-			} else if(buffer > 0) {
+			} else if (buffer > 0) {
 				buffer -= 0.5;
 			}
 			if (result < 0.01) {

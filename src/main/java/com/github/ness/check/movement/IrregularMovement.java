@@ -42,7 +42,7 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 
 	public void IllegalXZDistance(Cancellable e) {
 		MovementValues values = player().getMovementValues();
-		if (values.isOnGroundCollider() || values.isAbleFly() || values.isFlying() || values.isInsideVehicle()
+		if (values.isGroundAround() || values.isAbleFly() || values.isFlying() || values.isInsideVehicle()
 				|| values.getHelper().isVehicleNear() || values.isAroundLiquids()) {
 			return;
 		}

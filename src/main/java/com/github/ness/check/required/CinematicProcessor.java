@@ -17,7 +17,7 @@ public class CinematicProcessor extends PacketCheck {
 		super(factory, nessPlayer);
 	}
 
-	private Point2D.Float lastRotation;
+	private Point2D.Float lastRotation = new Point2D.Float(0, 0);
 
 	@Override
 	protected void checkPacket(Packet packet) {
@@ -72,6 +72,7 @@ public class CinematicProcessor extends PacketCheck {
 		if (cinematic && cinematicTicks > 7.5) {
 			lastCinematic = ticks();
 		}
+		player().setCinematic(cinematic);
 		lastDeltaYaw = deltaYaw;
 		lastDeltaPitch = deltaPitch;
 		lastYawAccel = yawAccel;

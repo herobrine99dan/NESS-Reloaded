@@ -1,5 +1,6 @@
 package com.github.ness;
 
+import java.awt.geom.Point2D;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -72,6 +73,7 @@ public class NessPlayer implements AnticheatPlayer {
 	private UUID lastEntityAttacked;
 	private final String userName;
 	private Location safeLocation; //Not ThreadSafe
+	private boolean cinematic;
 
 	public NessPlayer(Player player, boolean devMode, MaterialAccess access) {
 		uuid = player.getUniqueId();
@@ -368,6 +370,14 @@ public class NessPlayer implements AnticheatPlayer {
 
 	public void updateSafeLocation(Location safeLocation) {
 		this.safeLocation = safeLocation;
+	}
+
+	public boolean isCinematic() {
+		return cinematic;
+	}
+
+	public void setCinematic(boolean cinematic) {
+		this.cinematic = cinematic;
 	}
 
 }

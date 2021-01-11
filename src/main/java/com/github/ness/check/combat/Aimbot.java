@@ -37,7 +37,6 @@ public class Aimbot extends PacketCheck {
 		Check1(packet);
 		Check2(packet);
 		Check3(packet);
-		Check4(packet);
 		lastYaw = (float) player().getMovementValues().getYawDiff();
 		lastPitch = (float) player().getMovementValues().getPitchDiff();
 	}
@@ -57,7 +56,8 @@ public class Aimbot extends PacketCheck {
 		float mouseDeltaX = (float) yawResult / (secondvar * 1.2f);
 		float mouseDeltaY = (float) pitchResult / (secondvar * 1.2f);
 		// float x = (float) (thirdvar - Math.floor(thirdvar));
-		np.sendDevMessage("mouseDeltaX: " + mouseDeltaX + " mouseDeltaY: " + mouseDeltaY);
+		// np.sendDevMessage("mouseDeltaX: " + mouseDeltaX + " mouseDeltaY: " +
+		// mouseDeltaY);
 	}
 
 	/**
@@ -71,11 +71,12 @@ public class Aimbot extends PacketCheck {
 			flag(" PerfectAura");
 		} else if (pitchChange >= 0.1 && pitchChange % 0.1f == 0.0f) {
 			flag(" PerfectAura1");
-		} else if (pitchChange < 0.01 && yawChange > 4f && Math.abs(player.getMovementValues().getTo().getPitch()) < 90.0F) {
-			if(++patternBuffer > 7) {
-			this.flagEvent(e, "PerfectAura2");
+		} else if (pitchChange < 0.01 && yawChange > 4f
+				&& Math.abs(player.getMovementValues().getTo().getPitch()) < 90.0F) {
+			if (++patternBuffer > 7) {
+				this.flagEvent(e, "PerfectAura2");
 			}
-		} else if(patternBuffer > 0) {
+		} else if (patternBuffer > 0) {
 			patternBuffer -= 0.5;
 		}
 	}
@@ -94,21 +95,6 @@ public class Aimbot extends PacketCheck {
 			} else if (buffer > 0) {
 				buffer--;
 			}
-		}
-	}
-
-	private void Check4(Packet e) {
-		NessPlayer player = player();
-		if (lastYaw == player.getMovementValues().getYawDiff() && player.getMovementValues().getYawDiff() != 0.0) {
-			if (++equalRotationsBuffer > 2) {
-				this.flag("EqualsRotations");
-			}
-		} else if (lastPitch == player.getMovementValues().getPitchDiff() && player.getMovementValues().getPitchDiff() != 0.0) {
-			if (++equalRotationsBuffer > 2) {
-				this.flag("EqualsRotations");
-			}
-		} else if (equalRotationsBuffer > 0) {
-			equalRotationsBuffer -= 0.25;
 		}
 	}
 }
