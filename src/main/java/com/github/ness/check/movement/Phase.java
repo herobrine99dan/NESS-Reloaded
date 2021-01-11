@@ -10,6 +10,7 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
+import com.github.ness.utility.Utility;
 
 public class Phase extends ListeningCheck<PlayerMoveEvent> {
 
@@ -30,7 +31,7 @@ public class Phase extends ListeningCheck<PlayerMoveEvent> {
 		Material material = this.ness().getMaterialAccess().getMaterial(b);
 		boolean occluder = material.isOccluding()
 				|| (material.name().contains("GLASS") && !material.name().contains("STAINED"));
-		if (occluder && !values.getHelper().isVehicleNear() && values.isGroundAround() && !nessPlayer.isTeleported()
+		if (occluder && !Utility.hasVehicleNear(event.getPlayer()) && values.isGroundAround() && !nessPlayer.isTeleported()
 				&& values.getXZDiff() > 0.25) {
 			flagEvent(event);
 			// if(player().setViolation(new Violation("Phase", "")))

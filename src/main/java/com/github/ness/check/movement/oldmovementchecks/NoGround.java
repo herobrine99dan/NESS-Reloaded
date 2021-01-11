@@ -13,6 +13,7 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
+import com.github.ness.utility.Utility;
 
 public class NoGround extends ListeningCheck<PlayerMoveEvent> {
 
@@ -36,7 +37,7 @@ public class NoGround extends ListeningCheck<PlayerMoveEvent> {
 		Player player = e.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = this.player().getMovementValues();
-		if (movementValues.getHelper().hasflybypass(nessPlayer) || player.getAllowFlight() || nessPlayer.getMovementValues().getHelper().isVehicleNear()
+		if (movementValues.getHelper().hasflybypass(nessPlayer) || player.getAllowFlight() || Utility.hasVehicleNear(player)
 				|| player().isTeleported()) {
 			return;
 		}

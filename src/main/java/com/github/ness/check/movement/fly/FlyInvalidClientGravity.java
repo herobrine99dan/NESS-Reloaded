@@ -10,6 +10,7 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
+import com.github.ness.utility.Utility;
 
 public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 
@@ -48,7 +49,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		} else {
 			airTicks++;
 		}
-		if (values.getHelper().hasflybypass(nessPlayer) || p.getAllowFlight() || values.isAroundLiquids() || nessPlayer.getMovementValues().getHelper().isVehicleNear()
+		if (values.getHelper().hasflybypass(nessPlayer) || p.getAllowFlight() || values.isAroundLiquids() || Utility.hasVehicleNear(p)
 				|| values.isAroundWeb() || values.isAroundLadders() || values.hasBlockNearHead() || values.isAroundNonOccludingBlocks()) {
 			return;
 		}

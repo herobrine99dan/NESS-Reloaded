@@ -13,6 +13,7 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
+import com.github.ness.utility.Utility;
 
 public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
@@ -44,7 +45,7 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 		Double hozDist = movementValues.getXZDiff();
 		Double fallDist = (double) player.getFallDistance();
 		if (movementValues.getHelper().hasflybypass(nessPlayer) || player.getAllowFlight()
-				|| nessPlayer.getMovementValues().getHelper().isVehicleNear() || nessPlayer.isTeleported()) {
+				|| Utility.hasVehicleNear(player) || nessPlayer.isTeleported()) {
 			return;
 		}
 		Double vertDist = movementValues.getyDiff();

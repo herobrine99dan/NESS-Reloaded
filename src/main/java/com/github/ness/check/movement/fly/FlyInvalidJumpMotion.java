@@ -10,6 +10,7 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
+import com.github.ness.utility.Utility;
 
 public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 
@@ -35,7 +36,7 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		// !player.getNearbyEntities(4, 4, 4).isEmpty()
-		if (yDiff > 0 && !nessPlayer.getMovementValues().getHelper().isVehicleNear()) {
+		if (yDiff > 0 && !Utility.hasVehicleNear(player)) {
 			if (player.getVelocity().getY() == 0.42f && !movementValues.getHelper().isMathematicallyOnGround(event.getTo().getY())
 					&& movementValues.getHelper().isMathematicallyOnGround(event.getFrom().getY())) {
 				double yResult = Math.abs(yDiff - player.getVelocity().getY());

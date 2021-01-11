@@ -58,6 +58,7 @@ public class AimbotGCD extends PacketCheck {
 			player.sendDevMessage("GCD: " + gcd + " Sensitivity: " + sensitivity);
 			if (player.isCinematic()) {
 				pitchDiff.clear();
+				buffer = 0;
 				return;
 			}
 			if (result > 0.001 || gcd < 0.00001) {

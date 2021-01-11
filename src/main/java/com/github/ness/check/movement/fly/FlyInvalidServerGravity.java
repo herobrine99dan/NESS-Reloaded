@@ -54,7 +54,7 @@ public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
 		double y = values.getyDiff();
 		double yresult = y - p.getVelocity().getY();
 		if (values.getHelper().hasflybypass(nessPlayer) || values.isAroundSlime() || p.getAllowFlight() || values.isAroundLily()
-				|| nessPlayer.getMovementValues().getHelper().isVehicleNear()) {
+				|| Utility.hasVehicleNear(p)) {
 			return;
 		}
 		double max = maxInvalidVelocity;

@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -21,6 +24,26 @@ public class Utility {
 			}
 		}
 		return result;
+	}
+	
+	public static boolean hasLivingEntityNear(Player player) {
+		final int range = 4;
+		for (Entity e : player.getNearbyEntities(range, range, range)) {
+			if (e instanceof Vehicle) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean hasVehicleNear(Player player) {
+		final int range = 4;
+		for (Entity e : player.getNearbyEntities(range, range, range)) {
+			if (e instanceof LivingEntity && !e.getUniqueId().equals(player.getUniqueId())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static int getPotionEffectLevel(Player p, PotionEffectType pet) {

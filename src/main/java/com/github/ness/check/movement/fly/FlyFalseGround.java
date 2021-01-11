@@ -10,6 +10,7 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
+import com.github.ness.utility.Utility;
 
 public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 
@@ -29,7 +30,6 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		Player player = e.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
-		ness();
 		if (movementValues.isAroundLily() || movementValues.isAroundCarpet() || movementValues.isAroundSnow()
 				|| this.ness().getMinecraftVersion() > 1152 || this.ness().getMaterialAccess()
 						.getMaterial(player.getLocation().clone().add(0, -0.5, 0)).name().contains("SCAFFOLD")) {
@@ -39,20 +39,24 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 				&& nessPlayer.getLastVelocity().getY() > 0.35) {
 			return;
 		}
-		if (!nessPlayer.isTeleported() && !nessPlayer.getMovementValues().getHelper().isLivingEntityNear()
-				&& !movementValues.getHelper().hasflybypass(nessPlayer) && !movementValues.isAroundSlime()
-				&& !nessPlayer.getMovementValues().getHelper().isVehicleNear()
-				&& !player().getMovementValues().isAroundWeb()) {
-			if (player.isOnGround() && !movementValues.isGroundAround() && !movementValues.isAroundLadders()) {
-				flagEvent(e, " FalseGround");
-				// if(player().setViolation(new Violation("Fly", "FalseGround")))
-				// e.setCancelled(true);
-			} else if (player.isOnGround() && !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY())
-					&& this.ness().getMinecraftVersion() > 189) {
-				flagEvent(e, " FalseGround1");
-				// if(player().setViolation(new Violation("Fly", "FalseGround1")))
-				// e.setCancelled(true);
-			}
+		if (nessPlayer.isTeleported() || Utility.hasLivingEntityNear(player)) {
+			return;
+		}
+		if (movementValues.getHelper().hasflybypass(nessPlayer) || movementValues.isAroundSlime()) {
+			return;
+		}
+		if (Utility.hasVehicleNear(player) || nessPlayer.getMovementValues().isAroundWeb()) {
+			return;
+		}
+		if (player.isOnGround() && !movementValues.isGroundAround() && !movementValues.isAroundLadders()) {
+			flagEvent(e, " FalseGround");
+			// if(player().setViolation(new Violation("Fly", "FalseGround")))
+			// e.setCancelled(true);
+		} else if (player.isOnGround() && !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY())
+				&& this.ness().getMinecraftVersion() > 189) {
+			flagEvent(e, " FalseGround1");
+			// if(player().setViolation(new Violation("Fly", "FalseGround1")))
+			// e.setCancelled(true);
 		}
 	}
 }

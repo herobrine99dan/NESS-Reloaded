@@ -21,14 +21,6 @@ import com.github.ness.utility.Utility;
 
 public class MovementValuesHelper {
 
-	private final boolean vehicleNear;
-	private final boolean livingEntityNear;
-
-	public MovementValuesHelper(boolean vehicleNear, boolean livingEntityNear) {
-		this.vehicleNear = vehicleNear;
-		this.livingEntityNear = livingEntityNear;
-	}
-
 	/**
 	 * Get Angle (in Radians) beetween a player and the target
 	 * 
@@ -90,7 +82,7 @@ public class MovementValuesHelper {
 		Player player = nessPlayer.getBukkitPlayer();
 		if (!Bukkit.getVersion().contains("1.8")) {
 			return player.hasPotionEffect(PotionEffectType.LEVITATION) || player.isGliding() || player.isFlying()
-					|| nessPlayer.milliSecondTimeDifference(PlayerAction.GLIDING) > 500 ;
+					|| nessPlayer.milliSecondTimeDifference(PlayerAction.GLIDING) < 500;
 		} else {
 			return player.isFlying();
 		}
@@ -152,18 +144,17 @@ public class MovementValuesHelper {
 
 	public static MovementValuesHelper makeHelper(MovementValues values) {
 		boolean vehicleNear = false;
-		boolean livingEntityNear = true;
+		boolean livingEntityNear = values.getPlayer().isCollidable();
 		final int range = 4;
 		for (Entity e : values.getPlayer().getNearbyEntities(range, range, range)) {
 			if (e instanceof Vehicle) {
 				vehicleNear = true;
 			}
-			if (e instanceof LivingEntity && !(e instanceof Player)) {
+			if (e instanceof LivingEntity && !e.getUniqueId().equals(values.getPlayer().getUniqueId())) {
 				livingEntityNear = true;
 			}
 		}
-		MovementValuesHelper helper = new MovementValuesHelper(vehicleNear, livingEntityNear);
-		return helper;
+		return new MovementValuesHelper();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -176,13 +167,4 @@ public class MovementValuesHelper {
 					|| inventory.getItemInOffHand().getType().name().contains(m);
 		}
 	}
-
-	public boolean isVehicleNear() {
-		return vehicleNear;
-	}
-
-	public boolean isLivingEntityNear() {
-		return livingEntityNear;
-	}
-
 }

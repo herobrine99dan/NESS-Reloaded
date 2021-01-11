@@ -43,13 +43,13 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 	public void IllegalXZDistance(Cancellable e) {
 		MovementValues values = player().getMovementValues();
 		if (values.isGroundAround() || values.isAbleFly() || values.isFlying() || values.isInsideVehicle()
-				|| values.getHelper().isVehicleNear() || values.isAroundLiquids()) {
+				|| Utility.hasVehicleNear(player().getBukkitPlayer()) || values.isAroundLiquids()) {
 			return;
 		}
 		double xzDiff = values.getXZDiff();
 		double yDiff = values.getyDiff();
-		if (xzDiff > 0.0D && yDiff == 0.0D) {
-			if (++illegalXZBuffer > 1) {
+		if (xzDiff > 0.0D && Math.abs(yDiff) < 0.001) {
+			if (++illegalXZBuffer > 3) {
 				this.flagEvent(e, "IllegalXZDistance");
 			}
 		} else if(illegalXZBuffer > 0) {
@@ -62,7 +62,7 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues values = player().getMovementValues();
 		double yDelta = values.getyDiff();
 		if (values.isAroundStairs() || player().isTeleported() || player().isHasSetback()
-				|| player().getMovementValues().getHelper().isVehicleNear()) {
+				|| Utility.hasVehicleNear(player().getBukkitPlayer())) {
 			flyYSum = 0.0;
 		}
 		if (yDelta > 0) {

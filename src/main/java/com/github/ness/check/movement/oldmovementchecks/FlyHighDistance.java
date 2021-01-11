@@ -11,6 +11,7 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
+import com.github.ness.utility.Utility;
 
 public class FlyHighDistance extends ListeningCheck<PlayerMoveEvent> {
 
@@ -28,7 +29,7 @@ public class FlyHighDistance extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues values = player().getMovementValues();
 		Player player = e.getPlayer();
 		double dist = values.getXZDiff();
-		if (values.getHelper().hasflybypass(player()) || player.getAllowFlight() || values.getHelper().isVehicleNear()
+		if (values.getHelper().hasflybypass(player()) || player.getAllowFlight() || Utility.hasVehicleNear(player)
 				|| player().isTeleported()) {
 			return;
 		}
