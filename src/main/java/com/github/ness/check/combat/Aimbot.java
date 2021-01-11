@@ -16,8 +16,6 @@ public class Aimbot extends PacketCheck {
 	private double lastYaw;
 	private double lastPitch;
 	private int buffer;
-	private double equalRotationsBuffer;
-	private double patternBuffer;
 
 	public Aimbot(PacketCheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
@@ -71,13 +69,6 @@ public class Aimbot extends PacketCheck {
 			flag(" PerfectAura");
 		} else if (pitchChange >= 0.1 && pitchChange % 0.1f == 0.0f) {
 			flag(" PerfectAura1");
-		} else if (pitchChange < 0.01 && yawChange > 4f
-				&& Math.abs(player.getMovementValues().getTo().getPitch()) < 90.0F) {
-			if (++patternBuffer > 7) {
-				this.flagEvent(e, "PerfectAura2");
-			}
-		} else if (patternBuffer > 0) {
-			patternBuffer -= 0.5;
 		}
 	}
 

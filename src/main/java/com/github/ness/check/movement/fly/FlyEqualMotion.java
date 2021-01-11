@@ -17,7 +17,7 @@ public class FlyEqualMotion extends ListeningCheck<PlayerMoveEvent> {
 	public FlyEqualMotion(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
-	
+
 	@Override
 	protected boolean shouldDragDown() {
 		return true;
@@ -30,9 +30,13 @@ public class FlyEqualMotion extends ListeningCheck<PlayerMoveEvent> {
 	protected void checkEvent(PlayerMoveEvent event) {
 		MovementValues values = player().getMovementValues();
 		double yDiff = values.getyDiff();
-		if (this.player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000 || yDiff == 0.0
-				|| values.isAroundSnow() || values.isAroundCarpet() || values.isAroundLadders()
-				|| values.isAroundSlabs() || values.isAroundStairs() || values.getHelper().hasflybypass(player())) {
+		if (this.player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000 || values.isAroundSnow()
+				|| values.isAroundCarpet() || values.isAroundLadders() || values.isAroundSlabs()
+				|| values.isAroundStairs() || values.getHelper().hasflybypass(player())) {
+			return;
+		}
+		if(yDiff == 0.0 && buffer > 0) {
+			buffer -= 0.5;
 			return;
 		}
 		double result = yDiff - lastYDiff;

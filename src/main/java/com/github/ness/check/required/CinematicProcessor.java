@@ -47,6 +47,7 @@ public class CinematicProcessor extends PacketCheck {
 		return (long) (System.nanoTime() / 1e+6);
 	}
 
+	//TODO To fix, with large rotations on cinematic mode this have problems
 	private void process(Point2D.Float currentRotation) {
 		double deltaYaw = currentRotation.getX() - lastRotation.getX();
 		double deltaPitch = currentRotation.getY() - lastRotation.getY();

@@ -17,7 +17,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 
 	int airTicks;
 	double lastDeltaXZ;
-	int buffer;
+	private int buffer;
 
 	public SpeedFriction(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
@@ -53,7 +53,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 					this.flagEvent(event);
 				}
 			} else if (buffer > 0) {
-				buffer -= 1;
+				buffer--;
 			}
 		}
 		this.lastDeltaXZ = xzDiff;
