@@ -36,8 +36,8 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 		final MovementValues movementValues = nessPlayer.getMovementValues();
 		double y = movementValues.getyDiff();
 		if (movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY()) || movementValues.isOnGroundCollider()
-				|| movementValues.getHelper().hasflybypass(nessPlayer) || movementValues.isAroundSlime() || p.getAllowFlight()
-				|| movementValues.isAroundLiquids() || movementValues.isAroundLily()
+				|| movementValues.getHelper().hasflybypass(nessPlayer) || movementValues.isAroundSlime()
+				|| p.getAllowFlight() || movementValues.isAroundLiquids() || movementValues.isAroundLily()
 				|| movementValues.isAroundSeaBlocks() || movementValues.isAroundSlabs()
 				|| movementValues.isAroundStairs() || movementValues.isAroundLiquids()
 				|| this.ness().getMaterialAccess().getMaterial(e.getTo().clone().add(0, -0.5, 0)).name()
@@ -45,11 +45,11 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 				|| this.ness().getMaterialAccess().getMaterial(e.getTo().clone().add(0, 0.5, 0)).name()
 						.contains("SCAFFOLD")
 				|| movementValues.isAroundSnow() || movementValues.isAroundLadders() || nessPlayer.isTeleported()
-				|| movementValues.hasBlockNearHead() || nessPlayer.getMovementValues().getHelper().isVehicleNear()
-				|| nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 1000) {
+				|| movementValues.hasBlockNearHead() || nessPlayer.getMovementValues().getHelper().isVehicleNear()) {
 			flyYSum = 0;
 			return;
 		}
+
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500) {
 			y -= Math.abs(nessPlayer.getLastVelocity().getY());
 		}
@@ -57,6 +57,9 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 		if (y > 0) {
 			flyYSum += y;
 			double max = 1.45;
+			if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 1000) {
+				max += 0.25;
+			}
 			double jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
 			max += jumpBoost * (max / 2);
 			if (flyYSum > max) {

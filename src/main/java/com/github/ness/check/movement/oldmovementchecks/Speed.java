@@ -64,6 +64,9 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		if (movementValues.isAroundSlime()) {
 			maxSpd += velocity;
 		}
+		if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) > 1000) {
+			maxSpd += 0.1;
+		}
 		if (player.isInsideVehicle() && player.getVehicle().getType().name().contains("BOAT"))
 			maxSpd = 2.787;
 		if (hozDist > maxSpd && !movementValues.getHelper().hasflybypass(nessPlayer)
@@ -74,8 +77,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 						|| (player.isInsideVehicle() && !player.getVehicle().getType().name().contains("HORSE"))) {
 					Material small = player.getWorld().getBlockAt(player.getLocation().subtract(0, .1, 0)).getType();
 					if (!player.getWorld().getBlockAt(from).getType().isSolid()
-							&& !player.getWorld().getBlockAt(to).getType().isSolid()
-							&& nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) > 1000) {
+							&& !player.getWorld().getBlockAt(to).getType().isSolid()) {
 						if (!small.name().contains("TRAPDOOR")) {
 							this.flagEvent(e, maxSpd + " Dist: " + hozDist);
 						}
