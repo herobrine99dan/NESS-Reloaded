@@ -47,7 +47,7 @@ public class Aimbot extends PacketCheck {
 		if (np.getMovementValues().getYawDiff() < 1) {
 			return;
 		}
-		double firstvar = ((np.getSensitivity() + 1) / 200) * 0.6F + 0.2F;
+		double firstvar = (np.getSensitivity() / 200) * 0.6F + 0.2F;
 		float secondvar = (float) (Math.pow(firstvar, 3f));
 		double yawResult = np.getMovementValues().getYawDiff() - lastYaw;
 		double pitchResult = np.getMovementValues().getPitchDiff() - lastPitch;

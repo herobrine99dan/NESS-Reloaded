@@ -31,8 +31,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		Player player = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues values = nessPlayer.getMovementValues();
-		if (player.isFlying() || values.isAroundLiquids() || values.isAroundSlime()
-				|| values.hasBlockNearHead()) {
+		if (player.isFlying() || values.isAroundLiquids() || values.isAroundSlime() || values.hasBlockNearHead()) {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
@@ -44,8 +43,10 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		} else {
 			airTicks = 0;
 		}
+
 		if (airTicks > 2) {
-			//TODO Maybe add only 0.026 without the process so we can fix false flags attacking an entity
+			// TODO Maybe add only 0.026 without the process so we can fix false flags
+			// attacking an entity
 			final double prediction = (lastDeltaXZ * 0.91f) + (player.isSprinting() ? 0.026 : 0.02);
 			final double difference = xzDiff - prediction;
 			if (difference > 1E-5 && prediction > 0.075) {
