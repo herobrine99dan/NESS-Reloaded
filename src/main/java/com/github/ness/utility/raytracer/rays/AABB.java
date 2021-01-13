@@ -1,17 +1,19 @@
 package com.github.ness.utility.raytracer.rays;
 
 import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class AABB {
-	
+
 	/**
 	 * From https://www.spigotmc.org/threads/hitboxes-and-ray-tracing.174358/
+	 * 
 	 * @author 567legodude
 	 */
 
-	private Vector min, max; // min/max locations
+	private final Vector min, max; // min/max locations
 
 	// Create Bounding Box from min/max locations.
 	public AABB(Vector min, Vector max) {
@@ -24,17 +26,24 @@ public class AABB {
 		this.max = new Vector(Math.max(x1, x2), Math.max(y1, y2), Math.max(z1, z2));
 	}
 
-	private AABB(Player player) {
-		this.min = getMin(player);
-		this.max = getMax(player);
+	private AABB(LivingEntity entity) {
+		Vector min = new Vector(0,0,0);
+		Vector max = new Vector(0,0,0);
+		if (entity instanceof Player) {
+			Player player = (Player) entity;
+			min = getMinForPlayer(player);
+			max = getMaxForPlayer(player);
+		}
+		this.max = max;
+		this.min = min;
+	}
+	
+	private Vector getMinForPlayer(Player player) {
+		return player.getLocation().toVector().add(new Vector(-0.4, 0, -0.4));
 	}
 
-	private Vector getMin(Player player) {
-		return player.getLocation().toVector().add(new Vector(-0.3, 0, -0.3));
-	}
-
-	private Vector getMax(Player player) {
-		return player.getLocation().toVector().add(new Vector(0.3, 1.8, 0.3));
+	private Vector getMaxForPlayer(Player player) {
+		return player.getLocation().toVector().add(new Vector(0.4, 1.99, 0.4));
 	}
 
 	// Create an AABB based on a player's hitbox

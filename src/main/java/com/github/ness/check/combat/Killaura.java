@@ -22,7 +22,8 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.utility.MathUtils;
-import com.github.ness.utility.Utility;
+import com.github.ness.utility.raytracer.rays.AABB;
+import com.github.ness.utility.raytracer.rays.Ray;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
@@ -66,27 +67,30 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		if (player().isNot(e.getDamager()))
 			return;
 		Check(e);
-		Check1(e);
-		Check2(e);
-		Check3(e);
-		Check4(e);
-		Check5(e);
-		Check6(e);
+		//Check1(e);
+		//Check2(e);
+		//Check3(e);
+		//Check4(e);
+		//Check5(e);
+		//Check6(e);
 	}
 
 	public void Check(EntityDamageByEntityEvent eventt) {
 		Player player = (Player) eventt.getDamager();
 		Entity entity = eventt.getEntity();
 		NessPlayer np = player();
+		//TODO Account for lag
+		//TODO Add hitboxes of other entities
 		double range = Math.hypot(np.getMovementValues().getTo().getX() - entity.getLocation().getX(),
 				np.getMovementValues().getTo().getZ() - entity.getLocation().getZ());
-		double maxReach = this.maxReach;
+		double maxReach = 3.1;
+		if (entity instanceof Player) {
+			Ray ray = Ray.from(player);
+			AABB aabb = AABB.from((Player) entity);
+			range = aabb.collidesD(ray, 0, 10);
+		}
 		if (player.getGameMode().equals(GameMode.CREATIVE)) {
 			maxReach = 5.5D;
-		}
-		if (this.player().getMovementValues().isAroundLiquids()
-				|| MathUtils.yawTo180F(np.getMovementValues().getTo().getYaw() - entity.getLocation().getYaw()) <= 90) {
-			maxReach += 0.4D;
 		}
 		if (range > maxReach && range < 6.5D) {
 			punish(eventt, "Reach: " + range);

@@ -10,7 +10,7 @@ public class Ray {
 	 * @author 567legodude
 	 */
     
-    private Vector origin, direction;
+    private final Vector origin, direction;
     
     // Create a ray at the origin pointing in a direction.
     public Ray(Vector origin, Vector direction) {

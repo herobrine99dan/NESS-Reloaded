@@ -29,21 +29,21 @@ public class GroundSpeed extends ListeningCheck<PlayerMoveEvent> {
 			groundTicks = 0;
 		}
 		double maxDist = e.getPlayer().getWalkSpeed() * 1.435;
-		if(e.getPlayer().isSneaking()) {
+		if (e.getPlayer().isSneaking()) {
 			sneakTicks++;
 		} else {
 			sneakTicks = 0;
 		}
-		if(sneakTicks > 6) {
+		if (sneakTicks > 6) {
 			maxDist *= 0.5;
 		}
 		if (groundTicks > 7) {
 			if (movementValues.getXZDiff() > maxDist) {
-				nessPlayer.sendDevMessage("CheatsXZDiff: " + (float) movementValues.getXZDiff() + " ticks: " + groundTicks);
+				nessPlayer.sendDevMessage(
+						"CheatsXZDiff: " + (float) movementValues.getXZDiff() + " ticks: " + groundTicks);
 			} else {
 				nessPlayer.sendDevMessage("XZDiff: " + (float) movementValues.getXZDiff() + " ticks: " + groundTicks);
 			}
 		}
-
 	}
 }
