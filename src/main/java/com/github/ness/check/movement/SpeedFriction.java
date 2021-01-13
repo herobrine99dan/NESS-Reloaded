@@ -47,10 +47,10 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		if (airTicks > 2) {
 			// TODO Maybe add only 0.026 without the process so we can fix false flags
 			// attacking an entity
-			final double prediction = (lastDeltaXZ * 0.91f) + (player.isSprinting() ? 0.026 : 0.02);
+			final double prediction = (lastDeltaXZ * 0.91f) + 0.026;
 			final double difference = xzDiff - prediction;
 			if (difference > 1E-5 && prediction > 0.075) {
-				if (++buffer > 5) {
+				if (++buffer > 3) {
 					this.flagEvent(event);
 				}
 			} else if (buffer > 0) {
