@@ -47,6 +47,11 @@ public class AimbotGCD extends PacketCheck {
 				|| player.isHasSetback() || Math.abs(rotation.getY()) == 90) {
 			return;
 		}
+		if (player.isCinematic()) {
+			pitchDiff.clear();
+			buffer = 0;
+			return;
+		}
 		pitchDiff.add(pitchDelta);
 		if (pitchDiff.size() >= 13) {
 			final float gcd = (float) MathUtils.gcdRational(pitchDiff);
@@ -62,7 +67,7 @@ public class AimbotGCD extends PacketCheck {
 				return;
 			}
 			if (result > 0.001 || gcd < 0.00001) {
-				if (++buffer > 0) {
+				if (++buffer > 1) {
 					this.flag("sensitivity: " + sensitivity);
 				}
 			} else if (buffer > 0) {

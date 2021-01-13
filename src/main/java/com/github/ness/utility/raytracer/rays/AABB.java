@@ -1,9 +1,16 @@
 package com.github.ness.utility.raytracer.rays;
 
 import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+
+import com.github.ness.NessAnticheat;
+import com.github.ness.reflect.ClassLocator;
+import com.github.ness.reflect.FieldInvoker;
+import com.github.ness.reflect.MemberDescriptions;
+import com.github.ness.reflect.MethodInvoker;
+import com.github.ness.reflect.SimpleClassLocator;
 
 public class AABB {
 
@@ -14,6 +21,10 @@ public class AABB {
 	 */
 
 	private final Vector min, max; // min/max locations
+	private static MethodInvoker<?> craftLivingEntityMethod;
+	private static MethodInvoker<?> getBoundingBoxesMethod;
+	private static FieldInvoker<Double> xMinField, xMaxField, yMinField, yMaxField, zMinField, zMaxField;
+	private static ClassLocator locator = SimpleClassLocator.create();
 
 	// Create Bounding Box from min/max locations.
 	public AABB(Vector min, Vector max) {
@@ -26,18 +37,49 @@ public class AABB {
 		this.max = new Vector(Math.max(x1, x2), Math.max(y1, y2), Math.max(z1, z2));
 	}
 
-	private AABB(LivingEntity entity) {
-		Vector min = new Vector(0,0,0);
-		Vector max = new Vector(0,0,0);
+	private AABB(Entity entity, NessAnticheat ness) {
+		Vector min = new Vector(0, 0, 0);
+		Vector max = new Vector(0, 0, 0);
 		if (entity instanceof Player) {
 			Player player = (Player) entity;
 			min = getMinForPlayer(player);
 			max = getMaxForPlayer(player);
+		} else if (ness != null) {
+			double xMax, xMin, yMax, yMin, zMax, zMin = 0;
+			if (craftLivingEntityMethod == null) {
+				craftLivingEntityMethod = ness.getReflectHelper().getMethod(
+						locator.getObcClass("entity.CraftLivingEntity"), MemberDescriptions.forMethod("getHandle"));
+			}
+			if (getBoundingBoxesMethod == null) {
+				getBoundingBoxesMethod = ness.getReflectHelper().getMethod(locator.getNmsClass("Entity"),
+						MemberDescriptions.forMethod("getBoundingBox"));
+			}
+			if (xMaxField == null) {
+				// Max fields are "d" "e" and "f"
+				// Min fields are "a" "b" and "c"
+				Class<?> boxClass = locator.getNmsClass("AxisAlignedBB");
+				xMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "d"));
+				yMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "e"));
+				zMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "f"));
+				xMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "a"));
+				yMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "b"));
+				zMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "c"));
+			}
+			Object entitynms = craftLivingEntityMethod.invoke(entity);
+			Object boundingBox = getBoundingBoxesMethod.invoke(entitynms);
+			xMin = xMinField.get(boundingBox);
+			yMin = yMinField.get(boundingBox);
+			zMin = zMinField.get(boundingBox);
+			xMax = xMaxField.get(boundingBox);
+			yMax = yMaxField.get(boundingBox);
+			zMax = zMaxField.get(boundingBox);
+			min = new Vector(xMin-0.2, yMin-0.2, zMin-0.2);
+			max = new Vector(xMax+0.2, yMax+0.2, zMax+0.2);
 		}
 		this.max = max;
 		this.min = min;
 	}
-	
+
 	private Vector getMinForPlayer(Player player) {
 		return player.getLocation().toVector().add(new Vector(-0.4, 0, -0.4));
 	}
@@ -47,8 +89,8 @@ public class AABB {
 	}
 
 	// Create an AABB based on a player's hitbox
-	public static AABB from(Player player) {
-		return new AABB(player);
+	public static AABB from(Entity player, NessAnticheat ness) {
+		return new AABB(player, ness);
 	}
 
 	public Vector getMin() {

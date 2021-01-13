@@ -51,7 +51,7 @@ public class ReachCheck extends ListeningCheck<EntityDamageByEntityEvent> {
 		Player player = (Player) e.getDamager();
 		Ray ray = Ray.from(player);
 
-		double dist = AABB.from((Player) e.getEntity()).collidesD(ray, 0, 10);
+		double dist = AABB.from((Player) e.getEntity(), this.ness()).collidesD(ray, 0, 10);
 		if (dist != -1) {
 			if (dist > 3.05) {
 				player().sendDevMessage("Reach Dist: " + (float) dist);
