@@ -60,6 +60,7 @@ public class Timer extends PacketCheck {
 			} else if ((speed > 0.2 && speed < 0.9) && negativeTimerEnabled) {
 				this.flagEvent(packet, "NegativeTimer " +  (float) speed);
 			}
+			nessPlayer.updateTimerTicks(speed);
 		}
 		this.lastDelay = current;
 	}

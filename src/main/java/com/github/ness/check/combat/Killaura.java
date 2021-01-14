@@ -80,9 +80,6 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		Entity entity = eventt.getEntity();
 		NessPlayer np = player();
 		// TODO Account for lag
-		// double range = Math.hypot(np.getMovementValues().getTo().getX() -
-		// entity.getLocation().getX(),
-		// np.getMovementValues().getTo().getZ() - entity.getLocation().getZ());
 		double maxReach = 3.1;
 		Ray ray = Ray.from(player);
 		AABB aabb = AABB.from(entity, this.ness());

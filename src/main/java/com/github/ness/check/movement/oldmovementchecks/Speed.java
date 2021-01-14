@@ -69,7 +69,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		}
 		if (player.isInsideVehicle() && player.getVehicle().getType().name().contains("BOAT"))
 			maxSpd = 2.787;
-		if (hozDist > maxSpd && !movementValues.getHelper().hasflybypass(nessPlayer)
+		if (hozDist > maxSpd && !movementValues.getHelper().hasflybypass(nessPlayer) && !player.getAllowFlight()
 				&& nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) >= 2000 && !nessPlayer.isTeleported()
 				&& !nessPlayer.isHasSetback()) {
 			if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000) {

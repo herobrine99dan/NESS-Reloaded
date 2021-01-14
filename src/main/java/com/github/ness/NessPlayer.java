@@ -74,6 +74,7 @@ public class NessPlayer implements AnticheatPlayer {
 	private final String userName;
 	private Location safeLocation; //Not ThreadSafe
 	private boolean cinematic;
+	private volatile float timerTicks;
 
 	public NessPlayer(Player player, boolean devMode, MaterialAccess access) {
 		uuid = player.getUniqueId();
@@ -378,6 +379,14 @@ public class NessPlayer implements AnticheatPlayer {
 
 	public void setCinematic(boolean cinematic) {
 		this.cinematic = cinematic;
+	}
+
+	public float getTimerTicks() {
+		return timerTicks;
+	}
+
+	public void updateTimerTicks(float timerTicks) {
+		this.timerTicks = timerTicks;
 	}
 
 }

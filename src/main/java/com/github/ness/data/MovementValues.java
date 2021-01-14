@@ -90,7 +90,8 @@ public class MovementValues {
 
 	private final boolean AroundWalls;
 	private final boolean AroundFire;
-
+	private final boolean AroundStainedGlass;
+	private final boolean AroundGlass;
 	private final boolean sprinting;
 	private final boolean blockUnderHead;
 	private final boolean AroundSeaBlocks;
@@ -119,12 +120,15 @@ public class MovementValues {
 			boolean chorus = false;
 			boolean gate = false;
 			boolean walls = false;
-			if(this.helper.isMathematicallyOnGround(to.getY()) && this.helper.isOnGroundUsingCollider(to.toBukkitLocation(), access)) {
+			if (this.helper.isMathematicallyOnGround(to.getY())
+					&& this.helper.isOnGroundUsingCollider(to.toBukkitLocation(), access)) {
 				nessPlayer.updateSafeLocation(to.toBukkitLocation());
 			}
 			boolean fence = false;
 			boolean onGroundCollider = false;
 			boolean sea = false;
+			boolean stainedGlass = false;
+			boolean glass = false;
 			boolean nonOccludingBlocks = false;
 			serverVelocity = new ImmutableVector(p.getVelocity().getX(), p.getVelocity().getY(),
 					p.getVelocity().getZ());
@@ -172,12 +176,17 @@ public class MovementValues {
 					chorus = true;
 				} else if (name.contains("SEA")) {
 					sea = true;
+				} else if (name.contains("STAINED")) {
+					stainedGlass = true;
+				} else if (name.contains("STAINED")) {
+					glass = true;
 				}
 				if (material.isSolid() && !material.isOccluding()) {
 					nonOccludingBlocks = true;
 				}
 			}
 			AroundSnow = snow;
+			AroundStainedGlass = stainedGlass;
 			blockUnderHead = helper.groundAround(to.toBukkitLocation().add(0, 2.5, 0));
 			AroundLadders = ladder;
 			AroundSlabs = slab;
@@ -200,6 +209,7 @@ public class MovementValues {
 			AroundFire = fire;
 			AroundSeaBlocks = sea;
 			AroundGate = gate;
+			AroundGlass = 
 			AroundWalls = walls;
 			onGroundCollider = this.isAroundCarpet() || this.isAroundSlabs() || this.isAroundStairs()
 					|| this.isAroundSnow() || this.isAroundFence() || this.isAroundGate() || this.isAroundWalls();
@@ -219,7 +229,9 @@ public class MovementValues {
 			AroundCarpet = false;
 			AroundLadders = false;
 			groundAround = false;
+			AroundStainedGlass = false;
 			AroundGate = false;
+			AroundGlass = false;
 			AroundWalls = false;
 			sprinting = false;
 			AroundNonOccludingBlocks = false;
@@ -419,5 +431,13 @@ public class MovementValues {
 
 	public boolean isAroundNonOccludingBlocks() {
 		return AroundNonOccludingBlocks;
+	}
+
+	public boolean isAroundStainedGlass() {
+		return AroundStainedGlass;
+	}
+
+	public boolean isAroundGlass() {
+		return AroundGlass;
 	}
 }
