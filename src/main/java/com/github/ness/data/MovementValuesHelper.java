@@ -143,17 +143,6 @@ public class MovementValuesHelper {
 	}
 
 	public static MovementValuesHelper makeHelper(MovementValues values) {
-		boolean vehicleNear = false;
-		boolean livingEntityNear = values.getPlayer().isCollidable();
-		final int range = 4;
-		for (Entity e : values.getPlayer().getNearbyEntities(range, range, range)) {
-			if (e instanceof Vehicle) {
-				vehicleNear = true;
-			}
-			if (e instanceof LivingEntity && !e.getUniqueId().equals(values.getPlayer().getUniqueId())) {
-				livingEntityNear = true;
-			}
-		}
 		return new MovementValuesHelper();
 	}
 
