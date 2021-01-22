@@ -76,8 +76,10 @@ public class CoreListener implements Listener {
 		MovementValues values = new MovementValues(nessPlayer, ImmutableLoc.of(destination, destinationWorld),
 				ImmutableLoc.of(source, sourceWorld), this.manager.ness().getMaterialAccess());
 		nessPlayer.updateMovementValue(values);
-		if(player.isGliding() && this.manager.getCheckManager().getNess().getMinecraftVersion() > 189) {
-			nessPlayer.setPlayerAction(PlayerAction.GLIDING);
+		if (this.manager.getCheckManager().getNess().getMinecraftVersion() > 189) {
+			if (player.isGliding()) {
+				nessPlayer.setPlayerAction(PlayerAction.GLIDING);
+			}
 		}
 	}
 

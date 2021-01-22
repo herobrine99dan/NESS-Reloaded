@@ -10,10 +10,10 @@ import com.github.ness.check.PacketCheckFactory;
 import com.github.ness.packets.Packet;
 import com.github.ness.packets.wrapper.PlayInFlying;
 
-public class CinematicProcessor extends PacketCheck {
+public class FrappayCinematicProcessor extends PacketCheck {
 	public static final CheckInfo checkInfo = CheckInfos.forPackets();
 
-	public CinematicProcessor(PacketCheckFactory<?> factory, NessPlayer nessPlayer) {
+	public FrappayCinematicProcessor(PacketCheckFactory<?> factory, NessPlayer nessPlayer) {
 		super(factory, nessPlayer);
 	}
 
@@ -47,7 +47,6 @@ public class CinematicProcessor extends PacketCheck {
 		return (long) (System.nanoTime() / 1e+6);
 	}
 
-	//TODO To fix, with large rotations on cinematic mode this have problems
 	private void process(Point2D.Float currentRotation) {
 		double deltaYaw = currentRotation.getX() - lastRotation.getX();
 		double deltaPitch = currentRotation.getY() - lastRotation.getY();

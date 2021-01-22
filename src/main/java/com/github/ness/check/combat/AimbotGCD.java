@@ -16,15 +16,13 @@ import com.github.ness.utility.MathUtils;
 public class AimbotGCD extends PacketCheck {
 
 	public static final CheckInfo checkInfo = CheckInfos.forPackets();
-	private List<Double> pitchDiff = new ArrayList<Double>();
-	private double lastGCD = 0;
-	private int lastSensitivity;
-	private double buffer;
 	private Point2D.Float lastRotation = new Point2D.Float(0, 0);
+	private double lastPitch;
+	private double lastYaw;
+	private double buffer;
 
 	public AimbotGCD(PacketCheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
-		this.pitchDiff = new ArrayList<Double>();
 	}
 
 	@Override
@@ -39,49 +37,26 @@ public class AimbotGCD extends PacketCheck {
 			lastRotation = rotation;
 		}
 	}
-	
+
 	private void process(Point2D.Float rotation) {
 		NessPlayer player = player();
+		double yawDelta = Math.abs(rotation.getX() - lastRotation.getX());
 		double pitchDelta = Math.abs(rotation.getY() - lastRotation.getY());
-		if (Math.abs(pitchDelta) >= 10 || Math.abs(pitchDelta) < 0.05 || pitchDelta == 0.0 || player.isTeleported()
-				|| player.isHasSetback() || Math.abs(rotation.getY()) == 90) {
+		if (Math.abs(pitchDelta) >= 10 || pitchDelta == 0.0 || player.isTeleported() || player.isHasSetback()
+				|| Math.abs(rotation.getY()) == 90 || player.isCinematic()) {
 			return;
 		}
-		if (player.isCinematic()) {
-			pitchDiff.clear();
-			buffer = 0;
-			return;
+		double gcdYaw = MathUtils.gcdRational(yawDelta, lastYaw);
+		double gcdPitch = MathUtils.gcdRational(pitchDelta, lastPitch);
+		//this.player().sendDevMessage("gcdYaw: " + (float) gcdYaw + " gcdPitch: " + (float) gcdPitch);
+		if (gcdYaw < 0.005 || gcdPitch < 0.005) {
+			if (++buffer > 30) {
+				this.flag();
+			}
+		} else if (buffer > 0) {
+			buffer--;
 		}
-		pitchDiff.add(pitchDelta);
-		if (pitchDiff.size() >= 13) {
-			final float gcd = (float) MathUtils.gcdRational(pitchDiff);
-			if (lastGCD == 0.0) {
-				lastGCD = gcd;
-			}
-			double result = Math.abs(gcd - lastGCD);
-			final int sensitivity = (int) Math.round(MathUtils.getSensitivity(gcd) * 200);
-			player.sendDevMessage("GCD: " + gcd + " Sensitivity: " + sensitivity);
-			if (player.isCinematic()) {
-				pitchDiff.clear();
-				buffer = 0;
-				return;
-			}
-			if (result > 0.001 || gcd < 0.00001) {
-				if (++buffer > 1) {
-					this.flag("sensitivity: " + sensitivity);
-				}
-			} else if (buffer > 0) {
-				buffer -= 0.5;
-			}
-			if (result < 0.01) {
-				if (Math.abs(sensitivity - lastSensitivity) == 0) {
-					player.setSensitivity(sensitivity);
-				}
-			}
-			lastSensitivity = sensitivity;
-			pitchDiff.clear();
-			lastGCD = gcd;
-		}
+		lastPitch = pitchDelta;
+		lastYaw = yawDelta;
 	}
-
 }

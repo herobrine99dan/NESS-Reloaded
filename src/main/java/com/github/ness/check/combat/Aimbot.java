@@ -8,6 +8,7 @@ import com.github.ness.check.PacketCheckFactory;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.Packet;
 import com.github.ness.packets.wrapper.PlayInFlying;
+import com.github.ness.utility.MathUtils;
 
 public class Aimbot extends PacketCheck {
 
@@ -35,8 +36,8 @@ public class Aimbot extends PacketCheck {
 		Check1(packet);
 		Check2(packet);
 		Check3(packet);
-		lastYaw = (float) player().getMovementValues().getYawDiff();
-		lastPitch = (float) player().getMovementValues().getPitchDiff();
+		lastYaw = this.player().getMovementValues().getYawDiff();
+		lastPitch = this.player().getMovementValues().getPitchDiff();
 	}
 
 	private void Check1(Packet e) {
@@ -44,27 +45,24 @@ public class Aimbot extends PacketCheck {
 		if (np.getSensitivity() == 0) {
 			return;
 		}
-		if (np.getMovementValues().getYawDiff() < 1) {
-			return;
-		}
 		double firstvar = (np.getSensitivity() / 200) * 0.6F + 0.2F;
-		float secondvar = (float) (Math.pow(firstvar, 3f));
-		double yawResult = np.getMovementValues().getYawDiff() - lastYaw;
-		double pitchResult = np.getMovementValues().getPitchDiff() - lastPitch;
-		float mouseDeltaX = (float) yawResult / (secondvar * 1.2f);
-		float mouseDeltaY = (float) pitchResult / (secondvar * 1.2f);
-		// float x = (float) (thirdvar - Math.floor(thirdvar));
-		// np.sendDevMessage("mouseDeltaX: " + mouseDeltaX + " mouseDeltaY: " +
-		// mouseDeltaY);
+		double secondvar = Math.pow(firstvar, 3f);
+		double yawResult = this.player().getMovementValues().getYawDiff() - lastYaw;
+		double pitchResult = this.player().getMovementValues().getPitchDiff() - lastPitch;
+		double mouseDeltaX = yawResult / (secondvar * 1.2f);
+		double mouseDeltaY = pitchResult / (secondvar * 1.2f);
+		double xError = Math.abs(mouseDeltaX - Math.floor(mouseDeltaX));
+		double yError = Math.abs(mouseDeltaY - Math.floor(mouseDeltaY));
+		double gcd = MathUtils.gcdRational(Math.abs(this.player().getMovementValues().getPitchDiff()), Math.abs(lastPitch));
+		//np.sendDevMessage("gcd: " + gcd);
 	}
 
 	/**
 	 * Check for some Aimbot Pattern
 	 */
 	private void Check2(Packet e) {
-		NessPlayer player = player();
-		float yawChange = (float) Math.abs(player.getMovementValues().getYawDiff());
-		float pitchChange = (float) Math.abs(player.getMovementValues().getPitchDiff());
+		float yawChange = (float) Math.abs(this.player().getMovementValues().getYawDiff());
+		float pitchChange = (float) Math.abs(this.player().getMovementValues().getPitchDiff());
 		if (yawChange >= 0.1 && yawChange % 0.1f == 0.0f) {
 			flag(" PerfectAura");
 		} else if (pitchChange >= 0.1 && pitchChange % 0.1f == 0.0f) {
@@ -78,10 +76,10 @@ public class Aimbot extends PacketCheck {
 	 */
 	private void Check3(Packet e) {
 		NessPlayer player = player();
-		if (player.milliSecondTimeDifference(PlayerAction.ATTACK) < 100) {
-			if (player.getMovementValues().getYawDiff() % .25 == 0.0 && player.getMovementValues().getYawDiff() > 0) {
+		if (player.milliSecondTimeDifference(PlayerAction.ATTACK) < 1000) {
+			if (this.player().getMovementValues().getYawDiff() % .25 == 0.0 && this.player().getMovementValues().getYawDiff() > 0) {
 				if (++buffer > 2) {
-					flag();
+					flag("PerfectAura3");
 				}
 			} else if (buffer > 0) {
 				buffer--;

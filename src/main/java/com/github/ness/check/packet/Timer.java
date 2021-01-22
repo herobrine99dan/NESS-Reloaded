@@ -19,6 +19,7 @@ public class Timer extends PacketCheck {
 
 	private long lastDelay = System.nanoTime();
 	private LongRingBuffer delay;
+	private double buffer;
 	private boolean negativeTimerEnabled = true;
 
 	public Timer(PacketCheckFactory<?> factory, NessPlayer player) {
@@ -45,20 +46,28 @@ public class Timer extends PacketCheck {
 	@Override
 	protected void checkPacket(Packet packet) {
 		NessPlayer nessPlayer = player();
-		if (!packet.getRawPacket().getClass().getSimpleName().toLowerCase().contains("position") || nessPlayer.isTeleported()
-				|| nessPlayer.isHasSetback()) {
+		if (!packet.getRawPacket().getClass().getSimpleName().toLowerCase().contains("position")
+				|| nessPlayer.isTeleported() || nessPlayer.isHasSetback()) {
 			return;
 		}
 		final long current = System.nanoTime();
 		long result = (long) ((current - lastDelay) / 1e+6);
-		delay.add(result);
+		if (result > 5) {
+			delay.add(result);
+		}
 		final long average = delay.average();
 		final float speed = 50.0f / (float) average;
 		if (delay.size() > (this.ness().getMainConfig().getCheckSection().timer().delaysSize() - 1)) {
 			if (speed > MAX_PACKETS_PER_TICK) {
-				this.flagEvent(packet, "BasicTimer " + (float) speed);
+				if (++buffer > 5) {
+					this.flagEvent(packet, "BasicTimer " + (float) speed);
+				}
 			} else if ((speed > 0.2 && speed < 0.9) && negativeTimerEnabled) {
-				this.flagEvent(packet, "NegativeTimer " +  (float) speed);
+				if (++buffer > 10) {
+					this.flagEvent(packet, "NegativeTimer " + (float) speed);
+				}
+			} else if (buffer > 0) {
+				buffer -= 0.5;
 			}
 			nessPlayer.updateTimerTicks(speed);
 		}

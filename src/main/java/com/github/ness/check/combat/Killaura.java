@@ -14,14 +14,13 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
-import com.github.ness.utility.MathUtils;
+import com.github.ness.check.PeriodicTaskInfo;
 import com.github.ness.utility.raytracer.rays.AABB;
 import com.github.ness.utility.raytracer.rays.Ray;
 
@@ -30,19 +29,22 @@ import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
 public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 
-	double maxYaw;
-	double minAngle;
-	double maxReach;
+	private final double maxYaw;
+	private final double maxReach;
+	private final double reachExpansion;
+	private final double lagAccount;
+	private double buffer;
 	List<Float> angleList;
 
 	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfos
-			.forEventWithAsyncPeriodic(EntityDamageByEntityEvent.class, Duration.ofMillis(70));
+			.forEventWithTask(EntityDamageByEntityEvent.class, PeriodicTaskInfo.syncTask(Duration.ofMillis(70)));
 
 	public Killaura(ListeningCheckFactory<?, EntityDamageByEntityEvent> factory, NessPlayer player) {
 		super(factory, player);
 		this.maxYaw = this.ness().getMainConfig().getCheckSection().killaura().maxYaw();
-		this.minAngle = this.ness().getMainConfig().getCheckSection().killaura().minAngle();
 		this.maxReach = this.ness().getMainConfig().getCheckSection().killaura().maxReach();
+		this.reachExpansion = this.ness().getMainConfig().getCheckSection().killaura().reachExpansion();
+		this.lagAccount = this.ness().getMainConfig().getCheckSection().killaura().lagAccount();
 		this.angleList = new ArrayList<Float>();
 	}
 
@@ -55,43 +57,54 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 
 		@DefaultDouble(4)
 		double maxReach();
+
+		@DefaultDouble(0.2)
+		double reachExpansion();
+
+		@DefaultDouble(4)
+		double lagAccount();
 	}
 
 	@Override
-	protected void checkAsyncPeriodic() {
+	protected void checkSyncPeriodic() {
 		this.player().getAttackedEntities().clear();
 	}
 
 	@Override
 	protected void checkEvent(final EntityDamageByEntityEvent e) {
-		if (player().isNot(e.getDamager())) return;
+		if (player().isNot(e.getDamager()))
+			return;
 		checkReach(e);
 		Check1(e);
 		Check2(e);
 		Check3(e);
 		Check4(e);
 		Check5(e);
-		Check6(e);
 	}
 
 	public void checkReach(final EntityDamageByEntityEvent event) {
 		final Player player = (Player) event.getDamager();
 		final Entity entity = event.getEntity();
-		final NessPlayer np = player();
+		final NessPlayer nessPlayer = player();
 		// TODO Account for lag
-		double maxReach = 3.1;
+		double maxReach = this.maxReach;
 		final Ray ray = Ray.from(player);
-		final AABB aabb = AABB.from(entity, this.ness());
+		final AABB aabb = AABB.from(entity, this.ness(), this.reachExpansion);
 		double range = aabb.collidesD(ray, 0, 10);
 		if (player.getGameMode().equals(GameMode.CREATIVE)) {
-			maxReach = 5.5D;
+			maxReach = (5.5 * this.maxReach) / 3;
 		}
-		np.sendDevMessage("Reach: " + range);
+		nessPlayer.sendDevMessage("Reach: " + range);
 		if (range > maxReach && range < 6.5D) {
-			punish(event, "Reach: " + range);
-		}
-		if (range > 5) {
-			punish(event, "SuperReach: " + range);
+			if (++buffer > 2) {
+				punish(event, "Reach: " + range);
+			}
+		} else if (range == -1) {
+			if(++buffer > 4) {
+				punish(event, "Hitbox");
+			}
+		} else if (buffer > 0) {
+			buffer -= 0.5;
 		}
 	}
 
@@ -151,38 +164,6 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		if (nessPlayer.getAttackedEntities().size() > 2) {
 			punish(eventt, "MultiAura Entities: " + nessPlayer.getAttackedEntities().size());
 		}
-	}
-
-	public void Check6(EntityDamageByEntityEvent event) {
-		if (!(event.getEntity() instanceof LivingEntity)) {
-			return;
-		}
-		NessPlayer nessPlayer = player();
-		Player player = (Player) event.getDamager();
-		float angle = (float) nessPlayer.getMovementValues().getHelper().getAngle(player,
-				event.getEntity().getLocation(), makeDirection(nessPlayer));
-		angleList.add(angle);
-		if (angleList.size() > 19) {
-			final double average = MathUtils.average(angleList);
-			if (average < 0.6) {
-				punish(event, "HitBox, Angle: " + average + ",Pitch: " + (float) player.getLocation().getPitch());
-			}
-			angleList.clear();
-		}
-
-	}
-
-	private Vector makeDirection(NessPlayer player) {
-		double rotX = player.getMovementValues().getTo().getYaw();
-		double rotY = player.getMovementValues().getTo().getPitch();
-		if (rotY < 0) {
-			rotY = 3;
-		}
-		double y = -MathUtils.sin(Math.toRadians(rotY));
-		double xz = MathUtils.cos(Math.toRadians(rotY));
-		double x = -xz * MathUtils.sin(Math.toRadians(rotX));
-		double z = xz * MathUtils.cos(Math.toRadians(rotX));
-		return new Vector(x, y, z);
 	}
 
 	private void punish(EntityDamageByEntityEvent event, String module) {

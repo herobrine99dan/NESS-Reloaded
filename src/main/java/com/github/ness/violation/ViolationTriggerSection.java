@@ -174,6 +174,9 @@ public interface ViolationTriggerSection {
 		@Override
 		@DefaultInteger(3)
 		int violations();
+		
+		@DefaultString("")
+		String dragDown();
 
 		@Override
 		default InfractionTrigger toTrigger(ViolationManager manager, NessAnticheat ness) {

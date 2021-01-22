@@ -18,7 +18,6 @@ public class SensitivityUpdater extends PacketCheck {
 	public static final CheckInfo checkInfo = CheckInfos.forPackets();
 	private List<Double> pitchDiff = new ArrayList<Double>();
 	private double lastGCD = 0;
-	private int lastSensitivity;
 	private Point2D.Float lastRotation = new Point2D.Float(0, 0);
 
 	public SensitivityUpdater(PacketCheckFactory<?> factory, NessPlayer player) {
@@ -47,7 +46,7 @@ public class SensitivityUpdater extends PacketCheck {
 			return;
 		}
 		pitchDiff.add(pitchDelta);
-		if (pitchDiff.size() >= 13) {
+		if (pitchDiff.size() >= 15) {
 			final float gcd = (float) MathUtils.gcdRational(pitchDiff);
 			if (lastGCD == 0.0) {
 				lastGCD = gcd;
@@ -58,10 +57,9 @@ public class SensitivityUpdater extends PacketCheck {
 				pitchDiff.clear();
 				return;
 			}
-			if (result < 0.01 && gcd > 0.001) {
+			if (result < 0.01 && gcd > 0.05) {
 				player.setSensitivity(sensitivity);
 			}
-			lastSensitivity = sensitivity;
 			pitchDiff.clear();
 			lastGCD = gcd;
 		}

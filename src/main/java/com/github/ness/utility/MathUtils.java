@@ -50,9 +50,9 @@ public class MathUtils {
 	 * @author Islandscout
 	 */
 	public static double gcdRational(double a, double b) {
-		if (Math.abs(a) < 0.001) {
+		if (a < 0.001) {
 			return b;
-		} else if (Math.abs(b) < 0.001) {
+		} else if (b < 0.001) {
 			return a;
 		}
 		int quotient = getIntQuotient(b, a);
@@ -60,6 +60,15 @@ public class MathUtils {
 		if (Math.abs(remainder) < Math.max(a, b) * 1E-3F)
 			remainder = 0;
 		return gcdRational(remainder, a);
+	}
+	
+	public static double euclideanGCD(double n1, double n2) {
+		if (n1 < 0.001) {
+			return n2;
+		} else if (n2 < 0.001) {
+			return n1;
+		}
+	    return euclideanGCD(n2, n1 % n2);
 	}
 
 	public static int getIntQuotient(double dividend, double divisor) {
