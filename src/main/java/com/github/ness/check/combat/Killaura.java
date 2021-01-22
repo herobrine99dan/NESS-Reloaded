@@ -63,10 +63,9 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	}
 
 	@Override
-	protected void checkEvent(EntityDamageByEntityEvent e) {
-		if (player().isNot(e.getDamager()))
-			return;
-		Check(e);
+	protected void checkEvent(final EntityDamageByEntityEvent e) {
+		if (player().isNot(e.getDamager())) return;
+		checkReach(e);
 		Check1(e);
 		Check2(e);
 		Check3(e);
@@ -75,24 +74,24 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		Check6(e);
 	}
 
-	public void Check(EntityDamageByEntityEvent eventt) {
-		Player player = (Player) eventt.getDamager();
-		Entity entity = eventt.getEntity();
-		NessPlayer np = player();
+	public void checkReach(final EntityDamageByEntityEvent event) {
+		final Player player = (Player) event.getDamager();
+		final Entity entity = event.getEntity();
+		final NessPlayer np = player();
 		// TODO Account for lag
 		double maxReach = 3.1;
-		Ray ray = Ray.from(player);
-		AABB aabb = AABB.from(entity, this.ness());
+		final Ray ray = Ray.from(player);
+		final AABB aabb = AABB.from(entity, this.ness());
 		double range = aabb.collidesD(ray, 0, 10);
 		if (player.getGameMode().equals(GameMode.CREATIVE)) {
 			maxReach = 5.5D;
 		}
 		np.sendDevMessage("Reach: " + range);
 		if (range > maxReach && range < 6.5D) {
-			punish(eventt, "Reach: " + range);
+			punish(event, "Reach: " + range);
 		}
 		if (range > 5) {
-			punish(eventt, "SuperReach: " + range);
+			punish(event, "SuperReach: " + range);
 		}
 	}
 
@@ -189,5 +188,4 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	private void punish(EntityDamageByEntityEvent event, String module) {
 		flagEvent(event, module);
 	}
-
 }
