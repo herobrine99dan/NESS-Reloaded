@@ -45,7 +45,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
 		if (movementValues.getHelper().hasflybypass(nessPlayer) || Utility.hasVehicleNear(p)
-				|| p.getAllowFlight() || nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) < 2000) {
+				|| p.getAllowFlight() || nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
 			return;
 		}
 		if (p.getLocation().getBlock().isLiquid()) {
