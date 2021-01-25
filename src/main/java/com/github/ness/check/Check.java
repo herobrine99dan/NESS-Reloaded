@@ -2,13 +2,14 @@ package com.github.ness.check;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.github.ness.NessPlayer;
-import com.github.ness.api.Infraction;
-import com.github.ness.api.PlayerFlagEvent;
-
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.ness.NessPlayer;
+import com.github.ness.api.Infraction;
+import com.github.ness.api.PlayerFlagEvent;
+import com.github.ness.violation.ViolationHandling;
 
 /**
  * A check, associated with a player. Includes an optional async task.
@@ -30,6 +31,10 @@ public class Check extends BaseCheck {
 	@Override
 	public CheckFactory<?> getFactory() {
 		return (CheckFactory<?>) super.getFactory();
+	}
+	
+	public interface CheckConfig extends ViolationHandling {
+		
 	}
 	
 	/**
