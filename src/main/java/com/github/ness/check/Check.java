@@ -9,7 +9,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Infraction;
 import com.github.ness.api.PlayerFlagEvent;
+import com.github.ness.check.dragdown.DragDownEnum;
 import com.github.ness.violation.ViolationHandling;
+
+import space.arim.dazzleconf.annote.ConfKey;
+import space.arim.dazzleconf.annote.SubSection;
 
 /**
  * A check, associated with a player. Includes an optional async task.
@@ -18,25 +22,29 @@ import com.github.ness.violation.ViolationHandling;
  *
  */
 public class Check extends BaseCheck {
-	
+
 	private final NessPlayer nessPlayer;
-	
+
 	private final AtomicInteger violations = new AtomicInteger();
-	
+
 	protected Check(CheckFactory<?> factory, NessPlayer nessPlayer) {
 		super(factory);
 		this.nessPlayer = nessPlayer;
 	}
-	
+
+	public interface CheckConfig {
+		@ConfKey("dragdown-type")
+		DragDownEnum dragDownType();
+		@ConfKey("violation-handling")
+		@SubSection
+		ViolationHandling violationHandling();
+	}
+
 	@Override
 	public CheckFactory<?> getFactory() {
 		return (CheckFactory<?>) super.getFactory();
 	}
-	
-	public interface CheckConfig extends ViolationHandling {
-		
-	}
-	
+
 	/**
 	 * Gets the player this check is for
 	 * 
@@ -45,7 +53,7 @@ public class Check extends BaseCheck {
 	protected NessPlayer player() {
 		return nessPlayer;
 	}
-	
+
 	/**
 	 * Called async and periodically, if defined by {@link CheckInfo}
 	 *
@@ -83,7 +91,7 @@ public class Check extends BaseCheck {
 	protected final void flag() {
 		flag("");
 	}
-	
+
 	/**
 	 * Flags the player for cheating
 	 * 
@@ -94,7 +102,7 @@ public class Check extends BaseCheck {
 			flag0(details);
 		}
 	}
-	
+
 	/**
 	 * Flags and gets the infraction
 	 * 
@@ -107,18 +115,18 @@ public class Check extends BaseCheck {
 		nessPlayer.addInfraction(infraction);
 		return infraction;
 	}
-	
+
 	boolean callFlagEvent() {
 		JavaPlugin plugin = getFactory().getCheckManager().getNess().getPlugin();
 
 		return callEvent(plugin, new PlayerFlagEvent(nessPlayer, getFactory()));
 	}
-	
+
 	private boolean callEvent(JavaPlugin plugin, Cancellable event) {
 		plugin.getServer().getPluginManager().callEvent((Event) event);
 		return !event.isCancelled();
 	}
-	
+
 	public int currentViolationCount() {
 		return violations.get();
 	}

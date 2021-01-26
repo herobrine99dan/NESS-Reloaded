@@ -59,11 +59,11 @@ public class Timer extends PacketCheck {
 		final float speed = 50.0f / (float) average;
 		if (delay.size() > (this.ness().getMainConfig().getCheckSection().timer().delaysSize() - 1)) {
 			if (speed > MAX_PACKETS_PER_TICK) {
-				if (++buffer > 5) {
+				if (++buffer > 7) {
 					this.flagEvent(packet, "BasicTimer " + (float) speed);
 				}
 			} else if ((speed > 0.2 && speed < 0.9) && negativeTimerEnabled) {
-				if (++buffer > 10) {
+				if (++buffer > 6) {
 					this.flagEvent(packet, "NegativeTimer " + (float) speed);
 				}
 			} else if (buffer > 0) {

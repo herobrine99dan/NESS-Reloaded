@@ -51,8 +51,10 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		} else {
 			airTicks++;
 		}
+		// TODO replace isAroundLadders with better utility method
 		if (values.getHelper().hasflybypass(nessPlayer) || p.getAllowFlight() || values.isAroundLiquids()
-				|| Utility.hasVehicleNear(p) || values.isAroundWeb() || values.isAroundLadders() || values.isAroundSlime()) {
+				|| Utility.hasVehicleNear(p) || values.isAroundWeb() || values.isAroundLadders()
+				|| values.isAroundSlime()) {
 			return;
 		}
 		double yPredicted = (lastDeltaY - 0.08D) * 0.9800000190734863D;
@@ -61,7 +63,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 				&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000) {
 			nessPlayer.sendDevMessage(
 					"NotCheats: " + (float) yResult + " Y: " + (float) deltaY + " PredictedY: " + (float) yPredicted);
-			if (++buffer > 2) {
+			if (++buffer > 0) {
 				this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
 			}
 		} else if (buffer > 0) {
