@@ -1,6 +1,8 @@
 package com.github.ness.config;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.github.ness.antibot.AntiBotConfig;
 import com.github.ness.violation.ViolationHandling;
@@ -90,12 +92,30 @@ public interface NessConfig {
 	AntiBotConfig getAntiBot();
 
 	@ConfKey("violation-handling")
-	@ConfComments({ "", "Violation handling", "", "What to do when a player is detected for cheats", "" })
+	@ConfComments({ "",
+			"Violation handling (Global)",
+			"",
+			"What to do when a player is detected for cheats",
+			"",
+			"The triggers enabled below will run for ALL checks.",
+			"If you want to use violation handling per check, you should disable",
+			"the triggers in this section, and configurate triggers per check instead."})
 	@SubSection
 	ViolationHandling getViolationHandling();
 
+	@ConfKey("violation-handling-per-check")
+	@ConfComments({
+			"Additional per-check violation handling.",
+			"",
+			"Each section is named after the check name.",
+			"The AutoClicker check is given as an example"})
+	//@DefaultObject("com.github.ness.config.NessConfigDefaults.violationHandlingPerCheck")
+	default Map<String, /*@SubSection*/ CheckConfig> violationHandlingPerCheck() {
+		return Collections.emptyMap();
+	}
+
 	@ConfKey("checks")
 	@SubSection
-	ChecksConfig getCheckSection();
+	AllChecksConfig getCheckSection();
 
 }

@@ -16,6 +16,7 @@ import com.github.ness.api.InfractionTrigger.SynchronisationContext;
 import com.github.ness.check.CheckManager;
 import com.github.ness.check.InfractionImpl;
 
+import com.github.ness.config.CheckConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -47,16 +48,31 @@ public class ViolationManager implements InfractionManager {
 
 	public synchronized void initiate() {
 		addDefaultTriggers();
+		addCheckSpecificTriggers();
 		periodicTask = initiatePeriodicTask();
 	}
 
 	private void addDefaultTriggers() {
-		for (ViolationTriggerSection triggerSection : ness.getMainConfig().getViolationHandling()
-				.getTriggerSections()) {
+		ViolationHandling violationHandling = ness.getMainConfig().getViolationHandling();
+		for (ViolationTriggerSection triggerSection : violationHandling.getTriggerSections()) {
 			if (!triggerSection.enable()) {
 				continue;
 			}
 			addTrigger(triggerSection.toTrigger(this, ness));
+		}
+	}
+
+	private void addCheckSpecificTriggers() {
+		Map<String, CheckConfig> violationHandlingPerCheck = ness.getMainConfig().violationHandlingPerCheck();
+		for (Map.Entry<String, CheckConfig> checkConfigEntry : violationHandlingPerCheck.entrySet()) {
+			String checkName = checkConfigEntry.getKey();
+			CheckConfig checkConfig = checkConfigEntry.getValue();
+
+			for (ViolationTriggerSection triggerSection : checkConfig.violationHandling().getTriggerSections()) {
+				InfractionTrigger delegate = triggerSection.toTrigger(this, ness);
+				InfractionTrigger trigger = new CheckSpecificInfractionTrigger(delegate, checkName);
+				addTrigger(trigger);
+			}
 		}
 	}
 

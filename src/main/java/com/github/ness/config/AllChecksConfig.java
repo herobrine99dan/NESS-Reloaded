@@ -12,14 +12,13 @@ import com.github.ness.check.packet.Freecam;
 import com.github.ness.check.packet.MorePackets;
 import com.github.ness.check.packet.Timer;
 import com.github.ness.check.world.FastPlace;
-
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.annote.SubSection;
 
 @ConfHeader("All configuration relating to specific checks")
-public interface ChecksConfig {
+public interface AllChecksConfig {
 
 	@ConfKey("autoclick")
 	@SubSection
