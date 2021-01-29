@@ -153,12 +153,11 @@ public interface ViolationTriggerSection {
 
 				@Override
 				public void trigger(Infraction infraction) {
-					if (infraction.getCount() < violations()) {
+					if (infraction.getCount() < violations() || !infraction.getPlayer().getBukkitPlayer().isOnline()) {
 						return;
 					}
 					// Only we can assume implementation details
 					InfractionImpl infractionImpl = (InfractionImpl) infraction;
-
 					String command = manager.addViolationVariables(command(), infractionImpl);
 
 					JavaPlugin plugin = ness.getPlugin();

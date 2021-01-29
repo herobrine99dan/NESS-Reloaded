@@ -100,7 +100,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 				punish(event, "Reach: " + range);
 			}
 		} else if (range == -1) {
-			if(++buffer > 4) {
+			if(++buffer > 3) {
 				punish(event, "Hitbox");
 			}
 		} else if (buffer > 0) {

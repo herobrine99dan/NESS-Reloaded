@@ -79,6 +79,11 @@ public class AABB {
 		this.max = max;
 		this.min = min;
 	}
+	
+	public AABB(Player player) {
+		min = getMinForPlayer(player);
+		max = getMaxForPlayer(player);
+	}
 
 	private Vector getMinForPlayer(Player player) {
 		return player.getLocation().toVector().add(new Vector(-0.4, 0, -0.4));
@@ -88,7 +93,6 @@ public class AABB {
 		return player.getLocation().toVector().add(new Vector(0.4, 1.99, 0.4));
 	}
 
-	// Create an AABB based on a player's hitbox
 	public static AABB from(Entity player, NessAnticheat ness, double expansion) {
 		return new AABB(player, ness,expansion);
 	}

@@ -1,5 +1,6 @@
 package com.github.ness.check.movement.fly;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -11,8 +12,6 @@ import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
-
-import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 
 public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 
@@ -46,19 +45,19 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		MovementValues values = nessPlayer.getMovementValues();
 		double deltaY = values.getyDiff();
-		if (values.getHelper().isMathematicallyOnGround(values.getTo().getY())) {
+		if (e.getPlayer().isOnGround()) {
 			airTicks = 0;
 		} else {
 			airTicks++;
 		}
-		// TODO replace isAroundLadders with better utility method
 		if (values.getHelper().hasflybypass(nessPlayer) || p.getAllowFlight() || values.isAroundLiquids()
-				|| Utility.hasVehicleNear(p) || values.isAroundWeb() || values.isAroundLadders()
-				|| values.isAroundSlime()) {
+				|| Utility.hasVehicleNear(p) || values.isAroundWeb() || values.isAroundSlime()
+				|| values.getHelper().collideLadders(e.getTo())) {
 			return;
 		}
 		double yPredicted = (lastDeltaY - 0.08D) * 0.9800000190734863D;
 		double yResult = Math.abs(deltaY - yPredicted);
+		nessPlayer.sendDevMessage("airTicks: " + airTicks);
 		if (Math.abs(yResult) > 0.001 && Math.abs(yPredicted) > 0.05 && airTicks > 3
 				&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000) {
 			nessPlayer.sendDevMessage(

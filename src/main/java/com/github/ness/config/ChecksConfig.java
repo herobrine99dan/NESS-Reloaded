@@ -1,5 +1,11 @@
 package com.github.ness.config;
 
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.github.ness.check.Check.CheckConfig;
 import com.github.ness.check.combat.AutoClicker;
 import com.github.ness.check.combat.Killaura;
 import com.github.ness.check.combat.PlayerESP;
@@ -20,6 +26,24 @@ import space.arim.dazzleconf.annote.SubSection;
 
 @ConfHeader("All configuration relating to specific checks")
 public interface ChecksConfig {
+	
+    /**
+     * Gets a map of check configurations to corresponding check names. <br>
+     * This is used to help implement per check violation handling.
+     *
+     * @return a map of check configurations to check names
+     */
+    default Map<CheckConfig, String> allCheckNames() {
+        @SuppressWarnings("unchecked")
+        Map.Entry<CheckConfig, String>[] entries = (Map.Entry<CheckConfig, String>[]) new Map.Entry[] {
+                new AbstractMap.SimpleImmutableEntry<>(autoClick(), "AutoClick")
+        };
+        Map<CheckConfig, String> checkNames = new HashMap<>();
+        for (Map.Entry<CheckConfig, String> entry : entries) {
+            checkNames.put(entry.getKey(), entry.getValue());
+        }
+        return Collections.unmodifiableMap(checkNames);
+    }
 
 	@ConfKey("autoclick")
 	@SubSection
@@ -84,7 +108,7 @@ public interface ChecksConfig {
 		"Check if a player fly too quickly with elytra", 
 		"",
 		"Performance impact: low", 
-		"Effectiveness: High",
+		"Effectiveness: Medium",
 		""})
 	@SubSection
 	ElytraCheats.Config elytraCheats();
@@ -115,7 +139,6 @@ public interface ChecksConfig {
 	@ConfComments({
 		"",
 		"Check the speed of a player in Water.",
-		"Use 1 to have GeyserMC Compatibility, if you have only Java Edition players use 0.75",
 		"",
 		"Performance impact: low", 
 		"Effectiveness: Medium",

@@ -1,5 +1,6 @@
 package com.github.ness.check.movement.fly;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -39,10 +40,8 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 				&& nessPlayer.getLastVelocity().getY() > 0.35) {
 			return;
 		}
-		if (nessPlayer.isTeleported() || Utility.hasLivingEntityNear(player)) {
-			return;
-		}
-		if (movementValues.getHelper().hasflybypass(nessPlayer) || movementValues.isAroundSlime()) {
+		if (movementValues.getHelper().hasflybypass(nessPlayer) || movementValues.isAroundSlime()
+				|| Utility.hasLivingEntityNear(player)) {
 			return;
 		}
 		if (Utility.hasVehicleNear(player) || nessPlayer.getMovementValues().isAroundWeb()) {
@@ -53,7 +52,7 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 			// if(player().setViolation(new Violation("Fly", "FalseGround")))
 			// e.setCancelled(true);
 		} else if (player.isOnGround() && !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY())
-				&& this.ness().getMinecraftVersion() > 189) {
+				&& !Bukkit.getVersion().contains("1.8")) {
 			flagEvent(e, " FalseGround1");
 			// if(player().setViolation(new Violation("Fly", "FalseGround1")))
 			// e.setCancelled(true);

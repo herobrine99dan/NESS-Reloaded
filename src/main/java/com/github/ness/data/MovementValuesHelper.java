@@ -7,10 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Vehicle;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -54,24 +51,57 @@ public class MovementValuesHelper {
 		return false;
 	}
 
-	public List<Block> getCollidingBlocks(Location loc, Double distance, Double subtraction) {
-		if (subtraction == null) {
-			subtraction = 0.1;
-		}
+	public List<Block> getCollidingBlocks(Location loc) {
 		List<Block> blocks = new ArrayList<Block>();
-		final Location cloned = loc.clone().subtract(0, subtraction, 0);
-		double limit;
-		if (distance == null) {
-			limit = 0.3;
-		} else {
-			limit = distance;
-		}
+		final Location cloned = loc.clone();
+		double limit = 0.42;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
-				blocks.add(cloned.clone().add(x, 0, z).getBlock());
+				for(double y = -0.1; y < 1.99; y += 0.1) {
+					blocks.add(cloned.clone().add(x, y, z).getBlock());
+				}
 			}
 		}
 		return blocks;
+	}
+	
+	public boolean isNearWater(Location loc, MaterialAccess access) {
+		int water = 0;
+		double limit = 0.3;
+		for (double x = -limit; x < limit + 0.1; x += limit) {
+			for (double z = -limit; z < limit + 0.1; z += limit) {
+				for(double y = -0.1; y < 0.2; y += 0.1) {
+					if(access.getMaterial(loc.clone().add(x, y, z)).name().contains("WATER")) {
+						water++;
+					}
+				}
+			}
+		}
+		return water > 4;
+	}
+
+	public boolean isNearLava(Location loc, MaterialAccess access) {
+		int water = 0;
+		double limit = 0.3;
+		for (double x = -limit; x < limit + 0.1; x += limit) {
+			for (double z = -limit; z < limit + 0.1; z += limit) {
+				for(double y = -0.1; y < 0.1; y += 0.1) {
+					if(access.getMaterial(loc.clone().add(x, y, z)).name().contains("LAVA")) {
+						water++;
+					}
+				}
+			}
+		}
+		return water > 4;
+	}
+	
+	public boolean collideLadders(Location loc) {
+		for(Block block : getCollidingBlocks(loc)) {
+			if(block.getType().name().contains("LADDER") || block.getType().name().contains("VINE")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public boolean isMathematicallyOnGround(double y) {
@@ -108,10 +138,10 @@ public class MovementValuesHelper {
 	}
 
 	public boolean isOnGroundUsingCollider(Location loc, MaterialAccess access) {
-		final double limit = 0.5;
+		final double limit = 0.42;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
-				Block block = loc.clone().add(x, 0, z).getBlock();
+				Block block = loc.clone().add(x, -0.3, z).getBlock();
 				Material material = access.getMaterial(block);
 				if (material.isSolid()) {
 					return true;

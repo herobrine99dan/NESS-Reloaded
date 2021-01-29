@@ -42,15 +42,19 @@ public class AimbotGCD extends PacketCheck {
 		NessPlayer player = player();
 		double yawDelta = Math.abs(rotation.getX() - lastRotation.getX());
 		double pitchDelta = Math.abs(rotation.getY() - lastRotation.getY());
-		if (Math.abs(pitchDelta) >= 10 || pitchDelta == 0.0 || player.isTeleported() || player.isHasSetback()
-				|| Math.abs(rotation.getY()) == 90 || player.isCinematic()) {
+		if (player.isTeleported() || player.isHasSetback() || Math.abs(rotation.getY()) == 90
+				|| player.isCinematic()) {
+			if (buffer > 0) {
+				buffer--;
+			}
 			return;
 		}
-		double gcdYaw = MathUtils.gcdRational(yawDelta, lastYaw);
-		double gcdPitch = MathUtils.gcdRational(pitchDelta, lastPitch);
-		//this.player().sendDevMessage("gcdYaw: " + (float) gcdYaw + " gcdPitch: " + (float) gcdPitch);
+		double gcdYaw = MathUtils.euclideanGCD(yawDelta, lastYaw);
+		double gcdPitch = MathUtils.euclideanGCD(pitchDelta, lastPitch);
+		//this.player()
+		//		.sendDevMessage("buffer: " + buffer + " gcdYaw: " + (float) gcdYaw + " gcdPitch: " + (float) gcdPitch);
 		if (gcdYaw < 0.005 || gcdPitch < 0.005) {
-			if (++buffer > 30) {
+			if (++buffer > 25) {
 				this.flag();
 			}
 		} else if (buffer > 0) {
