@@ -67,7 +67,7 @@ public class Timer extends PacketCheck {
 					this.flagEvent(packet, "NegativeTimer " + (float) speed);
 				}
 			} else if (buffer > 0) {
-				buffer -= 0.5;
+				buffer -= 0.25;
 			}
 			nessPlayer.updateTimerTicks(speed);
 		}

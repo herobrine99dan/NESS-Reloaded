@@ -57,7 +57,6 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		}
 		double yPredicted = (lastDeltaY - 0.08D) * 0.9800000190734863D;
 		double yResult = Math.abs(deltaY - yPredicted);
-		nessPlayer.sendDevMessage("airTicks: " + airTicks);
 		if (Math.abs(yResult) > 0.001 && Math.abs(yPredicted) > 0.05 && airTicks > 3
 				&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000) {
 			nessPlayer.sendDevMessage(

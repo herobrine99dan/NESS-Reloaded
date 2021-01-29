@@ -67,6 +67,8 @@ public interface NessConfig {
 		"NoSlowBow",
 		"NoSlowFood",
 		"IrregularMovement",
+		"InvalidDirection",
+		"Regen",
 		"NoWeb",
 		"NoGround",
 		"NoFall",
