@@ -128,7 +128,6 @@ public class MovementValues {
 			boolean onGroundCollider = false;
 			boolean sea = false;
 			boolean stainedGlass = false;
-			boolean glass = false;
 			boolean nonOccludingBlocks = false;
 			serverVelocity = new ImmutableVector(p.getVelocity().getX(), p.getVelocity().getY(),
 					p.getVelocity().getZ());
@@ -178,8 +177,6 @@ public class MovementValues {
 					sea = true;
 				} else if (name.contains("STAINED")) {
 					stainedGlass = true;
-				} else if (name.contains("STAINED")) {
-					glass = true;
 				}
 				if (material.isSolid() && !material.isOccluding()) {
 					nonOccludingBlocks = true;

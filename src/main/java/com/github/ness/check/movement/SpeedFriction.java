@@ -50,11 +50,11 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			final double prediction = (lastDeltaXZ * 0.91f) + 0.026;
 			final double difference = xzDiff - prediction;
 			if (difference > 1E-5 && prediction > 0.075) {
-				if (++buffer > 3) {
+				if (++buffer > 2) {
 					this.flagEvent(event);
 				}
 			} else if (buffer > 0) {
-				buffer--;
+				buffer -= 0.5;
 			}
 		}
 		this.lastDeltaXZ = xzDiff;

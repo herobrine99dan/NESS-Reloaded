@@ -1,6 +1,5 @@
 package com.github.ness.check.movement.fly;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -57,7 +56,11 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		}
 		double yPredicted = (lastDeltaY - 0.08D) * 0.9800000190734863D;
 		double yResult = Math.abs(deltaY - yPredicted);
-		if (Math.abs(yResult) > 0.001 && Math.abs(yPredicted) > 0.05 && airTicks > 3
+		if (Math.abs(yPredicted) < 0.08) {
+			lastDeltaY = deltaY;
+			return;
+		}
+		if (Math.abs(yResult) > 0.001 && airTicks > 5
 				&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000) {
 			nessPlayer.sendDevMessage(
 					"NotCheats: " + (float) yResult + " Y: " + (float) deltaY + " PredictedY: " + (float) yPredicted);
@@ -68,5 +71,14 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 			buffer -= 0.5;
 		}
 		lastDeltaY = deltaY;
+	}
+
+	public boolean isAtLeastFollowingGravity(double yDelta, double yPredicted) {
+		double nextYDelta = (yPredicted - 0.08) * 0.98f;
+		double backYDelta = (yPredicted / 0.98f) + 0.08;
+		double nextYResult = Math.abs(yDelta - nextYDelta);
+		double backYResult = Math.abs(yDelta - backYDelta);
+		
+		return false;
 	}
 }

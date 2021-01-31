@@ -88,7 +88,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		final NessPlayer nessPlayer = player();
 		// TODO Account for lag
 		double maxReach = this.maxReach;
-		final Ray ray = Ray.from(player);
+		final Ray ray = Ray.from(nessPlayer);
 		final AABB aabb = AABB.from(entity, this.ness(), this.reachExpansion);
 		double range = aabb.collidesD(ray, 0, 10);
 		if (player.getGameMode().equals(GameMode.CREATIVE)) {
@@ -100,7 +100,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 				punish(event, "Reach: " + range);
 			}
 		} else if (range == -1) {
-			if(++buffer > 3) {
+			if(++buffer > 7) {
 				punish(event, "Hitbox");
 			}
 		} else if (buffer > 0) {
