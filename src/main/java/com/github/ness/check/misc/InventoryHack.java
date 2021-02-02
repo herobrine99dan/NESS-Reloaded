@@ -65,13 +65,13 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 
 		runTaskLater(() -> {
 			Location to = player.getLocation();
-			double distance = (Math.abs(to.getX() - from.getX())) + (Math.abs(to.getZ() - from.getZ()));
-			if (distance > 0.15) {
-				if (++buffer > 2) {
+			double distance = Math.hypot(from.getX() - to.getX(), from.getZ() - to.getZ());
+			if (distance > 0.2) {
+				if (++buffer > 4) {
 					flagEvent(e);
 				}
 			} else if (buffer > 0) {
-				buffer -= 0.25;
+				buffer -= 0.5;
 			}
 		}, durationOfTicks(2));
 	}
