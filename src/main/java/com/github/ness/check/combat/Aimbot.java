@@ -36,6 +36,7 @@ public class Aimbot extends PacketCheck {
 		Check1(packet);
 		Check2(packet);
 		Check3(packet);
+		Check4(packet);
 		lastYaw = this.player().getMovementValues().getYawDiff();
 		lastPitch = this.player().getMovementValues().getPitchDiff();
 	}
@@ -53,8 +54,9 @@ public class Aimbot extends PacketCheck {
 		double mouseDeltaY = pitchResult / (secondvar * 1.2f);
 		double xError = Math.abs(mouseDeltaX - Math.floor(mouseDeltaX));
 		double yError = Math.abs(mouseDeltaY - Math.floor(mouseDeltaY));
-		double gcd = MathUtils.gcdRational(Math.abs(this.player().getMovementValues().getPitchDiff()), Math.abs(lastPitch));
-		//np.sendDevMessage("gcd: " + gcd);
+		double gcd = MathUtils.gcdRational(Math.abs(this.player().getMovementValues().getPitchDiff()),
+				Math.abs(lastPitch));
+		// np.sendDevMessage("gcd: " + gcd);
 	}
 
 	/**
@@ -77,7 +79,8 @@ public class Aimbot extends PacketCheck {
 	private void Check3(Packet e) {
 		NessPlayer player = player();
 		if (player.milliSecondTimeDifference(PlayerAction.ATTACK) < 1000) {
-			if (this.player().getMovementValues().getYawDiff() % .25 == 0.0 && this.player().getMovementValues().getYawDiff() > 0) {
+			if (this.player().getMovementValues().getYawDiff() % .25 == 0.0
+					&& this.player().getMovementValues().getYawDiff() > 0) {
 				if (++buffer > 2) {
 					flag("PerfectAura3");
 				}
@@ -85,5 +88,25 @@ public class Aimbot extends PacketCheck {
 				buffer--;
 			}
 		}
+	}
+
+	private void Check4(Packet e) {
+		double yawDelta = this.player().getMovementValues().getYawDiff();
+		double pitchDelta = this.player().getMovementValues().getPitchDiff();
+		if (yawDelta > 7 && isReallySmall(pitchDelta)) {
+			if (++buffer > 3) {
+				this.flag();
+			}
+		} else if (pitchDelta > 7 && isReallySmall(yawDelta)) {
+			if (++buffer > 3) {
+				this.flag();
+			}
+		} else if (buffer > 0) {
+			buffer -= 0.5;
+		}
+	}
+
+	private boolean isReallySmall(double d) {
+		return Math.abs(d) < 0.001;
 	}
 }
