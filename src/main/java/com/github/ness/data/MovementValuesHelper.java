@@ -26,14 +26,32 @@ public class MovementValuesHelper {
 	 * @param direction (if it is null, will be replaced with player direction)
 	 * @return the angle in radians
 	 */
-	public double getAngle(Player player, Location target, Vector direction) {
-		Location eye = player.getEyeLocation();
-		if (direction == null) {
-			direction = player.getLocation().getDirection();
-		}
+	public double getAngle(NessPlayer player, Location target) {
+		Location eye = getEyeLocation(player.getMovementValues().getTo().toBukkitLocation(), player.getBukkitPlayer());
+		Vector direction = player.getMovementValues().getDirection().toBukkitVector();
 		Vector toEntity = target.toVector().subtract(eye.toVector());
 		double dot = toEntity.normalize().dot(direction);
 		return dot;
+	}
+	
+	/**
+	 * Get Angle (in Radians) beetween a player and the target
+	 * 
+	 * @param player
+	 * @param target
+	 * @param direction (if it is null, will be replaced with player direction)
+	 * @return the angle in radians
+	 */
+	public double getAngle(Player player, Location target) {
+		Location eye = player.getEyeLocation();
+		Vector direction = player.getLocation().getDirection();
+		Vector toEntity = target.toVector().subtract(eye.toVector());
+		double dot = toEntity.normalize().dot(direction);
+		return dot;
+	}
+
+	public Location getEyeLocation(Location location, Player player) {
+		return location.add(0, player.getEyeHeight(), 0);
 	}
 
 	public boolean groundAround(Location loc) {
@@ -57,21 +75,21 @@ public class MovementValuesHelper {
 		double limit = 0.42;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
-				for(double y = -0.1; y < 1.99; y += 0.1) {
+				for (double y = -0.1; y < 1.99; y += 0.1) {
 					blocks.add(cloned.clone().add(x, y, z).getBlock());
 				}
 			}
 		}
 		return blocks;
 	}
-	
+
 	public boolean isNearWater(Location loc, MaterialAccess access) {
 		int water = 0;
 		double limit = 0.3;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
-				for(double y = -0.1; y < 0.2; y += 0.1) {
-					if(access.getMaterial(loc.clone().add(x, y, z)).name().contains("WATER")) {
+				for (double y = -0.1; y < 0.2; y += 0.1) {
+					if (access.getMaterial(loc.clone().add(x, y, z)).name().contains("WATER")) {
 						water++;
 					}
 				}
@@ -85,8 +103,8 @@ public class MovementValuesHelper {
 		double limit = 0.3;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
-				for(double y = -0.1; y < 0.1; y += 0.1) {
-					if(access.getMaterial(loc.clone().add(x, y, z)).name().contains("LAVA")) {
+				for (double y = -0.1; y < 0.1; y += 0.1) {
+					if (access.getMaterial(loc.clone().add(x, y, z)).name().contains("LAVA")) {
 						water++;
 					}
 				}
@@ -94,10 +112,10 @@ public class MovementValuesHelper {
 		}
 		return water > 4;
 	}
-	
+
 	public boolean collideLadders(Location loc) {
-		for(Block block : getCollidingBlocks(loc)) {
-			if(block.getType().name().contains("LADDER") || block.getType().name().contains("VINE")) {
+		for (Block block : getCollidingBlocks(loc)) {
+			if (block.getType().name().contains("LADDER") || block.getType().name().contains("VINE")) {
 				return true;
 			}
 		}

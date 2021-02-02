@@ -21,6 +21,7 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.check.PeriodicTaskInfo;
+import com.github.ness.utility.MathUtils;
 import com.github.ness.utility.raytracer.rays.AABB;
 import com.github.ness.utility.raytracer.rays.Ray;
 
@@ -33,6 +34,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	private final double maxReach;
 	private final double reachExpansion;
 	private final double lagAccount;
+	private final double maxAngle;
 	private double buffer;
 	List<Float> angleList;
 
@@ -45,12 +47,16 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		this.maxReach = this.ness().getMainConfig().getCheckSection().killaura().maxReach();
 		this.reachExpansion = this.ness().getMainConfig().getCheckSection().killaura().reachExpansion();
 		this.lagAccount = this.ness().getMainConfig().getCheckSection().killaura().lagAccount();
+		this.maxAngle = this.ness().getMainConfig().getCheckSection().killaura().mainAngle();
 		this.angleList = new ArrayList<Float>();
 	}
 
 	public interface Config {
 		@DefaultInteger(360)
 		double maxYaw();
+
+		@DefaultDouble(0.6)
+		double mainAngle();
 
 		@DefaultDouble(-0.2)
 		double minAngle();
@@ -91,6 +97,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		final Ray ray = Ray.from(nessPlayer);
 		final AABB aabb = AABB.from(entity, this.ness(), this.reachExpansion);
 		double range = aabb.collidesD(ray, 0, 10);
+		angleList.add((float) nessPlayer.getMovementValues().getHelper().getAngle(nessPlayer, entity.getLocation()));
 		if (player.getGameMode().equals(GameMode.CREATIVE)) {
 			maxReach = (5.5 * this.maxReach) / 3;
 		}
@@ -100,11 +107,17 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 				punish(event, "Reach: " + range);
 			}
 		} else if (range == -1) {
-			if(++buffer > 7) {
-				punish(event, "Hitbox");
+			double average = MathUtils.average(angleList);
+			if (average < maxAngle) {
+				if (++buffer > 3) {
+					punish(event, "Hitbox");
+				}
 			}
 		} else if (buffer > 0) {
 			buffer -= 0.5;
+		}
+		if (angleList.size() > 10) {
+			angleList.clear();
 		}
 	}
 
