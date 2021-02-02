@@ -75,6 +75,7 @@ class PlayerManager implements PlayersManager {
 
 		@Override
 		public void onRemoval(@Nullable UUID key, @Nullable NessPlayerData playerData, @NonNull RemovalCause cause) {
+			// playerData cannot be null because GC-based expiration is not used
 			NessPlayer nessPlayer = playerData.getNessPlayer();
 			for (Check check : playerData.getChecks()) {
 				check.getFactory().removeCheck(nessPlayer);
@@ -84,7 +85,8 @@ class PlayerManager implements PlayersManager {
 	}
 	
 	NessPlayer addPlayer(Player player) {
-		NessPlayer nessPlayer = new NessPlayer(player, ness().getMainConfig().isDevMode(), this.ness().getMaterialAccess());
+		NessAnticheat ness = ness();
+		NessPlayer nessPlayer = new NessPlayer(player, ness.getMainConfig().isDevMode(), ness.getMaterialAccess());
 
 		Set<BaseCheckFactory<?>> enabledFactories = new HashSet<>();
 		for (BaseCheckFactory<?> factory : checkManager.getCheckFactories()) {
@@ -93,38 +95,34 @@ class PlayerManager implements PlayersManager {
 			}
 		}
 		UUID uuid = player.getUniqueId();
-		playerCache.get(uuid, (u, executor) -> {
-			return CompletableFuture.supplyAsync(() -> {
+		playerCache.put(uuid, CompletableFuture.supplyAsync(() -> {
 
-				Set<Check> checks = new HashSet<>();
-				for (BaseCheckFactory<?> factory : enabledFactories) {
+			Set<Check> checks = new HashSet<>(enabledFactories.size());
+			for (BaseCheckFactory<?> factory : enabledFactories) {
 
-					BaseCheck baseCheck = factory.newCheck(nessPlayer);
-					if (baseCheck instanceof Check) {
-						checks.add((Check) baseCheck);
-					}
+				BaseCheck baseCheck = factory.newCheck(nessPlayer);
+				if (baseCheck instanceof Check) {
+					checks.add((Check) baseCheck);
 				}
-				return new NessPlayerData(nessPlayer, checks);
-			}).handle((value, ex) -> {
-				if (ex != null) {
-					logger.log(Level.SEVERE, "Failed to load checks for " + uuid, ex);
-					return null;
-				}
-				logger.log(Level.FINE, "Successfully loaded checks for {0}", uuid);
-				return value;
-			});
-		});
+			}
+			return new NessPlayerData(nessPlayer, checks);
+		}).handle((value, ex) -> {
+			if (ex != null) {
+				logger.log(Level.SEVERE, "Failed to load checks for " + uuid, ex);
+				return null;
+			}
+			return value;
+		}));
 		return nessPlayer;
 	}
 
 	/**
-	 * Forcibly remove a player. Used to clear the player's data
+	 * Remove a player. Used to clear the player's data
 	 *
-	 * @param player the player to remove
+	 * @param uuid the uuid of the player to remove
 	 */
-	void removePlayer(Player player) {
-		logger.log(Level.FINE, "Forcibly removing player {0}", player);
-		playerCache.synchronous().invalidate(player.getUniqueId());
+	void removePlayer(UUID uuid) {
+		playerCache.synchronous().invalidate(uuid);
 	}
 	
 }
