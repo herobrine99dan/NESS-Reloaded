@@ -93,20 +93,22 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 
 	public void checkReach(final EntityDamageByEntityEvent event) {
 		final Player player = (Player) event.getDamager();
-		final Entity entity = event.getEntity();
+		if(!(event.getEntity() instanceof LivingEntity)) {
+			return;
+		}
+		final LivingEntity entity = (LivingEntity) event.getEntity();
 		final NessPlayer nessPlayer = player();
 		// TODO Account for lag
 		double maxReach = this.maxReach;
 		final Ray ray = Ray.from(nessPlayer);
 		final AABB aabb = AABB.from(entity, this.ness(), this.reachExpansion);
 		double range = aabb.collidesD(ray, 0, 10);
-		final float angle = (float) getAngle(entity);
-		final float angle1 = (float) nessPlayer.getMovementValues().getHelper().getAngle(nessPlayer, entity.getLocation());
-		angleList.add(angle);
+		final float angle1 = (float) nessPlayer.getMovementValues().getHelper().getAngle(nessPlayer, entity);
+		angleList.add(angle1);
 		if (player.getGameMode().equals(GameMode.CREATIVE)) {
 			maxReach = (5.5 * this.maxReach) / 3;
 		}
-		nessPlayer.sendDevMessage("Reach: " + range + " Angle: " + angle + " Angle:1 " + angle1);
+		nessPlayer.sendDevMessage("Reach: " + range + " Angle:1 " + angle1);
 		if (range > maxReach && range < 6.5D) {
 			if (++buffer > 2) {
 				flagEvent(event, "Reach: " + range);

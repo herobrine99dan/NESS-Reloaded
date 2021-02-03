@@ -96,11 +96,11 @@ public class Aimbot extends PacketCheck {
 		double yawDelta = this.player().getMovementValues().getYawDiff();
 		double pitchDelta = this.player().getMovementValues().getPitchDiff();
 		if (yawDelta > 30 && isReallySmall(pitchDelta)) {
-			if (++buffer4 > 10) {
+			if (++buffer4 > 15) {
 				this.flag("IrregularYaw");
 			}
 		} else if (pitchDelta > 30 && isReallySmall(yawDelta)) {
-			if (++buffer4 > 5) {
+			if (++buffer4 > 8) {
 				this.flag("IrregularPitch");
 			}
 		} else if (buffer4 > 0) {
@@ -123,12 +123,16 @@ public class Aimbot extends PacketCheck {
 
 	private void roundedValues(float yawDeltaPacket, float pitchDeltaPacket, float yaw, float pitch) {
 		if (Math.abs(yawDeltaPacket) == Math.round(Math.abs(yawDeltaPacket)) && Math.abs(yawDeltaPacket) > 0.1) {
+			if (++buffer5 > 2) {
 			this.flag("PerfectRotation1");
+			}
 		} else if (Math.abs(pitchDeltaPacket) == Math.round(Math.abs(pitchDeltaPacket))
 				&& Math.abs(pitchDeltaPacket) > 0.1 && Math.abs(pitch) < 89) {
+			if (++buffer5 > 2) {
 			this.flag("PerfectRotation2");
+			}
 		} else if (Math.abs(yaw) == Math.round(Math.abs(yaw)) && Math.abs(yaw) > 0.1) {
-			if (++buffer5 > 6) {
+			if (++buffer5 > 5) {
 				this.flag("PerfectRotation3");
 			}
 		} else if (Math.abs(pitch) == Math.round(Math.abs(pitch)) && Math.abs(pitch) > 0.1 && Math.abs(pitch) < 89) {

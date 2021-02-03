@@ -7,6 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
@@ -46,6 +48,22 @@ public class MovementValuesHelper {
 		Location eye = player.getEyeLocation();
 		Vector direction = player.getLocation().getDirection();
 		Vector toEntity = target.toVector().subtract(eye.toVector());
+		double dot = toEntity.normalize().dot(direction);
+		return dot;
+	}
+
+	/**
+	 * Get Angle (in Radians) beetween a player and the target
+	 * 
+	 * @param player
+	 * @param target
+	 * @param direction (if it is null, will be replaced with player direction)
+	 * @return the angle in radians
+	 */
+	public double getAngle(NessPlayer player, LivingEntity target) {
+		Location eye = getEyeLocation(player.getMovementValues().getTo().toBukkitLocation(), player.getBukkitPlayer());
+		Vector direction = player.getMovementValues().getDirection().toBukkitVector();
+		Vector toEntity = target.getLocation().add(0, target.getEyeHeight() / 2, 0).toVector().subtract(eye.toVector());
 		double dot = toEntity.normalize().dot(direction);
 		return dot;
 	}
