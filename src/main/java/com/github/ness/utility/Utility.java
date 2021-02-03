@@ -26,7 +26,7 @@ public class Utility {
 		return result;
 	}
 	
-	public static boolean hasLivingEntityNear(Player player) {
+	public static boolean hasVehicleNear(Player player) {
 		final int range = 4;
 		for (Entity e : player.getNearbyEntities(range, range, range)) {
 			if (e instanceof Vehicle) {
@@ -36,7 +36,7 @@ public class Utility {
 		return false;
 	}
 	
-	public static boolean hasVehicleNear(Player player) {
+	public static boolean hasLivingEntityNear(Player player) {
 		final int range = 4;
 		for (Entity e : player.getNearbyEntities(range, range, range)) {
 			if (e instanceof LivingEntity && !e.getUniqueId().equals(player.getUniqueId())) {

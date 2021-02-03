@@ -36,21 +36,17 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 						.getMaterial(player.getLocation().clone().add(0, -0.5, 0)).name().contains("SCAFFOLD")) {
 			return;
 		}
-		nessPlayer.sendDevMessage("FlyFalseGround: " + 1);
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500
 				&& nessPlayer.getLastVelocity().getY() > 0.35) {
 			return;
 		}
-		nessPlayer.sendDevMessage("FlyFalseGround: " + 2);
 		if (movementValues.getHelper().hasflybypass(nessPlayer) || movementValues.isAroundSlime()
 				|| Utility.hasLivingEntityNear(player)) {
 			return;
 		}
-		nessPlayer.sendDevMessage("FlyFalseGround: " + 3);
 		if (Utility.hasVehicleNear(player) || nessPlayer.getMovementValues().isAroundWeb()) {
 			return;
 		}
-		nessPlayer.sendDevMessage("FlyFalseGround: " + 4);
 		if (player.isOnGround() && !movementValues.isGroundAround() && !movementValues.isAroundLadders()) {
 			flagEvent(e, " FalseGround");
 			// if(player().setViolation(new Violation("Fly", "FalseGround")))

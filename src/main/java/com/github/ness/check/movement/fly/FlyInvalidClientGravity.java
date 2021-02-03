@@ -44,7 +44,8 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		MovementValues values = nessPlayer.getMovementValues();
 		double deltaY = values.getyDiff();
-		if (e.getPlayer().isOnGround()) {
+		if (values.getHelper().isOnGroundUsingCollider(e.getTo(), this.getMaterialAccess())
+				|| values.getHelper().isOnGroundUsingCollider(e.getFrom(), this.getMaterialAccess()) || p.isOnGround()) {
 			airTicks = 0;
 		} else {
 			airTicks++;
@@ -54,15 +55,14 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 				|| values.isAroundLadders()) {
 			return;
 		}
-		nessPlayer.sendDevMessage("FlyGravity: " + 1);
-		double yPredicted = (lastDeltaY - 0.08D) * 0.9800000190734863D;
-		double yResult = Math.abs(deltaY - yPredicted);
-		nessPlayer.sendDevMessage("FlyGravity: " + 2);
-		if (airTicks > 3 && nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000 && Math.abs(yPredicted) > 0.05) {
-			nessPlayer.sendDevMessage("FlyGravity: " + 3);
-			if (Math.abs(yResult) > 0.001 && !isAtLeastFollowingGravity(deltaY, yPredicted)) {
-				nessPlayer.sendDevMessage("NotCheats: " + (float) yResult + " Y: " + (float) deltaY + " PredictedY: "
-						+ (float) yPredicted);
+		float yPredicted = (float) ((lastDeltaY - 0.08D) * 0.9800000190734863D);
+		float yResult = (float) Math.abs(deltaY - yPredicted);
+		if (airTicks > 3 && nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000
+				&& Math.abs(yPredicted) > 0.04) {
+			if (Math.abs(yResult) > 0.005 && !isAtLeastFollowingGravity(deltaY, yPredicted)) {
+				float nextYDelta = (float) ((yPredicted - 0.08) * 0.98f);
+				float backYDelta = (float) ((yPredicted / 0.98f) + 0.08);
+				nessPlayer.sendDevMessage("Y: " + deltaY + " PredictedY: " + yPredicted);
 				if (++buffer > 0) {
 					this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
 				}

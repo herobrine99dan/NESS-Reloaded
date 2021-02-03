@@ -75,7 +75,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		// nessPlayer.sendDevMessage("WaterTicks: " + this.liquidTicks + " resultY: " +
 		// resultY);
 		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
-			if (yDist > 0.302D) {
+			if (yDist > 0.302D && !values.isGroundAround()) {
 				this.flagEvent(event, "HighDistanceY");
 			} else if (resultY > 0.105 && !values.isGroundAround()) {
 				this.flagEvent(event, "HighVarianceY: " + (float) resultY);

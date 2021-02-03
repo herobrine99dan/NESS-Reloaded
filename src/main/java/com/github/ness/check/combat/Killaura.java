@@ -14,6 +14,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
@@ -88,6 +89,8 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		Check5(e);
 	}
 
+	private double angleBuffer = 0;
+
 	public void checkReach(final EntityDamageByEntityEvent event) {
 		final Player player = (Player) event.getDamager();
 		final Entity entity = event.getEntity();
@@ -97,24 +100,34 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		final Ray ray = Ray.from(nessPlayer);
 		final AABB aabb = AABB.from(entity, this.ness(), this.reachExpansion);
 		double range = aabb.collidesD(ray, 0, 10);
-		angleList.add((float) nessPlayer.getMovementValues().getHelper().getAngle(nessPlayer, entity.getLocation()));
+		final float angle = (float) getAngle(entity);
+		final float angle1 = (float) nessPlayer.getMovementValues().getHelper().getAngle(nessPlayer, entity.getLocation());
+		angleList.add(angle);
 		if (player.getGameMode().equals(GameMode.CREATIVE)) {
 			maxReach = (5.5 * this.maxReach) / 3;
 		}
-		nessPlayer.sendDevMessage("Reach: " + range);
+		nessPlayer.sendDevMessage("Reach: " + range + " Angle: " + angle + " Angle:1 " + angle1);
 		if (range > maxReach && range < 6.5D) {
 			if (++buffer > 2) {
-				punish(event, "Reach: " + range);
-			}
-		} else if (range == -1) {
-			double average = MathUtils.average(angleList);
-			if (average < maxAngle) {
-				if (++buffer > 3) {
-					punish(event, "Hitbox");
-				}
+				flagEvent(event, "Reach: " + range);
 			}
 		} else if (buffer > 0) {
 			buffer -= 0.5;
+		}
+		if (range == -1) {
+			if (angleList.size() > 9) {
+				double average = MathUtils.average(angleList);
+				nessPlayer.sendDevMessage("Hitbox: " + average);
+				if (average < maxAngle) {
+					if (++angleBuffer > 3) {
+						flagEvent(event, "Hitbox");
+					}
+				} else if (angleBuffer > 0) {
+					angleBuffer -= 0.25;
+				}
+			}
+		} else if (angleBuffer > 0) {
+			angleBuffer -= 0.5;
 		}
 		if (angleList.size() > 10) {
 			angleList.clear();
@@ -124,25 +137,19 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	public void Check1(EntityDamageByEntityEvent event) {
 		Player player = (Player) event.getDamager();
 		final Location loc = player.getLocation();
-
 		runTaskLater(() -> {
 			Location loc1 = player.getLocation();
 			float grade = loc.getYaw() - loc1.getYaw();
 			if (Math.round(grade) > maxYaw) {
-				punish(event, "HighYaw " + grade);
+				flagEvent(event, "HighYaw");
 			}
 		}, durationOfTicks(2));
 	}
 
 	public void Check2(EntityDamageByEntityEvent event) {
 		Player player = (Player) event.getDamager();
-		if ((player.getLocation().getPitch() == Math.round(player.getLocation().getPitch()))
-				&& Math.abs(player.getLocation().getPitch()) < 90) {
-			punish(event, "PerfectAngle");
-		} else if (player.getLocation().getYaw() == Math.round(player.getLocation().getYaw())) {
-			punish(event, "PerfectAngle1");
-		} else if (player.isDead()) {
-			punish(event, "Impossible");
+		if (player.isDead()) {
+			flagEvent(event, "Impossible");
 		}
 	}
 
@@ -154,32 +161,36 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		Block b = player.getTargetBlock(null, 5);
 		Material material = b.getType();
 		if (b.getType().isSolid() && (material.isOccluding() && !material.name().contains("GLASS"))) {
-			punish(event, "WallHit");
+			flagEvent(event, "WallHit");
 		}
 	}
 
 	public void Check4(EntityDamageByEntityEvent event) {
 		if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK
 				&& event.getEntity().getEntityId() == event.getDamager().getEntityId()) {
-			punish(event, "SelfHit");
+			flagEvent(event, "SelfHit");
 		}
 	}
 
-	public void Check5(EntityDamageByEntityEvent eventt) {
-		if (!(eventt.getEntity() instanceof LivingEntity)) {
+	public void Check5(EntityDamageByEntityEvent event) {
+		if (!(event.getEntity() instanceof LivingEntity)) {
 			return;
 		}
 		if (!Bukkit.getVersion().contains("1.8")) {
 			return;
 		}
 		NessPlayer nessPlayer = player();
-		nessPlayer.addEntityToAttackedEntities(eventt.getEntity().getEntityId());
+		nessPlayer.addEntityToAttackedEntities(event.getEntity().getEntityId());
 		if (nessPlayer.getAttackedEntities().size() > 2) {
-			punish(eventt, "MultiAura Entities: " + nessPlayer.getAttackedEntities().size());
+			flagEvent(event, "MultiAura Entities: " + nessPlayer.getAttackedEntities().size());
 		}
 	}
-
-	private void punish(EntityDamageByEntityEvent event, String module) {
-		flagEvent(event, module);
+	
+	private float getAngle(Entity entity) {
+		final Vector playerLookDir = this.player().getBukkitPlayer().getEyeLocation().getDirection();
+		final Vector playerEyeLoc = this.player().getBukkitPlayer().getEyeLocation().toVector();
+		final Vector playerEntityVec = entity.getLocation().toVector().subtract(playerEyeLoc);
+		final float angle = playerLookDir.angle(playerEntityVec);
+		return angle;
 	}
 }

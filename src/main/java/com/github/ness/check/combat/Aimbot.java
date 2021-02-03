@@ -1,5 +1,8 @@
 package com.github.ness.check.combat;
 
+import org.bukkit.entity.Entity;
+import org.bukkit.util.Vector;
+
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.check.CheckInfos;
@@ -8,7 +11,6 @@ import com.github.ness.check.PacketCheckFactory;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.packets.Packet;
 import com.github.ness.packets.wrapper.PlayInFlying;
-import com.github.ness.utility.MathUtils;
 
 public class Aimbot extends PacketCheck {
 
@@ -16,7 +18,6 @@ public class Aimbot extends PacketCheck {
 
 	private double lastYaw;
 	private double lastPitch;
-	private int buffer;
 
 	public Aimbot(PacketCheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
@@ -33,31 +34,28 @@ public class Aimbot extends PacketCheck {
 		if (!wrapper.hasLook()) {
 			return;
 		}
-		Check1(packet);
+		// Check1(packet);
 		Check2(packet);
 		Check3(packet);
 		Check4(packet);
-		lastYaw = this.player().getMovementValues().getYawDiff();
-		lastPitch = this.player().getMovementValues().getPitchDiff();
+		Check5(packet);
+		lastYaw = wrapper.yaw();
+		lastPitch = wrapper.pitch();
 	}
 
-	private void Check1(Packet e) {
-		NessPlayer np = player();
-		if (np.getSensitivity() == 0) {
-			return;
-		}
-		double firstvar = (np.getSensitivity() / 200) * 0.6F + 0.2F;
-		double secondvar = Math.pow(firstvar, 3f);
-		double yawResult = this.player().getMovementValues().getYawDiff() - lastYaw;
-		double pitchResult = this.player().getMovementValues().getPitchDiff() - lastPitch;
-		double mouseDeltaX = yawResult / (secondvar * 1.2f);
-		double mouseDeltaY = pitchResult / (secondvar * 1.2f);
-		double xError = Math.abs(mouseDeltaX - Math.floor(mouseDeltaX));
-		double yError = Math.abs(mouseDeltaY - Math.floor(mouseDeltaY));
-		double gcd = MathUtils.gcdRational(Math.abs(this.player().getMovementValues().getPitchDiff()),
-				Math.abs(lastPitch));
-		// np.sendDevMessage("gcd: " + gcd);
-	}
+	/*
+	 * private void Check1(Packet e) { NessPlayer np = player(); if
+	 * (np.getSensitivity() == 0) { return; } double firstvar = (np.getSensitivity()
+	 * / 200) * 0.6F + 0.2F; double secondvar = Math.pow(firstvar, 3f); double
+	 * yawResult = this.player().getMovementValues().getYawDiff() - lastYaw; double
+	 * pitchResult = this.player().getMovementValues().getPitchDiff() - lastPitch;
+	 * double mouseDeltaX = yawResult / (secondvar * 1.2f); double mouseDeltaY =
+	 * pitchResult / (secondvar * 1.2f); double xError = Math.abs(mouseDeltaX -
+	 * Math.floor(mouseDeltaX)); double yError = Math.abs(mouseDeltaY -
+	 * Math.floor(mouseDeltaY)); double gcd =
+	 * MathUtils.gcdRational(Math.abs(this.player().getMovementValues().getPitchDiff
+	 * ()), Math.abs(lastPitch)); // np.sendDevMessage("gcd: " + gcd); }
+	 */
 
 	/**
 	 * Check for some Aimbot Pattern
@@ -76,33 +74,69 @@ public class Aimbot extends PacketCheck {
 	 * @author Tecnio This check comes from AntiHaxerman
 	 *         (https://github.com/Tecnio/AntiHaxerman/blob/master/src/main/java/me/tecnio/antihaxerman/check/impl/aim/AimE.java)
 	 */
+	private double buffer3;
+
 	private void Check3(Packet e) {
 		NessPlayer player = player();
 		if (player.milliSecondTimeDifference(PlayerAction.ATTACK) < 1000) {
 			if (this.player().getMovementValues().getYawDiff() % .25 == 0.0
 					&& this.player().getMovementValues().getYawDiff() > 0) {
-				if (++buffer > 2) {
+				if (++buffer3 > 2) {
 					flag("PerfectAura3");
 				}
-			} else if (buffer > 0) {
-				buffer--;
+			} else if (buffer3 > 0) {
+				buffer3--;
 			}
 		}
 	}
 
+	private double buffer4;
+
 	private void Check4(Packet e) {
 		double yawDelta = this.player().getMovementValues().getYawDiff();
 		double pitchDelta = this.player().getMovementValues().getPitchDiff();
-		if (yawDelta > 7 && isReallySmall(pitchDelta)) {
-			if (++buffer > 3) {
-				this.flag();
+		if (yawDelta > 30 && isReallySmall(pitchDelta)) {
+			if (++buffer4 > 10) {
+				this.flag("IrregularYaw");
 			}
-		} else if (pitchDelta > 7 && isReallySmall(yawDelta)) {
-			if (++buffer > 3) {
-				this.flag();
+		} else if (pitchDelta > 30 && isReallySmall(yawDelta)) {
+			if (++buffer4 > 5) {
+				this.flag("IrregularPitch");
 			}
-		} else if (buffer > 0) {
-			buffer -= 0.5;
+		} else if (buffer4 > 0) {
+			buffer4 -= 0.5;
+		}
+	}
+
+	private void Check5(Packet e) {
+		PlayInFlying wrapper = e.toPacketWrapper(this.packetTypeRegistry().playInFlying());
+		float yawDeltaPacket = (float) (wrapper.yaw() % 360 - lastYaw % 360);
+		// TODO Convert pitch correctly
+		float pitchDeltaPacket = (float) (wrapper.pitch() - lastPitch);
+		roundedValues(yawDeltaPacket, pitchDeltaPacket, wrapper.yaw(), wrapper.pitch());
+
+		//this.player().sendDevMessage("pitchDeltaPacket: " + pitchDeltaPacket + " pitchCorrectly: "
+		//		+ (float) this.player().getMovementValues().getPitchDiff());
+	}
+
+	private double buffer5;
+
+	private void roundedValues(float yawDeltaPacket, float pitchDeltaPacket, float yaw, float pitch) {
+		if (Math.abs(yawDeltaPacket) == Math.round(Math.abs(yawDeltaPacket)) && Math.abs(yawDeltaPacket) > 0.1) {
+			this.flag("PerfectRotation1");
+		} else if (Math.abs(pitchDeltaPacket) == Math.round(Math.abs(pitchDeltaPacket))
+				&& Math.abs(pitchDeltaPacket) > 0.1 && Math.abs(pitch) < 89) {
+			this.flag("PerfectRotation2");
+		} else if (Math.abs(yaw) == Math.round(Math.abs(yaw)) && Math.abs(yaw) > 0.1) {
+			if (++buffer5 > 6) {
+				this.flag("PerfectRotation3");
+			}
+		} else if (Math.abs(pitch) == Math.round(Math.abs(pitch)) && Math.abs(pitch) > 0.1 && Math.abs(pitch) < 89) {
+			if (++buffer5 > 3) {
+				this.flag("PerfectRotation4");
+			}
+		} else if (buffer5 > 0) {
+			buffer5 -= 0.5;
 		}
 	}
 
