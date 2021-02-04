@@ -38,7 +38,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		double xzDiff = values.getXZDiff();
-		if (!event.getPlayer().isOnGround()) {
+		if (!values.getHelper().isMathematicallyOnGround(values.getTo().getY())) {
 			airTicks++;
 		} else {
 			airTicks = 0;

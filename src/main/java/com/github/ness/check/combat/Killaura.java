@@ -187,12 +187,4 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 			flagEvent(event, "MultiAura Entities: " + nessPlayer.getAttackedEntities().size());
 		}
 	}
-	
-	private float getAngle(Entity entity) {
-		final Vector playerLookDir = this.player().getBukkitPlayer().getEyeLocation().getDirection();
-		final Vector playerEyeLoc = this.player().getBukkitPlayer().getEyeLocation().toVector();
-		final Vector playerEntityVec = entity.getLocation().toVector().subtract(playerEyeLoc);
-		final float angle = playerLookDir.angle(playerEntityVec);
-		return angle;
-	}
 }

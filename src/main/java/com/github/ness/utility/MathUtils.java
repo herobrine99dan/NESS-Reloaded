@@ -80,6 +80,26 @@ public class MathUtils {
 	public static double getSensitivity(double gcd) {
 	    return  (Math.cbrt(gcd / 8 / 1 / 0.15) - 0.2) / 0.6;
 	}
+	
+	/**
+	 * toRadians optimized method
+	 * This give an aproximated value
+	 * @param angle
+	 * @return
+	 */
+	public static double toRadians(double angle) {
+		return angle * 0.01745;
+	}
+	
+	/**
+	 * toDegree optimized method
+	 * This give an aproximated value
+	 * @param angle
+	 * @return
+	 */
+	public static double toDegree(double angle) {
+		return angle * 57.33;
+	}
 
 	public static double average(List<Float> angles) {
 		double sum = 0;

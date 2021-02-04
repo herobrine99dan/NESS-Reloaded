@@ -1,8 +1,5 @@
 package com.github.ness.check.combat;
 
-import org.bukkit.entity.Entity;
-import org.bukkit.util.Vector;
-
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.check.CheckInfos;
@@ -61,8 +58,9 @@ public class Aimbot extends PacketCheck {
 	 * Check for some Aimbot Pattern
 	 */
 	private void Check2(Packet e) {
-		float yawChange = (float) Math.abs(this.player().getMovementValues().getYawDiff());
-		float pitchChange = (float) Math.abs(this.player().getMovementValues().getPitchDiff());
+		PlayInFlying wrapper = e.toPacketWrapper(this.packetTypeRegistry().playInFlying());
+		float yawChange = (float) (wrapper.yaw() % 360 - lastYaw % 360);
+		float pitchChange = (float) (wrapper.pitch() - lastPitch);
 		if (yawChange >= 0.1 && yawChange % 0.1f == 0.0f) {
 			flag(" PerfectAura");
 		} else if (pitchChange >= 0.1 && pitchChange % 0.1f == 0.0f) {
@@ -79,8 +77,9 @@ public class Aimbot extends PacketCheck {
 	private void Check3(Packet e) {
 		NessPlayer player = player();
 		if (player.milliSecondTimeDifference(PlayerAction.ATTACK) < 1000) {
-			if (this.player().getMovementValues().getYawDiff() % .25 == 0.0
-					&& this.player().getMovementValues().getYawDiff() > 0) {
+			PlayInFlying wrapper = e.toPacketWrapper(this.packetTypeRegistry().playInFlying());
+			float yawChange = (float) (wrapper.yaw() % 360 - lastYaw % 360);
+			if (yawChange % .25 == 0.0 && this.player().getMovementValues().getYawDiff() > 0) {
 				if (++buffer3 > 2) {
 					flag("PerfectAura3");
 				}
@@ -93,8 +92,9 @@ public class Aimbot extends PacketCheck {
 	private double buffer4;
 
 	private void Check4(Packet e) {
-		double yawDelta = this.player().getMovementValues().getYawDiff();
-		double pitchDelta = this.player().getMovementValues().getPitchDiff();
+		PlayInFlying wrapper = e.toPacketWrapper(this.packetTypeRegistry().playInFlying());
+		float yawDelta = (float) (wrapper.yaw() % 360 - lastYaw % 360);
+		float pitchDelta = (float) (wrapper.pitch() - lastPitch);
 		if (yawDelta > 30 && isReallySmall(pitchDelta)) {
 			if (++buffer4 > 15) {
 				this.flag("IrregularYaw");
@@ -111,36 +111,48 @@ public class Aimbot extends PacketCheck {
 	private void Check5(Packet e) {
 		PlayInFlying wrapper = e.toPacketWrapper(this.packetTypeRegistry().playInFlying());
 		float yawDeltaPacket = (float) (wrapper.yaw() % 360 - lastYaw % 360);
-		// TODO Convert pitch correctly
 		float pitchDeltaPacket = (float) (wrapper.pitch() - lastPitch);
 		roundedValues(yawDeltaPacket, pitchDeltaPacket, wrapper.yaw(), wrapper.pitch());
-
-		//this.player().sendDevMessage("pitchDeltaPacket: " + pitchDeltaPacket + " pitchCorrectly: "
-		//		+ (float) this.player().getMovementValues().getPitchDiff());
+		commonPattern(yawDeltaPacket, pitchDeltaPacket, wrapper.yaw(), wrapper.pitch());
 	}
+	
+	private double lastPitchDelta;
+	private double buffer6;
 
 	private double buffer5;
 
 	private void roundedValues(float yawDeltaPacket, float pitchDeltaPacket, float yaw, float pitch) {
 		if (Math.abs(yawDeltaPacket) == Math.round(Math.abs(yawDeltaPacket)) && Math.abs(yawDeltaPacket) > 0.1) {
 			if (++buffer5 > 2) {
-			this.flag("PerfectRotation1");
+				this.flag("PerfectRotation1");
 			}
 		} else if (Math.abs(pitchDeltaPacket) == Math.round(Math.abs(pitchDeltaPacket))
 				&& Math.abs(pitchDeltaPacket) > 0.1 && Math.abs(pitch) < 89) {
 			if (++buffer5 > 2) {
-			this.flag("PerfectRotation2");
+				this.flag("PerfectRotation2");
 			}
-		} else if (Math.abs(yaw) == Math.round(Math.abs(yaw)) && Math.abs(yaw) > 0.1) {
+		} else if (Math.abs(yaw) == Math.round(Math.abs(yaw)) && Math.abs(yawDeltaPacket) > 1f) {
 			if (++buffer5 > 5) {
 				this.flag("PerfectRotation3");
 			}
-		} else if (Math.abs(pitch) == Math.round(Math.abs(pitch)) && Math.abs(pitch) > 0.1 && Math.abs(pitch) < 89) {
+		} else if (Math.abs(pitch) == Math.round(Math.abs(pitch)) && Math.abs(pitchDeltaPacket) > 1f && Math.abs(pitch) < 89) {
 			if (++buffer5 > 3) {
 				this.flag("PerfectRotation4");
 			}
 		} else if (buffer5 > 0) {
 			buffer5 -= 0.5;
+		}
+	}
+
+	private void commonPattern(float yawDeltaPacket, float pitchDeltaPacket, float yaw, float pitch) {
+		if (Math.abs(yaw) % 0.5D == 0.0D) {
+			if (++buffer5 > 3) {
+				this.flag("PerfectRotation4");
+			}
+		} else if (Math.abs(yawDeltaPacket) % 0.5D == 0.0D) {
+			if (++buffer5 > 3) {
+				this.flag("PerfectRotation4");
+			}
 		}
 	}
 
