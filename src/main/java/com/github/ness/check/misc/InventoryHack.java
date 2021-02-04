@@ -53,7 +53,7 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 				|| nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKBROKED) < 100) {
 			flagEvent(e);
 			return;
-		} else if (nessPlayer.milliSecondTimeDifference(PlayerAction.ANIMATION) < 100) {
+		} else if (nessPlayer.milliSecondTimeDifference(PlayerAction.ANIMATION) < 50) {
 			flagEvent(e, "MS: " + nessPlayer.milliSecondTimeDifference(PlayerAction.ANIMATION));
 			return;
 		} else if (player.isSprinting() || player.isSneaking() || player.isBlocking() || player.isSleeping()

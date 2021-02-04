@@ -147,11 +147,7 @@ public class Aimbot extends PacketCheck {
 	private void commonPattern(float yawDeltaPacket, float pitchDeltaPacket, float yaw, float pitch) {
 		if (Math.abs(yaw) % 0.5D == 0.0D) {
 			if (++buffer5 > 3) {
-				this.flag("PerfectRotation4");
-			}
-		} else if (Math.abs(yawDeltaPacket) % 0.5D == 0.0D) {
-			if (++buffer5 > 3) {
-				this.flag("PerfectRotation4");
+				this.flag("PerfectRotation5");
 			}
 		}
 	}

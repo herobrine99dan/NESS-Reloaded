@@ -52,18 +52,17 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		}
 		if (values.getHelper().hasflybypass(nessPlayer) || p.getAllowFlight() || values.isAroundLiquids()
 				|| Utility.hasVehicleNear(p) || values.isAroundWeb() || values.isAroundSlime()
-				|| values.isAroundLadders()) {
+				|| values.isAroundLadders() || values.isAroundSnow()) {
+			lastDeltaY = deltaY;
 			return;
 		}
 		float yPredicted = (float) ((lastDeltaY - 0.08D) * 0.9800000190734863D);
 		float yResult = (float) Math.abs(deltaY - yPredicted);
-		if (airTicks > 5 && nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000
-				&& Math.abs(yPredicted) > 0.04) {
-			if (Math.abs(yResult) > 0.007 && !isAtLeastFollowingGravity(deltaY, yPredicted)) {
-				float nextYDelta = (float) ((yPredicted - 0.08) * 0.98f);
-				float backYDelta = (float) ((yPredicted / 0.98f) + 0.08);
+		if (airTicks > 2 && nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000
+				&& Math.abs(yPredicted) > 0.02) {
+			if (Math.abs(yResult) > 0.005 && !isAtLeastFollowingGravity(deltaY, yPredicted)) {
 				nessPlayer.sendDevMessage("Y: " + deltaY + " PredictedY: " + yPredicted);
-				if (++buffer > 0) {
+				if (++buffer > 1) {
 					this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
 				}
 			} else if (buffer > 0) {

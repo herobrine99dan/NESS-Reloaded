@@ -177,7 +177,7 @@ public class MovementValuesHelper {
 		final double limit = 0.3;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
-				Block block = loc.clone().add(x, -0.3, z).getBlock();
+				Block block = loc.clone().add(x, -0.35, z).getBlock();
 				Material material = access.getMaterial(block);
 				if (material.isSolid()) {
 					return true;
