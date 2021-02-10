@@ -19,7 +19,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
-	double distmultiplier = 0.75;
+	double maxYVariance = 0.75;
 	double lastXZDist;
 	double lastYDist;
 	int liquidTicks = 0;
@@ -27,12 +27,12 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 
 	public Jesus(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
-		this.distmultiplier = this.ness().getMainConfig().getCheckSection().jesus().distmultiplier();
+		this.maxYVariance = this.ness().getMainConfig().getCheckSection().jesus().maxYVariance();
 	}
 
 	public interface Config {
-		@DefaultDouble(0.7)
-		double distmultiplier();
+		@DefaultDouble(0.15)
+		double maxYVariance();
 	}
 
 	// TODO Implement Lava Movement
@@ -77,7 +77,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
 			if (yDist > 0.302D && !values.isGroundAround()) {
 				this.flagEvent(event, "HighDistanceY");
-			} else if (resultY > 0.105 && !values.isGroundAround()) {
+			} else if (resultY > maxYVariance && !values.isGroundAround()) {
 				this.flagEvent(event, "HighVarianceY: " + (float) resultY);
 			} else if (resultXZ > 0.11) {
 				this.flagEvent(event, "HighDistanceXZ: " + resultXZ);
@@ -104,7 +104,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
 			if (yDist > 0.302D) {
 				this.flagEvent(event, "HighDistanceY");
-			} else if (resultY > 0.13) {
+			} else if (resultY > maxYVariance + 0.25) {
 				this.flagEvent(event, "HighVarianceY");
 			} else if (resultXZ > 0.17) {
 				this.flagEvent(event, "HighDistanceXZ");

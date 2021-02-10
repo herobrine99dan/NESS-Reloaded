@@ -26,6 +26,7 @@ import com.github.ness.utility.MathUtils;
 import com.github.ness.utility.raytracer.rays.AABB;
 import com.github.ness.utility.raytracer.rays.Ray;
 
+import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
@@ -37,7 +38,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	private final double lagAccount;
 	private final double maxAngle;
 	private double buffer;
-	List<Float> angleList;
+	private List<Float> angleList;
 
 	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfos
 			.forEventWithTask(EntityDamageByEntityEvent.class, PeriodicTaskInfo.syncTask(Duration.ofMillis(70)));
@@ -61,11 +62,13 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 
 		@DefaultDouble(-0.2)
 		double minAngle();
-
-		@DefaultDouble(4)
+		
+		@ConfComments("This is the max Reach allowed, we suggest to use a value beetween 3.2 and 3.5 to don't have lots of false flags and bypasses")
+		@DefaultDouble(3.3)
 		double maxReach();
 
-		@DefaultDouble(0.2)
+		@ConfComments("Minecraft adds to the hitbox an expansion, that is default 0.1. To remove false flags we suggest to use 0.15.")
+		@DefaultDouble(0.15)
 		double reachExpansion();
 
 		@DefaultDouble(4)
@@ -93,7 +96,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 
 	public void checkReach(final EntityDamageByEntityEvent event) {
 		final Player player = (Player) event.getDamager();
-		if(!(event.getEntity() instanceof LivingEntity)) {
+		if (!(event.getEntity() instanceof LivingEntity)) {
 			return;
 		}
 		final LivingEntity entity = (LivingEntity) event.getEntity();

@@ -42,8 +42,8 @@ public class AABB {
 		Vector max = new Vector(0, 0, 0);
 		if (entity instanceof Player) {
 			Player player = (Player) entity;
-			min = getMinForPlayer(player.getLocation());
-			max = getMaxForPlayer(player.getLocation());
+			min = getMinForPlayer(player.getLocation(), player).add(new Vector(-expansion, -expansion, -expansion));
+			max = getMaxForPlayer(player.getLocation(), player).add(new Vector(expansion, expansion, expansion));
 		} else if (ness != null) {
 			double xMax, xMin, yMax, yMin, zMax, zMin = 0;
 			if (craftLivingEntityMethod == null) {
@@ -80,30 +80,16 @@ public class AABB {
 		this.min = min;
 	}
 
-	/**
-	 * This constructor is well appreciated, use the latest location here
-	 */
-	private AABB(Location playerLocation, double expansion) {
-		Vector min = getMinForPlayer(playerLocation);
-		Vector max = getMaxForPlayer(playerLocation);
-		this.min = new Vector(min.getX() - expansion, min.getY() - expansion, min.getZ() - expansion);
-		this.max = new Vector(max.getX() + expansion, max.getY() + expansion, max.getZ() + expansion);
-	}
-
-	private Vector getMinForPlayer(Location loc) {
+	private Vector getMinForPlayer(Location loc, Player player) {
 		return loc.toVector().add(new Vector(-0.3, 0, -0.3));
 	}
 
-	private Vector getMaxForPlayer(Location loc) {
-		return loc.toVector().add(new Vector(0.3, 1.9, 0.3));
+	private Vector getMaxForPlayer(Location loc, Player player) {
+		return loc.toVector().add(new Vector(0.3, player.getEyeHeight(), 0.3));
 	}
 
 	public static AABB from(Entity player, NessAnticheat ness, double expansion) {
 		return new AABB(player, ness, expansion);
-	}
-
-	public static AABB from(Location location, double expansion) {
-		return new AABB(location, expansion);
 	}
 
 	public Vector getMin() {

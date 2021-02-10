@@ -60,11 +60,14 @@ public class Aimbot extends PacketCheck {
 	private void Check2(Packet e) {
 		PlayInFlying wrapper = e.toPacketWrapper(this.packetTypeRegistry().playInFlying());
 		float yawChange = (float) (wrapper.yaw() % 360 - lastYaw % 360);
+		float yawDelta = (float) (wrapper.yaw() - lastYaw);
 		float pitchChange = (float) (wrapper.pitch() - lastPitch);
-		if (yawChange >= 0.1 && yawChange % 0.1f == 0.0f) {
+		if (yawChange >= 1 && yawChange % 0.1f == 0.0f) {
 			flag(" PerfectAura");
-		} else if (pitchChange >= 0.1 && pitchChange % 0.1f == 0.0f) {
+		} else if (pitchChange >= 1 && pitchChange % 0.1f == 0.0f) {
 			flag(" PerfectAura1");
+		} else if(yawDelta >= 1 && yawDelta % 0.1f == 0.0f) {
+			flag(" PerfectAura2");
 		}
 	}
 
