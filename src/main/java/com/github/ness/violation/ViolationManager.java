@@ -63,8 +63,8 @@ public class ViolationManager implements InfractionManager {
 	}
 
 	private void addCheckSpecificTriggers() {
-		Map<String, CheckConfig> violationHandlingPerCheck = ness.getMainConfig().violationHandlingPerCheck();
-		for (Map.Entry<String, CheckConfig> checkConfigEntry : violationHandlingPerCheck.entrySet()) {
+		Map<String, CheckConfig> perCheckConfiguration = ness.getMainConfig().perCheckConfiguration();
+		for (Map.Entry<String, CheckConfig> checkConfigEntry : perCheckConfiguration.entrySet()) {
 			String checkName = checkConfigEntry.getKey();
 			CheckConfig checkConfig = checkConfigEntry.getValue();
 

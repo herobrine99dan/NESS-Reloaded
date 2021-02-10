@@ -1,6 +1,6 @@
 package com.github.ness.config;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +8,7 @@ import com.github.ness.antibot.AntiBotConfig;
 import com.github.ness.violation.ViolationHandling;
 
 import space.arim.dazzleconf.annote.ConfComments;
+import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultStrings;
 import space.arim.dazzleconf.annote.ConfHeader;
@@ -103,15 +104,19 @@ public interface NessConfig {
 	@SubSection
 	ViolationHandling getViolationHandling();
 
-	@ConfKey("violation-handling-per-check")
+	@ConfKey("per-check-overrides")
 	@ConfComments({
-			"Additional per-check violation handling.",
+			"Additional per-check overrides, specifically violation handling.",
 			"",
 			"Each section is named after the check name.",
 			"The AutoClicker check is given as an example"})
-	//@DefaultObject("com.github.ness.config.NessConfigDefaults.violationHandlingPerCheck")
-	default Map<String, /*@SubSection*/ CheckConfig> violationHandlingPerCheck() {
-		return Collections.emptyMap();
+	@ConfDefault.DefaultObject("defaultViolationHandlingPerCheck")
+	Map<String, @SubSection CheckConfig> perCheckConfiguration();
+
+	static Map<String, CheckConfig> defaultViolationHandlingPerCheck(CheckConfig defaultCheckConf) {
+		Map<String, CheckConfig> map = new HashMap<>();
+		map.put("AutoClicker", defaultCheckConf);
+		return map;
 	}
 
 	@ConfKey("checks")
