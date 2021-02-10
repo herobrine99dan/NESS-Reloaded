@@ -3,7 +3,6 @@ package com.github.ness.violation;
 import java.util.Arrays;
 import java.util.Collection;
 
-import com.github.ness.violation.ViolationTriggerSection.CancelEvent;
 import com.github.ness.violation.ViolationTriggerSection.ExecuteCommand;
 import com.github.ness.violation.ViolationTriggerSection.NotifyStaff;
 
@@ -30,7 +29,7 @@ public interface ViolationHandling {
 	CancelEvent cancelEvent();
 	
 	default Collection<ViolationTriggerSection> getTriggerSections() {
-		return Arrays.asList(notifyStaff(), executeCommand(), cancelEvent());
+		return Arrays.asList(notifyStaff(), executeCommand());
 	}
 	
 }
