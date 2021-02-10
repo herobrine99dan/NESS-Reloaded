@@ -9,18 +9,19 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.check.PeriodicTaskInfo;
 
 public class TeleportEvent extends ListeningCheck<PlayerTeleportEvent> {
 
 	public static final ListeningCheckInfo<PlayerTeleportEvent> checkInfo = CheckInfos
-			.forEventWithAsyncPeriodic(PlayerTeleportEvent.class, Duration.ofMillis(1500));
+			.forEventWithTask(PlayerTeleportEvent.class, PeriodicTaskInfo.syncTask(Duration.ofMillis(1500)));
 
 	public TeleportEvent(ListeningCheckFactory<?, PlayerTeleportEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 
 	@Override
-	protected void checkAsyncPeriodic() {
+	protected void checkSyncPeriodic() {
 		player().setTeleported(false);
 		player().setHasSetback(false);
 	}

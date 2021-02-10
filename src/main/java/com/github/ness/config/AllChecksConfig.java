@@ -83,7 +83,7 @@ public interface AllChecksConfig {
 		"Check if a player fly too quickly with elytra", 
 		"",
 		"Performance impact: low", 
-		"Effectiveness: High",
+		"Effectiveness: Medium",
 		""})
 	@SubSection
 	ElytraCheats.Config elytraCheats();
@@ -114,7 +114,6 @@ public interface AllChecksConfig {
 	@ConfComments({
 		"",
 		"Check the speed of a player in Water.",
-		"Use 1 to have GeyserMC Compatibility, if you have only Java Edition players use 0.75",
 		"",
 		"Performance impact: low", 
 		"Effectiveness: Medium",

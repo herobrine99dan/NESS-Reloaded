@@ -13,6 +13,9 @@ import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
+import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
+import space.arim.dazzleconf.annote.ConfKey;
+
 public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
@@ -22,6 +25,12 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 
 	public FlyHighJump(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
+	}
+
+	public interface AutoClick extends CheckConfig {
+		@ConfKey("max-cps")
+		@DefaultInteger(16)
+		int maxCps();
 	}
 
 	@Override
@@ -45,7 +54,7 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 				|| this.ness().getMaterialAccess().getMaterial(e.getTo().clone().add(0, 0.5, 0)).name()
 						.contains("SCAFFOLD")
 				|| movementValues.isAroundSnow() || movementValues.isAroundLadders() || nessPlayer.isTeleported()
-				|| movementValues.hasBlockNearHead() || Utility.hasVehicleNear(p)) {
+				|| movementValues.hasBlockNearHead() || Utility.hasVehicleNear(p) || movementValues.isOnGroundCollider()) {
 			flyYSum = 0;
 			return;
 		}
@@ -56,7 +65,7 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 
 		if (y > 0) {
 			flyYSum += y;
-			double max = 1.45;
+			double max = 1.27;
 			if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 1000) {
 				max += 0.25;
 			}

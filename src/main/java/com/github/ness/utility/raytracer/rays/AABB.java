@@ -42,8 +42,8 @@ public class AABB {
 		Vector max = new Vector(0, 0, 0);
 		if (entity instanceof Player) {
 			Player player = (Player) entity;
-			min = getMinForPlayer(player);
-			max = getMaxForPlayer(player);
+			min = getMinForPlayer(player.getLocation());
+			max = getMaxForPlayer(player.getLocation());
 		} else if (ness != null) {
 			double xMax, xMin, yMax, yMin, zMax, zMin = 0;
 			if (craftLivingEntityMethod == null) {
@@ -73,24 +73,37 @@ public class AABB {
 			xMax = xMaxField.get(boundingBox);
 			yMax = yMaxField.get(boundingBox);
 			zMax = zMaxField.get(boundingBox);
-			min = new Vector(xMin-expansion, yMin-expansion, zMin-expansion);
-			max = new Vector(xMax+expansion, yMax+expansion, zMax+expansion);
+			min = new Vector(xMin - expansion, yMin - expansion, zMin - expansion);
+			max = new Vector(xMax + expansion, yMax + expansion, zMax + expansion);
 		}
 		this.max = max;
 		this.min = min;
 	}
 
-	private Vector getMinForPlayer(Player player) {
-		return player.getLocation().toVector().add(new Vector(-0.4, 0, -0.4));
+	/**
+	 * This constructor is well appreciated, use the latest location here
+	 */
+	private AABB(Location playerLocation, double expansion) {
+		Vector min = getMinForPlayer(playerLocation);
+		Vector max = getMaxForPlayer(playerLocation);
+		this.min = new Vector(min.getX() - expansion, min.getY() - expansion, min.getZ() - expansion);
+		this.max = new Vector(max.getX() + expansion, max.getY() + expansion, max.getZ() + expansion);
 	}
 
-	private Vector getMaxForPlayer(Player player) {
-		return player.getLocation().toVector().add(new Vector(0.4, 1.99, 0.4));
+	private Vector getMinForPlayer(Location loc) {
+		return loc.toVector().add(new Vector(-0.3, 0, -0.3));
 	}
 
-	// Create an AABB based on a player's hitbox
+	private Vector getMaxForPlayer(Location loc) {
+		return loc.toVector().add(new Vector(0.3, 1.9, 0.3));
+	}
+
 	public static AABB from(Entity player, NessAnticheat ness, double expansion) {
-		return new AABB(player, ness,expansion);
+		return new AABB(player, ness, expansion);
+	}
+
+	public static AABB from(Location location, double expansion) {
+		return new AABB(location, expansion);
 	}
 
 	public Vector getMin() {

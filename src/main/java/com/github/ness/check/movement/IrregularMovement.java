@@ -117,12 +117,12 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 
 	public void jumpBoost(Cancellable e) {
 		int jumpBoost = Utility.getPotionEffectLevel(this.player().getBukkitPlayer(), PotionEffectType.JUMP);
-		double max = 0.42F + (jumpBoost * 0.1);
+		double max = 0.42F + (jumpBoost * 0.13);
 		if (this.player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 1700) {
 			max += this.player().getLastVelocity().getY();
 		}
 		if ((float) this.player().getMovementValues().getyDiff() > max && jumpBoost > 0) {
-			this.flagEvent(e, "HighJumpBoost");
+			this.flagEvent(e, "HighJumpBoost: " + (float) player().getMovementValues().getyDiff());
 		}
 	}
 

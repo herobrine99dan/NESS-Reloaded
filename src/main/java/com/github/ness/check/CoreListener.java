@@ -38,15 +38,7 @@ public class CoreListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onQuit(PlayerQuitEvent evt) {
-		Player player = evt.getPlayer();
-		final long tenSecondsLater = 20L * 10L;
-
-		JavaPlugin plugin = manager.getCheckManager().getNess().getPlugin();
-		plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-			if (!player.isOnline()) {
-				manager.removePlayer(player);
-			}
-		}, tenSecondsLater);
+		manager.removePlayer(evt.getPlayer().getUniqueId());
 	}
 
 	/*

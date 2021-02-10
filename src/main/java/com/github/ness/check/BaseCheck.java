@@ -27,6 +27,10 @@ public class BaseCheck {
 		return getFactory().getCheckManager();
 	}
 	
+	protected MaterialAccess getMaterialAccess() {
+		return this.manager().getNess().getMaterialAccess();
+	}
+	
 	protected NessAnticheat ness() {
 		return manager().getNess();
 	}

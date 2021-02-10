@@ -10,7 +10,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Vehicle;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -29,14 +28,48 @@ public class MovementValuesHelper {
 	 * @param direction (if it is null, will be replaced with player direction)
 	 * @return the angle in radians
 	 */
-	public double getAngle(Player player, Location target, Vector direction) {
-		Location eye = player.getEyeLocation();
-		if (direction == null) {
-			direction = player.getLocation().getDirection();
-		}
+	public double getAngle(NessPlayer player, Location target) {
+		Location eye = getEyeLocation(player.getMovementValues().getTo().toBukkitLocation(), player.getBukkitPlayer());
+		Vector direction = player.getMovementValues().getDirection().toBukkitVector();
 		Vector toEntity = target.toVector().subtract(eye.toVector());
 		double dot = toEntity.normalize().dot(direction);
 		return dot;
+	}
+	
+	/**
+	 * Get Angle (in Radians) beetween a player and the target
+	 * 
+	 * @param player
+	 * @param target
+	 * @param direction (if it is null, will be replaced with player direction)
+	 * @return the angle in radians
+	 */
+	public double getAngle(Player player, Location target) {
+		Location eye = player.getEyeLocation();
+		Vector direction = player.getLocation().getDirection();
+		Vector toEntity = target.toVector().subtract(eye.toVector());
+		double dot = toEntity.normalize().dot(direction);
+		return dot;
+	}
+
+	/**
+	 * Get Angle (in Radians) beetween a player and the target
+	 * 
+	 * @param player
+	 * @param target
+	 * @param direction (if it is null, will be replaced with player direction)
+	 * @return the angle in radians
+	 */
+	public double getAngle(NessPlayer player, LivingEntity target) {
+		Location eye = getEyeLocation(player.getMovementValues().getTo().toBukkitLocation(), player.getBukkitPlayer());
+		Vector direction = player.getMovementValues().getDirection().toBukkitVector();
+		Vector toEntity = target.getLocation().add(0, target.getEyeHeight() / 2, 0).toVector().subtract(eye.toVector());
+		double dot = toEntity.normalize().dot(direction);
+		return dot;
+	}
+
+	public Location getEyeLocation(Location location, Player player) {
+		return location.add(0, player.getEyeHeight(), 0);
 	}
 
 	public boolean groundAround(Location loc) {
@@ -54,24 +87,57 @@ public class MovementValuesHelper {
 		return false;
 	}
 
-	public List<Block> getCollidingBlocks(Location loc, Double distance, Double subtraction) {
-		if (subtraction == null) {
-			subtraction = 0.1;
-		}
+	public List<Block> getCollidingBlocks(Location loc) {
 		List<Block> blocks = new ArrayList<Block>();
-		final Location cloned = loc.clone().subtract(0, subtraction, 0);
-		double limit;
-		if (distance == null) {
-			limit = 0.3;
-		} else {
-			limit = distance;
-		}
+		final Location cloned = loc.clone();
+		double limit = 0.42;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
-				blocks.add(cloned.clone().add(x, 0, z).getBlock());
+				for (double y = -0.1; y < 1.99; y += 0.1) {
+					blocks.add(cloned.clone().add(x, y, z).getBlock());
+				}
 			}
 		}
 		return blocks;
+	}
+
+	public boolean isNearWater(Location loc, MaterialAccess access) {
+		int water = 0;
+		double limit = 0.3;
+		for (double x = -limit; x < limit + 0.1; x += limit) {
+			for (double z = -limit; z < limit + 0.1; z += limit) {
+				for (double y = -0.1; y < 0.2; y += 0.1) {
+					if (access.getMaterial(loc.clone().add(x, y, z)).name().contains("WATER")) {
+						water++;
+					}
+				}
+			}
+		}
+		return water > 4;
+	}
+
+	public boolean isNearLava(Location loc, MaterialAccess access) {
+		int water = 0;
+		double limit = 0.3;
+		for (double x = -limit; x < limit + 0.1; x += limit) {
+			for (double z = -limit; z < limit + 0.1; z += limit) {
+				for (double y = -0.1; y < 0.1; y += 0.1) {
+					if (access.getMaterial(loc.clone().add(x, y, z)).name().contains("LAVA")) {
+						water++;
+					}
+				}
+			}
+		}
+		return water > 4;
+	}
+
+	public boolean collideLadders(Location loc) {
+		for (Block block : getCollidingBlocks(loc)) {
+			if (block.getType().name().contains("LADDER") || block.getType().name().contains("VINE")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public boolean isMathematicallyOnGround(double y) {
@@ -108,10 +174,10 @@ public class MovementValuesHelper {
 	}
 
 	public boolean isOnGroundUsingCollider(Location loc, MaterialAccess access) {
-		final double limit = 0.5;
+		final double limit = 0.3;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
-				Block block = loc.clone().add(x, 0, z).getBlock();
+				Block block = loc.clone().add(x, -0.35, z).getBlock();
 				Material material = access.getMaterial(block);
 				if (material.isSolid()) {
 					return true;

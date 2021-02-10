@@ -59,6 +59,8 @@ public class MovementValues {
 	private final boolean AroundLadders;
 
 	private final boolean AroundLily;
+	
+	private final boolean AroundIronBars;
 
 	private final boolean AroundCarpet;
 
@@ -106,6 +108,7 @@ public class MovementValues {
 		this.helper = MovementValuesHelper.makeHelper(this);
 		if (Bukkit.isPrimaryThread()) {
 			boolean liquids = false;
+			boolean ironbars = false;
 			boolean ice = false;
 			boolean slime = false;
 			boolean stairs = false;
@@ -128,7 +131,6 @@ public class MovementValues {
 			boolean onGroundCollider = false;
 			boolean sea = false;
 			boolean stainedGlass = false;
-			boolean glass = false;
 			boolean nonOccludingBlocks = false;
 			serverVelocity = new ImmutableVector(p.getVelocity().getX(), p.getVelocity().getY(),
 					p.getVelocity().getZ());
@@ -178,8 +180,8 @@ public class MovementValues {
 					sea = true;
 				} else if (name.contains("STAINED")) {
 					stainedGlass = true;
-				} else if (name.contains("STAINED")) {
-					glass = true;
+				} else if (name.contains("BARS")) {
+					ironbars = true;
 				}
 				if (material.isSolid() && !material.isOccluding()) {
 					nonOccludingBlocks = true;
@@ -193,6 +195,7 @@ public class MovementValues {
 			AroundNonOccludingBlocks = nonOccludingBlocks;
 			aroundWeb = web;
 			AroundStairs = stairs;
+			AroundIronBars = ironbars;
 			sprinting = p.isSprinting();
 			if (!slime) {
 				slime = helper.hasBlock(p, "SLIME");
@@ -236,6 +239,7 @@ public class MovementValues {
 			sprinting = false;
 			AroundNonOccludingBlocks = false;
 			AroundLily = false;
+			AroundIronBars = false;
 			AroundFire = false;
 			aroundWeb = false;
 			blockUnderHead = false;
@@ -439,5 +443,9 @@ public class MovementValues {
 
 	public boolean isAroundGlass() {
 		return AroundGlass;
+	}
+
+	public boolean isAroundIronBars() {
+		return AroundIronBars;
 	}
 }

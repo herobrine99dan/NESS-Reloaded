@@ -1,13 +1,10 @@
 package com.github.ness.check.movement;
 
-import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
@@ -44,8 +41,8 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		Player p = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
-		if (movementValues.getHelper().hasflybypass(nessPlayer) || Utility.hasVehicleNear(p)
-				|| p.getAllowFlight() || nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
+		if (movementValues.getHelper().hasflybypass(nessPlayer) || Utility.hasVehicleNear(p) || p.getAllowFlight()
+				|| nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
 			return;
 		}
 		if (p.getLocation().getBlock().isLiquid()) {
@@ -57,10 +54,10 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		double yDist = movementValues.getyDiff();
 		double xzDist = movementValues.getXZDiff();
 		if (event.getTo().clone().add(0, -0.1, 0).getBlock().isLiquid() && event.getFrom().getBlock().isLiquid()
-				&& isNearLava(event.getTo(), this.manager().getNess().getMaterialAccess())) {
+				&& movementValues.getHelper().isNearLava(event.getTo(), this.getMaterialAccess())) {
 			handleLava(movementValues, event, nessPlayer);
 		} else if (event.getTo().clone().add(0, -0.1, 0).getBlock().isLiquid() && event.getFrom().getBlock().isLiquid()
-				&& isNearWater(event.getTo(), this.manager().getNess().getMaterialAccess())) {
+				&& movementValues.getHelper().isNearWater(event.getTo(), this.getMaterialAccess())) {
 			handleWater(movementValues, event, nessPlayer);
 		}
 		lastXZDist = xzDist;
@@ -78,7 +75,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		// nessPlayer.sendDevMessage("WaterTicks: " + this.liquidTicks + " resultY: " +
 		// resultY);
 		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
-			if (yDist > 0.302D) {
+			if (yDist > 0.302D && !values.isGroundAround()) {
 				this.flagEvent(event, "HighDistanceY");
 			} else if (resultY > 0.105 && !values.isGroundAround()) {
 				this.flagEvent(event, "HighVarianceY: " + (float) resultY);
@@ -121,27 +118,4 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 			}
 		}
 	}
-
-	private boolean isNearWater(Location loc, MaterialAccess access) {
-		int water = 0;
-		for (Block b : this.player().getMovementValues().getHelper().getCollidingBlocks(loc, 0.3, 0.1)) {
-			String material = access.getMaterial(b).name();
-			if (material.contains("WATER")) {
-				water++;
-			}
-		}
-		return water > 4;
-	}
-
-	private boolean isNearLava(Location loc, MaterialAccess access) {
-		int water = 0;
-		for (Block b : this.player().getMovementValues().getHelper().getCollidingBlocks(loc, 0.5, 0.1)) {
-			String material = access.getMaterial(b).name();
-			if (material.contains("LAVA")) {
-				water++;
-			}
-		}
-		return water > 4;
-	}
-
 }

@@ -170,7 +170,8 @@ public class NessPlayer implements AnticheatPlayer {
 	private volatile String kickMessage;
 
 	public boolean isInvalid() {
-		return kickMessage != null;
+		boolean returner = kickMessage != null;
+		return returner;
 	}
 
 	public void checkNeedsKick() {
