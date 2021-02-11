@@ -117,6 +117,10 @@ public class ImmutableLoc {
 				+ NumberConversions.square(this.z - o.z);
 	}
 
+	public double getGroundDistanceTo(ImmutableLoc location) {
+		return Math.sqrt(Math.pow(this.x - location.x, 2.0D) + Math.pow(this.z - location.z, 2.0D));
+	}
+
 	/**
 	 * Converts back to a bukkit location
 	 *

@@ -12,6 +12,8 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.github.ness.data.ImmutableLoc;
+
 public class Utility {
 
 	public static List<Block> getBlocksAround(Location loc, int radius) {
@@ -25,7 +27,7 @@ public class Utility {
 		}
 		return result;
 	}
-	
+
 	public static boolean hasVehicleNear(Player player) {
 		final int range = 4;
 		for (Entity e : player.getNearbyEntities(range, range, range)) {
@@ -35,7 +37,17 @@ public class Utility {
 		}
 		return false;
 	}
-	
+
+	public static float[] getRotationFromPosition(Location playerLocation, Location targetLocation) {
+		double xDiff = targetLocation.getX() - playerLocation.getX();
+		double zDiff = targetLocation.getZ() - playerLocation.getZ();
+		double yDiff = targetLocation.getY() - playerLocation.getY() + 0.2F;
+		double dist = Math.sqrt(xDiff * xDiff + zDiff * zDiff);
+		float yaw = (float) (Math.atan2(zDiff, xDiff) * 180.0D / Math.PI) - 45.0F;
+		float pitch = (float) -(Math.atan2(yDiff, dist) * 180.0D / Math.PI);
+		return new float[] { yaw, pitch };
+	}
+
 	public static boolean hasLivingEntityNear(Player player) {
 		final int range = 4;
 		for (Entity e : player.getNearbyEntities(range, range, range)) {

@@ -23,6 +23,7 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.check.PeriodicTaskInfo;
 import com.github.ness.utility.MathUtils;
+import com.github.ness.utility.Utility;
 import com.github.ness.utility.raytracer.rays.AABB;
 import com.github.ness.utility.raytracer.rays.Ray;
 
@@ -57,18 +58,16 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		@DefaultInteger(360)
 		double maxYaw();
 
+		@ConfComments("Hitbox and Reach check are handled by the Raytracer check, which is really aggressive")
 		@DefaultDouble(0.6)
 		double mainAngle();
 
-		@DefaultDouble(-0.2)
-		double minAngle();
-		
-		@ConfComments("This is the max Reach allowed, we suggest to use a value beetween 3.2 and 3.5 to don't have lots of false flags and bypasses")
-		@DefaultDouble(3.3)
+		@ConfComments("This is the max Reach allowed. The maxReach depends on this value, on lagAccount value and on reachExpansion. The real formula to calculate the maxReach is 'maxReach+reachExpansion= realMaxReach' where maxReach is this config option, reachExpansion is the config option under this and realMaxReach is the realMaxReach calculated by the RayTracer")
+		@DefaultDouble(3.05)
 		double maxReach();
 
-		@ConfComments("Minecraft adds to the hitbox an expansion, that is default 0.1. To remove false flags we suggest to use 0.15.")
-		@DefaultDouble(0.15)
+		@ConfComments("Minecraft adds to the hitbox of the entity an expansion, that is default 0.1. Due to precision errors, network errors, calculations errors and sometimes rouding errors, it is suggested to use 0.25 to have less false flags.")
+		@DefaultDouble(0.25)
 		double reachExpansion();
 
 		@DefaultDouble(4)
@@ -90,6 +89,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		Check3(e);
 		Check4(e);
 		Check5(e);
+		Check6(e);
 	}
 
 	private double angleBuffer = 0;
@@ -100,6 +100,8 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 			return;
 		}
 		final LivingEntity entity = (LivingEntity) event.getEntity();
+		float fov = Utility.getRotationFromPosition(player.getLocation(), entity.getLocation())[0];
+		this.player().sendDevMessage("FOV: " + fov);
 		final NessPlayer nessPlayer = player();
 		// TODO Account for lag
 		double maxReach = this.maxReach;
@@ -134,7 +136,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		} else if (angleBuffer > 0) {
 			angleBuffer -= 0.5;
 		}
-		if (angleList.size() > 10) {
+		if (angleList.size() > 9) {
 			angleList.clear();
 		}
 	}
@@ -189,5 +191,18 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		if (nessPlayer.getAttackedEntities().size() > 2) {
 			flagEvent(event, "MultiAura Entities: " + nessPlayer.getAttackedEntities().size());
 		}
+	}
+
+	public void Check6(EntityDamageByEntityEvent event) {
+		if (!(event.getEntity() instanceof LivingEntity)) {
+			return;
+		}
+		NessPlayer nessPlayer = player();
+		final LivingEntity entity = (LivingEntity) event.getEntity();
+		final Location eye = nessPlayer.getBukkitPlayer().getEyeLocation();
+		final Vector direction = nessPlayer.getMovementValues().getDirection().toBukkitVector();
+		final Vector toEntity = entity.getLocation().toVector().subtract(eye.toVector());
+		float notNormalizedDot = (float) toEntity.clone().dot(direction);
+		nessPlayer.sendDevMessage("notNormalized: " + notNormalizedDot + " degreeNotNormalized: " + Math.toDegrees(notNormalizedDot));
 	}
 }

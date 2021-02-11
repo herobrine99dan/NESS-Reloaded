@@ -57,13 +57,20 @@ public class AABB {
 			if (xMaxField == null) {
 				// Max fields are "d" "e" and "f"
 				// Min fields are "a" "b" and "c"
+				//With newer versions (like 1.16.4) Spigot uses the Mojang's obfuscation map
 				Class<?> boxClass = locator.getNmsClass("AxisAlignedBB");
-				xMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "d"));
-				yMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "e"));
-				zMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "f"));
-				xMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "a"));
-				yMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "b"));
-				zMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "c"));
+				xMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "d"),
+						MemberDescriptions.forField(double.class, "maxX"));
+				yMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "e"),
+						MemberDescriptions.forField(double.class, "maxY"));
+				zMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "f"),
+						MemberDescriptions.forField(double.class, "maxZ"));
+				xMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "a"),
+						MemberDescriptions.forField(double.class, "minX"));
+				yMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "b"),
+						MemberDescriptions.forField(double.class, "minY"));
+				zMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "c"),
+						MemberDescriptions.forField(double.class, "minZ"));
 			}
 			Object entitynms = craftLivingEntityMethod.invoke(entity);
 			Object boundingBox = getBoundingBoxesMethod.invoke(entitynms);
