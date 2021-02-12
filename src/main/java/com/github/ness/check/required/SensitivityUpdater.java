@@ -58,6 +58,7 @@ public class SensitivityUpdater extends PacketCheck {
 				return;
 			}
 			if (result < 0.01 && gcd > 0.05) {
+				player.setGcd(gcd);
 				player.setSensitivity(sensitivity);
 			}
 			pitchDiff.clear();

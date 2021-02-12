@@ -13,6 +13,7 @@ import com.github.ness.check.combat.autoclick.AutoClickConfig;
 import com.github.ness.check.movement.ElytraCheats;
 import com.github.ness.check.movement.FastLadder;
 import com.github.ness.check.movement.Jesus;
+import com.github.ness.check.movement.fly.FlyInvalidClientGravity;
 import com.github.ness.check.movement.fly.FlyInvalidServerGravity;
 import com.github.ness.check.packet.Freecam;
 import com.github.ness.check.packet.MorePackets;
@@ -125,7 +126,7 @@ public interface ChecksConfig {
 	@ConfKey("gravity-fly")
 	@ConfComments({
 		"",
-		"Check if a player is editing gravity.",
+		"Check if a player is editing gravity using Mojang's velocity.",
 		"",
 		"Performance impact: low", 
 		"Effectiveness: High",
@@ -155,4 +156,14 @@ public interface ChecksConfig {
 		""})
 	@SubSection
 	Timer.Config timer();
+	@ConfKey("client-gravity-fly")
+	@ConfComments({
+		"",
+		"Check if a player is editing gravity predicting his next y value.",
+		"",
+		"Performance impact: low", 
+		"Effectiveness: High",
+		""})
+	@SubSection
+	FlyInvalidClientGravity.Config flyInvalidClientGravity();
 }

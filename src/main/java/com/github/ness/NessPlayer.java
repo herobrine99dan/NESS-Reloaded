@@ -73,6 +73,7 @@ public class NessPlayer implements AnticheatPlayer {
 	private final String userName;
 	private Location safeLocation; //Not ThreadSafe
 	private boolean cinematic;
+	private float gcd;
 	private volatile float timerTicks;
 
 	public NessPlayer(Player player, boolean devMode, MaterialAccess access) {
@@ -395,6 +396,14 @@ public class NessPlayer implements AnticheatPlayer {
 
 	public void setOnGroundPacket(boolean onGroundPacket) {
 		this.onGroundPacket = onGroundPacket;
+	}
+
+	public float getGcd() {
+		return gcd;
+	}
+
+	public void setGcd(float gcd) {
+		this.gcd = gcd;
 	}
 
 }

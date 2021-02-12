@@ -12,17 +12,30 @@ import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
+import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
+import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
+
 public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
-
+	private final int minAirTicks;
+	private final double minBuffer;
 	public FlyInvalidClientGravity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
+		minAirTicks = this.ness().getMainConfig().getCheckSection().flyInvalidClientGravity().airTicks();
+		minBuffer = this.ness().getMainConfig().getCheckSection().flyInvalidClientGravity().buffer();
 	}
 
 	private double lastDeltaY;
 	private int airTicks;
 	private double buffer;
+	
+	public interface Config {
+		@DefaultInteger(4)
+		int airTicks();
+		@DefaultDouble(1)
+		double buffer();
+	}
 
 	@Override
 	protected boolean shouldDragDown() {
@@ -58,11 +71,11 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		}
 		float yPredicted = (float) ((lastDeltaY - 0.08D) * 0.9800000190734863D);
 		float yResult = (float) Math.abs(deltaY - yPredicted);
-		if (airTicks > 2 && nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000
+		if (airTicks > minAirTicks && nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000
 				&& Math.abs(yPredicted) > 0.02) {
 			if (Math.abs(yResult) > 0.01 && !isAtLeastFollowingGravity(deltaY, yPredicted)) {
 				nessPlayer.sendDevMessage("Y: " + deltaY + " PredictedY: " + yPredicted);
-				if (++buffer > 1) {
+				if (++buffer > minBuffer) {
 					this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
 				}
 			} else if (buffer > 0) {
