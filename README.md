@@ -35,3 +35,4 @@ Also see the [extended contributors page](https://github.com/herobrine99dan/NESS
 NESS-Reloaded is licensed under the GNU General Public License v3 or later. See the license file for more inormation.
 
 This project contains concepts originally from ProtocolLib, Copyright (C) 2018 Kristian S. Stangeland, licensed under the GNU General Public License version 2 or later. ProtocolLib concepts are used in NESS-Reloaded under the GNU General Public License version 3, according to the definition of a "combined work."
+This project contains code originally from AntiHaxerman, Copyright (C) 2021 Tecnio, licensed under the GNU General Public License version 3 or later. AntiHaxerman code is used in NESS-Reloaded under the GNU General Public License version 3, according to the definition of a "combined work."
