@@ -13,13 +13,11 @@ public class AimbotPattern extends PacketCheck {
 
 	public static final CheckInfo checkInfo = CheckInfos.forPackets();
 
-	private double lastYaw;
 	private float lastPitchDelta;
 	private double lastPitch, buffer;
 
 	public AimbotPattern(PacketCheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
-		lastYaw = 0;
 		lastPitch = 0;
 	}
 
@@ -33,7 +31,6 @@ public class AimbotPattern extends PacketCheck {
 			return;
 		}
 		process(packet);
-		lastYaw = wrapper.yaw();
 		lastPitch = wrapper.pitch();
 	}
 	
@@ -46,7 +43,6 @@ public class AimbotPattern extends PacketCheck {
 	private void process(Packet packet) {
 		PlayInFlying wrapper = packet.toPacketWrapper(this.packetTypeRegistry().playInFlying());
 		float pitchDelta = (float) Math.abs(wrapper.pitch() - lastPitch);
-		float yawDelta = (float) Math.abs(wrapper.yaw() - lastYaw);
 		float gcdPitch = (float) MathUtils.gcdRational(pitchDelta, lastPitchDelta);
 		float pitchAdapted = (wrapper.pitch() % gcdPitch);
 		if (Math.abs(pitchAdapted) < 1e-4 && pitchDelta > 1) {

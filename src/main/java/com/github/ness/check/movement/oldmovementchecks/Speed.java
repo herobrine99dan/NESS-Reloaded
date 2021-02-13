@@ -33,7 +33,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		double hozDist = dist - (to.getY() - from.getY());
 		if (to.getY() < from.getY())
 			hozDist = dist - (from.getY() - to.getY());
-		double maxSpd = player.getWalkSpeed() * 2.15; // 0.43
+		double maxSpd = player.getWalkSpeed() * 2.1042; // 0.43
 		double velocity = 0;
 		if (player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
 			velocity = Math.hypot(player().getLastVelocity().getX(), player().getLastVelocity().getZ());
@@ -50,7 +50,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 						.getBlockAt(from.getBlockX() + x, player.getEyeLocation().getBlockY() + 1, from.getBlockZ() + z)
 						.getType();
 				if (mat.isSolid()) {
-					maxSpd = player.getWalkSpeed() * 2.535; // 0.507
+					maxSpd = player.getWalkSpeed() * 2.53; // 0.507
 					break;
 				}
 			}

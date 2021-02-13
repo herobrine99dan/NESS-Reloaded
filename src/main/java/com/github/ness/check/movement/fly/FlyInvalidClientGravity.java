@@ -20,6 +20,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 	private final int minAirTicks;
 	private final double minBuffer;
+
 	public FlyInvalidClientGravity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 		minAirTicks = this.ness().getMainConfig().getCheckSection().flyInvalidClientGravity().airTicks();
@@ -29,10 +30,11 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 	private double lastDeltaY;
 	private int airTicks;
 	private double buffer;
-	
+
 	public interface Config {
 		@DefaultInteger(4)
 		int airTicks();
+
 		@DefaultDouble(1)
 		double buffer();
 	}
@@ -58,7 +60,8 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues values = nessPlayer.getMovementValues();
 		double deltaY = values.getyDiff();
 		if (values.getHelper().isOnGroundUsingCollider(e.getTo(), this.getMaterialAccess())
-				|| values.getHelper().isOnGroundUsingCollider(e.getFrom(), this.getMaterialAccess()) || p.isOnGround()) {
+				|| values.getHelper().isOnGroundUsingCollider(e.getFrom(), this.getMaterialAccess())
+				|| p.isOnGround()) {
 			airTicks = 0;
 		} else {
 			airTicks++;
@@ -69,33 +72,25 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 			lastDeltaY = deltaY;
 			return;
 		}
+		// TODO If XZ Diff are too low (0.005) Minecraft skip the motion Update so we
+		// get 7 airTicks instead of 8 airTicks with a jump, make a method to detect if
+		// motion Y is skipped
 		float yPredicted = (float) ((lastDeltaY - 0.08D) * 0.9800000190734863D);
 		float yResult = (float) Math.abs(deltaY - yPredicted);
-		if (airTicks > minAirTicks && nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 3000
-				&& Math.abs(yPredicted) > 0.02) {
-			if (Math.abs(yResult) > 0.01 && !isAtLeastFollowingGravity(deltaY, yPredicted)) {
-				nessPlayer.sendDevMessage("Y: " + deltaY + " PredictedY: " + yPredicted);
-				if (++buffer > minBuffer) {
-					this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
+		this.player().sendDevMessage("3ticks: " + airTicks);
+		if (airTicks > minAirTicks && nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 1000) {
+			if (Math.abs(yPredicted) > 0.01) {
+				this.player().sendDevMessage("4result: " + yResult + " yPredicted: " + yPredicted);
+				if (Math.abs(yResult) > 0.01) {
+					this.player().sendDevMessage("6ticks: " + airTicks);
+					if (++buffer > minBuffer) {
+						this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
+					}
+				} else if (buffer > 0) {
+					buffer -= 0.5;
 				}
-			} else if (buffer > 0) {
-				buffer -= 0.5;
 			}
 		}
 		lastDeltaY = deltaY;
-	}
-
-	private boolean isAtLeastFollowingGravity(double yDelta, double yPredicted) {
-		double nextYDelta = (yPredicted - 0.08) * 0.98f;
-		double backYDelta = (yPredicted / 0.98f) + 0.08;
-		double nextYResult = Math.abs(yDelta - nextYDelta);
-		double backYResult = Math.abs(yDelta - backYDelta);
-		if (Math.abs(nextYResult) > 0.001) {
-			return false;
-		}
-		if (Math.abs(backYResult) > 0.001) {
-			return false;
-		}
-		return true;
 	}
 }
