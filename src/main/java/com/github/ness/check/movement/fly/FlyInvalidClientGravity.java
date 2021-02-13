@@ -72,9 +72,8 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 			lastDeltaY = deltaY;
 			return;
 		}
-		// TODO If XZ Diff are too low (0.005) Minecraft skip the motion Update so we
-		// get 7 airTicks instead of 8 airTicks with a jump, make a method to detect if
-		// motion Y is skipped
+		// TODO If X or Z motions are lower than 0.005 (or 0.003 for 1.9+), Minecraft
+		// doesn't send the position packet
 		float yPredicted = (float) ((lastDeltaY - 0.08D) * 0.9800000190734863D);
 		float yResult = (float) Math.abs(deltaY - yPredicted);
 		this.player().sendDevMessage("3ticks: " + airTicks);
