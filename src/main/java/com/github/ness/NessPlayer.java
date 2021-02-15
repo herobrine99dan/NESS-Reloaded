@@ -1,6 +1,5 @@
 package com.github.ness;
 
-import java.awt.geom.Point2D;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -65,7 +64,7 @@ public class NessPlayer implements AnticheatPlayer {
 	private volatile MovementValues movementValues;
 
 	private boolean debugMode;
-
+	private boolean onGroundPacket;
 	private boolean mouseRecord; // Is the player recording?
 	private long lastWasOnGround = System.nanoTime() - Duration.ofHours(1L).toNanos();
 	private long lastWasOnIce = lastWasOnGround;
@@ -74,6 +73,7 @@ public class NessPlayer implements AnticheatPlayer {
 	private final String userName;
 	private Location safeLocation; //Not ThreadSafe
 	private boolean cinematic;
+	private float gcd;
 	private volatile float timerTicks;
 
 	public NessPlayer(Player player, boolean devMode, MaterialAccess access) {
@@ -388,6 +388,22 @@ public class NessPlayer implements AnticheatPlayer {
 
 	public void updateTimerTicks(float timerTicks) {
 		this.timerTicks = timerTicks;
+	}
+
+	public boolean isOnGroundPacket() {
+		return onGroundPacket;
+	}
+
+	public void setOnGroundPacket(boolean onGroundPacket) {
+		this.onGroundPacket = onGroundPacket;
+	}
+
+	public float getGcd() {
+		return gcd;
+	}
+
+	public void setGcd(float gcd) {
+		this.gcd = gcd;
 	}
 
 }

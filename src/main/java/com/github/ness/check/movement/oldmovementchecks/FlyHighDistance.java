@@ -37,7 +37,7 @@ public class FlyHighDistance extends ListeningCheck<PlayerMoveEvent> {
 			dist -= Math.abs(player().getLastVelocity().getX()) + Math.abs(player().getLastVelocity().getZ());
 		}
 		Material below = this.ness().getMaterialAccess().getMaterial(e.getTo().clone().subtract(0, 1, 0));
-		if (!values.isGroundAround() && dist > 0.35 && values.getyDiff() == 0.0
+		if (!values.isGroundAround() && dist > 0.35 && Math.abs(values.getyDiff()) < 0.005
 				&& this.player().getTimeSinceLastWasOnIce() >= 1000) {
 			if (preVL++ > 1) {
 				flagEvent(e);

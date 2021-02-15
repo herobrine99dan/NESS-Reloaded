@@ -42,8 +42,8 @@ public class AABB {
 		Vector max = new Vector(0, 0, 0);
 		if (entity instanceof Player) {
 			Player player = (Player) entity;
-			min = getMinForPlayer(player.getLocation());
-			max = getMaxForPlayer(player.getLocation());
+			min = getMinForPlayer(player.getLocation(), player).add(new Vector(-expansion, -expansion, -expansion));
+			max = getMaxForPlayer(player.getLocation(), player).add(new Vector(expansion, expansion, expansion));
 		} else if (ness != null) {
 			double xMax, xMin, yMax, yMin, zMax, zMin = 0;
 			if (craftLivingEntityMethod == null) {
@@ -57,13 +57,20 @@ public class AABB {
 			if (xMaxField == null) {
 				// Max fields are "d" "e" and "f"
 				// Min fields are "a" "b" and "c"
+				//With newer versions (like 1.16.4) Spigot uses the Mojang's obfuscation map
 				Class<?> boxClass = locator.getNmsClass("AxisAlignedBB");
-				xMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "d"));
-				yMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "e"));
-				zMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "f"));
-				xMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "a"));
-				yMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "b"));
-				zMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "c"));
+				xMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "d"),
+						MemberDescriptions.forField(double.class, "maxX"));
+				yMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "e"),
+						MemberDescriptions.forField(double.class, "maxY"));
+				zMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "f"),
+						MemberDescriptions.forField(double.class, "maxZ"));
+				xMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "a"),
+						MemberDescriptions.forField(double.class, "minX"));
+				yMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "b"),
+						MemberDescriptions.forField(double.class, "minY"));
+				zMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "c"),
+						MemberDescriptions.forField(double.class, "minZ"));
 			}
 			Object entitynms = craftLivingEntityMethod.invoke(entity);
 			Object boundingBox = getBoundingBoxesMethod.invoke(entitynms);
@@ -80,30 +87,16 @@ public class AABB {
 		this.min = min;
 	}
 
-	/**
-	 * This constructor is well appreciated, use the latest location here
-	 */
-	private AABB(Location playerLocation, double expansion) {
-		Vector min = getMinForPlayer(playerLocation);
-		Vector max = getMaxForPlayer(playerLocation);
-		this.min = new Vector(min.getX() - expansion, min.getY() - expansion, min.getZ() - expansion);
-		this.max = new Vector(max.getX() + expansion, max.getY() + expansion, max.getZ() + expansion);
-	}
-
-	private Vector getMinForPlayer(Location loc) {
+	private Vector getMinForPlayer(Location loc, Player player) {
 		return loc.toVector().add(new Vector(-0.3, 0, -0.3));
 	}
 
-	private Vector getMaxForPlayer(Location loc) {
-		return loc.toVector().add(new Vector(0.3, 1.9, 0.3));
+	private Vector getMaxForPlayer(Location loc, Player player) {
+		return loc.toVector().add(new Vector(0.3, player.getEyeHeight(), 0.3));
 	}
 
 	public static AABB from(Entity player, NessAnticheat ness, double expansion) {
 		return new AABB(player, ness, expansion);
-	}
-
-	public static AABB from(Location location, double expansion) {
-		return new AABB(location, expansion);
 	}
 
 	public Vector getMin() {

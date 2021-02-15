@@ -15,7 +15,7 @@ public enum ChecksPackage {
 	 * Class names of checks in the required checks package. <br>
 	 * Do not mutate the array
 	 */
-	static final String[] REQUIRED_CHECKS = { "FrequencyCinematicProcessor", "TeleportEvent" , "OnTickEvent" , "SensitivityUpdater"};
+	static final String[] REQUIRED_CHECKS = { "FrequencyCinematicProcessor", "TeleportEvent" , "OnTickEvent" , "SensitivityUpdater", "OnGroundProcessor"};
 
 	private final String prefix;
 

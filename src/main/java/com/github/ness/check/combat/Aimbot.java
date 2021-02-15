@@ -60,11 +60,14 @@ public class Aimbot extends PacketCheck {
 	private void Check2(Packet e) {
 		PlayInFlying wrapper = e.toPacketWrapper(this.packetTypeRegistry().playInFlying());
 		float yawChange = (float) (wrapper.yaw() % 360 - lastYaw % 360);
+		float yawDelta = (float) (wrapper.yaw() - lastYaw);
 		float pitchChange = (float) (wrapper.pitch() - lastPitch);
-		if (yawChange >= 0.1 && yawChange % 0.1f == 0.0f) {
+		if (yawChange >= 1 && yawChange % 0.1f == 0.0f) {
 			flag(" PerfectAura");
-		} else if (pitchChange >= 0.1 && pitchChange % 0.1f == 0.0f) {
+		} else if (pitchChange >= 1 && pitchChange % 0.1f == 0.0f) {
 			flag(" PerfectAura1");
+		} else if (yawDelta >= 1 && yawDelta % 0.1f == 0.0f) {
+			flag(" PerfectAura2");
 		}
 	}
 
@@ -79,7 +82,7 @@ public class Aimbot extends PacketCheck {
 		if (player.milliSecondTimeDifference(PlayerAction.ATTACK) < 1000) {
 			PlayInFlying wrapper = e.toPacketWrapper(this.packetTypeRegistry().playInFlying());
 			float yawChange = (float) (wrapper.yaw() % 360 - lastYaw % 360);
-			if (yawChange % .25 == 0.0 && this.player().getMovementValues().getYawDiff() > 0) {
+			if (yawChange % .25 == 0.0 && this.player().getMovementValues().getYawDiff() > 1) {
 				if (++buffer3 > 2) {
 					flag("PerfectAura3");
 				}
@@ -93,7 +96,7 @@ public class Aimbot extends PacketCheck {
 
 	private void Check4(Packet e) {
 		PlayInFlying wrapper = e.toPacketWrapper(this.packetTypeRegistry().playInFlying());
-		float yawDelta = (float) (wrapper.yaw() % 360 - lastYaw % 360);
+		float yawDelta = (float) (Math.abs(wrapper.yaw()) - Math.abs(lastYaw)) % 360;
 		float pitchDelta = (float) (wrapper.pitch() - lastPitch);
 		if (yawDelta > 30 && isReallySmall(pitchDelta)) {
 			if (++buffer4 > 15) {
@@ -112,12 +115,10 @@ public class Aimbot extends PacketCheck {
 		PlayInFlying wrapper = e.toPacketWrapper(this.packetTypeRegistry().playInFlying());
 		float yawDeltaPacket = (float) (wrapper.yaw() % 360 - lastYaw % 360);
 		float pitchDeltaPacket = (float) (wrapper.pitch() - lastPitch);
-		roundedValues(yawDeltaPacket, pitchDeltaPacket, wrapper.yaw(), wrapper.pitch());
-		commonPattern(yawDeltaPacket, pitchDeltaPacket, wrapper.yaw(), wrapper.pitch());
+		float lastYawBukkit = this.player().getMovementValues().getTo().getYaw();
+		roundedValues(yawDeltaPacket, pitchDeltaPacket, lastYawBukkit, wrapper.pitch());
+		commonPattern(yawDeltaPacket, pitchDeltaPacket, lastYawBukkit, wrapper.pitch());
 	}
-	
-	private double lastPitchDelta;
-	private double buffer6;
 
 	private double buffer5;
 
@@ -135,7 +136,8 @@ public class Aimbot extends PacketCheck {
 			if (++buffer5 > 5) {
 				this.flag("PerfectRotation3");
 			}
-		} else if (Math.abs(pitch) == Math.round(Math.abs(pitch)) && Math.abs(pitchDeltaPacket) > 1f && Math.abs(pitch) < 89) {
+		} else if (Math.abs(pitch) == Math.round(Math.abs(pitch)) && Math.abs(pitchDeltaPacket) > 1f
+				&& Math.abs(pitch) < 89) {
 			if (++buffer5 > 3) {
 				this.flag("PerfectRotation4");
 			}
@@ -144,12 +146,48 @@ public class Aimbot extends PacketCheck {
 		}
 	}
 
+	private double roundDoubleNumber(double n, boolean ceilMethod) {
+		if (ceilMethod) {
+			return Math.ceil(n * 10) / 10;
+		}
+		return Math.round(n * 10) / 10;
+	}
+
 	private void commonPattern(float yawDeltaPacket, float pitchDeltaPacket, float yaw, float pitch) {
+		// this.player().sendDevMessage("Yaw: " + roundDoubleNumber(yaw, true) + " real:
+		// " + yaw);
+		// this.player()
+		// .sendDevMessage("yawDelta: " + roundDoubleNumber(yawDeltaPacket, true) + "
+		// real: " + yawDeltaPacket);
+		// this.player().sendDevMessage("pitch: " + roundDoubleNumber(pitch, true) + " "
+		// + pitch);
+		// this.player().sendDevMessage(
+		// "pitchDelta: " + roundDoubleNumber(pitchDeltaPacket, true) + " real: " +
+		// pitchDeltaPacket);
 		if (Math.abs(yaw) % 0.5D == 0.0D) {
 			if (++buffer5 > 3) {
 				this.flag("PerfectRotation5");
 			}
+		} else if (isDiffAlmostEquals(Math.abs(roundDoubleNumber(yaw, false)), yaw) && Math.abs(yaw) > 0) {
+			if (++buffer5 > 3) {
+				this.flag("PerfectRotation6");
+			}
+		} else if (isDiffAlmostEquals(Math.abs(roundDoubleNumber(yawDeltaPacket, false)), yawDeltaPacket)
+				&& Math.abs(yawDeltaPacket) > 0) {
+			if (++buffer5 > 4) {
+				this.flag("PerfectRotation7");
+			}
+		} else if (isDiffAlmostEquals(Math.abs(roundDoubleNumber(yawDeltaPacket, true)), yawDeltaPacket)
+				&& Math.abs(yawDeltaPacket) > 0) {
+			if (++buffer5 > 4) {
+				this.flag("PerfectRotation7-1");
+			}
 		}
+	}
+
+	private boolean isDiffAlmostEquals(double d, double rounded) {
+		double result = d - rounded;
+		return Math.abs(result) < 0.01;
 	}
 
 	private boolean isReallySmall(double d) {
