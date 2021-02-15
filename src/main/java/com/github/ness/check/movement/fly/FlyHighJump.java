@@ -13,9 +13,6 @@ import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
-import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
-import space.arim.dazzleconf.annote.ConfKey;
-
 public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
@@ -25,12 +22,6 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 
 	public FlyHighJump(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
-	}
-
-	public interface AutoClick extends CheckConfig {
-		@ConfKey("max-cps")
-		@DefaultInteger(16)
-		int maxCps();
 	}
 
 	@Override
