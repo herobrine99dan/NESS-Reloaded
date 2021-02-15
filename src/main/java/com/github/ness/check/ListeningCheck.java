@@ -3,8 +3,8 @@ package com.github.ness.check;
 import java.time.Duration;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.config.NessConfig;
-import com.github.ness.violation.ViolationTriggerSection.CancelEvent;
+import com.github.ness.check.dragdown.SetBack;
+import com.github.ness.violation.ViolationManager;
 
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -72,12 +72,14 @@ public abstract class ListeningCheck<E extends Event> extends Check {
 	protected final void flagEvent(Cancellable evt, String details) {
 		if (callFlagEvent()) {
 			int violations = flag0(details).getCount();
-			NessConfig config = getFactory().getCheckManager().getNess().getMainConfig();
-			CancelEvent cancelEvent = config.getViolationHandling().cancelEvent();
-			if (cancelEvent.enable() && violations >= cancelEvent.violations()) {
-				evt.setCancelled(true);
-				if (shouldDragDown()) {
-					runTaskLater(player()::completeDragDown, Duration.ZERO);
+			ViolationManager violationManager = getFactory().getCheckManager().getNess().getViolationManager();
+			SetBack setBackToUse = violationManager.shouldCancelWithSetBack(this, violations);
+			if (setBackToUse != null) {
+				if (setBackToUse.shouldRunOnDelay()) {
+					NessPlayer player = player();
+					runTaskLater(() -> setBackToUse.doSetBack(player, evt), Duration.ZERO);
+				} else {
+					setBackToUse.doSetBack(player(), evt);
 				}
 			}
 		}

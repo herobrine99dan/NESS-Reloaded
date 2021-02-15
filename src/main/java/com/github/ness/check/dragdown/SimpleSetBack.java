@@ -12,4 +12,8 @@ public class SimpleSetBack implements SetBack {
 		return true;
 	}
 
+	@Override
+	public boolean shouldRunOnDelay() {
+		return false;
+	}
 }

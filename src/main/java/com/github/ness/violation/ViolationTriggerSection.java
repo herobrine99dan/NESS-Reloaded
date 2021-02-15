@@ -168,31 +168,4 @@ public interface ViolationTriggerSection {
 
 	}
 
-	interface CancelEvent extends ViolationTriggerSection {
-
-		@Override
-		@DefaultInteger(3)
-		int violations();
-		
-		@DefaultString("")
-		String dragDown();
-
-		@Override
-		default InfractionTrigger toTrigger(ViolationManager manager, NessAnticheat ness) {
-			return new InfractionTrigger() {
-
-				@Override
-				public SynchronisationContext context() {
-					return SynchronisationContext.ANY;
-				}
-
-				@Override
-				public void trigger(Infraction infraction) {
-				}
-
-			};
-		}
-
-	}
-
 }

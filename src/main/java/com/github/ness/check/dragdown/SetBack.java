@@ -6,6 +6,10 @@ import com.github.ness.NessPlayer;
 
 public interface SetBack {
 	
-	public boolean doSetBack(NessPlayer nessPlayer, Cancellable e);
+	boolean doSetBack(NessPlayer nessPlayer, Cancellable e);
+
+	default boolean shouldRunOnDelay() {
+		return true;
+	}
 
 }

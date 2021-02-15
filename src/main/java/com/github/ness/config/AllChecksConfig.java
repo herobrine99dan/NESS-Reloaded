@@ -1,11 +1,5 @@
 package com.github.ness.config;
 
-import java.util.AbstractMap;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.github.ness.check.Check.CheckConfig;
 import com.github.ness.check.combat.AutoClicker;
 import com.github.ness.check.combat.Killaura;
 import com.github.ness.check.combat.PlayerESP;
@@ -19,32 +13,13 @@ import com.github.ness.check.packet.Freecam;
 import com.github.ness.check.packet.MorePackets;
 import com.github.ness.check.packet.Timer;
 import com.github.ness.check.world.FastPlace;
-
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.annote.ConfKey;
 import space.arim.dazzleconf.annote.SubSection;
 
 @ConfHeader("All configuration relating to specific checks")
-public interface ChecksConfig {
-	
-    /**
-     * Gets a map of check configurations to corresponding check names. <br>
-     * This is used to help implement per check violation handling.
-     *
-     * @return a map of check configurations to check names
-     */
-    default Map<CheckConfig, String> allCheckNames() {
-        @SuppressWarnings("unchecked")
-        Map.Entry<CheckConfig, String>[] entries = (Map.Entry<CheckConfig, String>[]) new Map.Entry[] {
-                new AbstractMap.SimpleImmutableEntry<>(autoClick(), "AutoClick")
-        };
-        Map<CheckConfig, String> checkNames = new HashMap<>();
-        for (Map.Entry<CheckConfig, String> entry : entries) {
-            checkNames.put(entry.getKey(), entry.getValue());
-        }
-        return Collections.unmodifiableMap(checkNames);
-    }
+public interface AllChecksConfig {
 
 	@ConfKey("autoclick")
 	@SubSection

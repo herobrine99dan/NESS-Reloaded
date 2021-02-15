@@ -1,11 +1,14 @@
 package com.github.ness.config;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.github.ness.antibot.AntiBotConfig;
 import com.github.ness.violation.ViolationHandling;
 
 import space.arim.dazzleconf.annote.ConfComments;
+import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultStrings;
 import space.arim.dazzleconf.annote.ConfHeader;
@@ -92,12 +95,34 @@ public interface NessConfig {
 	AntiBotConfig getAntiBot();
 
 	@ConfKey("violation-handling")
-	@ConfComments({ "", "Violation handling", "", "What to do when a player is detected for cheats", "" })
+	@ConfComments({ "",
+			"Violation handling (Global)",
+			"",
+			"What to do when a player is detected for cheats",
+			"",
+			"The triggers enabled below will run for ALL checks.",
+			"If you want to use violation handling per check, you should disable",
+			"the triggers in this section, and configurate triggers per check instead."})
 	@SubSection
 	ViolationHandling getViolationHandling();
 
+	@ConfKey("per-check-overrides")
+	@ConfComments({
+			"Additional per-check overrides, specifically violation handling.",
+			"",
+			"Each section is named after the check name.",
+			"The AutoClicker check is given as an example"})
+	@ConfDefault.DefaultObject("defaultViolationHandlingPerCheck")
+	Map<String, @SubSection CheckConfig> perCheckConfiguration();
+
+	static Map<String, CheckConfig> defaultViolationHandlingPerCheck(CheckConfig defaultCheckConf) {
+		Map<String, CheckConfig> map = new HashMap<>();
+		map.put("AutoClicker", defaultCheckConf);
+		return map;
+	}
+
 	@ConfKey("checks")
 	@SubSection
-	ChecksConfig getCheckSection();
+	AllChecksConfig getCheckSection();
 
 }

@@ -9,11 +9,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.github.ness.NessPlayer;
 import com.github.ness.api.Infraction;
 import com.github.ness.api.PlayerFlagEvent;
-import com.github.ness.check.dragdown.DragDownEnum;
-import com.github.ness.violation.ViolationHandling;
-
-import space.arim.dazzleconf.annote.ConfKey;
-import space.arim.dazzleconf.annote.SubSection;
 
 /**
  * A check, associated with a player. Includes an optional async task.
@@ -30,14 +25,6 @@ public class Check extends BaseCheck {
 	protected Check(CheckFactory<?> factory, NessPlayer nessPlayer) {
 		super(factory);
 		this.nessPlayer = nessPlayer;
-	}
-
-	public interface CheckConfig {
-		@ConfKey("dragdown-type")
-		DragDownEnum dragDownType();
-		@ConfKey("violation-handling")
-		@SubSection
-		ViolationHandling violationHandling();
 	}
 
 	@Override
