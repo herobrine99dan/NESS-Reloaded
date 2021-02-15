@@ -14,9 +14,11 @@ import com.github.ness.api.Infraction;
 import com.github.ness.api.InfractionManager;
 import com.github.ness.api.InfractionTrigger;
 import com.github.ness.api.InfractionTrigger.SynchronisationContext;
+import com.github.ness.check.Check;
 import com.github.ness.check.CheckManager;
 import com.github.ness.check.InfractionImpl;
 import com.github.ness.check.ListeningCheck;
+import com.github.ness.check.PacketCheck;
 import com.github.ness.check.dragdown.SetBack;
 
 import com.github.ness.config.CheckConfig;
@@ -106,7 +108,20 @@ public class ViolationManager implements InfractionManager {
 		return null;
 	}
 
-	private CancelEvent getCancelEventTrigger(ListeningCheck<?> check) {
+	/**
+	 * Determines whether to cancel a packet check
+	 *
+	 * @param check the packet check
+	 * @param violations the violation count
+	 * @return true to cancel, false otherwise
+	 */
+	public boolean shouldCancelPacketCheck(PacketCheck check, int violations) {
+		CancelEvent cancelEvent = getCancelEventTrigger(check);
+		int violationsThreshold = cancelEvent.violations();
+		return violationsThreshold != -1 && violations >= violationsThreshold;
+	}
+
+	private CancelEvent getCancelEventTrigger(Check check) {
 		String checkName = check.getFactory().getCheckName();
 		CancelEvent cancelEvent = eventCancellation.get(checkName);
 		if (cancelEvent != null) {

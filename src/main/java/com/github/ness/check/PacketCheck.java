@@ -1,11 +1,10 @@
 package com.github.ness.check;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.config.NessConfig;
 import com.github.ness.packets.Packet;
 import com.github.ness.packets.wrapper.PacketTypeRegistry;
 import com.github.ness.reflect.ReflectHelper;
-import com.github.ness.violation.ViolationTriggerSection.CancelEvent;
+import com.github.ness.violation.ViolationManager;
 
 /**
  * A check which listens to packets
@@ -46,9 +45,8 @@ public abstract class PacketCheck extends Check {
 	protected final void flagEvent(Packet evt, String details) {
 		if (callFlagEvent()) {
 			int violations = flag0(details).getCount();
-			NessConfig config = getFactory().getCheckManager().getNess().getMainConfig();
-			CancelEvent cancelEvent = config.getViolationHandling().cancelEvent();
-			if (cancelEvent.enable() && violations >= cancelEvent.violations()) {
+			ViolationManager violationManager = getFactory().getCheckManager().getNess().getViolationManager();
+			if (violationManager.shouldCancelPacketCheck(this, violations)) {
 				evt.cancel();
 			}
 		}
