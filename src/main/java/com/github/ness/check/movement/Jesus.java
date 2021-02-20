@@ -22,7 +22,6 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 	double maxYVariance = 0.75;
 	double lastXZDist;
 	double lastYDist;
-	int liquidTicks = 0;
 	private double noGravityBuffer;
 
 	public Jesus(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
@@ -31,7 +30,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	public interface Config {
-		@DefaultDouble(0.15)
+		@DefaultDouble(0.2)
 		double maxYVariance();
 	}
 
@@ -44,11 +43,6 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		if (movementValues.getHelper().hasflybypass(nessPlayer) || Utility.hasVehicleNear(p) || p.getAllowFlight()
 				|| nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
 			return;
-		}
-		if (p.getLocation().getBlock().isLiquid()) {
-			liquidTicks++;
-		} else {
-			liquidTicks = 0;
 		}
 		// We handle Prediction for Y Value
 		double yDist = movementValues.getyDiff();
@@ -85,6 +79,8 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 				if (++noGravityBuffer > 4) {
 					this.flagEvent(event, "NoGravityY");
 				}
+			} else if (Double.toString(Math.abs(yDist)).contains("00000000")) {
+				this.flagEvent(event, "ImpossibleYPattern");
 			} else if (noGravityBuffer > 0) {
 				noGravityBuffer -= 0.25;
 			}
@@ -113,6 +109,8 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 				if (++noGravityBuffer > 4) {
 					this.flagEvent(event, "NoGravityY");
 				}
+			} else if (Double.toString(Math.abs(yDist)).contains("00000000")) {
+				this.flagEvent(event, "ImpossibleYPattern");
 			} else if (noGravityBuffer > 0) {
 				noGravityBuffer -= 0.25;
 			}

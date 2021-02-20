@@ -36,33 +36,33 @@ public class MovementValues {
 
 	private final double XZDiff;
 
-	private final boolean AroundIce;
+	private final boolean aroundIce;
 	/**
 	 * Liquids= Lava and Water
 	 */
 
-	private final boolean AroundLiquids;
+	private final boolean aroundLiquids;
 
-	private final boolean AroundStairs;
+	private final boolean aroundStairs;
 	/**
 	 * Utility.specificBlockNear(to, "slime"); or Utility.hasBlock(p, "slime");
 	 */
 
-	private final boolean AroundSlime;
+	private final boolean aroundSlime;
 
-	private final boolean AroundSlabs;
+	private final boolean aroundSlabs;
 
-	private final boolean AroundChorus;
+	private final boolean aroundChorus;
 
-	private final boolean AroundSnow;
+	private final boolean aroundSnow;
 
-	private final boolean AroundLadders;
+	private final boolean aroundLadders;
 
-	private final boolean AroundLily;
+	private final boolean aroundLily;
 	
-	private final boolean AroundIronBars;
+	private final boolean aroundIronBars;
 
-	private final boolean AroundCarpet;
+	private final boolean aroundCarpet;
 
 	private final boolean groundAround;
 
@@ -83,20 +83,22 @@ public class MovementValues {
 	private final boolean isFlying;
 
 	private final boolean ableFly;
+	
+	private final boolean aroundCactus;
 
-	private final boolean AroundFence;
+	private final boolean aroundFence;
 
-	private final boolean AroundNonOccludingBlocks;
+	private final boolean aroundNonOccludingBlocks;
 
-	private final boolean AroundGate;
+	private final boolean aroundGate;
 
-	private final boolean AroundWalls;
-	private final boolean AroundFire;
-	private final boolean AroundStainedGlass;
-	private final boolean AroundGlass;
+	private final boolean aroundWalls;
+	private final boolean aroundFire;
+	private final boolean aroundStainedGlass;
+	private final boolean aroundGlass;
 	private final boolean sprinting;
 	private final boolean blockUnderHead;
-	private final boolean AroundSeaBlocks;
+	private final boolean aroundSeaBlocks;
 	private final MovementValuesHelper helper;
 	private final Player player; // Not Thread Safe
 
@@ -122,6 +124,7 @@ public class MovementValues {
 			boolean web = false;
 			boolean chorus = false;
 			boolean gate = false;
+			boolean cactus = false;
 			boolean walls = false;
 			if (this.helper.isMathematicallyOnGround(to.getY())
 					&& this.helper.isOnGroundUsingCollider(to.toBukkitLocation(), access)) {
@@ -182,38 +185,41 @@ public class MovementValues {
 					stainedGlass = true;
 				} else if (name.contains("BARS")) {
 					ironbars = true;
+				} else if (name.contains("CACTUS")) {
+					cactus = true;
 				}
 				if (material.isSolid() && !material.isOccluding()) {
 					nonOccludingBlocks = true;
 				}
 			}
-			AroundSnow = snow;
-			AroundStainedGlass = stainedGlass;
+			aroundSnow = snow;
+			aroundStainedGlass = stainedGlass;
 			blockUnderHead = helper.groundAround(to.toBukkitLocation().add(0, 2.5, 0));
-			AroundLadders = ladder;
-			AroundSlabs = slab;
-			AroundNonOccludingBlocks = nonOccludingBlocks;
+			aroundLadders = ladder;
+			aroundSlabs = slab;
+			aroundNonOccludingBlocks = nonOccludingBlocks;
 			aroundWeb = web;
-			AroundStairs = stairs;
-			AroundIronBars = ironbars;
+			aroundStairs = stairs;
+			aroundIronBars = ironbars;
 			sprinting = p.isSprinting();
 			if (!slime) {
 				slime = helper.hasBlock(p, "SLIME");
 			}
-			AroundSlime = slime;
-			AroundIce = ice;
-			AroundLily = lily;
+			aroundSlime = slime;
+			aroundIce = ice;
+			aroundLily = lily;
+			aroundCactus = cactus;
 			groundAround = ground;
 			insideVehicle = p.isInsideVehicle();
-			AroundCarpet = carpet;
-			AroundChorus = chorus;
-			AroundLiquids = liquids;
-			AroundFence = fence;
-			AroundFire = fire;
-			AroundSeaBlocks = sea;
-			AroundGate = gate;
-			AroundGlass = 
-			AroundWalls = walls;
+			aroundCarpet = carpet;
+			aroundChorus = chorus;
+			aroundLiquids = liquids;
+			aroundFence = fence;
+			aroundFire = fire;
+			aroundSeaBlocks = sea;
+			aroundGate = gate;
+			aroundGlass = 
+			aroundWalls = walls;
 			onGroundCollider = this.isAroundCarpet() || this.isAroundSlabs() || this.isAroundStairs()
 					|| this.isAroundSnow() || this.isAroundFence() || this.isAroundGate() || this.isAroundWalls();
 			if (onGroundCollider) {
@@ -226,35 +232,36 @@ public class MovementValues {
 				this.onGroundCollider = onGroundCollider;
 			}
 		} else {
-			AroundIce = false;
-			AroundSlabs = false;
+			aroundIce = false;
+			aroundSlabs = false;
 			serverVelocity = new ImmutableVector(0, 0, 0);
-			AroundCarpet = false;
-			AroundLadders = false;
+			aroundCarpet = false;
+			aroundLadders = false;
 			groundAround = false;
-			AroundStainedGlass = false;
-			AroundGate = false;
-			AroundGlass = false;
-			AroundWalls = false;
+			aroundStainedGlass = false;
+			aroundGate = false;
+			aroundGlass = false;
+			aroundWalls = false;
 			sprinting = false;
-			AroundNonOccludingBlocks = false;
-			AroundLily = false;
-			AroundIronBars = false;
-			AroundFire = false;
+			aroundNonOccludingBlocks = false;
+			aroundLily = false;
+			aroundIronBars = false;
+			aroundFire = false;
 			aroundWeb = false;
 			blockUnderHead = false;
 			onGroundCollider = false;
-			AroundSnow = false;
+			aroundSnow = false;
+			aroundCactus = false;
 			insideVehicle = false;
 			gamemode = GameMode.SURVIVAL;
 			isFlying = false;
-			AroundChorus = false;
+			aroundChorus = false;
 			ableFly = false;
-			AroundLiquids = false;
-			AroundSlime = false;
-			AroundStairs = false;
-			AroundFence = false;
-			AroundSeaBlocks = false;
+			aroundLiquids = false;
+			aroundSlime = false;
+			aroundStairs = false;
+			aroundFence = false;
+			aroundSeaBlocks = false;
 		}
 		yawDiff = to.getYaw() - from.getYaw();
 		pitchDiff = to.getPitch() - from.getPitch();
@@ -323,23 +330,23 @@ public class MovementValues {
 	}
 
 	public boolean isAroundIce() {
-		return AroundIce;
+		return aroundIce;
 	}
 
 	public boolean isAroundLiquids() {
-		return AroundLiquids;
+		return aroundLiquids;
 	}
 
 	public boolean isAroundStairs() {
-		return AroundStairs;
+		return aroundStairs;
 	}
 
 	public boolean isAroundSlime() {
-		return AroundSlime;
+		return aroundSlime;
 	}
 
 	public boolean isAroundSlabs() {
-		return AroundSlabs;
+		return aroundSlabs;
 	}
 
 	public boolean isOnGroundCollider() {
@@ -347,27 +354,27 @@ public class MovementValues {
 	}
 
 	public boolean isAroundGate() {
-		return AroundGate;
+		return aroundGate;
 	}
 
 	public boolean isAroundFence() {
-		return AroundFence;
+		return aroundFence;
 	}
 
 	public boolean isAroundSnow() {
-		return AroundSnow;
+		return aroundSnow;
 	}
 
 	public boolean isAroundLadders() {
-		return AroundLadders;
+		return aroundLadders;
 	}
 
 	public boolean isAroundLily() {
-		return AroundLily;
+		return aroundLily;
 	}
 
 	public boolean isAroundCarpet() {
-		return AroundCarpet;
+		return aroundCarpet;
 	}
 
 	public boolean isGroundAround() {
@@ -407,15 +414,15 @@ public class MovementValues {
 	}
 
 	public boolean isAroundWalls() {
-		return AroundWalls;
+		return aroundWalls;
 	}
 
 	public boolean isAroundFire() {
-		return AroundFire;
+		return aroundFire;
 	}
 
 	public boolean isAroundChorus() {
-		return AroundChorus;
+		return aroundChorus;
 	}
 
 	/**
@@ -430,22 +437,26 @@ public class MovementValues {
 	}
 
 	public boolean isAroundSeaBlocks() {
-		return AroundSeaBlocks;
+		return aroundSeaBlocks;
 	}
 
 	public boolean isAroundNonOccludingBlocks() {
-		return AroundNonOccludingBlocks;
+		return aroundNonOccludingBlocks;
 	}
 
 	public boolean isAroundStainedGlass() {
-		return AroundStainedGlass;
+		return aroundStainedGlass;
 	}
 
 	public boolean isAroundGlass() {
-		return AroundGlass;
+		return aroundGlass;
 	}
 
 	public boolean isAroundIronBars() {
-		return AroundIronBars;
+		return aroundIronBars;
+	}
+
+	public boolean isAroundCactus() {
+		return aroundCactus;
 	}
 }
