@@ -80,27 +80,6 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		} else if (angle < 1.0) {
 			moveForward = -1;
 		}
-		int direction = 6;
-		motionYaw -= nessPlayer.getMovementValues().getTo().getYaw();
-		while (motionYaw > 360.0F)
-			motionYaw -= 360.0F;
-		while (motionYaw < 0.0F)
-			motionYaw += 360.0F;
-		motionYaw /= 45.0F;
-		direction = (int) (new BigDecimal(motionYaw)).setScale(1, RoundingMode.HALF_UP).doubleValue();
-		if (direction == 2.0) {
-			moveStrafe = -1.0f;
-		} else if (direction == 6.0) {
-			moveStrafe = 1.0f;
-		} else if (direction == 7.0) {
-			moveStrafe = -1.0f;
-		} else if (direction == 1.0) {
-			moveStrafe = 1.0f;
-		} else if (direction == 5.0) {
-			moveStrafe = 1.0f;
-		} else if (direction == 3.0) {
-			moveStrafe = -1.0f;
-		}
 		nessPlayer.sendDevMessage("moveForward: " + moveForward + " moveStrafe: " + moveStrafe);
 	}
 
