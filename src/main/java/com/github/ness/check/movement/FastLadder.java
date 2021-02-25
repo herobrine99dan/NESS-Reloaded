@@ -15,7 +15,6 @@ import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
 
 	double maxDist;
-	int jumped = 0;
 	double buffer;
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
@@ -34,15 +33,12 @@ public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
-		if ((float) event.getTo().getY() == 0.42F) {
-			jumped++;
-		}
 		final String name = event.getTo().getBlock().getType().name();
 		if ((name.contains("LADDER") || name.contains("VINE")) && !p.hasPotionEffect(PotionEffectType.JUMP)
 				&& !nessPlayer.getMovementValues().getHelper().hasflybypass(nessPlayer) && !nessPlayer.isTeleported() && !nessPlayer.isHasSetback()) {
 			double distance = nessPlayer.getMovementValues().getyDiff();
 			if (distance > maxDist && p.getVelocity().getY() < 0) {
-				if (++buffer > 4) {
+				if (++buffer > 3) {
 					flagEvent(event, "HighDistance Dist: " + (float) distance);
 				}
 			} else if (distance < -0.192D && p.getVelocity().getY() < 0) {

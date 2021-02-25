@@ -152,6 +152,9 @@ public class Aimbot extends PacketCheck {
 		}
 		return Math.round(n * 10) / 10;
 	}
+	
+	//TODO Check if there is a pattern on Math.abs(entityAttacked.yaw()-player.yaw())
+	//TODO Get more ideas to find pattern using vectors
 
 	private void commonPattern(float yawDeltaPacket, float pitchDeltaPacket, float yaw, float pitch) {
 		// this.player().sendDevMessage("Yaw: " + roundDoubleNumber(yaw, true) + " real:
@@ -171,11 +174,6 @@ public class Aimbot extends PacketCheck {
 		} else if (isDiffAlmostEquals(Math.abs(roundDoubleNumber(yaw, false)), yaw) && Math.abs(yaw) > 0) {
 			if (++buffer5 > 3) {
 				this.flag("PerfectRotation6");
-			}
-		} else if (isDiffAlmostEquals(Math.abs(roundDoubleNumber(yawDeltaPacket, false)), yawDeltaPacket)
-				&& Math.abs(yawDeltaPacket) > 0) {
-			if (++buffer5 > 4) {
-				this.flag("PerfectRotation7");
 			}
 		} else if (isDiffAlmostEquals(Math.abs(roundDoubleNumber(yawDeltaPacket, true)), yawDeltaPacket)
 				&& Math.abs(yawDeltaPacket) > 0) {

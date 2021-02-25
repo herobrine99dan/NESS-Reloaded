@@ -193,16 +193,17 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		}
 	}
 
+	//TODO Continue the work on this check
 	public void Check6(EntityDamageByEntityEvent event) {
 		if (!(event.getEntity() instanceof LivingEntity)) {
 			return;
 		}
 		NessPlayer nessPlayer = player();
-		final LivingEntity entity = (LivingEntity) event.getEntity();
-		final Location eye = nessPlayer.getBukkitPlayer().getEyeLocation();
-		final Vector direction = nessPlayer.getMovementValues().getDirection().toBukkitVector();
-		final Vector toEntity = entity.getLocation().toVector().subtract(eye.toVector());
-		float notNormalizedDot = (float) toEntity.clone().dot(direction);
-		nessPlayer.sendDevMessage("notNormalized: " + notNormalizedDot + " degreeNotNormalized: " + Math.toDegrees(notNormalizedDot));
+	    Vector playerLookDir = this.player().getMovementValues().getDirection().toBukkitVector();
+	    Vector playerEyeLoc = this.player().getBukkitPlayer().getEyeLocation().toVector();
+	    Vector entityLoc = event.getEntity().getLocation().toVector();
+	    Vector playerEntityVec = entityLoc.subtract(playerEyeLoc);
+	    float angle = playerLookDir.angle(playerEntityVec);
+		nessPlayer.sendDevMessage("notNormalized: " + angle);
 	}
 }

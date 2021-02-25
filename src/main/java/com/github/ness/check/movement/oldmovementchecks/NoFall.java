@@ -53,33 +53,30 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 			hozDist -= Math.abs(nessPlayer.getLastVelocity().getX()) + Math.abs(nessPlayer.getLastVelocity().getZ());
 			vertDist -= Math.abs(nessPlayer.getLastVelocity().getY());
 		}
-		if (to.getY() != from.getY()) {
-			if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().contains("WATER")
-					&& !player.getLocation().getBlock().isLiquid()) {
-				if (hozDist < .2 || !movementValues.isGroundAround()) {
-					if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKBROKED) >= 2000
-							&& !nessPlayer.isTeleported() && !below.name().contains("PISTON")) {
-						if ((!player.isInsideVehicle()
-								|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))
-								&& !player.isFlying() && to.getY() > 0) {
-							if (!movementValues.isAroundSlime() && !movementValues.isAroundLiquids()
-									&& !movementValues.isAroundLiquids() && !movementValues.isAroundLiquids()
-									&& !movementValues.isAroundFire() && !movementValues.isAroundFire()) {
-								boolean gotFire = false;
-								if (player.getLastDamageCause() != null) {
-									if (player.getLastDamageCause().getCause() != null) {
-										if (player.getLastDamageCause().getCause().name().toLowerCase()
-												.contains("fire")) {
-											gotFire = true;
-										}
+		if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().contains("WATER")
+				&& !player.getLocation().getBlock().isLiquid()) {
+			if (hozDist < .2 || !movementValues.isGroundAround()) {
+				if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKBROKED) >= 2000 && !nessPlayer.isTeleported()
+						&& !below.name().contains("PISTON")) {
+					if ((!player.isInsideVehicle()
+							|| (player.isInsideVehicle() && player.getVehicle().getType() != EntityType.HORSE))
+							&& !player.isFlying() && to.getY() > 0) {
+						if (!movementValues.isAroundSlime() && !movementValues.isAroundLiquids()
+								&& !movementValues.isAroundLiquids() && !movementValues.isAroundLiquids()
+								&& !movementValues.isAroundFire() && !movementValues.isAroundFire()) {
+							boolean gotFire = false;
+							if (player.getLastDamageCause() != null) {
+								if (player.getLastDamageCause().getCause() != null) {
+									if (player.getLastDamageCause().getCause().name().toLowerCase().contains("fire")) {
+										gotFire = true;
 									}
 								}
-								if (!gotFire) {
-									punish(event, "NoFall", "(OnMove)");
-									double fallDamage = movementValues.getHelper().calcDamageFall(3);
-									if(fallDamage > 0) {
-										player.damage(fallDamage);
-									}
+							}
+							if (!gotFire) {
+								punish(event, "NoFall", "(OnMove)");
+								double fallDamage = movementValues.getHelper().calcDamageFall(3);
+								if (fallDamage > 0) {
+									player.damage(fallDamage);
 								}
 							}
 						}

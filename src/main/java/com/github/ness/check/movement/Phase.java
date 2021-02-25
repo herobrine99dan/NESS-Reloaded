@@ -22,6 +22,9 @@ public class Phase extends ListeningCheck<PlayerMoveEvent> {
 		super(factory, player);
 	}
 
+	
+	//TODO New idea for Phase check: get direction vector beetween to and from locations
+	//Then get midpoint and check if it is a solid block
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		Block b = event.getTo().clone().add(0, event.getPlayer().getEyeHeight(), 0).getBlock();
