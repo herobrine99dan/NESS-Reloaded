@@ -65,9 +65,12 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 
 		runTaskLater(() -> {
 			Location to = player.getLocation();
-			double distance = Math.hypot(from.getX() - to.getX(), from.getZ() - to.getZ());
-			if (distance > 0.2) {
-				if (++buffer > 4) {
+			double distance = Math.hypot(from.getX() - to.getX(), from.getZ() - to.getZ()) - (to.getY() - from.getY());
+			if(nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1000) {
+				return;
+			}
+			if (distance > 0.19) {
+				if (++buffer > 1) {
 					flagEvent(e);
 				}
 			} else if (buffer > 0) {

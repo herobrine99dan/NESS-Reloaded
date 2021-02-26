@@ -35,7 +35,8 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		@DefaultInteger(4)
 		int airTicks();
 
-		@DefaultDouble(1)
+		//After some tests i discovered i fixed all the bugs maybe
+		@DefaultDouble(0)
 		double buffer();
 	}
 
@@ -76,12 +77,9 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		// doesn't send the position packet
 		float yPredicted = (float) ((lastDeltaY - 0.08D) * 0.9800000190734863D);
 		float yResult = (float) Math.abs(deltaY - yPredicted);
-		this.player().sendDevMessage("3ticks: " + airTicks);
 		if (airTicks > minAirTicks && nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 1000) {
 			if (Math.abs(yPredicted) > 0.01) {
-				this.player().sendDevMessage("4result: " + yResult + " yPredicted: " + yPredicted);
 				if (Math.abs(yResult) > 0.01) {
-					this.player().sendDevMessage("6ticks: " + airTicks);
 					if (++buffer > minBuffer) {
 						this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
 					}
