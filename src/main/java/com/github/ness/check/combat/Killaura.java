@@ -9,7 +9,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -38,6 +37,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	private final double reachExpansion;
 	private final double lagAccount;
 	private final double maxAngle;
+	private final double anglePatternMaxPrecision;
 	private double buffer;
 	private List<Float> angleList;
 
@@ -52,6 +52,8 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		this.lagAccount = this.ness().getMainConfig().getCheckSection().killaura().lagAccount();
 		this.maxAngle = this.ness().getMainConfig().getCheckSection().killaura().mainAngle();
 		this.angleList = new ArrayList<Float>();
+		this.anglePatternMaxPrecision = this.ness().getMainConfig().getCheckSection().killaura()
+				.anglePatternMaxPrecision();
 	}
 
 	public interface Config {
@@ -72,6 +74,9 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 
 		@DefaultDouble(4)
 		double lagAccount();
+
+		@DefaultDouble(17)
+		double anglePatternMaxPrecision();
 	}
 
 	@Override
@@ -100,8 +105,6 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 			return;
 		}
 		final LivingEntity entity = (LivingEntity) event.getEntity();
-		float fov = Utility.getRotationFromPosition(player.getLocation(), entity.getLocation())[0];
-		this.player().sendDevMessage("FOV: " + fov);
 		final NessPlayer nessPlayer = player();
 		// TODO Account for lag
 		double maxReach = this.maxReach;
@@ -113,7 +116,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		if (player.getGameMode().equals(GameMode.CREATIVE)) {
 			maxReach = (5.5 * this.maxReach) / 3;
 		}
-		nessPlayer.sendDevMessage("Reach: " + range + " Angle:1 " + angle1);
+		//nessPlayer.sendDevMessage("Reach: " + range + " Angle:1 " + angle1);
 		if (range > maxReach && range < 6.5D) {
 			if (++buffer > 2) {
 				flagEvent(event, "Reach: " + range);
@@ -193,17 +196,43 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		}
 	}
 
-	//TODO Continue the work on this check
+	private List<Float> anglePatternList = new ArrayList<Float>();
+
 	public void Check6(EntityDamageByEntityEvent event) {
 		if (!(event.getEntity() instanceof LivingEntity)) {
 			return;
 		}
-		NessPlayer nessPlayer = player();
-	    Vector playerLookDir = this.player().getMovementValues().getDirection().toBukkitVector();
-	    Vector playerEyeLoc = this.player().getBukkitPlayer().getEyeLocation().toVector();
-	    Vector entityLoc = event.getEntity().getLocation().toVector();
-	    Vector playerEntityVec = entityLoc.subtract(playerEyeLoc);
-	    float angle = playerLookDir.angle(playerEntityVec);
-		nessPlayer.sendDevMessage("notNormalized: " + angle);
+		Vector playerLookDir = this.player().getMovementValues().getDirection().toBukkitVector();
+		Vector playerEyeLoc = this.player().getBukkitPlayer().getEyeLocation().toVector();
+		Vector entityLoc = event.getEntity().getLocation().toVector();
+		Vector playerEntityVec = entityLoc.subtract(playerEyeLoc);
+		float angle = playerLookDir.angle(playerEntityVec);
+		anglePatternList.add(angle);
+		if (anglePatternList.size() > 9) {
+			double averageAngle = MathUtils.average(anglePatternList);
+			double standardDeviationSample = (calculateSD(anglePatternList, false) * 100) / averageAngle;
+			player().sendDevMessage("standardDeviationSample: " + (float) standardDeviationSample);
+			if (standardDeviationSample < anglePatternMaxPrecision && Math.abs(this.player().getMovementValues().getYawDiff()) > 10) {
+				this.flag("AnglePatternList");
+			}
+			anglePatternList.clear();
+		}
+	}
+
+	private double calculateSD(List<Float> data, boolean population) {
+		double sum = 0.0, standardDeviation = 0.0;
+		int length = data.size();
+
+		for (double num : data) {
+			sum += num;
+		}
+
+		double mean = sum / length;
+
+		for (double num : data) {
+			standardDeviation += Math.pow(num - mean, 2);
+		}
+		int divider = population ? length - 1 : length;
+		return Math.sqrt(standardDeviation / divider);
 	}
 }

@@ -1,5 +1,6 @@
 package com.github.ness.check.movement;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -21,10 +22,7 @@ public class Phase extends ListeningCheck<PlayerMoveEvent> {
 	public Phase(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
-
 	
-	//TODO New idea for Phase check: get direction vector beetween to and from locations
-	//Then get midpoint and check if it is a solid block
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		Block b = event.getTo().clone().add(0, event.getPlayer().getEyeHeight(), 0).getBlock();

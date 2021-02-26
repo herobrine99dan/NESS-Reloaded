@@ -110,6 +110,16 @@ public class Aimbot extends PacketCheck {
 			buffer4 -= 0.5;
 		}
 	}
+	
+	/*
+	 * yawList().add(yaw);
+pitchList().add(pitch);
+
+onAttack() {
+yawList().clear();
+pitchList().clear();
+}
+	 */
 
 	private void Check5(Packet e) {
 		PlayInFlying wrapper = e.toPacketWrapper(this.packetTypeRegistry().playInFlying());
