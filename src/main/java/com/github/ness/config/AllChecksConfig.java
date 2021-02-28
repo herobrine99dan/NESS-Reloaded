@@ -61,7 +61,7 @@ public interface AllChecksConfig {
 	@ConfComments({
 		"",
 		"Check if a player is climing a ladder/vine too fast", 
-		"Use 0.21 to have GeyserMC Compatibility, if you have only Java Edition players use 0.155",
+		"Use 0.21 to have GeyserMC Compatibility, if you have only Java Edition players use 0.12",
 		"",
 		"Performance impact: low", 
 		"Effectiveness: High",

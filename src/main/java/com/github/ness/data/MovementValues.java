@@ -59,7 +59,7 @@ public class MovementValues {
 	private final boolean aroundLadders;
 
 	private final boolean aroundLily;
-	
+
 	private final boolean aroundIronBars;
 
 	private final boolean aroundCarpet;
@@ -83,7 +83,7 @@ public class MovementValues {
 	private final boolean isFlying;
 
 	private final boolean ableFly;
-	
+
 	private final boolean aroundCactus;
 
 	private final boolean aroundFence;
@@ -91,6 +91,8 @@ public class MovementValues {
 	private final boolean aroundNonOccludingBlocks;
 
 	private final boolean aroundGate;
+
+	private final double dTG;
 
 	private final boolean aroundWalls;
 	private final boolean aroundFire;
@@ -125,6 +127,7 @@ public class MovementValues {
 			boolean chorus = false;
 			boolean gate = false;
 			boolean cactus = false;
+			boolean glass = false;
 			boolean walls = false;
 			if (this.helper.isMathematicallyOnGround(to.getY())
 					&& this.helper.isOnGroundUsingCollider(to.toBukkitLocation(), access)) {
@@ -187,6 +190,8 @@ public class MovementValues {
 					ironbars = true;
 				} else if (name.contains("CACTUS")) {
 					cactus = true;
+				} else if (name.contains("GLASS")) {
+					glass = true;
 				}
 				if (material.isSolid() && !material.isOccluding()) {
 					nonOccludingBlocks = true;
@@ -218,7 +223,7 @@ public class MovementValues {
 			aroundFire = fire;
 			aroundSeaBlocks = sea;
 			aroundGate = gate;
-			aroundGlass = 
+			aroundGlass = glass;
 			aroundWalls = walls;
 			onGroundCollider = this.isAroundCarpet() || this.isAroundSlabs() || this.isAroundStairs()
 					|| this.isAroundSnow() || this.isAroundFence() || this.isAroundGate() || this.isAroundWalls();
@@ -231,6 +236,7 @@ public class MovementValues {
 				}
 				this.onGroundCollider = onGroundCollider;
 			}
+			dTG = makeDTG();
 		} else {
 			aroundIce = false;
 			aroundSlabs = false;
@@ -257,6 +263,7 @@ public class MovementValues {
 			isFlying = false;
 			aroundChorus = false;
 			ableFly = false;
+			dTG = 0.0;
 			aroundLiquids = false;
 			aroundSlime = false;
 			aroundStairs = false;
@@ -295,6 +302,21 @@ public class MovementValues {
 
 	public ImmutableVector getDirection() {
 		return this.getTo().getDirectionVector();
+	}
+
+	private double makeDTG() {
+		double dTG = 0.0;
+	    for (int x = -1; x <= 1; x++) {
+	        for (int z = -1; z <= 1; z++) {
+	          int y = 0;
+	          while (!player.getLocation().subtract(x, y, z).getBlock().getType().isSolid() && y < 20)
+	            y++; 
+	          if (y < dTG || dTG == 0.0D)
+	            dTG = y; 
+	        } 
+	      } 
+	      dTG += player.getLocation().getY() % 1.0D;
+		return dTG;
 	}
 
 	public ImmutableLoc getTo() {
@@ -458,5 +480,9 @@ public class MovementValues {
 
 	public boolean isAroundCactus() {
 		return aroundCactus;
+	}
+
+	public double getdTG() {
+		return dTG;
 	}
 }

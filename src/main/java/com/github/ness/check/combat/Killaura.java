@@ -22,7 +22,6 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.check.PeriodicTaskInfo;
 import com.github.ness.utility.MathUtils;
-import com.github.ness.utility.Utility;
 import com.github.ness.utility.raytracer.rays.AABB;
 import com.github.ness.utility.raytracer.rays.Ray;
 

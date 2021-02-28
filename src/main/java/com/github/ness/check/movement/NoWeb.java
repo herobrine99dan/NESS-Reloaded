@@ -30,7 +30,7 @@ public class NoWeb extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues values = nessPlayer.getMovementValues();
 		double xDiff = Math.abs(values.getxDiff());
 		double zDiff = Math.abs(values.getzDiff());
-		final double walkSpeed = p.getWalkSpeed() * 0.625;
+		final double walkSpeed = p.getWalkSpeed() / 2;
 		xDiff -= (xDiff / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);
 		zDiff -= (zDiff / 100.0) * (Utility.getPotionEffectLevel(p, PotionEffectType.SPEED) * 20.0);
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1300) {

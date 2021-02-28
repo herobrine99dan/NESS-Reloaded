@@ -20,6 +20,10 @@ public class AABB {
 	 * @author 567legodude
 	 */
 
+	public static final AABB SOLIDBLOCK = new AABB(new Vector(-1, -1, -1), new Vector(1, 1, 1));
+	public static final AABB PLAYER = new AABB(new Vector(-0.3, 0, -0.3), new Vector(0.3, 1.81, 0.3));
+
+
 	private final Vector min, max; // min/max locations
 	private static MethodInvoker<?> craftLivingEntityMethod;
 	private static MethodInvoker<?> getBoundingBoxesMethod;
@@ -57,7 +61,7 @@ public class AABB {
 			if (xMaxField == null) {
 				// Max fields are "d" "e" and "f"
 				// Min fields are "a" "b" and "c"
-				//With newer versions (like 1.16.4) Spigot uses the Mojang's obfuscation map
+				// With newer versions (like 1.16.4) Spigot uses the Mojang's obfuscation map
 				Class<?> boxClass = locator.getNmsClass("AxisAlignedBB");
 				xMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "d"),
 						MemberDescriptions.forField(double.class, "maxX"));
@@ -154,6 +158,18 @@ public class AABB {
 				return false;
 		}
 		return true;
+	}
+
+	// Check if this hitbox collides with another hitbox collides
+	public boolean collides(AABB aabb) {
+		boolean collider = aabb.collides(aabb.max);
+		boolean collider1 = aabb.collides(aabb.min);
+		return collider || collider1;
+	}
+
+	// Check if this hitbox collides with another vector
+	public boolean collides(Vector vector) {
+		return vector.isInAABB(min, max);
 	}
 
 	// Same as other collides method, but returns the distance of the nearest
