@@ -14,7 +14,7 @@ import com.github.ness.packets.Packet;
 public class KillauraNoSwing extends PacketCheck {
 
 	public static final CheckInfo checkInfo = CheckInfos
-			.forPacketsWithTask(PeriodicTaskInfo.asyncTask(Duration.ofMillis(200)));
+			.forPacketsWithTask(PeriodicTaskInfo.asyncTask(Duration.ofMillis(300)));
 
 	public KillauraNoSwing(final PacketCheckFactory<?> factory, final NessPlayer nessPlayer) {
 		super(factory, nessPlayer);
@@ -26,16 +26,18 @@ public class KillauraNoSwing extends PacketCheck {
 	protected void checkAsyncPeriodic() {
 		// normalPacketsCounter = 0;
 		long attackDelay = this.player().milliSecondTimeDifference(PlayerAction.ATTACK);
-		long result = Math.abs(attackDelay - lastAnimation);
-		if(result > 50) {
-			this.flag("Result: " + result);
+		if (attackDelay < 600) {
+			long result = Math.abs(this.player().getMilliSecondTime(PlayerAction.ATTACK) - lastAnimation);
+			if (result > 540) {
+				this.flag("Result: " + result + " attackDelay: " + attackDelay);
+			}
 		}
 	}
 
 	@Override
 	protected void checkPacket(Packet packet) {
-		String packetName = packet.getRawPacket().getClass().getSimpleName().toLowerCase();
-		if (packetName.contains("animation")) {
+		String packetName = packet.getRawPacket().getClass().getSimpleName();
+		if (packetName.equals("PacketPlayInArmAnimation")) {
 			lastAnimation = (long) (System.nanoTime() / 1e+6);
 		}
 	}

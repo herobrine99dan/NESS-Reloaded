@@ -213,6 +213,10 @@ public class NessPlayer implements AnticheatPlayer {
 	public long milliSecondTimeDifference(PlayerAction action) {
 		return (System.nanoTime() - this.actionTime.getOrDefault(action, (long) 0)) / 1000_000L;
 	}
+	
+	public long getMilliSecondTime(PlayerAction action) {
+		return (this.actionTime.getOrDefault(action, (long) 0)) / 1000_000L;
+	}
 
 	// This will called everytime a player sends a flying packet
 	public void onClientTick() {
