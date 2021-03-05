@@ -46,7 +46,7 @@ public class AimbotPattern extends PacketCheck {
 		float gcdPitch = (float) MathUtils.gcdRational(pitchDelta, lastPitchDelta);
 		float pitchAdapted = (wrapper.pitch() % gcdPitch);
 		if (Math.abs(pitchAdapted) < 1e-4 && pitchDelta > 1) {
-			if (++buffer > 3) {
+			if (++buffer > 2) {
 				flag("adapted: " + pitchAdapted);
 			}
 		}else if (buffer > 0) {

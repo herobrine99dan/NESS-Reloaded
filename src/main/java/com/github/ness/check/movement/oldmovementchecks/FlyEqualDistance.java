@@ -9,6 +9,7 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
+import com.github.ness.utility.Utility;
 
 public class FlyEqualDistance extends ListeningCheck<PlayerMoveEvent> {
 
@@ -25,7 +26,7 @@ public class FlyEqualDistance extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		double dist = e.getTo().distance(e.getFrom());
-		if (dist == 0.0D && !values.isGroundAround() && !values.isAroundWeb()
+		if (dist == 0.0D && !values.isGroundAround() && !values.isAroundWeb() && !Utility.hasVehicleNear(e.getPlayer()) && !Utility.hasLivingEntityNear(e.getPlayer())
 				&& !values.isAroundSlime() && !values.isAroundLadders() && !values.isAroundCactus()
 				&& this.player().milliSecondTimeDifference(PlayerAction.ATTACK) > 500)
 			this.flagEvent(e);

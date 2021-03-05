@@ -93,7 +93,6 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		Check3(e);
 		Check4(e);
 		Check5(e);
-		Check6(e);
 	}
 
 	private double angleBuffer = 0;
@@ -193,45 +192,5 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		if (nessPlayer.getAttackedEntities().size() > 2) {
 			flagEvent(event, "MultiAura Entities: " + nessPlayer.getAttackedEntities().size());
 		}
-	}
-
-	private List<Float> anglePatternList = new ArrayList<Float>();
-
-	public void Check6(EntityDamageByEntityEvent event) {
-		if (!(event.getEntity() instanceof LivingEntity)) {
-			return;
-		}
-		Vector playerLookDir = this.player().getMovementValues().getDirection().toBukkitVector();
-		Vector playerEyeLoc = this.player().getBukkitPlayer().getEyeLocation().toVector();
-		Vector entityLoc = event.getEntity().getLocation().toVector();
-		Vector playerEntityVec = entityLoc.subtract(playerEyeLoc);
-		float angle = playerLookDir.angle(playerEntityVec);
-		anglePatternList.add(angle);
-		if (anglePatternList.size() > 9) {
-			double averageAngle = MathUtils.average(anglePatternList);
-			double standardDeviationSample = (calculateSD(anglePatternList, false) * 100) / averageAngle;
-			player().sendDevMessage("standardDeviationSample: " + (float) standardDeviationSample);
-			if (standardDeviationSample < anglePatternMaxPrecision && Math.abs(this.player().getMovementValues().getYawDiff()) > 10) {
-				this.flag("AnglePatternList");
-			}
-			anglePatternList.clear();
-		}
-	}
-
-	private double calculateSD(List<Float> data, boolean population) {
-		double sum = 0.0, standardDeviation = 0.0;
-		int length = data.size();
-
-		for (double num : data) {
-			sum += num;
-		}
-
-		double mean = sum / length;
-
-		for (double num : data) {
-			standardDeviation += Math.pow(num - mean, 2);
-		}
-		int divider = population ? length - 1 : length;
-		return Math.sqrt(standardDeviation / divider);
 	}
 }

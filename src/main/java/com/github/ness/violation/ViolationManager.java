@@ -125,6 +125,10 @@ public class ViolationManager implements InfractionManager {
 
 	private CancelEvent getCancelEventTrigger(Check check) {
 		String checkName = check.getFactory().getCheckName();
+		//TODO Temporary fix
+		if(eventCancellation == null) {
+			return ness.getMainConfig().getViolationHandling().cancelEvent();
+		}
 		CancelEvent cancelEvent = eventCancellation.get(checkName);
 		if (cancelEvent != null) {
 			return cancelEvent;
