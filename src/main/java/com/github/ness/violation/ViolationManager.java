@@ -1,5 +1,6 @@
 package com.github.ness.violation;
 
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +9,9 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import org.bukkit.ChatColor;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ness.NessAnticheat;
 import com.github.ness.api.Infraction;
@@ -20,10 +24,7 @@ import com.github.ness.check.InfractionImpl;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.PacketCheck;
 import com.github.ness.check.dragdown.SetBack;
-
 import com.github.ness.config.CheckConfig;
-import org.bukkit.ChatColor;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class ViolationManager implements InfractionManager {
 
@@ -72,7 +73,7 @@ public class ViolationManager implements InfractionManager {
 		Map<String, CancelEvent> eventsCancellation = new HashMap<>();
 		//Actually this configuration setting was disabled due to test purposes
 		//TODO Fix the DazzleConf Bug
-		Map<String, CheckConfig> perCheckConfiguration = Map.of();
+		Map<String, CheckConfig> perCheckConfiguration = Collections.emptyMap();
 		//Map<String, CheckConfig> perCheckConfiguration = ness.getMainConfig().perCheckConfiguration();
 		for (Map.Entry<String, CheckConfig> checkConfigEntry : perCheckConfiguration.entrySet()) {
 			String checkName = checkConfigEntry.getKey();
