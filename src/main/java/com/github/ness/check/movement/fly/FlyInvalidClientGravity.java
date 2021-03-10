@@ -73,12 +73,12 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 			lastDeltaY = deltaY;
 			return;
 		}
-		// TODO If X or Z motions are lower than 0.005 (or 0.003 for 1.9+), Minecraft
-		// doesn't send the position packet
+		//Even if this isn't the best fix, at least it allows for me to get good detection
+		final float yVelocityDelta = Math.abs(((float) values.getyDiff() - (float) values.getServerVelocity().getY()));
 		float yPredicted = (float) ((lastDeltaY - 0.08D) * 0.9800000190734863D);
 		float yResult = (float) Math.abs(deltaY - yPredicted);
 		if (airTicks > minAirTicks && nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 1000) {
-			if (Math.abs(yPredicted) > 0.01) {
+			if (Math.abs(yPredicted) > 0.01 && yVelocityDelta > 0.1) {
 				if (Math.abs(yResult) > 0.01) {
 					if (++buffer > minBuffer) {
 						this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
