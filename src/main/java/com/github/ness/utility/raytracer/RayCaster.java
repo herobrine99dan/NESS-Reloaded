@@ -1,12 +1,12 @@
 package com.github.ness.utility.raytracer;
 
-import java.util.Set;
-
-import org.bukkit.Material;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+
+import com.github.ness.utility.raytracer.rays.Ray;
 
 public class RayCaster {
 
@@ -31,7 +31,14 @@ public class RayCaster {
 				}
 			}
 		} else if (type == RayCaster.RaycastType.BLOCK) {
-			blockFounded = player.getTargetBlock((Set<Material>) null, (int) maxDistance);
+			Ray ray = Ray.from(player);
+			for (double x = 0; x < maxDistance; x += 0.3) {
+				Location vector = ray.getPoint(x).toLocation(player.getWorld());
+				if(!vector.getBlock().getType().name().contains("AIR")) {
+					blockFounded = vector.getBlock();
+					break;
+				}
+			}
 		}
 	}
 
