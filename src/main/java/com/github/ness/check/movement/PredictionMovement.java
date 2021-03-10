@@ -22,8 +22,6 @@ public class PredictionMovement extends ListeningCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent e) {
 		MovementValues values = this.player().getMovementValues();
-		float yDelta = (float) ((float) values.getyDiff() - (float) values.getServerVelocity().getY());
-		e.getPlayer().sendMessage("yDelta: " + yDelta);
 		this.moveEntityWithHeading(e.getPlayer().isOnGround()); // Try changing position of this line
 	}
 

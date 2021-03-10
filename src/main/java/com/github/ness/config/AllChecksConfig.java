@@ -3,6 +3,7 @@ package com.github.ness.config;
 import com.github.ness.check.combat.AutoClicker;
 import com.github.ness.check.combat.Killaura;
 import com.github.ness.check.combat.PlayerESP;
+import com.github.ness.check.combat.VerticalVelocity;
 import com.github.ness.check.combat.autoclick.AutoClickConfig;
 import com.github.ness.check.movement.ElytraCheats;
 import com.github.ness.check.movement.FastLadder;
@@ -13,6 +14,7 @@ import com.github.ness.check.packet.Freecam;
 import com.github.ness.check.packet.MorePackets;
 import com.github.ness.check.packet.Timer;
 import com.github.ness.check.world.FastPlace;
+
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfHeader;
 import space.arim.dazzleconf.annote.ConfKey;
@@ -134,11 +136,21 @@ public interface AllChecksConfig {
 	@ConfKey("client-gravity-fly")
 	@ConfComments({
 		"",
-		"Check if a player is editing gravity predicting his next y value.",
+		"Check if a player is editing his next y gravity value.",
 		"",
 		"Performance impact: low", 
 		"Effectiveness: High",
 		""})
 	@SubSection
 	FlyInvalidClientGravity.Config flyInvalidClientGravity();
+	/*@ConfKey("vertical-velocity")
+	@ConfComments({
+		"",
+		"Check if a player is editing vertical velocity.",
+		"",
+		"Performance impact: low", 
+		"Effectiveness: Medium",
+		""})
+	@SubSection
+	VerticalVelocity.Config verticalVelocity();*///TODO Let's wait the sad DazzleConf library
 }
