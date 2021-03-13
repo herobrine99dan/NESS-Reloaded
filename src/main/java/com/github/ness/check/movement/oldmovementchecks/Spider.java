@@ -35,9 +35,10 @@ public class Spider extends ListeningCheck<PlayerMoveEvent> {
 			if (player.getLocation().getY() % 0.5D != 0.0D && !player.isFlying()
 					&& !to.clone().add(0, -1, 0).getBlock().getType().isSolid() && dTGString.contains("99999999")
 					|| dTGString.contains("00000000") || diff.contains("000000")
-					|| diff.startsWith("0.286") && this.player().milliSecondTimeDifference(PlayerAction.ATTACK) > 500
-							&& !values.isAroundLiquids()) {
-				this.flagEvent(e);
+					|| diff.startsWith("0.286") && this.player().milliSecondTimeDifference(PlayerAction.ATTACK) > 500) {
+				if (!values.isAroundLiquids()) {
+					this.flagEvent(e);
+				}
 			}
 			lastDTG = dTG;
 		}

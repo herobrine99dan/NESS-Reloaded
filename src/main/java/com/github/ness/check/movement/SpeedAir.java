@@ -34,7 +34,7 @@ public class SpeedAir extends ListeningCheck<PlayerMoveEvent> {
 			returner += 0.91;
 		}
 		if (player.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500) {
-			returner += Math.abs(player.getLastVelocity().getX() + player.getLastVelocity().getZ());
+			returner += Math.hypot(player.getLastVelocity().getX(), player.getLastVelocity().getZ());
 		}
 		return returner;
 	}

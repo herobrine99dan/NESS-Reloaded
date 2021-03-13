@@ -143,7 +143,7 @@ public interface AllChecksConfig {
 		""})
 	@SubSection
 	FlyInvalidClientGravity.Config flyInvalidClientGravity();
-	/*@ConfKey("vertical-velocity")
+	@ConfKey("vertical-velocity")
 	@ConfComments({
 		"",
 		"Check if a player is editing vertical velocity.",
@@ -152,5 +152,5 @@ public interface AllChecksConfig {
 		"Effectiveness: Medium",
 		""})
 	@SubSection
-	VerticalVelocity.Config verticalVelocity();*///TODO Let's wait the sad DazzleConf library
+	VerticalVelocity.Config verticalVelocity();
 }

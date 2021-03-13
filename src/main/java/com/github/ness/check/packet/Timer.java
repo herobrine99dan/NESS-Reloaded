@@ -48,6 +48,7 @@ public class Timer extends PacketCheck {
 		NessPlayer nessPlayer = player();
 		if (!packet.getRawPacket().getClass().getSimpleName().toLowerCase().contains("position")
 				|| nessPlayer.isTeleported() || nessPlayer.isHasSetback()) {
+			delay.clear();
 			return;
 		}
 		final long current = System.nanoTime();

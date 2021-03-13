@@ -149,7 +149,7 @@ public class MovementValues {
 				if (b.isLiquid()) {
 					liquids = true;
 				}
-				if (b.getType().isSolid()) { // Doing all things in a single for loop is better than 12 loops
+				if (b.getType().isSolid()) { // Doing all things in a single loop is better than 12 loops
 					ground = true;
 				}
 				if (name.contains("ICE")) {

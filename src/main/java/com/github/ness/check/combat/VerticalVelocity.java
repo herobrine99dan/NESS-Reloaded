@@ -14,6 +14,8 @@ import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 
+import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
+
 public class VerticalVelocity extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
@@ -22,15 +24,14 @@ public class VerticalVelocity extends ListeningCheck<PlayerMoveEvent> {
 
 	public VerticalVelocity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
-		// this.minVelocityPercentage =
-		// this.ness().getMainConfig().getCheckSection().verticalVelocity()
-		// .minVelocityPercentage();
+		 this.minVelocityPercentage =
+		 this.ness().getMainConfig().getCheckSection().verticalVelocity()
+		 .minVelocityPercentage();
 	}
 
 	public interface Config {
-		// TODO Fix this configuration error, let's wait the sad DazzleConf library!
-		// @DefaultDouble(95)
-		// double minVelocityPercentage();
+		@DefaultDouble(95)
+		 double minVelocityPercentage();
 	}
 
 	private List<Float> lastYDistances = new ArrayList<Float>();
