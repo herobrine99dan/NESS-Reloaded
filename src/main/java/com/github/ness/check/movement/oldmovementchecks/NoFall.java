@@ -63,7 +63,7 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 							&& !player.isFlying() && to.getY() > 0) {
 						if (!movementValues.isAroundSlime() && !movementValues.isAroundLiquids()
 								&& !movementValues.isAroundLiquids() && !movementValues.isAroundLiquids()
-								&& !movementValues.isAroundFire() && !movementValues.isAroundFire()) {
+								&& !movementValues.isAroundFire() && !movementValues.isAroundFire() && !movementValues.isAroundCactus()) {
 							boolean gotFire = false;
 							if (player.getLastDamageCause() != null) {
 								if (player.getLastDamageCause().getCause() != null) {

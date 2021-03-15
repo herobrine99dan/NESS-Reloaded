@@ -110,15 +110,11 @@ public class Aimbot extends PacketCheck {
 			buffer4 -= 0.5;
 		}
 	}
-	
-	/*
-	 * yawList().add(yaw);
-pitchList().add(pitch);
 
-onAttack() {
-yawList().clear();
-pitchList().clear();
-}
+	/*
+	 * yawList().add(yaw); pitchList().add(pitch);
+	 * 
+	 * onAttack() { yawList().clear(); pitchList().clear(); }
 	 */
 
 	private void Check5(Packet e) {
@@ -156,46 +152,16 @@ pitchList().clear();
 		}
 	}
 
-	private double roundDoubleNumber(double n, boolean ceilMethod) {
-		if (ceilMethod) {
-			return Math.ceil(n * 10) / 10;
-		}
-		return Math.round(n * 10) / 10;
-	}
-	
-	//TODO Check if there is a pattern on Math.abs(entityAttacked.yaw()-player.yaw())
-	//TODO Get more ideas to find pattern using vectors
+	// TODO Check if there is a pattern on
+	// Math.abs(entityAttacked.yaw()-player.yaw())
+	// TODO Get more ideas to find pattern using vectors
 
 	private void commonPattern(float yawDeltaPacket, float pitchDeltaPacket, float yaw, float pitch) {
-		// this.player().sendDevMessage("Yaw: " + roundDoubleNumber(yaw, true) + " real:
-		// " + yaw);
-		// this.player()
-		// .sendDevMessage("yawDelta: " + roundDoubleNumber(yawDeltaPacket, true) + "
-		// real: " + yawDeltaPacket);
-		// this.player().sendDevMessage("pitch: " + roundDoubleNumber(pitch, true) + " "
-		// + pitch);
-		// this.player().sendDevMessage(
-		// "pitchDelta: " + roundDoubleNumber(pitchDeltaPacket, true) + " real: " +
-		// pitchDeltaPacket);
 		if (Math.abs(yaw) % 0.5D == 0.0D) {
 			if (++buffer5 > 3) {
 				this.flag("PerfectRotation5");
 			}
-		} else if (isDiffAlmostEquals(Math.abs(roundDoubleNumber(yaw, false)), yaw) && Math.abs(yaw) > 0) {
-			if (++buffer5 > 3) {
-				this.flag("PerfectRotation6");
-			}
-		} else if (isDiffAlmostEquals(Math.abs(roundDoubleNumber(yawDeltaPacket, true)), yawDeltaPacket)
-				&& Math.abs(yawDeltaPacket) > 0) {
-			if (++buffer5 > 4) {
-				this.flag("PerfectRotation7-1");
-			}
 		}
-	}
-
-	private boolean isDiffAlmostEquals(double d, double rounded) {
-		double result = d - rounded;
-		return Math.abs(result) < 0.01;
 	}
 
 	private boolean isReallySmall(double d) {

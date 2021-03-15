@@ -35,7 +35,6 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 	protected void checkEvent(PlayerMoveEvent e) {
 		jumpBoost(e);
 		levitationEffect(e);
-		illegalDist(e);
 		stepYCheck(e);
 		IllegalXZDistance(e);
 	}
@@ -73,26 +72,6 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		} else {
 			flyYSum = 0.0;
 		}
-	}
-
-	public void illegalDist(Cancellable e) {
-		MovementValues values = player().getMovementValues();
-		double dist = values.getTo().distance(values.getFrom());
-		if (Math.abs(values.getyDiff()) > 0.001) {
-			double maxSpd = 2;
-			if (values.getFrom().getY() < values.getTo().getY()) {
-				maxSpd = 1.52;
-			} else {
-				maxSpd = 10.0;
-			}
-			if (!values.isGroundAround() && !values.isFlying()) {
-				if (dist > maxSpd && !player().getBukkitPlayer().hasPotionEffect(PotionEffectType.JUMP)
-						&& !values.isAroundSlime()) {
-					this.flagEvent(e, "IllegalDistance");
-				}
-			}
-		}
-
 	}
 
 	public void levitationEffect(Cancellable e) {
