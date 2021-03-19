@@ -168,6 +168,8 @@ public class MovementValues {
 					snow = true;
 				} else if (name.contains("LILY")) {
 					lily = true;
+				} else if (name.contains("PAD")) {
+					lily = true;
 				} else if (name.contains("CARPET")) {
 					carpet = true;
 				} else if (name.contains("WEB")) {

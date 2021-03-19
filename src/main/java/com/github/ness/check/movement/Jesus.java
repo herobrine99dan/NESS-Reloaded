@@ -13,28 +13,61 @@ import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
+import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 
 public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
-	double maxYVariance = 0.75;
-	double lastXZDist;
-	double lastYDist;
+	private double maxYVariance;
+	private double lastXZDist;
+	private double lastYDist;
+	private double maxXZVariance;
+	private double maxHighDistanceY;
+	private double liquidGravity;
 	private double noGravityBuffer;
+	private boolean useImpossibleYPattern, useNoGravityYCheck;
+	private double waterFriction, lavaFriction;
 
 	public Jesus(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 		this.maxYVariance = this.ness().getMainConfig().getCheckSection().jesus().maxYVariance();
+		this.liquidGravity = this.ness().getMainConfig().getCheckSection().jesus().liquidGravity();
+		this.waterFriction = this.ness().getMainConfig().getCheckSection().jesus().waterFriction();
+		this.maxXZVariance = this.ness().getMainConfig().getCheckSection().jesus().maxXZVariance();
+		this.lavaFriction = this.ness().getMainConfig().getCheckSection().jesus().lavaFriction();
+		this.useNoGravityYCheck = this.ness().getMainConfig().getCheckSection().jesus().useNoGravityYCheck();
+		this.useImpossibleYPattern = this.ness().getMainConfig().getCheckSection().jesus().useImpossibleYPattern();
+		this.maxHighDistanceY = this.ness().getMainConfig().getCheckSection().jesus().maxHighDistanceY();
 	}
 
 	public interface Config {
 		@DefaultDouble(0.2)
 		double maxYVariance();
+		
+		@DefaultDouble(0.14)
+		double maxXZVariance();
+
+		@DefaultDouble(0.302)
+		double maxHighDistanceY();
+
+		@DefaultDouble(-0.02)
+		double liquidGravity();
+
+		@DefaultDouble(0.8)
+		double waterFriction();
+
+		@DefaultDouble(0.5)
+		double lavaFriction();
+
+		@DefaultBoolean(true)
+		boolean useImpossibleYPattern();
+
+		@DefaultBoolean(true)
+		boolean useNoGravityYCheck();
 	}
 
-	// TODO Implement Lava Movement
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
@@ -60,26 +93,26 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 
 	public void handleWater(MovementValues values, Cancellable event, NessPlayer nessPlayer) {
 		double yDist = values.getyDiff();
-		double predictedY = lastYDist * 0.80D;
-		predictedY -= 0.02D; // We handle Prediction for XZ Values
+		double predictedY = lastYDist * waterFriction;
+		predictedY -= liquidGravity; // We handle Prediction for XZ Values
 		double resultY = yDist - predictedY;
 		double xzDist = values.getXZDiff();
-		double predictedXZ = lastXZDist * 0.8f;
+		double predictedXZ = lastXZDist * waterFriction;
 		double resultXZ = xzDist - predictedXZ;
 		// nessPlayer.sendDevMessage("WaterTicks: " + this.liquidTicks + " resultY: " +
 		// resultY);
 		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
-			if (yDist > 0.302D && !values.isGroundAround()) {
+			if (yDist > maxHighDistanceY && !values.isGroundAround()) {
 				this.flagEvent(event, "HighDistanceY");
 			} else if (resultY > maxYVariance && !values.isGroundAround()) {
 				this.flagEvent(event, "HighVarianceY: " + (float) resultY);
-			} else if (resultXZ > 0.11) {
+			} else if (resultXZ > maxXZVariance) {
 				this.flagEvent(event, "HighDistanceXZ: " + resultXZ);
-			} else if (yDist == 0.0) {
+			} else if (yDist == 0.0 && useNoGravityYCheck) {
 				if (++noGravityBuffer > 4) {
 					this.flagEvent(event, "NoGravityY");
 				}
-			} else if (Double.toString(Math.abs(yDist)).contains("00000000")) {
+			} else if (Double.toString(Math.abs(yDist)).contains("00000000") && useImpossibleYPattern) {
 				this.flagEvent(event, "ImpossibleYPattern");
 			} else if (noGravityBuffer > 0) {
 				noGravityBuffer -= 0.25;
@@ -89,27 +122,27 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 
 	public void handleLava(MovementValues values, Cancellable event, NessPlayer nessPlayer) {
 		double yDist = values.getyDiff();
-		double predictedY = lastYDist * 0.5D;
-		predictedY -= 0.02D; // We handle Prediction for XZ Values
+		double predictedY = lastYDist * lavaFriction;
+		predictedY -= liquidGravity; // We handle Prediction for XZ Values
 		double resultY = yDist - predictedY;
 		double xzDist = values.getXZDiff();
-		double predictedXZ = lastXZDist * 0.5D;
+		double predictedXZ = lastXZDist * lavaFriction;
 		double resultXZ = xzDist - predictedXZ;
 		// nessPlayer.sendDevMessage("LavaTicks: " + this.liquidTicks + " resultY: " +
 		// resultY);
 		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
-			if (yDist > 0.302D) {
+			if (yDist > maxHighDistanceY) {
 				this.flagEvent(event, "HighDistanceY");
 			} else if (resultY > maxYVariance + 0.25) {
 				this.flagEvent(event, "HighVarianceY");
-			} else if (resultXZ > 0.17) {
+			} else if (resultXZ > (maxXZVariance+0.05)) {
 				this.flagEvent(event, "HighDistanceXZ");
 				this.player().sendDevMessage("resultXZ: " + (float) resultXZ + " resultY: " + (float) resultY);
-			} else if (yDist == 0.0) {
+			} else if (yDist == 0.0 && useNoGravityYCheck) {
 				if (++noGravityBuffer > 4) {
 					this.flagEvent(event, "NoGravityY");
 				}
-			} else if (Double.toString(Math.abs(yDist)).contains("00000000")) {
+			} else if (Double.toString(Math.abs(yDist)).contains("00000000") && useImpossibleYPattern) {
 				this.flagEvent(event, "ImpossibleYPattern");
 			} else if (noGravityBuffer > 0) {
 				noGravityBuffer -= 0.25;
