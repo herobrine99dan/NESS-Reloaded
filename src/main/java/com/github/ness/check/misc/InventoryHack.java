@@ -2,6 +2,7 @@ package com.github.ness.check.misc;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import com.github.ness.NessPlayer;
@@ -35,7 +36,8 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 	 * @param e
 	 */
 	public void Check(InventoryClickEvent e) {
-		if (!(e.getWhoClicked() instanceof Player)) {
+		e.getAction();
+		if(e.getAction().name().contains("DROP") || e.getAction() == InventoryAction.COLLECT_TO_CURSOR) {
 			return;
 		}
 		Player player = (Player) e.getWhoClicked();

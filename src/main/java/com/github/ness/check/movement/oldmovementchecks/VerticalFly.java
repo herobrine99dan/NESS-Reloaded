@@ -44,7 +44,7 @@ public class VerticalFly extends ListeningCheck<PlayerMoveEvent> {
 				return;
 			}
 			if (player.getLocation().getY() % 0.5D != 0.0D && !values.isOnGroundCollider()
-					&& !values.isAroundNonOccludingBlocks() && !values.isAroundLiquids()) {
+					&& !values.isAroundNonOccludingBlocks() && !values.isAroundLiquids() && !values.isAroundLadders()) {
 				if (++buffer > 2) {
 					this.flagEvent(e, "Vertical2");
 				}
