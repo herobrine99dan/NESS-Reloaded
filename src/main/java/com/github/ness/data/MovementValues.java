@@ -91,6 +91,8 @@ public class MovementValues {
 	private final boolean aroundNonOccludingBlocks;
 
 	private final boolean aroundGate;
+	
+	private final boolean aroundKelp;
 
 	private final double dTG;
 
@@ -127,6 +129,7 @@ public class MovementValues {
 			boolean chorus = false;
 			boolean gate = false;
 			boolean cactus = false;
+			boolean kelp = false;
 			boolean glass = false;
 			boolean walls = false;
 			if (this.helper.isMathematicallyOnGround(to.getY())
@@ -194,6 +197,8 @@ public class MovementValues {
 					cactus = true;
 				} else if (name.contains("GLASS")) {
 					glass = true;
+				} else if (name.contains("KELP")) {
+					kelp = true;
 				}
 				if (material.isSolid() && !material.isOccluding()) {
 					nonOccludingBlocks = true;
@@ -219,6 +224,7 @@ public class MovementValues {
 			groundAround = ground;
 			insideVehicle = p.isInsideVehicle();
 			aroundCarpet = carpet;
+			aroundKelp = kelp;
 			aroundChorus = chorus;
 			aroundLiquids = liquids;
 			aroundFence = fence;
@@ -251,6 +257,7 @@ public class MovementValues {
 			aroundGlass = false;
 			aroundWalls = false;
 			sprinting = false;
+			aroundKelp = false;
 			aroundNonOccludingBlocks = false;
 			aroundLily = false;
 			aroundIronBars = false;
@@ -486,5 +493,9 @@ public class MovementValues {
 
 	public double getdTG() {
 		return dTG;
+	}
+
+	public boolean isAroundKelp() {
+		return aroundKelp;
 	}
 }

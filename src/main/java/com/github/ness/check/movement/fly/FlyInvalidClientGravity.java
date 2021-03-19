@@ -69,7 +69,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		}
 		if (values.getHelper().hasflybypass(nessPlayer) || p.getAllowFlight() || values.isAroundLiquids()
 				|| Utility.hasVehicleNear(p) || values.isAroundWeb() || values.isAroundSlime()
-				|| values.isAroundLadders() || values.isAroundSnow() || values.hasBlockNearHead()) {
+				|| values.isAroundLadders() || values.isAroundSnow() || values.hasBlockNearHead() || values.isAroundKelp()) {
 			lastDeltaY = deltaY;
 			return;
 		}

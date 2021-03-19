@@ -45,7 +45,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 	public interface Config {
 		@DefaultDouble(0.2)
 		double maxYVariance();
-		
+
 		@DefaultDouble(0.14)
 		double maxXZVariance();
 
@@ -108,7 +108,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 				this.flagEvent(event, "HighVarianceY: " + (float) resultY);
 			} else if (resultXZ > maxXZVariance) {
 				this.flagEvent(event, "HighDistanceXZ: " + resultXZ);
-			} else if (yDist == 0.0 && useNoGravityYCheck) {
+			} else if (yDist == 0.0 && useNoGravityYCheck && xzDist > 0.1) {
 				if (++noGravityBuffer > 4) {
 					this.flagEvent(event, "NoGravityY");
 				}
@@ -135,10 +135,10 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 				this.flagEvent(event, "HighDistanceY");
 			} else if (resultY > maxYVariance + 0.25) {
 				this.flagEvent(event, "HighVarianceY");
-			} else if (resultXZ > (maxXZVariance+0.05)) {
+			} else if (resultXZ > (maxXZVariance + 0.05)) {
 				this.flagEvent(event, "HighDistanceXZ");
 				this.player().sendDevMessage("resultXZ: " + (float) resultXZ + " resultY: " + (float) resultY);
-			} else if (yDist == 0.0 && useNoGravityYCheck) {
+			} else if (yDist == 0.0 && useNoGravityYCheck && xzDist > 0.1) {
 				if (++noGravityBuffer > 4) {
 					this.flagEvent(event, "NoGravityY");
 				}
