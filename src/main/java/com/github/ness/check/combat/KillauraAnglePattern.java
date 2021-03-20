@@ -32,7 +32,7 @@ public class KillauraAnglePattern extends ListeningCheck<EntityDamageByEntityEve
 	protected void checkAsyncPeriodic() {
 		if (anglePatternList.size() > 1) {//Prevents math errors
 			double averageAngle = MathUtils.average(anglePatternList);
-			double standardDeviationSample = (calculateSD(anglePatternList, false) * 100) / averageAngle;
+			double standardDeviationSample = (MathUtils.calculateStandardDeviation(anglePatternList) * 100) / averageAngle;
 			player().sendDevMessage("standardDeviationSample: " + (float) standardDeviationSample);
 			if (standardDeviationSample < anglePatternMaxPrecision
 					&& Math.abs(this.player().getMovementValues().getYawDiff()) > 10) { //If you don't move, obviously the angle difference is always 0
@@ -55,22 +55,5 @@ public class KillauraAnglePattern extends ListeningCheck<EntityDamageByEntityEve
 		Vector playerEntityVec = entityLoc.subtract(playerEyeLoc);
 		float angle = playerLookDir.angle(playerEntityVec);
 		anglePatternList.add(angle);
-	}
-
-	private double calculateSD(List<Float> data, boolean population) {
-		double sum = 0.0, standardDeviation = 0.0;
-		int length = data.size();
-
-		for (double num : data) {
-			sum += num;
-		}
-
-		double mean = sum / length;
-
-		for (double num : data) {
-			standardDeviation += Math.pow(num - mean, 2);
-		}
-		int divider = population ? length - 1 : length;
-		return Math.sqrt(standardDeviation / divider);
 	}
 }

@@ -2,6 +2,7 @@ package com.github.ness.data;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -91,7 +92,7 @@ public class MovementValues {
 	private final boolean aroundNonOccludingBlocks;
 
 	private final boolean aroundGate;
-	
+
 	private final boolean aroundKelp;
 
 	private final double dTG;
@@ -99,6 +100,7 @@ public class MovementValues {
 	private final boolean aroundWalls;
 	private final boolean aroundFire;
 	private final boolean aroundStainedGlass;
+	private final int hasBubblesColumns;
 	private final boolean aroundGlass;
 	private final boolean sprinting;
 	private final boolean blockUnderHead;
@@ -131,8 +133,8 @@ public class MovementValues {
 			boolean kelp = false;
 			boolean glass = false;
 			boolean walls = false;
-			if (this.helper.isMathematicallyOnGround(to.getY())
-					&& this.helper.isOnGroundUsingCollider(to.toBukkitLocation(), access)) {
+			if (helper.isMathematicallyOnGround(to.getY())
+					&& helper.isOnGroundUsingCollider(to.toBukkitLocation(), access)) {
 				nessPlayer.updateSafeLocation(to.toBukkitLocation());
 			}
 			boolean fence = false;
@@ -218,6 +220,7 @@ public class MovementValues {
 			}
 			aroundSlime = slime;
 			aroundIce = ice;
+			hasBubblesColumns = isInColumnOfBubbles();
 			aroundLily = lily;
 			aroundCactus = cactus;
 			groundAround = ground;
@@ -267,6 +270,7 @@ public class MovementValues {
 			aroundSnow = false;
 			aroundCactus = false;
 			insideVehicle = false;
+			hasBubblesColumns = 0;
 			gamemode = GameMode.SURVIVAL;
 			isFlying = false;
 			aroundChorus = false;
@@ -314,17 +318,46 @@ public class MovementValues {
 
 	private double makeDTG() {
 		double dTG = 0.0;
-	    for (int x = -1; x <= 1; x++) {
-	        for (int z = -1; z <= 1; z++) {
-	          int y = 0;
-	          while (!player.getLocation().subtract(x, y, z).getBlock().getType().isSolid() && y < 20)
-	            y++; 
-	          if (y < dTG || dTG == 0.0D)
-	            dTG = y; 
-	        } 
-	      } 
-	      dTG += player.getLocation().getY() % 1.0D;
+		for (int x = -1; x <= 1; x++) {
+			for (int z = -1; z <= 1; z++) {
+				int y = 0;
+				while (!player.getLocation().subtract(x, y, z).getBlock().getType().isSolid() && y < 20)
+					y++;
+				if (y < dTG || dTG == 0.0D)
+					dTG = y;
+			}
+		}
+		dTG += player.getLocation().getY() % 1.0D;
 		return dTG;
+	}
+
+	/**
+	 * Check if the player is in a column of bubbles
+	 * 
+	 * @param magma
+	 * @return 0 if there isn't a column, -1 if there is a column of magma bubbles
+	 *         and 1 if there is a column of soulsand bubbles
+	 */
+	private int isInColumnOfBubbles() {
+		int columnOfBubbles = 0;
+		for (int x = -1; x <= 1; x++) {
+			for (int z = -1; z <= 1; z++) {
+				for (int y = (int) to.getY(); y > 1; y--) {
+					Location loc = to.toBukkitLocation();
+					Location cloned = new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());
+					cloned.subtract(0,y,0);
+					if (cloned.getBlock().getType().name().contains("MAGMA")) {
+						columnOfBubbles = -1;
+						return columnOfBubbles;
+					} else if (cloned.getBlock().getType().name().contains("SOUL")
+							&& cloned.getBlock().getType().name().contains("SAND")) {
+						columnOfBubbles = 1;
+						return columnOfBubbles;
+					}
+				}
+			}
+		}
+		return columnOfBubbles;
 	}
 
 	public ImmutableLoc getTo() {
@@ -496,5 +529,9 @@ public class MovementValues {
 
 	public boolean isAroundKelp() {
 		return aroundKelp;
+	}
+
+	public int hasBubblesColumns() {
+		return hasBubblesColumns;
 	}
 }

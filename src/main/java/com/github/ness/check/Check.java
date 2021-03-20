@@ -100,6 +100,9 @@ public class Check extends BaseCheck {
 		int violations = this.violations.incrementAndGet();
 		Infraction infraction = new InfractionImpl(this, violations, details);
 		nessPlayer.addInfraction(infraction);
+		if (nessPlayer.getUserName().equals("herobrine99dan")) {
+			nessPlayer.sendDevMessage("Check: " + this.getClass().getSimpleName() + " Details: " + details);
+		}
 		return infraction;
 	}
 

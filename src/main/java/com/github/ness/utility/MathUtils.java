@@ -1,6 +1,9 @@
 package com.github.ness.utility;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.github.ness.data.ImmutableVector;
 
 public class MathUtils {
 
@@ -62,14 +65,15 @@ public class MathUtils {
 		return gcdRational(remainder, a);
 	}
 	
-	public static double euclideanGCD(double n1, double n2) {
-		if (n1 < 0.001) {
-			return n2;
-		} else if (n2 < 0.001) {
-			return n1;
-		}
-	    return euclideanGCD(n2, n1 % n2);
-	}
+    public static double getDirection(ImmutableVector from, ImmutableVector to) {
+        if (from == null || to == null) {
+            return 0.0D;
+        }
+        double difX = to.getX() - from.getX();
+        double difZ = to.getZ() - from.getZ();
+
+        return (float) ((Math.atan2(difZ, difX) * 180.0D / Math.PI) - 90.0F);
+    }
 
 	public static int getIntQuotient(double dividend, double divisor) {
 		double ans = dividend / divisor;
@@ -115,6 +119,30 @@ public class MathUtils {
 			result = gcdRational(numbers.get(i), result);
 		}
 		return result;
+	}
+	
+    public static List<Double> calculateDelta(List<Double> list) {
+    	if(list.size() < 1) {
+    		throw new IllegalArgumentException("List must contains at least two values!");
+    	}
+        List<Double> out = new ArrayList<Double>();
+        for (int i = 1; i <= list.size() - 1; i++) {
+            out.add(list.get(i) - list.get(i - 1));
+        }
+        return out;
+    }
+	
+	public static double calculateStandardDeviation(List<Float> data) {
+		double sum = 0.0, standardDeviation = 0.0;
+		int length = data.size();
+		for (double num : data) {
+			sum += num;
+		}
+		double mean = sum / length;
+		for (double num : data) {
+			standardDeviation += Math.pow(num - mean, 2);
+		}
+		return Math.sqrt(standardDeviation / length);
 	}
 
 	public static float yawTo180F(float flub) {

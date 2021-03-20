@@ -19,7 +19,9 @@ public class Utility {
 		for (int x = -radius; x < radius; x++) {
 			for (int y = -radius; y < radius; y++) {
 				for (int z = -radius; z < radius; z++) {
-					result.add(loc.getWorld().getBlockAt(loc.clone().add(x, y, z)));
+					//Cloning location with default native method isn't good and cause performance issues
+					Location cloned = new Location(loc.getWorld(),loc.getX(),loc.getY(),loc.getZ());
+					result.add(loc.getWorld().getBlockAt(cloned.add(x, y, z)));
 				}
 			}
 		}

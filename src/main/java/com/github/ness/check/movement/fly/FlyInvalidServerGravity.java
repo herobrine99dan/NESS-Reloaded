@@ -33,7 +33,7 @@ public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	public interface Config {
-		@DefaultDouble(0.9)
+		@DefaultDouble(1.1)
 		double maxGravity();
 	}
 
@@ -55,6 +55,9 @@ public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
 		double yresult = y - p.getVelocity().getY();
 		if (values.getHelper().hasflybypass(nessPlayer) || values.isAroundSlime() || p.getAllowFlight() || values.isAroundLily()
 				|| Utility.hasVehicleNear(p) || values.isAroundIronBars()) {
+			return;
+		}
+		if(values.hasBubblesColumns() == 1) {
 			return;
 		}
 		double max = maxInvalidVelocity;

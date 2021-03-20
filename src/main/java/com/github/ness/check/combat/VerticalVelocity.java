@@ -41,6 +41,9 @@ public class VerticalVelocity extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues values = this.player().getMovementValues();
 		double yDelta = values.getyDiff();
 		NessPlayer nessPlayer = this.player();
+		if(values.isAroundCactus()) {
+			return;
+		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 500) {
 			lastYDistances.add((float) yDelta); // We actually get the last 5 movements when the player gets velocity
 			if (lastYDistances.size() > 7) {

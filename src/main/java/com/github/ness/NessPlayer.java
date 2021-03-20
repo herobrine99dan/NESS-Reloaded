@@ -410,4 +410,8 @@ public class NessPlayer implements AnticheatPlayer {
 		this.gcd = gcd;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
 }

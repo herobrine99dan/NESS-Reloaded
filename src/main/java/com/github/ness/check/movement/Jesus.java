@@ -103,7 +103,11 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		// resultY);
 		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
 			if (yDist > maxHighDistanceY && !values.isGroundAround()) {
-				this.flagEvent(event, "HighDistanceY");
+				if (values.hasBubblesColumns() == 1 && yDist > maxHighDistanceY + 0.268) {
+					this.flagEvent(event, "HighDistanceYBubble");
+				} else {
+					this.flagEvent(event, "HighDistanceY");
+				}
 			} else if (resultY > maxYVariance && !values.isGroundAround()) {
 				this.flagEvent(event, "HighVarianceY: " + (float) resultY);
 			} else if (resultXZ > maxXZVariance) {
@@ -132,7 +136,11 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		// resultY);
 		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
 			if (yDist > maxHighDistanceY) {
-				this.flagEvent(event, "HighDistanceY");
+				if (values.hasBubblesColumns() == 1 && yDist > maxHighDistanceY + 0.268) {
+					this.flagEvent(event, "HighDistanceYBubble");
+				} else {
+					this.flagEvent(event, "HighDistanceY");
+				}
 			} else if (resultY > maxYVariance + 0.25) {
 				this.flagEvent(event, "HighVarianceY");
 			} else if (resultXZ > (maxXZVariance + 0.05)) {

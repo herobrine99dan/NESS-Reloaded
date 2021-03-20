@@ -100,8 +100,8 @@ public class AimbotGCD extends PacketCheck {
 			}
 			return;
 		}
-		double gcdYaw = MathUtils.euclideanGCD(yawDelta, lastYaw);
-		double gcdPitch = MathUtils.euclideanGCD(pitchDelta, lastPitch);
+		double gcdYaw = MathUtils.gcdRational(yawDelta, lastYaw);
+		double gcdPitch = MathUtils.gcdRational(pitchDelta, lastPitch);
 		// this.player()
 		// .sendDevMessage("buffer: " + buffer + " gcdYaw: " + (float) gcdYaw + "
 		// gcdPitch: " + (float) gcdPitch);

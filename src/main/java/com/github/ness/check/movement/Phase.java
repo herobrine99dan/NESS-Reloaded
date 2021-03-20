@@ -29,7 +29,7 @@ public class Phase extends ListeningCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		Check(event);
-		Check1(event);
+		//Check1(event);
 	}
 
 	private void Check(PlayerMoveEvent event) {

@@ -2,13 +2,13 @@ package com.github.ness.check.movement;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.potion.PotionEffectType;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.data.MovementValues;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 
@@ -31,18 +31,24 @@ public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
 
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
-		Player p = event.getPlayer();
+		Player player = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
+		MovementValues values = nessPlayer.getMovementValues();
 		final String name = event.getTo().getBlock().getType().name();
-		if ((name.contains("LADDER") || name.contains("VINE")) && !p.hasPotionEffect(PotionEffectType.JUMP)
-				&& !nessPlayer.getMovementValues().getHelper().hasflybypass(nessPlayer) && !nessPlayer.isTeleported() && !nessPlayer.isHasSetback()) {
+		if ((name.contains("LADDER") || name.contains("VINE"))
+				&& !nessPlayer.getMovementValues().getHelper().hasflybypass(nessPlayer) && !nessPlayer.isTeleported()
+				&& !nessPlayer.isHasSetback()) {
 			double distance = nessPlayer.getMovementValues().getyDiff();
-			if (distance > maxDist && p.getVelocity().getY() < 0) {
-				if (++buffer > 3) {
+			double maxDist = this.maxDist;
+			if(values.hasBubblesColumns() == 1) {
+				maxDist = 0.57;
+			}
+			if (distance > maxDist && player.getVelocity().getY() < 0) {
+				if (++buffer > 2) {
 					flagEvent(event, "HighDistance Dist: " + (float) distance);
 				}
-			} else if (distance < -0.192D && p.getVelocity().getY() < 0) {
-				if(++buffer > 2) {
+			} else if (distance < -0.192D && player.getVelocity().getY() < 0) {
+				if (++buffer > 2) {
 					flagEvent(event, "LowDistance Dist: " + (float) distance);
 				}
 			} else if (buffer > 0) {
