@@ -44,7 +44,8 @@ public class VerticalFly extends ListeningCheck<PlayerMoveEvent> {
 				return;
 			}
 			if (player.getLocation().getY() % 0.5D != 0.0D && !values.isOnGroundCollider()
-					&& !values.isAroundNonOccludingBlocks() && !values.isAroundLiquids() && !values.isAroundLadders() && !values.isAroundKelp()) {
+					&& !values.isAroundNonOccludingBlocks() && !values.isAroundLiquids() && !values.isAroundLadders()
+					&& !values.isAroundKelp() && !player.hasPotionEffect(PotionEffectType.JUMP) ) {
 				if (++buffer > 2) {
 					this.flagEvent(e, "Vertical2");
 				}

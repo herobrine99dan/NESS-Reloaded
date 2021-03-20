@@ -9,6 +9,7 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
+import com.github.ness.data.PlayerAction;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 
@@ -40,14 +41,18 @@ public class FastLadder extends ListeningCheck<PlayerMoveEvent> {
 				&& !nessPlayer.isHasSetback()) {
 			double distance = nessPlayer.getMovementValues().getyDiff();
 			double maxDist = this.maxDist;
+			double maxLowDist = -0.192;
 			if(values.hasBubblesColumns() == 1) {
 				maxDist = 0.57;
+			}
+			if(values.hasBubblesColumns() == -1) {
+				maxLowDist = -0.57;
 			}
 			if (distance > maxDist && player.getVelocity().getY() < 0) {
 				if (++buffer > 2) {
 					flagEvent(event, "HighDistance Dist: " + (float) distance);
 				}
-			} else if (distance < -0.192D && player.getVelocity().getY() < 0) {
+			} else if (distance < maxLowDist && player.getVelocity().getY() < 0) {
 				if (++buffer > 2) {
 					flagEvent(event, "LowDistance Dist: " + (float) distance);
 				}
