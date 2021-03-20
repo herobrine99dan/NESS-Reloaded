@@ -35,7 +35,7 @@ public class MovementValuesHelper {
 		double dot = toEntity.normalize().dot(direction);
 		return dot;
 	}
-	
+
 	/**
 	 * Get Angle (in Radians) beetween a player and the target
 	 * 
@@ -148,10 +148,18 @@ public class MovementValuesHelper {
 		Player player = nessPlayer.getBukkitPlayer();
 		if (!Bukkit.getVersion().contains("1.8")) {
 			return player.hasPotionEffect(PotionEffectType.LEVITATION) || player.isGliding() || player.isFlying()
-					|| nessPlayer.milliSecondTimeDifference(PlayerAction.GLIDING) < 500;
+					|| nessPlayer.milliSecondTimeDifference(PlayerAction.GLIDING) < 1500;
 		} else {
 			return player.isFlying();
 		}
+	}
+
+	public boolean isPlayerUsingElytra(NessPlayer nessPlayer) {
+		Player player = nessPlayer.getBukkitPlayer();
+		if (!Bukkit.getVersion().contains("1.8")) {
+			return player.isGliding() || nessPlayer.milliSecondTimeDifference(PlayerAction.GLIDING) < 1500;
+		}
+		return false; // IN 1.8 there isn't Elytra!
 	}
 
 	public boolean specificBlockNear(Location loc, String m) {
@@ -208,7 +216,7 @@ public class MovementValuesHelper {
 		return done;
 	}
 
-	public static MovementValuesHelper makeHelper(MovementValues values) {
+	public static MovementValuesHelper makeHelper() {
 		return new MovementValuesHelper();
 	}
 

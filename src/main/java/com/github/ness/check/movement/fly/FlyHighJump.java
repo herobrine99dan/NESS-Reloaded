@@ -44,8 +44,9 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 						.contains("SCAFFOLD")
 				|| this.ness().getMaterialAccess().getMaterial(e.getTo().clone().add(0, 0.5, 0)).name()
 						.contains("SCAFFOLD")
-				|| movementValues.isAroundSnow() || movementValues.isAroundLadders() || nessPlayer.isTeleported()
-				|| movementValues.hasBlockNearHead() || Utility.hasVehicleNear(p) || movementValues.isOnGroundCollider()) {
+				|| movementValues.isAroundKelp() || movementValues.isAroundSnow() || movementValues.isAroundLadders()
+				|| nessPlayer.isTeleported() || movementValues.hasBlockNearHead() || Utility.hasVehicleNear(p)
+				|| movementValues.isOnGroundCollider()) {
 			flyYSum = 0;
 			return;
 		}

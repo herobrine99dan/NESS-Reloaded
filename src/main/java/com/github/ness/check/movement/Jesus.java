@@ -108,7 +108,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 				this.flagEvent(event, "HighVarianceY: " + (float) resultY);
 			} else if (resultXZ > maxXZVariance) {
 				this.flagEvent(event, "HighDistanceXZ: " + resultXZ);
-			} else if (yDist == 0.0 && useNoGravityYCheck && xzDist > 0.1) {
+			} else if (yDist == 0.0 && useNoGravityYCheck && xzDist > 0.05 && !values.hasBlockNearHead()) {
 				if (++noGravityBuffer > 4) {
 					this.flagEvent(event, "NoGravityY");
 				}
@@ -138,7 +138,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 			} else if (resultXZ > (maxXZVariance + 0.05)) {
 				this.flagEvent(event, "HighDistanceXZ");
 				this.player().sendDevMessage("resultXZ: " + (float) resultXZ + " resultY: " + (float) resultY);
-			} else if (yDist == 0.0 && useNoGravityYCheck && xzDist > 0.1) {
+			} else if (yDist == 0.0 && useNoGravityYCheck && xzDist > 0.05 && !values.hasBlockNearHead()) {
 				if (++noGravityBuffer > 4) {
 					this.flagEvent(event, "NoGravityY");
 				}

@@ -103,7 +103,7 @@ public class MovementValues {
 	private final boolean sprinting;
 	private final boolean blockUnderHead;
 	private final boolean aroundSeaBlocks;
-	private final MovementValuesHelper helper;
+	private static final MovementValuesHelper helper = MovementValuesHelper.makeHelper();
 	private final Player player; // Not Thread Safe
 
 	public MovementValues(NessPlayer nessPlayer, ImmutableLoc to, ImmutableLoc from, MaterialAccess access) {
@@ -111,7 +111,6 @@ public class MovementValues {
 		this.to = to;
 		this.from = from;
 		this.player = p;
-		this.helper = MovementValuesHelper.makeHelper(this);
 		if (Bukkit.isPrimaryThread()) {
 			boolean liquids = false;
 			boolean ironbars = false;

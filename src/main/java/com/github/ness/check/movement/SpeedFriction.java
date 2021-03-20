@@ -1,8 +1,5 @@
 package com.github.ness.check.movement;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
@@ -39,7 +36,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		Player player = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues values = nessPlayer.getMovementValues();
-		if (player.isFlying() || values.isAroundLiquids() || values.isAroundSlime() || values.hasBlockNearHead()) {
+		if (player.isFlying() || values.getHelper().isPlayerUsingElytra(nessPlayer) || values.isAroundLiquids() || values.isAroundSlime() || values.hasBlockNearHead()) {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
