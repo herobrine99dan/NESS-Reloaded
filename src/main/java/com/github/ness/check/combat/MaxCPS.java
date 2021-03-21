@@ -13,15 +13,15 @@ import com.github.ness.check.ListeningCheckInfo;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
-public class AutoClicker extends ListeningCheck<PlayerInteractEvent> {
+public class MaxCPS extends ListeningCheck<PlayerInteractEvent> {
 
-	int maxCPS;
+	private final int maxCPS;
 
 	public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos.forEventWithAsyncPeriodic(PlayerInteractEvent.class, Duration.ofSeconds(1));
 	private int CPS; // For AutoClicker
-	public AutoClicker(ListeningCheckFactory<?, PlayerInteractEvent> factory, NessPlayer player) {
+	public MaxCPS(ListeningCheckFactory<?, PlayerInteractEvent> factory, NessPlayer player) {
 		super(factory, player);
-		this.maxCPS = this.ness().getMainConfig().getCheckSection().autoClicker().maxCPS();
+		this.maxCPS = this.ness().getMainConfig().getCheckSection().maxCps().maxCPS();
 		this.CPS = 0;
 	}
 
@@ -36,13 +36,12 @@ public class AutoClicker extends ListeningCheck<PlayerInteractEvent> {
 			CPS++;
 			if (CPS > maxCPS && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
 				flagEvent(e, " CPS: " + CPS);
-				//if(player().setViolation(new Violation("AutoClicker", "CPS: " + CPS))) e.setCancelled(true);
 			}
 		}
 	}
 
 	@Override
-	protected void checkAsyncPeriodic() {
+	protected void checkSyncPeriodic() {
 		CPS = 0;
 	}
 	

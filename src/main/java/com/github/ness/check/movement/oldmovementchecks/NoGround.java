@@ -17,14 +17,15 @@ import com.github.ness.utility.Utility;
 
 public class NoGround extends ListeningCheck<PlayerMoveEvent> {
 
-	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEventWithAsyncPeriodic(PlayerMoveEvent.class, Duration.ofSeconds(1));
+	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
+			.forEventWithAsyncPeriodic(PlayerMoveEvent.class, Duration.ofSeconds(1));
 	private int flags;
 
 	public NoGround(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 		flags = 0;
 	}
-	
+
 	@Override
 	protected void checkAsyncPeriodic() {
 		flags = 0;
@@ -37,8 +38,8 @@ public class NoGround extends ListeningCheck<PlayerMoveEvent> {
 		Player player = e.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = this.player().getMovementValues();
-		if (movementValues.getHelper().hasflybypass(nessPlayer) || player.getAllowFlight() || Utility.hasVehicleNear(player)
-				|| player().isTeleported()) {
+		if (movementValues.getHelper().hasflybypass(nessPlayer) || player.getAllowFlight()
+				|| Utility.hasVehicleNear(player) || player().isTeleported()) {
 			return;
 		}
 		if (!(player.isSneaking() && !from.getBlock().getType().name().contains("LADDER")
@@ -50,7 +51,8 @@ public class NoGround extends ListeningCheck<PlayerMoveEvent> {
 				int failed = flags++;
 				if (failed > 3) {
 					flagEvent(e);
-					//if(player().setViolation(new Violation("NoGround", "(OnMove)"))) e.setCancelled(true);
+					// if(player().setViolation(new Violation("NoGround", "(OnMove)")))
+					// e.setCancelled(true);
 				}
 			}
 		}

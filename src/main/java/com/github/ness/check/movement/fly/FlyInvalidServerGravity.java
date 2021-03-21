@@ -65,7 +65,7 @@ public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
 		//float toAdd = pingresult / 6;
 		//max += toAdd;
 		double jumpBoost = Utility.getPotionEffectLevel(p, PotionEffectType.JUMP);
-		if (!e.getTo().getBlock().isLiquid()) {
+		if (jumpBoost > 0) {
 			y -= jumpBoost * (y / 2);
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2500) {

@@ -24,9 +24,11 @@ public class OmniSprint extends ListeningCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		NessPlayer nessPlayer = player();
-		// Vector result =
-		// event.getTo().toVector().subtract(event.getFrom().toVector());
+		//Minecraft is stupid: if you are in 1.13 you can sprint backwards in water
 		MovementValues values = nessPlayer.getMovementValues();
+		if(values.getHelper().isNearLiquid(event.getTo()) || values.getHelper().isNearLiquid(event.getFrom())) {
+			return;
+		}
 		if (values.isSprinting()) {
 			if (values.getServerVelocity().getY() > 0.0 || nessPlayer.getMovementValues().getYawDiff() > 10) {
 				return;
@@ -34,7 +36,7 @@ public class OmniSprint extends ListeningCheck<PlayerMoveEvent> {
 			Vector moving = values.getFrom().toBukkitLocation().clone()
 					.subtract(values.getTo().toBukkitLocation().clone()).toVector();
 			double angle = moving.angle(getDirection(values.getTo()));
-			if (angle < 1.58 && values.getHelper().isMathematicallyOnGround(values.getTo().getY())) {
+			if (angle < 1.59 && values.getHelper().isMathematicallyOnGround(values.getTo().getY())) {
 				if (++buffer > 3) {
 					flagEvent(event, "Angle: " + (float) angle);
 				}

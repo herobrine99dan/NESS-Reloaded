@@ -20,6 +20,12 @@ import com.github.ness.utility.Utility;
 
 public class MovementValuesHelper {
 
+	private final MaterialAccess access;
+
+	public MovementValuesHelper(MaterialAccess access) {
+		this.access = access;
+	}
+
 	/**
 	 * Get Angle (in Radians) beetween a player and the target
 	 * 
@@ -101,7 +107,7 @@ public class MovementValuesHelper {
 		return blocks;
 	}
 
-	public boolean isNearWater(Location loc, MaterialAccess access) {
+	public boolean isNearWater(Location loc) {
 		int water = 0;
 		double limit = 0.3;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
@@ -116,7 +122,25 @@ public class MovementValuesHelper {
 		return water > 4;
 	}
 
-	public boolean isNearLava(Location loc, MaterialAccess access) {
+	public boolean isNearLiquid(Location loc) {
+		int water = 0;
+		double limit = 0.3;
+		for (double x = -limit; x < limit + 0.1; x += limit) {
+			for (double z = -limit; z < limit + 0.1; z += limit) {
+				for (double y = -0.1; y < 0.2; y += 0.1) {
+					final Material material = access.getMaterial(loc.clone().add(x, y, z));
+					if (!material.isSolid()) {
+						if (material.name().contains("WATER") || material.name().contains("LAVA")) {
+							water++;
+						}
+					}
+				}
+			}
+		}
+		return water > 4;
+	}
+
+	public boolean isNearLava(Location loc) {
 		int water = 0;
 		double limit = 0.3;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
@@ -181,7 +205,7 @@ public class MovementValuesHelper {
 		return (dist * 0.5) - 1.5;
 	}
 
-	public boolean isOnGroundUsingCollider(Location loc, MaterialAccess access) {
+	public boolean isOnGroundUsingCollider(Location loc) {
 		final double limit = 0.2;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
@@ -216,8 +240,8 @@ public class MovementValuesHelper {
 		return done;
 	}
 
-	public static MovementValuesHelper makeHelper() {
-		return new MovementValuesHelper();
+	public static MovementValuesHelper makeHelper(MaterialAccess access) {
+		return new MovementValuesHelper(access);
 	}
 
 	@SuppressWarnings("deprecation")

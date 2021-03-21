@@ -1,6 +1,5 @@
 package com.github.ness.check.movement.fly;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -20,6 +19,8 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 	public FlyFalseGround(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
+	
+	private double buffer;
 
 	@Override
 	protected boolean shouldDragDown() {
@@ -52,10 +53,12 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 			// if(player().setViolation(new Violation("Fly", "FalseGround")))
 			// e.setCancelled(true);
 		} else if (player.isOnGround() && !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY())
-				&& !Bukkit.getVersion().contains("1.8")) {
+				&& ++buffer > 2) {
 			flagEvent(e, " FalseGround1");
 			// if(player().setViolation(new Violation("Fly", "FalseGround1")))
 			// e.setCancelled(true);
+		} else if(buffer > 0) {
+			buffer -= 0.25;
 		}
 	}
 }

@@ -1,7 +1,7 @@
 package com.github.ness.config;
 
-import com.github.ness.check.combat.AutoClicker;
 import com.github.ness.check.combat.Killaura;
+import com.github.ness.check.combat.MaxCPS;
 import com.github.ness.check.combat.PlayerESP;
 import com.github.ness.check.combat.VerticalVelocity;
 import com.github.ness.check.combat.autoclick.AutoClickConfig;
@@ -37,7 +37,7 @@ public interface AllChecksConfig {
 		"Effectiveness: Medium",
 		""})
 	@SubSection
-	AutoClicker.Config autoClicker();
+	MaxCPS.Config maxCps();
 	@ConfKey("killaura")
 	@ConfComments({
 		"",

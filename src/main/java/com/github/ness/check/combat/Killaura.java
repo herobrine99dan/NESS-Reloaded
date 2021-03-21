@@ -13,7 +13,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
@@ -35,8 +34,10 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	private final double maxReach;
 	private final double reachExpansion;
 	private final double lagAccount;
+	private final int angleListSize;
 	private final double maxAngle;
-	private final double anglePatternMaxPrecision;
+	private final int rayTraceReachBuffer;
+	private final int rayTraceHitboxBuffer;
 	private double buffer;
 	private List<Float> angleList;
 
@@ -50,24 +51,37 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		this.reachExpansion = this.ness().getMainConfig().getCheckSection().killaura().reachExpansion();
 		this.lagAccount = this.ness().getMainConfig().getCheckSection().killaura().lagAccount();
 		this.maxAngle = this.ness().getMainConfig().getCheckSection().killaura().mainAngle();
+		this.angleListSize = this.ness().getMainConfig().getCheckSection().killaura().angleListSize();
+		this.rayTraceHitboxBuffer = this.ness().getMainConfig().getCheckSection().killaura().rayTraceHitboxBuffer();
+		this.rayTraceReachBuffer = this.ness().getMainConfig().getCheckSection().killaura().rayTraceReachBuffer();
 		this.angleList = new ArrayList<Float>();
-		this.anglePatternMaxPrecision = this.ness().getMainConfig().getCheckSection().killaura()
-				.anglePatternMaxPrecision();
 	}
 
 	public interface Config {
 		@DefaultInteger(360)
 		double maxYaw();
 
-		@ConfComments("Hitbox and Reach check are handled by the Raytracer check, which is really aggressive")
+		@ConfComments("Hitbox is a very aggressive check, this is why I included also a way to check the angle beetween entity and player")
 		@DefaultDouble(0.6)
 		double mainAngle();
+		
+		@ConfComments("How many values should the angleList contains?")
+		@DefaultInteger(9)
+		int angleListSize();
+		
+		@ConfComments("Choose the correct buffer for Reach check")
+		@DefaultInteger(2)
+		int rayTraceReachBuffer();
+		
+		@ConfComments("Choose the correct buffer for Hitbox check")
+		@DefaultInteger(3)
+		int rayTraceHitboxBuffer();
 
 		@ConfComments("This is the max Reach allowed. The maxReach depends on this value, on lagAccount value and on reachExpansion. The real formula to calculate the maxReach is 'maxReach+reachExpansion= realMaxReach' where maxReach is this config option, reachExpansion is the config option under this and realMaxReach is the realMaxReach calculated by the RayTracer")
 		@DefaultDouble(3.05)
 		double maxReach();
 
-		@ConfComments("Minecraft adds to the hitbox of the entity an expansion, that is default 0.1. Due to precision errors, network errors, calculations errors and sometimes rouding errors, it is suggested to use 0.25 to have less false flags.")
+		@ConfComments("Minecraft adds to the hitbox of the entity an expansion, that is 0.1. Due to precision errors, network errors, calculations errors and sometimes rouding errors, it is suggested to use 0.25 to have less false flags.")
 		@DefaultDouble(0.25)
 		double reachExpansion();
 
@@ -116,18 +130,18 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		}
 		//nessPlayer.sendDevMessage("Reach: " + range + " Angle:1 " + angle1);
 		if (range > maxReach && range < 6.5D) {
-			if (++buffer > 2) {
+			if (++buffer > rayTraceReachBuffer) {
 				flagEvent(event, "Reach: " + range);
 			}
 		} else if (buffer > 0) {
 			buffer -= 0.5;
 		}
-		if (range == -1) {
-			if (angleList.size() > 9) {
+		if (range == -1) { //If the RayTrace doesn't find an hitpoint on the entity
+			if (angleList.size() > this.angleListSize) {
 				double average = MathUtils.average(angleList);
 				nessPlayer.sendDevMessage("Hitbox: " + average);
 				if (average < maxAngle) {
-					if (++angleBuffer > 3) {
+					if (++angleBuffer > this.rayTraceHitboxBuffer) {
 						flagEvent(event, "Hitbox");
 					}
 				} else if (angleBuffer > 0) {
@@ -137,7 +151,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		} else if (angleBuffer > 0) {
 			angleBuffer -= 0.5;
 		}
-		if (angleList.size() > 9) {
+		if (angleList.size() > this.angleListSize) { //Remove memory leaks
 			angleList.clear();
 		}
 	}
@@ -184,7 +198,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		if (!(event.getEntity() instanceof LivingEntity)) {
 			return;
 		}
-		if (!Bukkit.getVersion().contains("1.8")) {
+		if (!Bukkit.getVersion().contains("1.8")) { //In 1.9+ you can attack more entities without cheats!
 			return;
 		}
 		NessPlayer nessPlayer = player();

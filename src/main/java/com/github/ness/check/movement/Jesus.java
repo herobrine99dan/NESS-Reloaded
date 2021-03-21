@@ -81,10 +81,10 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		double yDist = movementValues.getyDiff();
 		double xzDist = movementValues.getXZDiff();
 		if (event.getTo().clone().add(0, -0.1, 0).getBlock().isLiquid() && event.getFrom().getBlock().isLiquid()
-				&& movementValues.getHelper().isNearLava(event.getTo(), this.getMaterialAccess())) {
+				&& movementValues.getHelper().isNearLava(event.getTo())) {
 			handleLava(movementValues, event, nessPlayer);
 		} else if (event.getTo().clone().add(0, -0.1, 0).getBlock().isLiquid() && event.getFrom().getBlock().isLiquid()
-				&& movementValues.getHelper().isNearWater(event.getTo(), this.getMaterialAccess())) {
+				&& movementValues.getHelper().isNearWater(event.getTo())) {
 			handleWater(movementValues, event, nessPlayer);
 		}
 		lastXZDist = xzDist;

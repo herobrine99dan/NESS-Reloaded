@@ -1,5 +1,7 @@
 package com.github.ness.data;
 
+import java.util.Objects;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -105,10 +107,62 @@ public class MovementValues {
 	private final boolean sprinting;
 	private final boolean blockUnderHead;
 	private final boolean aroundSeaBlocks;
-	private static final MovementValuesHelper helper = MovementValuesHelper.makeHelper();
+	private static MovementValuesHelper helper;
 	private final Player player; // Not Thread Safe
 
-	public MovementValues(NessPlayer nessPlayer, ImmutableLoc to, ImmutableLoc from, MaterialAccess access) {
+	/**
+	 * WARNING: USE THIS CONSTRUCTOR ONLY TO SETUP THE MOVEMENTVALUESHELPER OBJECT
+	 * @param MaterialAccess access
+	 */
+	public MovementValues(MaterialAccess access) {
+		this.pitchDiff = 0;
+		Objects.requireNonNull(access, "The MaterialAccess object provided is null!");
+		helper = MovementValuesHelper.makeHelper(access);
+		this.XZDiff = 0;
+		this.xDiff = 0;
+		this.to = null;
+		this.from = null;
+		this.player = null;
+		this.yDiff = 0;
+		this.yawDiff = 0;
+		this.zDiff = 0;
+		aroundIce = false;
+		aroundSlabs = false;
+		serverVelocity = new ImmutableVector(0, 0, 0);
+		aroundCarpet = false;
+		aroundLadders = false;
+		groundAround = false;
+		aroundStainedGlass = false;
+		aroundGate = false;
+		aroundGlass = false;
+		aroundWalls = false;
+		sprinting = false;
+		aroundKelp = false;
+		aroundNonOccludingBlocks = false;
+		aroundLily = false;
+		aroundIronBars = false;
+		aroundFire = false;
+		aroundWeb = false;
+		blockUnderHead = false;
+		onGroundCollider = false;
+		aroundSnow = false;
+		aroundCactus = false;
+		insideVehicle = false;
+		hasBubblesColumns = 0;
+		gamemode = GameMode.SURVIVAL;
+		isFlying = false;
+		aroundChorus = false;
+		ableFly = false;
+		dTG = 0.0;
+		aroundLiquids = false;
+		aroundSlime = false;
+		aroundStairs = false;
+		aroundFence = false;
+		aroundSeaBlocks = false;
+	}
+
+	public MovementValues(NessPlayer nessPlayer, ImmutableLoc to, ImmutableLoc from, MaterialAccess access,
+			int bukkitVersion) {
 		Player p = nessPlayer.getBukkitPlayer();
 		this.to = to;
 		this.from = from;
@@ -133,8 +187,7 @@ public class MovementValues {
 			boolean kelp = false;
 			boolean glass = false;
 			boolean walls = false;
-			if (helper.isMathematicallyOnGround(to.getY())
-					&& helper.isOnGroundUsingCollider(to.toBukkitLocation(), access)) {
+			if (helper.isMathematicallyOnGround(to.getY()) && helper.isOnGroundUsingCollider(to.toBukkitLocation())) {
 				nessPlayer.updateSafeLocation(to.toBukkitLocation());
 			}
 			boolean fence = false;
@@ -220,7 +273,11 @@ public class MovementValues {
 			}
 			aroundSlime = slime;
 			aroundIce = ice;
-			hasBubblesColumns = isInColumnOfBubbles();
+			if (bukkitVersion > 1122) { // We aren't stupid! columns of Bubbles don't exists in 1.12 or below!
+				hasBubblesColumns = 0;
+			} else {
+				hasBubblesColumns = isInColumnOfBubbles();
+			}
 			aroundLily = lily;
 			aroundCactus = cactus;
 			groundAround = ground;
@@ -240,9 +297,9 @@ public class MovementValues {
 			if (onGroundCollider) {
 				this.onGroundCollider = onGroundCollider;
 			} else {
-				onGroundCollider = this.getHelper().isOnGroundUsingCollider(to.toBukkitLocation(), access);
+				onGroundCollider = this.getHelper().isOnGroundUsingCollider(to.toBukkitLocation());
 				if (!onGroundCollider) {
-					onGroundCollider = this.getHelper().isOnGroundUsingCollider(from.toBukkitLocation(), access);
+					onGroundCollider = this.getHelper().isOnGroundUsingCollider(from.toBukkitLocation());
 				}
 				this.onGroundCollider = onGroundCollider;
 			}
@@ -345,7 +402,7 @@ public class MovementValues {
 				for (int y = (int) to.getY(); y > 1; y--) {
 					Location loc = to.toBukkitLocation();
 					Location cloned = new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());
-					cloned.subtract(0,y,0);
+					cloned.subtract(0, y, 0);
 					if (cloned.getBlock().getType().name().contains("MAGMA")) {
 						columnOfBubbles = -1;
 						return columnOfBubbles;

@@ -64,7 +64,7 @@ public class NessPlayer implements AnticheatPlayer {
 	private volatile MovementValues movementValues;
 
 	private boolean debugMode;
-	private boolean onGroundPacket;
+	private volatile boolean onGroundPacket;
 	private boolean mouseRecord; // Is the player recording?
 	private long lastWasOnGround = System.nanoTime() - Duration.ofHours(1L).toNanos();
 	private long lastWasOnIce = lastWasOnGround;
@@ -82,7 +82,7 @@ public class NessPlayer implements AnticheatPlayer {
 		this.devMode = devMode;
 		this.userName = player.getName();
 		this.movementValues = new MovementValues(this, ImmutableLoc.of(player.getLocation()),
-				ImmutableLoc.of(player.getLocation()), access);
+				ImmutableLoc.of(player.getLocation()), access, 1122);
 	}
 
 	/*

@@ -8,16 +8,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.github.ness.packets.wrapper.PacketTypeRegistry;
-import com.github.ness.packets.wrapper.SimplePacketTypeRegistry;
-import com.github.ness.reflect.ClassLocator;
-import com.github.ness.reflect.CoreReflection;
-import com.github.ness.reflect.InvokerCachingReflection;
-import com.github.ness.reflect.MethodHandleReflection;
-import com.github.ness.reflect.ReflectHelper;
-import com.github.ness.reflect.Reflection;
-import com.github.ness.reflect.SimpleClassLocator;
-import com.github.ness.reflect.SimpleReflectHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,11 +20,22 @@ import com.github.ness.check.CheckManager;
 import com.github.ness.config.ConfigManager;
 import com.github.ness.config.NessConfig;
 import com.github.ness.config.NessMessages;
+import com.github.ness.data.MovementValues;
 import com.github.ness.listener.BungeeCordListener;
-import com.github.ness.packets.Networker;
 import com.github.ness.packets.NetworkReflectionCreation;
+import com.github.ness.packets.Networker;
 import com.github.ness.packets.PacketActorInterceptor;
 import com.github.ness.packets.PacketListener;
+import com.github.ness.packets.wrapper.PacketTypeRegistry;
+import com.github.ness.packets.wrapper.SimplePacketTypeRegistry;
+import com.github.ness.reflect.ClassLocator;
+import com.github.ness.reflect.CoreReflection;
+import com.github.ness.reflect.InvokerCachingReflection;
+import com.github.ness.reflect.MethodHandleReflection;
+import com.github.ness.reflect.ReflectHelper;
+import com.github.ness.reflect.Reflection;
+import com.github.ness.reflect.SimpleClassLocator;
+import com.github.ness.reflect.SimpleReflectHelper;
 import com.github.ness.violation.ViolationManager;
 
 public class NessAnticheat {
@@ -55,6 +56,9 @@ public class NessAnticheat {
 
 	NessAnticheat(JavaPlugin plugin, Path folder, MaterialAccess materialAccess) {
 		this.plugin = plugin;
+		//We setup the MovementValuesHelper creating an empty MovementValues object
+		MovementValues emptyObject = new MovementValues(materialAccess);
+		emptyObject.getHelper().calcDamageFall(5); //Executing a method to force Java to load completely the MovementValuesHelper
 		executor = Executors.newSingleThreadScheduledExecutor();
 		this.minecraftVersion = getVersion();
 		configManager = new ConfigManager(folder);
