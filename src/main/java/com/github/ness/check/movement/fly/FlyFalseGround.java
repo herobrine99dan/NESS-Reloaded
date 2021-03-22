@@ -57,9 +57,6 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		} else if (player.isOnGround() && !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY())
 				&& ++buffer > 2) {
 			flagEvent(e, " FalseGround1");
-		} else if (player.isOnGround() && !isReallySmall(player.getVelocity().getY() - -0.0784) && ++buffer > 1
-				&& !movementValues.isAroundLiquids()) {
-			flagEvent(e, " FalseGround2");
 		} else if (buffer > 0) {
 			buffer -= 0.25;
 		}
