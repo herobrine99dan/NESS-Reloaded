@@ -19,12 +19,16 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 	public FlyFalseGround(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
-	
+
 	private double buffer;
 
 	@Override
 	protected boolean shouldDragDown() {
 		return true;
+	}
+
+	private boolean isReallySmall(double d) {
+		return Math.abs(d) < 0.001;
 	}
 
 	@Override
@@ -50,14 +54,13 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		}
 		if (player.isOnGround() && !movementValues.isGroundAround() && !movementValues.isAroundLadders()) {
 			flagEvent(e, " FalseGround");
-			// if(player().setViolation(new Violation("Fly", "FalseGround")))
-			// e.setCancelled(true);
 		} else if (player.isOnGround() && !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY())
 				&& ++buffer > 2) {
 			flagEvent(e, " FalseGround1");
-			// if(player().setViolation(new Violation("Fly", "FalseGround1")))
-			// e.setCancelled(true);
-		} else if(buffer > 0) {
+		} else if (player.isOnGround() && !isReallySmall(player.getVelocity().getY() - -0.0784) && ++buffer > 1
+				&& !movementValues.isAroundLiquids()) {
+			flagEvent(e, " FalseGround2");
+		} else if (buffer > 0) {
 			buffer -= 0.25;
 		}
 	}

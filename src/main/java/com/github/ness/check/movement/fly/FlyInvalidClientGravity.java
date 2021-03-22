@@ -60,9 +60,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		MovementValues values = nessPlayer.getMovementValues();
 		double deltaY = values.getyDiff();
-		if (values.getHelper().isOnGroundUsingCollider(e.getTo())
-				|| values.getHelper().isOnGroundUsingCollider(e.getFrom())
-				|| p.isOnGround()) {
+		if (values.getHelper().isMathematicallyOnGround(e.getTo().getY())) {
 			airTicks = 0;
 		} else {
 			airTicks++;
@@ -79,7 +77,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		float yResult = (float) Math.abs(deltaY - yPredicted);
 		if (airTicks > minAirTicks && nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 1000) {
 			if (Math.abs(yPredicted) > 0.01 && yVelocityDelta > 0.1) {
-				if (Math.abs(yResult) > 0.01) {
+				if (Math.abs(yResult) > 0.005) {
 					if (++buffer > minBuffer) {
 						this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
 					}
