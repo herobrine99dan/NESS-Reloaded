@@ -19,6 +19,7 @@ public class CreativeFly extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	private double lastMotionXZ, lastMotionY;
+	private int flyingTicks;
 
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
@@ -27,17 +28,24 @@ public class CreativeFly extends ListeningCheck<PlayerMoveEvent> {
 		double yDiff = values.getyDiff();
 		Player player = event.getPlayer();
 		if (player.isFlying()) {
+			flyingTicks++;
+		} else {
+			flyingTicks = 0;
+		}
+		if(flyingTicks > 1 && player.isGliding()) {
+			flyingTicks -= 2;
+		}
+		if (flyingTicks > 10) {
 			double predictedXZ = lastMotionXZ * 0.91f;
 			double predictedY = lastMotionY * 0.6;
 			double resultXZ = Math.abs(xzDiff - predictedXZ);
 			double resultY = Math.abs(yDiff - predictedY);
-			double maxXZ = player.getFlySpeed(); //(player.getFlySpeed() * 0.1) / 0.1 that become player.getFlySpeed()
+			double maxXZ = player.getFlySpeed(); // (player.getFlySpeed() * 0.1) / 0.1 that become player.getFlySpeed()
 			double maxY = (player.getFlySpeed() * 0.38) / 0.1;
-			this.player().sendDevMessage("maxXZ: " + (float) maxXZ + " maxY: " + (float) maxY + " flySpeed:" + (float) player.getFlySpeed());
 			if (resultXZ > maxXZ) {
 				this.flagEvent(event, "resultXZ: " + (float) resultXZ);
 			}
-			if(resultY > maxY && yDiff > 0) {
+			if (resultY > maxY && yDiff > 0) {
 				this.flagEvent(event, "resultY: " + (float) resultY);
 			}
 		}
