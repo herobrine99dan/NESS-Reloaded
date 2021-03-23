@@ -29,11 +29,11 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		Player player = e.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = this.player().getMovementValues();
-		final double dist = from.distance(to);
+		double dist = from.distance(to);
 		double hozDist = dist - (to.getY() - from.getY());
 		if (to.getY() < from.getY())
 			hozDist = dist - (from.getY() - to.getY());
-		double maxSpd = player.getWalkSpeed() * 2.1042; // 0.43
+		double maxSpd = player.getWalkSpeed() * 2.1; // 0.42
 		double velocity = 0;
 		if (player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
 			velocity = Math.hypot(player().getLastVelocity().getX(), player().getLastVelocity().getZ());
@@ -64,15 +64,15 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		if (movementValues.isAroundSlime()) {
 			maxSpd += velocity;
 		}
-		if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) > 1000) {
+		if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 1000) {
 			maxSpd += 0.1;
 		}
 		if (player.isInsideVehicle() && player.getVehicle().getType().name().contains("BOAT"))
-			maxSpd = 2.787;
+			maxSpd = 2.787;		
 		if (hozDist > maxSpd && !movementValues.getHelper().hasflybypass(nessPlayer) && !player.getAllowFlight()
 				&& nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) >= 2000 && !nessPlayer.isTeleported()
 				&& !nessPlayer.isHasSetback()) {
-			if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000) {
+			if (nessPlayer.getTimeSinceLastWasOnIce() >= 1000 && movementValues.isGroundAround()) {
 				if (!player.isInsideVehicle()
 						|| (player.isInsideVehicle() && !player.getVehicle().getType().name().contains("HORSE"))) {
 					Material small = player.getWorld().getBlockAt(player.getLocation().subtract(0, .1, 0)).getType();
