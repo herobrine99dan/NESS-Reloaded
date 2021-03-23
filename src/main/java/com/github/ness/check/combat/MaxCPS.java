@@ -10,6 +10,7 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.check.PeriodicTaskInfo;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
@@ -17,8 +18,9 @@ public class MaxCPS extends ListeningCheck<PlayerInteractEvent> {
 
 	private final int maxCPS;
 
-	public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos.forEventWithAsyncPeriodic(PlayerInteractEvent.class, Duration.ofSeconds(1));
+	public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos.forEventWithTask(PlayerInteractEvent.class, PeriodicTaskInfo.asyncTask(Duration.ofSeconds(1)));
 	private int CPS; // For AutoClicker
+
 	public MaxCPS(ListeningCheckFactory<?, PlayerInteractEvent> factory, NessPlayer player) {
 		super(factory, player);
 		this.maxCPS = this.ness().getMainConfig().getCheckSection().maxCps().maxCPS();
@@ -44,10 +46,10 @@ public class MaxCPS extends ListeningCheck<PlayerInteractEvent> {
 	protected void checkSyncPeriodic() {
 		CPS = 0;
 	}
-	
+
 	public interface Config {
 		@DefaultInteger(18)
 		int maxCPS();
 	}
-	
+
 }

@@ -12,7 +12,6 @@ import com.github.ness.data.MovementValues;
 
 public class BlockBreakAction extends ListeningCheck<BlockBreakEvent> {
 	private static final double MAX_ANGLE = Math.toRadians(90);
-
 	public static final ListeningCheckInfo<BlockBreakEvent> checkInfo = CheckInfos.forEvent(BlockBreakEvent.class);
 
 	public BlockBreakAction(ListeningCheckFactory<?, BlockBreakEvent> factory, NessPlayer player) {
@@ -27,17 +26,18 @@ public class BlockBreakAction extends ListeningCheck<BlockBreakEvent> {
 		double xDiff = Math.abs(values.getTo().getX() - block.getLocation().getX());
 		double yDiff = Math.abs(values.getTo().getY() - block.getLocation().getY());
 		double zDiff = Math.abs(values.getTo().getZ() - block.getLocation().getZ());
-		//Block target = e.getPlayer().getTargetBlock(Utility.occludingMaterials, 10);
+		// Block target = e.getPlayer().getTargetBlock(Utility.occludingMaterials, 10);
 		final double max = 5.4;
 		final double placedAngle = values.getHelper().getAngle(nessPlayer, block.getLocation());
 		if (xDiff > max || yDiff > max || zDiff > max) {
 			flagEvent(e, " HighDistance");
-			// if(player().setViolation(new Violation("BreakActions", "HighDistance")))
-			// e.setCancelled(true);
 		} else if (placedAngle > MAX_ANGLE) {
 			flagEvent(e, " Angle: " + placedAngle);
-			// if(player().setViolation(new Violation("BreakActions", "FalseAngle")))
-			// e.setCancelled(true);
+		} else {
+			Block targetBlock = e.getPlayer().getTargetBlock(MovementValues.getTrasparentMaterials(), 7);
+			if (targetBlock.getType() != block.getType()) {
+				flag("RayTrace failed: targetBlock: " + targetBlock.getType() + " block: " + block.getType());
+			}
 		}
 
 	}

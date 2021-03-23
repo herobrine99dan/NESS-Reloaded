@@ -1,6 +1,8 @@
  
 package com.github.ness.blockgetter;
 
+import java.util.HashSet;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -13,4 +15,6 @@ public interface MaterialAccess {
     Material getMaterial(Location loc);
 
     Material getMaterial(ItemStack itemStack);
+    
+    HashSet<Material> nonOccludingMaterials();
 }

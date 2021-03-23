@@ -1,5 +1,6 @@
 package com.github.ness.data;
 
+import java.util.HashSet;
 import java.util.Objects;
 
 import org.bukkit.Bukkit;
@@ -109,6 +110,7 @@ public class MovementValues {
 	private final boolean aroundSeaBlocks;
 	private static MovementValuesHelper helper;
 	private final Player player; // Not Thread Safe
+	private static volatile HashSet<Material> trasparentMaterials = new HashSet<Material>();
 
 	/**
 	 * WARNING: USE THIS CONSTRUCTOR ONLY TO SETUP THE MOVEMENTVALUESHELPER OBJECT
@@ -304,6 +306,9 @@ public class MovementValues {
 				this.onGroundCollider = onGroundCollider;
 			}
 			dTG = makeDTG();
+			if(trasparentMaterials.size() == 0.0) { //We add in a set all the non-occluding materials
+				trasparentMaterials = access.nonOccludingMaterials();
+			}
 		} else {
 			aroundIce = false;
 			aroundSlabs = false;
@@ -590,5 +595,9 @@ public class MovementValues {
 
 	public int hasBubblesColumns() {
 		return hasBubblesColumns;
+	}
+
+	public static HashSet<Material> getTrasparentMaterials() {
+		return trasparentMaterials;
 	}
 }
