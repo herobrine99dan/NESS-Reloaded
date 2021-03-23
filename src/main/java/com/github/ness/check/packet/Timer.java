@@ -46,8 +46,8 @@ public class Timer extends PacketCheck {
 	@Override
 	protected void checkPacket(Packet packet) {
 		NessPlayer nessPlayer = player();
-		if (!packet.getRawPacket().getClass().getSimpleName().toLowerCase().contains("position")
-				|| nessPlayer.isTeleported() || nessPlayer.isHasSetback()) {
+		if (!packet.getRawPacket().getClass().getSimpleName().toLowerCase().contains("position")) return;
+		if (nessPlayer.isTeleported() || nessPlayer.isHasSetback()) {
 			delay.clear();
 			return;
 		}
@@ -58,13 +58,15 @@ public class Timer extends PacketCheck {
 		}
 		final long average = delay.average();
 		final float speed = 50.0f / (float) average;
+		// nessPlayer.sendDevMessage("Average: " + average + " Speed: " + speed + "
+		// size: " + delay.size());
 		if (delay.size() > (this.ness().getMainConfig().getCheckSection().timer().delaysSize() - 1)) {
 			if (speed > MAX_PACKETS_PER_TICK) {
-				if (++buffer > 7) {
+				if (++buffer > 4) {
 					this.flagEvent(packet, "BasicTimer " + (float) speed);
 				}
 			} else if ((speed > 0.2 && speed < 0.9) && negativeTimerEnabled) {
-				if (++buffer > 6) {
+				if (++buffer > 3) {
 					this.flagEvent(packet, "NegativeTimer " + (float) speed);
 				}
 			} else if (buffer > 0) {
