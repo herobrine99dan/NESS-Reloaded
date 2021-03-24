@@ -26,7 +26,6 @@ public class BlockBreakAction extends ListeningCheck<BlockBreakEvent> {
 		double xDiff = Math.abs(values.getTo().getX() - block.getLocation().getX());
 		double yDiff = Math.abs(values.getTo().getY() - block.getLocation().getY());
 		double zDiff = Math.abs(values.getTo().getZ() - block.getLocation().getZ());
-		// Block target = e.getPlayer().getTargetBlock(Utility.occludingMaterials, 10);
 		final double max = 5.4;
 		final double placedAngle = values.getHelper().getAngle(nessPlayer, block.getLocation());
 		if (xDiff > max || yDiff > max || zDiff > max) {
