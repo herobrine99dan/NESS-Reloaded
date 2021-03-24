@@ -1,8 +1,10 @@
 # NESS-Reloaded
 NESS Anti-Cheat reloaded is a recoded version of the old NESS, developed by MSWS.
-This anticheat aims to block a lot of movement and combat cheats using simple and strong methods.
+This anticheat aims to support lots of minecraft versions (from 1.8 to 1.16.5) without losing the advantage of having powerful checks.
 
-Although tested on Spigot, NESS should work with most forks.
+Although tested on Spigot, NESS Reloaded should work with most forks.
+
+NESS Reloaded has an experimental support for GeyserMC even if you will get some false flags. In this case I suggest to report them.
 
 ## Download
 
