@@ -36,10 +36,11 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 	 * @param e
 	 */
 	public void Check(InventoryClickEvent e) {
-		e.getAction();
-		if(e.getAction().name().contains("DROP") || e.getAction() == InventoryAction.COLLECT_TO_CURSOR) {
+		if (e.getAction().name().contains("DROP") || e.getAction() == InventoryAction.COLLECT_TO_CURSOR
+				|| e.getAction() == InventoryAction.HOTBAR_SWAP) {
 			return;
 		}
+		final String action = e.getAction().name();
 		Player player = (Player) e.getWhoClicked();
 		NessPlayer nessPlayer = player();
 		if (player.getGameMode().name().contains("CREATIVE")) {
@@ -53,14 +54,14 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 100
 				|| nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKBROKED) < 100) {
-			flagEvent(e);
+			flagEvent(e, "IllegalBlockAction");
 			return;
 		} else if (nessPlayer.milliSecondTimeDifference(PlayerAction.ANIMATION) < 50) {
 			flagEvent(e, "MS: " + nessPlayer.milliSecondTimeDifference(PlayerAction.ANIMATION));
 			return;
 		} else if (player.isSprinting() || player.isSneaking() || player.isBlocking() || player.isSleeping()
 				|| player.isConversing()) {
-			flagEvent(e);
+			flagEvent(e, " IllegalAction");
 			return;
 		}
 		final Location from = player.getLocation();
@@ -68,12 +69,12 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 		runTaskLater(() -> {
 			Location to = player.getLocation();
 			double distance = Math.hypot(from.getX() - to.getX(), from.getZ() - to.getZ()) - (to.getY() - from.getY());
-			if(nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1000) {
+			if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1000) {
 				return;
 			}
 			if (distance > 0.19) {
 				if (++buffer > 1) {
-					flagEvent(e);
+					flagEvent(e, action);
 				}
 			} else if (buffer > 0) {
 				buffer -= 0.5;

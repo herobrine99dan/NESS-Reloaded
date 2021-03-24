@@ -2,6 +2,7 @@ package com.github.ness.check;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -9,12 +10,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.data.ImmutableLoc;
@@ -123,14 +125,24 @@ public class CoreListener implements Listener {
 	public void onPlace(BlockPlaceEvent event) {
 		setPlayerAction(event.getPlayer(), PlayerAction.BLOCKPLACED);
 	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onInvOpen(InventoryOpenEvent event) {
+		setPlayerAction(event.getPlayer(), PlayerAction.INVENTORYOPENED);
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onInvClosed(InventoryCloseEvent event) {
+		setPlayerAction(event.getPlayer(), PlayerAction.INVENTORYCLOSED);
+	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlace(PlayerAnimationEvent event) {
+	public void onAnimation(PlayerAnimationEvent event) {
 		setPlayerAction(event.getPlayer(), PlayerAction.ANIMATION);
 	}
 
-	private void setPlayerAction(Player player, PlayerAction action) {
-		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(player);
+	private void setPlayerAction(HumanEntity player, PlayerAction action) {
+		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(player.getUniqueId());
 		if (nessPlayer == null) {
 			return;
 		}
