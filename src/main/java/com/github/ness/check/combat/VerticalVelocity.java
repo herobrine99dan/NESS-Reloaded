@@ -41,7 +41,7 @@ public class VerticalVelocity extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues values = this.player().getMovementValues();
 		double yDelta = values.getyDiff();
 		NessPlayer nessPlayer = this.player();
-		if(values.isAroundCactus()) {
+		if(values.isAroundCactus() || nessPlayer.getLastVelocity().getY() < 0.1) {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 500) {

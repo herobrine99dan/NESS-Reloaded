@@ -18,7 +18,8 @@ public class MaxCPS extends ListeningCheck<PlayerInteractEvent> {
 
 	private final int maxCPS;
 
-	public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos.forEventWithTask(PlayerInteractEvent.class, PeriodicTaskInfo.asyncTask(Duration.ofSeconds(1)));
+	public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos
+			.forEventWithTask(PlayerInteractEvent.class, PeriodicTaskInfo.syncTask(Duration.ofSeconds(1)));
 	private int CPS; // For AutoClicker
 
 	public MaxCPS(ListeningCheckFactory<?, PlayerInteractEvent> factory, NessPlayer player) {
