@@ -9,6 +9,7 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
+import com.github.ness.utility.raytracer.RayCaster;
 
 public class BlockBreakAction extends ListeningCheck<BlockBreakEvent> {
 	private static final double MAX_ANGLE = Math.toRadians(90);
@@ -19,23 +20,30 @@ public class BlockBreakAction extends ListeningCheck<BlockBreakEvent> {
 	}
 
 	@Override
-	protected void checkEvent(BlockBreakEvent e) {
+	protected void checkEvent(BlockBreakEvent event) {
 		NessPlayer nessPlayer = this.player();
 		MovementValues values = nessPlayer.getMovementValues();
-		Block block = e.getBlock();
+		Block block = event.getBlock();
 		double xDiff = Math.abs(values.getTo().getX() - block.getLocation().getX());
 		double yDiff = Math.abs(values.getTo().getY() - block.getLocation().getY());
 		double zDiff = Math.abs(values.getTo().getZ() - block.getLocation().getZ());
 		final double max = 5.4;
 		final double placedAngle = values.getHelper().getAngle(nessPlayer, block.getLocation());
 		if (xDiff > max || yDiff > max || zDiff > max) {
-			flagEvent(e, " HighDistance");
+			flagEvent(event, " HighDistance");
 		} else if (placedAngle > MAX_ANGLE) {
-			flagEvent(e, " Angle: " + placedAngle);
+			flagEvent(event, " Angle: " + placedAngle);
 		} else {
-			Block targetBlock = e.getPlayer().getTargetBlock(MovementValues.getTrasparentMaterials(), 7);
+			Block targetBlock = event.getPlayer().getTargetBlock(null, 7);
 			if (targetBlock.getType() != block.getType()) {
-				flag("RayTrace failed: targetBlock: " + targetBlock.getType() + " block: " + block.getType());
+				final RayCaster customCaster = new RayCaster(event.getPlayer(), 6, RayCaster.RaycastType.BLOCK,
+						this.ness()).compute();
+				if (customCaster.getBlockFounded() != null) {
+					if (!customCaster.getBlockFounded().equals(block)) {
+						this.flagEvent(event, "targetBlock: " + targetBlock.getType().name() + " customRayCaster:  "
+								+ customCaster.getBlockFounded().getType().name());
+					}
+				}
 			}
 		}
 

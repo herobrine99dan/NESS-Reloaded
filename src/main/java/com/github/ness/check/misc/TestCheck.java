@@ -1,36 +1,41 @@
 package com.github.ness.check.misc;
 
-import java.util.ArrayList;
-
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
-import com.github.ness.data.MovementValues;
+import com.github.ness.utility.raytracer.RayCaster;
 
-public class TestCheck extends ListeningCheck<PlayerMoveEvent> {
+public class TestCheck extends ListeningCheck<PlayerInteractEvent> {
 
-	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
-	ArrayList<String> yDiffs;
-	ArrayList<String> lastYDiffs;
-	double lastYDiff;
+	public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos
+			.forEvent(PlayerInteractEvent.class);
 
-	public TestCheck(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
+	public TestCheck(ListeningCheckFactory<?, PlayerInteractEvent> factory, NessPlayer player) {
 		super(factory, player);
-		yDiffs = new ArrayList<String>();
-		lastYDiffs = new ArrayList<String>();
 	}
 
 	@Override
-	protected void checkEvent(PlayerMoveEvent event) {
-		MovementValues values = player().getMovementValues();
-		if (this.player().isOnGroundPacket() != event.getPlayer().isOnGround()) {
-			this.player().sendDevMessage(
-					"Message: " + this.player().isOnGroundPacket());
-		}
+	protected void checkEvent(PlayerInteractEvent event) {
+		/*if ((event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+			RayCaster customCaster = new RayCaster(event.getPlayer(), 6, RayCaster.RaycastType.BLOCK, this.ness());
+			RayCaster bukkitCaster = new RayCaster(event.getPlayer(), 6, RayCaster.RaycastType.BLOCKBukkit,
+					this.ness());
+			customCaster.compute();
+			bukkitCaster.compute();
+			NessPlayer nessPlayer = this.player();
+			if (customCaster.getBlockFounded() != null && bukkitCaster.getBlockFounded() != null) {
+				if (!customCaster.getBlockFounded().getType().name()
+						.equals(bukkitCaster.getBlockFounded().getType().name())) {
+					nessPlayer.sendDevMessage("customCaster: " + customCaster.getBlockFounded().getType().name()
+							+ " bukkitCaster: " + bukkitCaster.getBlockFounded().getType().name());
+				}
+			}
+		}*/
 	}
 
 }

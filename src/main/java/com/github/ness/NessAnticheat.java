@@ -36,6 +36,7 @@ import com.github.ness.reflect.ReflectHelper;
 import com.github.ness.reflect.Reflection;
 import com.github.ness.reflect.SimpleClassLocator;
 import com.github.ness.reflect.SimpleReflectHelper;
+import com.github.ness.utility.raytracer.RayCaster;
 import com.github.ness.violation.ViolationManager;
 
 public class NessAnticheat {

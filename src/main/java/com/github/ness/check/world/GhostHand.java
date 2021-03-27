@@ -10,6 +10,7 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.utility.raytracer.RayCaster;
 
 public class GhostHand extends ListeningCheck<PlayerInteractEvent> {
 
@@ -26,18 +27,27 @@ public class GhostHand extends ListeningCheck<PlayerInteractEvent> {
 
 	}
 
+	// Using two raycaster, first we try the bukkit's one, it is the more aggressive
+	// and if it flags, we try the custom raytracer
+	// If the custom raytracer also flags, then flag the check
 	public void Check(PlayerInteractEvent event) {
-		Player player = event.getPlayer();
-		Block targetBlock = player.getTargetBlock(null, 7);
+		final Player player = event.getPlayer();
+		final Block targetBlock = player.getTargetBlock(null, 7);
 		NessPlayer nessPlayer = player();
 		if (event.getClickedBlock() == null || event.getBlockFace() == null) {
 			return;
 		}
 		if ((event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-			if (targetBlock.getType().isOccluding()) {
-				if (!targetBlock.equals(event.getClickedBlock())) {
-					nessPlayer.sendDevMessage("targetBlock: " + targetBlock.getType().name());
+			if (!targetBlock.equals(event.getClickedBlock())) {
+				final RayCaster customCaster = new RayCaster(event.getPlayer(), 6, RayCaster.RaycastType.BLOCK,
+						this.ness()).compute();
+				if (customCaster.getBlockFounded() != null) {
+					if (!customCaster.getBlockFounded().equals(event.getClickedBlock())) {
+						this.flagEvent(event, "targetBlock: " + targetBlock.getType().name() + " customRayCaster:  "
+								+ customCaster.getBlockFounded().getType().name());
+					}
 				}
+
 			}
 		}
 	}
