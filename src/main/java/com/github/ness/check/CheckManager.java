@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -64,12 +65,16 @@ public class CheckManager implements ChecksManager {
 		Set<BaseCheckFactory<?>> factories = checkFactories;
 		factories.forEach(BaseCheckFactory::close);
 
-		playerManager.getPlayerCache().synchronous().invalidateAll();
+		playerManager.getPlayerCache().clear();
 		return loadFactories(() -> {
 			JavaPlugin plugin = ness.getPlugin();
 			ness.getPlugin().getServer().getScheduler().runTask(plugin, () -> {
 				for (Player player : plugin.getServer().getOnlinePlayers()) {
-					playerManager.addPlayer(player);
+					try {
+						playerManager.addPlayer(player);
+					} catch (InterruptedException | ExecutionException e) {
+						e.printStackTrace();
+					}
 				}
 			});
 		});
@@ -145,7 +150,7 @@ public class CheckManager implements ChecksManager {
 	 * @param action what to do
 	 */
 	public void forEachPlayer(Consumer<NessPlayer> action) {
-		playerManager.getPlayerCache().synchronous().asMap().values().forEach((playerData) -> {
+		playerManager.getPlayerCache().values().forEach((playerData) -> {
 			action.accept(playerData.getNessPlayer());
 		});
 	}

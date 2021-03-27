@@ -1,5 +1,7 @@
 package com.github.ness.check;
 
+import java.util.concurrent.ExecutionException;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
@@ -32,7 +34,7 @@ public class CoreListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
-	public void onJoin(PlayerJoinEvent evt) {
+	public void onJoin(PlayerJoinEvent evt) throws InterruptedException, ExecutionException {
 		NessPlayer nessPlayer = manager.addPlayer(evt.getPlayer());
 
 		nessPlayer.setPlayerAction(PlayerAction.JOIN);
