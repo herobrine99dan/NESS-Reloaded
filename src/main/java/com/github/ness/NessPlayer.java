@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.Consumer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -395,6 +396,10 @@ public class NessPlayer implements AnticheatPlayer {
 	}
 
 	public boolean isOnGroundPacket() {
+		/*if(Bukkit.getVersion().contains("1.16")) {
+		return onGroundPacket;	
+		}
+		return this.movementValues.isClientOnGround();*/
 		return onGroundPacket;
 	}
 

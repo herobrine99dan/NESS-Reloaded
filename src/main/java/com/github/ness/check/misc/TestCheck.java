@@ -27,6 +27,10 @@ public class TestCheck extends ListeningCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		MovementValues values = player().getMovementValues();
+		if (this.player().isOnGroundPacket() != event.getPlayer().isOnGround()) {
+			this.player().sendDevMessage(
+					"Message: " + this.player().isOnGroundPacket());
+		}
 	}
 
 }

@@ -110,6 +110,7 @@ public class MovementValues {
 	private final boolean aroundSeaBlocks;
 	private static MovementValuesHelper helper;
 	private final Player player; // Not Thread Safe
+	private final boolean clientGround;
 	private static volatile HashSet<Material> trasparentMaterials = new HashSet<Material>();
 
 	/**
@@ -128,6 +129,7 @@ public class MovementValues {
 		this.yDiff = 0;
 		this.yawDiff = 0;
 		this.zDiff = 0;
+		clientGround = false;
 		aroundIce = false;
 		aroundSlabs = false;
 		serverVelocity = new ImmutableVector(0, 0, 0);
@@ -309,6 +311,7 @@ public class MovementValues {
 			if(trasparentMaterials.size() == 0.0) { //We add in a set all the non-occluding materials
 				trasparentMaterials = access.nonOccludingMaterials();
 			}
+			clientGround = player.isOnGround();
 		} else {
 			aroundIce = false;
 			aroundSlabs = false;
@@ -342,6 +345,7 @@ public class MovementValues {
 			aroundSlime = false;
 			aroundStairs = false;
 			aroundFence = false;
+			clientGround = false;
 			aroundSeaBlocks = false;
 		}
 		yawDiff = to.getYaw() - from.getYaw();
@@ -599,5 +603,9 @@ public class MovementValues {
 
 	public static HashSet<Material> getTrasparentMaterials() {
 		return trasparentMaterials;
+	}
+
+	public boolean isClientOnGround() {
+		return clientGround;
 	}
 }

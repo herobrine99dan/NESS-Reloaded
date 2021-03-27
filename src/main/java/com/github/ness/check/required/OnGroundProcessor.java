@@ -22,6 +22,7 @@ public class OnGroundProcessor extends PacketCheck {
 			return;
 		}
 		PlayInFlying wrapper = packet.toPacketWrapper(packetTypeRegistry().playInFlying());
+		//Spigot is shit so i must update the onGround boolean alone :(
 		this.player().setOnGroundPacket(wrapper.onGround());
 	}
 }

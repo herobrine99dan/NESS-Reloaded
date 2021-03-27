@@ -52,9 +52,9 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		if (Utility.hasVehicleNear(player) || nessPlayer.getMovementValues().isAroundWeb()) {
 			return;
 		}
-		if (player.isOnGround() && !movementValues.isGroundAround() && !movementValues.isAroundLadders()) {
+		if (nessPlayer.isOnGroundPacket() && !movementValues.isGroundAround() && !movementValues.isAroundLadders()) {
 			flagEvent(e, " FalseGround");
-		} else if (player.isOnGround() && !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY())
+		} else if (nessPlayer.isOnGroundPacket() && !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY())
 				&& ++buffer > 2) {
 			flagEvent(e, " FalseGround1");
 		} else if (buffer > 0) {

@@ -42,6 +42,9 @@ public class CreativeFly extends ListeningCheck<PlayerMoveEvent> {
 			double resultY = Math.abs(yDiff - predictedY);
 			double maxXZ = player.getFlySpeed(); // (player.getFlySpeed() * 0.1) / 0.1 that become player.getFlySpeed()
 			double maxY = (player.getFlySpeed() * 0.38) / 0.1;
+			if(values.isAroundStairs()) {
+				maxXZ += player.getFlySpeed();
+			}
 			if (resultXZ > maxXZ) {
 				this.flagEvent(event, "resultXZ: " + (float) resultXZ);
 			}

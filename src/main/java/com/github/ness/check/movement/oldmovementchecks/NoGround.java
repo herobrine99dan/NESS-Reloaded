@@ -44,7 +44,7 @@ public class NoGround extends ListeningCheck<PlayerMoveEvent> {
 		}
 		if (!(player.isSneaking() && !from.getBlock().getType().name().contains("LADDER")
 				&& !to.getBlock().getType().name().contains("LADDER")
-				&& !to.clone().add(0, -0.3, 0).getBlock().getType().name().contains("LADDER")) && !player.isOnGround()
+				&& !to.clone().add(0, -0.3, 0).getBlock().getType().name().contains("LADDER")) && !nessPlayer.isOnGroundPacket()
 				&& to.getY() % 1.0 == 0 && nessPlayer.milliSecondTimeDifference(PlayerAction.JOIN) >= 1000
 				&& !movementValues.isAroundStairs() && !movementValues.isAroundSlime()) {
 			if (!movementValues.hasBlockNearHead()) {

@@ -22,7 +22,7 @@ public class PredictionMovement extends ListeningCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent e) {
 		MovementValues values = this.player().getMovementValues();
-		this.moveEntityWithHeading(e.getPlayer().isOnGround()); // Try changing position of this line
+		this.moveEntityWithHeading(player().isOnGroundPacket()); // Try changing position of this line
 	}
 
 	public void moveEntityWithHeading(boolean onGround) {

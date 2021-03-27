@@ -24,14 +24,13 @@ public class VerticalVelocity extends ListeningCheck<PlayerMoveEvent> {
 
 	public VerticalVelocity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
-		 this.minVelocityPercentage =
-		 this.ness().getMainConfig().getCheckSection().verticalVelocity()
-		 .minVelocityPercentage();
+		this.minVelocityPercentage = this.ness().getMainConfig().getCheckSection().verticalVelocity()
+				.minVelocityPercentage();
 	}
 
 	public interface Config {
 		@DefaultDouble(95)
-		 double minVelocityPercentage();
+		double minVelocityPercentage();
 	}
 
 	private List<Float> lastYDistances = new ArrayList<Float>();
@@ -41,10 +40,13 @@ public class VerticalVelocity extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues values = this.player().getMovementValues();
 		double yDelta = values.getyDiff();
 		NessPlayer nessPlayer = this.player();
-		if(values.isAroundCactus() || nessPlayer.getLastVelocity().getY() < 0.1) {
+		if (values.isAroundCactus()) {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 500) {
+			if (nessPlayer.getLastVelocity().getY() < 0.1) {
+				return;
+			}
 			lastYDistances.add((float) yDelta); // We actually get the last 5 movements when the player gets velocity
 			if (lastYDistances.size() > 7) {
 				float max = Collections.max(lastYDistances); // We get the max value and we check how much it is similar
