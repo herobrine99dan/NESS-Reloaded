@@ -25,19 +25,19 @@ public class Strafe extends ListeningCheck<PlayerMoveEvent> {
     @Override
     protected void checkEvent(PlayerMoveEvent e) {
         Player p = e.getPlayer();
-        NessPlayer np = this.player();
+        NessPlayer nessPlayer = this.player();
         Vector dir = e.getTo().clone().subtract(e.getFrom()).toVector();
 
         double dist = distanceXZ(e.getFrom(), e.getTo());
         double angle = Math.toDegrees(Math.atan2(dir.getX(), dir.getZ()));
-        double yawDiff = np.getMovementValues().getYawDiff();
+        double yawDiff = nessPlayer.getMovementValues().getYawDiff();
 
         angle = -angle;
         if (angle < 0) {
             angle += 360;
         }
         double result = Math.abs(lastStrafeAngle - angle);
-        if (lastStrafeAngle != 0 && result > 35 && result < 300 && Math.abs(yawDiff) < 8 && !p.isOnGround()
+        if (lastStrafeAngle != 0 && result > 35 && result < 300 && Math.abs(yawDiff) < 8 && !nessPlayer.isOnGroundPacket()
                 && dist > .19 && !isAgainstBlock(e.getFrom()) && !isAgainstBlock(e.getTo())) {
         	flagEvent(e);
         	//if(player().setViolation(new Violation("Strafe", "High Angle Diff: " + Math.abs(lastStrafeAngle - angle)))) e.setCancelled(true);

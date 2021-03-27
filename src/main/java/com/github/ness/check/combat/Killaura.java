@@ -25,6 +25,7 @@ import com.github.ness.utility.raytracer.rays.AABB;
 import com.github.ness.utility.raytracer.rays.Ray;
 
 import space.arim.dazzleconf.annote.ConfComments;
+import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
@@ -39,6 +40,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	private final int rayTraceReachBuffer;
 	private final int rayTraceHitboxBuffer;
 	private double buffer;
+	private final boolean useBukkitLocationForRayTrace;
 	private List<Float> angleList;
 
 	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfos
@@ -54,6 +56,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		this.angleListSize = this.ness().getMainConfig().getCheckSection().killaura().angleListSize();
 		this.rayTraceHitboxBuffer = this.ness().getMainConfig().getCheckSection().killaura().rayTraceHitboxBuffer();
 		this.rayTraceReachBuffer = this.ness().getMainConfig().getCheckSection().killaura().rayTraceReachBuffer();
+		this.useBukkitLocationForRayTrace = this.ness().getMainConfig().getCheckSection().killaura().useBukkitLocationForRayTrace();
 		this.angleList = new ArrayList<Float>();
 	}
 
@@ -64,6 +67,10 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		@ConfComments("Hitbox is a very aggressive check, this is why I included also a way to check the angle beetween entity and player")
 		@DefaultDouble(0.6)
 		double mainAngle();
+		
+		@ConfComments("Using a previous location can sometimes be useful. Enabling this you can remove or add more false flags, i haven't tested this")
+		@DefaultBoolean(false)
+		boolean useBukkitLocationForRayTrace();
 		
 		@ConfComments("How many values should the angleList contains?")
 		@DefaultInteger(9)
@@ -120,7 +127,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		final NessPlayer nessPlayer = player();
 		// TODO Account for lag
 		double maxReach = this.maxReach;
-		final Ray ray = Ray.from(nessPlayer);
+		final Ray ray = Ray.from(nessPlayer, useBukkitLocationForRayTrace);
 		final AABB aabb = AABB.from(entity, this.ness(), this.reachExpansion);
 		double range = aabb.collidesD(ray, 0, 10);
 		final float angle1 = (float) nessPlayer.getMovementValues().getHelper().getAngle(nessPlayer, entity);

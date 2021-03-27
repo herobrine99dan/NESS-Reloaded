@@ -92,6 +92,7 @@ public interface NessConfig {
 		"InvalidSprint",
 		"SpeedFriction",
 		"Jesus",
+		"Strafe",
 		"Step",
 		"Phase", 
 		"OmniSprint",

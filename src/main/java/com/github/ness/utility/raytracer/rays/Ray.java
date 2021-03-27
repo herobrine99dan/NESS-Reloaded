@@ -29,9 +29,18 @@ public class Ray {
 		return new Ray(player.getEyeLocation().toVector(), player.getLocation().getDirection());
 	}
 
-	public static Ray from(NessPlayer player) {
-		return new Ray(getEyeLocation(player.getMovementValues().getTo().toBukkitLocation(),
-				player.getBukkitPlayer()).toVector(), player.getMovementValues().getTo().toBukkitLocation().getDirection());
+	public static Ray from(NessPlayer player, boolean useBukkitLocation) {
+		Location eyeLocation;
+		Vector direction;
+		if (useBukkitLocation) {
+			eyeLocation = player.getBukkitPlayer().getEyeLocation();
+			direction = eyeLocation.getDirection();
+		} else {
+			eyeLocation = getEyeLocation(player.getMovementValues().getTo().toBukkitLocation(),
+					player.getBukkitPlayer());
+			direction = player.getMovementValues().getTo().toBukkitLocation().getDirection();
+		}
+		return new Ray(eyeLocation.toVector(), direction);
 	}
 
 	public static Location getEyeLocation(Location location, Player player) {
