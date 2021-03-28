@@ -80,7 +80,7 @@ class PlayerManager implements PlayersManager {
 		
 	}*/
 	
-	NessPlayer addPlayer(Player player) throws InterruptedException, ExecutionException {
+	NessPlayer addPlayer(Player player) {
 		NessAnticheat ness = ness();
 		NessPlayer nessPlayer = new NessPlayer(player, ness.getMainConfig().isDevMode(), ness.getMaterialAccess());
 
@@ -109,7 +109,7 @@ class PlayerManager implements PlayersManager {
 			}
 			return value;
 		});
-		playerCache.put(uuid, future.get());
+		playerCache.put(uuid, future.join());
 		/*playerCache.put(uuid, CompletableFuture.supplyAsync(() -> {
 
 			Set<Check> checks = new HashSet<>(enabledFactories.size());

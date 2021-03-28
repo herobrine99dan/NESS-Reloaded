@@ -42,7 +42,7 @@ public class GhostHand extends ListeningCheck<PlayerInteractEvent> {
 				final RayCaster customCaster = new RayCaster(event.getPlayer(), 6, RayCaster.RaycastType.BLOCK,
 						this.ness()).compute();
 				if (customCaster.getBlockFounded() != null) {
-					if (!customCaster.getBlockFounded().equals(event.getClickedBlock())) {
+					if (!customCaster.getBlockFounded().equals(event.getClickedBlock()) && player.getLocation().distance(targetBlock.getLocation()) > 1) {
 						this.flagEvent(event, "targetBlock: " + targetBlock.getType().name() + " customRayCaster:  "
 								+ customCaster.getBlockFounded().getType().name());
 					}

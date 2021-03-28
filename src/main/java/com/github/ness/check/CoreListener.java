@@ -34,7 +34,7 @@ public class CoreListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
-	public void onJoin(PlayerJoinEvent evt) throws InterruptedException, ExecutionException {
+	public void onJoin(PlayerJoinEvent evt) {
 		NessPlayer nessPlayer = manager.addPlayer(evt.getPlayer());
 
 		nessPlayer.setPlayerAction(PlayerAction.JOIN);

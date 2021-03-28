@@ -41,11 +41,11 @@ public class CheckManager implements ChecksManager {
 	public NessAnticheat getNess() {
 		return ness;
 	}
-	
+
 	Collection<BaseCheckFactory<?>> getCheckFactories() {
 		return checkFactories;
 	}
-	
+
 	/*
 	 * Start and stop
 	 */
@@ -58,9 +58,10 @@ public class CheckManager implements ChecksManager {
 			forEachPlayer(NessPlayer::checkNeedsKick);
 		}, 1L, 1L);
 
-		return loadFactories(() -> {});
+		return loadFactories(() -> {
+		});
 	}
-	
+
 	public CompletableFuture<?> reload() {
 		Set<BaseCheckFactory<?>> factories = checkFactories;
 		factories.forEach(BaseCheckFactory::close);
@@ -70,11 +71,7 @@ public class CheckManager implements ChecksManager {
 			JavaPlugin plugin = ness.getPlugin();
 			ness.getPlugin().getServer().getScheduler().runTask(plugin, () -> {
 				for (Player player : plugin.getServer().getOnlinePlayers()) {
-					try {
-						playerManager.addPlayer(player);
-					} catch (InterruptedException | ExecutionException e) {
-						e.printStackTrace();
-					}
+					playerManager.addPlayer(player);
 				}
 			});
 		});
@@ -85,7 +82,7 @@ public class CheckManager implements ChecksManager {
 		HandlerList.unregisterAll(playerManager.getListener());
 		checkFactories.forEach(BaseCheckFactory::close);
 	}
-	
+
 	@Override
 	public Collection<CheckFactory<?>> getAllChecks() {
 		Set<CheckFactory<?>> result = new HashSet<>();
@@ -100,11 +97,11 @@ public class CheckManager implements ChecksManager {
 		}
 		return Collections.unmodifiableSet(result);
 	}
-	
+
 	public PlayersManager getPlayersManager() {
 		return playerManager;
 	}
-	
+
 	private CompletableFuture<?> loadFactories(Runnable whenComplete) {
 		Collection<String> enabledCheckNames = ness.getMainConfig().getEnabledChecks();
 		logger.log(Level.FINE, "Loading all check factories: {0}", enabledCheckNames);
@@ -123,9 +120,10 @@ public class CheckManager implements ChecksManager {
 			return null;
 		});
 	}
-	
+
 	/**
-	 * Gets a player whose ness player is already loaded. The caller must null check the return value
+	 * Gets a player whose ness player is already loaded. The caller must null check
+	 * the return value
 	 * 
 	 * @param player the bukkit player
 	 * @return the ness player or {@code null} if not loaded
@@ -133,9 +131,10 @@ public class CheckManager implements ChecksManager {
 	public NessPlayer getExistingPlayer(Player player) {
 		return getExistingPlayer(player.getUniqueId());
 	}
-	
+
 	/**
-	 * Gets a player by UUID whose ness player is already loaded. The caller must null check the return value
+	 * Gets a player by UUID whose ness player is already loaded. The caller must
+	 * null check the return value
 	 * 
 	 * @param uuid the player UUID
 	 * @return the ness player or {@code null} if not loaded
@@ -143,7 +142,7 @@ public class CheckManager implements ChecksManager {
 	public NessPlayer getExistingPlayer(UUID uuid) {
 		return playerManager.getPlayer(uuid);
 	}
-	
+
 	/**
 	 * Do something for each NessPlayer
 	 *
@@ -154,11 +153,12 @@ public class CheckManager implements ChecksManager {
 			action.accept(playerData.getNessPlayer());
 		});
 	}
-	
+
 	/**
-	 * Do something for each check applying to a player. The iteration is consistently ordered
+	 * Do something for each check applying to a player. The iteration is
+	 * consistently ordered
 	 * 
-	 * @param uuid the player UUID
+	 * @param uuid   the player UUID
 	 * @param action what to do
 	 */
 	public void forEachCheck(UUID uuid, Consumer<Check> action) {
