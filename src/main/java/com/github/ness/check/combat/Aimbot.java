@@ -123,7 +123,6 @@ public class Aimbot extends PacketCheck {
 		float pitchDeltaPacket = (float) (wrapper.pitch() - lastPitch);
 		float lastYawBukkit = this.player().getMovementValues().getTo().getYaw();
 		roundedValues(yawDeltaPacket, pitchDeltaPacket, lastYawBukkit, wrapper.pitch());
-		commonPattern(yawDeltaPacket, pitchDeltaPacket, lastYawBukkit, wrapper.pitch());
 	}
 
 	private double buffer5;
@@ -155,14 +154,6 @@ public class Aimbot extends PacketCheck {
 	// TODO Check if there is a pattern on
 	// Math.abs(entityAttacked.yaw()-player.yaw())
 	// TODO Get more ideas to find pattern using vectors
-
-	private void commonPattern(float yawDeltaPacket, float pitchDeltaPacket, float yaw, float pitch) {
-		if (Math.abs(yaw) % 0.5D == 0.0D) {
-			if (++buffer5 > 3) {
-				this.flag("PerfectRotation5");
-			}
-		}
-	}
 
 	private boolean isReallySmall(double d) {
 		return Math.abs(d) < 0.001;

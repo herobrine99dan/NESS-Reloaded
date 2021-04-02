@@ -50,7 +50,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 						.getBlockAt(from.getBlockX() + x, player.getEyeLocation().getBlockY() + 1, from.getBlockZ() + z)
 						.getType();
 				if (mat.isSolid()) {
-					maxSpd = player.getWalkSpeed() * 2.53; // 0.507
+					maxSpd = player.getWalkSpeed() * 2.54; // 0.507
 					break;
 				}
 			}

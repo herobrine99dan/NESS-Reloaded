@@ -30,7 +30,7 @@ public class Spider extends ListeningCheck<PlayerMoveEvent> {
 		Location from = e.getFrom();
 		double dTG = values.getdTG();
 		String dTGString = Double.toString(dTG);
-		if (values.isAroundLiquids()) {
+		if (values.isAroundLiquids() || values.isAroundCactus()) {
 			lastDTG = 0;
 			return;
 		}
