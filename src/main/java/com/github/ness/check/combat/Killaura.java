@@ -21,6 +21,7 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.check.PeriodicTaskInfo;
 import com.github.ness.utility.MathUtils;
+import com.github.ness.utility.raytracer.RayCaster;
 import com.github.ness.utility.raytracer.rays.AABB;
 import com.github.ness.utility.raytracer.rays.Ray;
 
@@ -56,7 +57,8 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		this.angleListSize = this.ness().getMainConfig().getCheckSection().killaura().angleListSize();
 		this.rayTraceHitboxBuffer = this.ness().getMainConfig().getCheckSection().killaura().rayTraceHitboxBuffer();
 		this.rayTraceReachBuffer = this.ness().getMainConfig().getCheckSection().killaura().rayTraceReachBuffer();
-		this.useBukkitLocationForRayTrace = this.ness().getMainConfig().getCheckSection().killaura().useBukkitLocationForRayTrace();
+		this.useBukkitLocationForRayTrace = this.ness().getMainConfig().getCheckSection().killaura()
+				.useBukkitLocationForRayTrace();
 		this.angleList = new ArrayList<Float>();
 	}
 
@@ -67,19 +69,19 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		@ConfComments("Hitbox is a very aggressive check, this is why I included also a way to check the angle beetween entity and player")
 		@DefaultDouble(0.6)
 		double mainAngle();
-		
+
 		@ConfComments("Using a previous location can sometimes be useful. Enabling this you can remove or add more false flags, i haven't tested this")
 		@DefaultBoolean(false)
 		boolean useBukkitLocationForRayTrace();
-		
+
 		@ConfComments("How many values should the angleList contains?")
 		@DefaultInteger(9)
 		int angleListSize();
-		
+
 		@ConfComments("Choose the correct buffer for Reach check")
 		@DefaultInteger(2)
 		int rayTraceReachBuffer();
-		
+
 		@ConfComments("Choose the correct buffer for Hitbox check")
 		@DefaultInteger(3)
 		int rayTraceHitboxBuffer();
@@ -135,7 +137,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		if (player.getGameMode().equals(GameMode.CREATIVE)) {
 			maxReach = (5.5 * this.maxReach) / 3;
 		}
-		//nessPlayer.sendDevMessage("Reach: " + range + " Angle:1 " + angle1);
+		// nessPlayer.sendDevMessage("Reach: " + range + " Angle:1 " + angle1);
 		if (range > maxReach && range < 6.5D) {
 			if (++buffer > rayTraceReachBuffer) {
 				flagEvent(event, "Reach: " + range);
@@ -143,7 +145,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		} else if (buffer > 0) {
 			buffer -= 0.5;
 		}
-		if (range == -1) { //If the RayTrace doesn't find an hitpoint on the entity
+		if (range == -1) { // If the RayTrace doesn't find an hitpoint on the entity
 			if (angleList.size() > this.angleListSize) {
 				double average = MathUtils.average(angleList);
 				nessPlayer.sendDevMessage("Hitbox: " + average);
@@ -158,7 +160,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		} else if (angleBuffer > 0) {
 			angleBuffer -= 0.5;
 		}
-		if (angleList.size() > this.angleListSize) { //Remove memory leaks
+		if (angleList.size() > this.angleListSize) { // Remove memory leaks
 			angleList.clear();
 		}
 	}
@@ -188,8 +190,17 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 			return;
 		}
 		Block b = player.getTargetBlock(null, 5);
+		final RayCaster customCaster = new RayCaster(player, 6, RayCaster.RaycastType.BLOCK, this.ness()).compute();
+		Block bCustom = customCaster.getBlockFound();
 		Material material = b.getType();
-		if (b.getType().isSolid() && (material.isOccluding() && !material.name().contains("GLASS"))) {
+		Material materialCustom;
+		if (bCustom == null) {
+			materialCustom = material;
+		} else {
+			materialCustom = bCustom.getType();
+		}
+		if (b.getType().isSolid() && (material.isOccluding() && !material.name().contains("GLASS"))
+				&& (materialCustom.isOccluding() && !materialCustom.name().contains("GLASS"))) {
 			flagEvent(event, "WallHit");
 		}
 	}
@@ -205,7 +216,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		if (!(event.getEntity() instanceof LivingEntity)) {
 			return;
 		}
-		if (!Bukkit.getVersion().contains("1.8")) { //In 1.9+ you can attack more entities without cheats!
+		if (!Bukkit.getVersion().contains("1.8")) { // In 1.9+ you can attack more entities without cheats!
 			return;
 		}
 		NessPlayer nessPlayer = player();

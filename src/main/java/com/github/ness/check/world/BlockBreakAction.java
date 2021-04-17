@@ -38,10 +38,10 @@ public class BlockBreakAction extends ListeningCheck<BlockBreakEvent> {
 			if (targetBlock.getType() != block.getType()) {
 				final RayCaster customCaster = new RayCaster(event.getPlayer(), 6, RayCaster.RaycastType.BLOCK,
 						this.ness()).compute();
-				if (customCaster.getBlockFounded() != null) {
-					if (!customCaster.getBlockFounded().equals(block)) {
+				if (customCaster.getBlockFound() != null) {
+					if (!customCaster.getBlockFound().equals(block)) {
 						this.flagEvent(event, "targetBlock: " + targetBlock.getType().name() + " customRayCaster:  "
-								+ customCaster.getBlockFounded().getType().name());
+								+ customCaster.getBlockFound().getType().name());
 					}
 				}
 			}

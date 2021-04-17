@@ -19,7 +19,7 @@ public class CreativeFly extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	private double lastMotionXZ, lastMotionY;
-	private int flyingTicks;
+	private int flyingTicks, buffer;
 
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
@@ -32,7 +32,7 @@ public class CreativeFly extends ListeningCheck<PlayerMoveEvent> {
 		} else {
 			flyingTicks = 0;
 		}
-		if(flyingTicks > 1 && player.isGliding()) {
+		if (flyingTicks > 1 && player.isGliding()) {
 			flyingTicks -= 2;
 		}
 		if (flyingTicks > 10) {
@@ -40,17 +40,20 @@ public class CreativeFly extends ListeningCheck<PlayerMoveEvent> {
 			double predictedY = lastMotionY * 0.6;
 			double resultXZ = Math.abs(xzDiff - predictedXZ);
 			double resultY = Math.abs(yDiff - predictedY);
-			double maxXZ = player.getFlySpeed(); // (player.getFlySpeed() * 0.1) / 0.1 that become player.getFlySpeed()
+			double maxXZ = (player.getFlySpeed() * 0.6) / 0.1;
 			double maxY = (player.getFlySpeed() * 0.38) / 0.1;
-			if(values.isAroundStairs()) {
+			if (values.isAroundStairs()) {
 				maxXZ += player.getFlySpeed();
 			}
-			if (resultXZ > maxXZ) {
+			if (resultXZ > maxXZ && buffer++ > 2) {
 				this.flagEvent(event, "resultXZ: " + (float) resultXZ);
-			}
-			if (resultY > maxY && yDiff > 0) {
+			} else if (resultY > maxY && yDiff > 0 && buffer++ > 2) {
 				this.flagEvent(event, "resultY: " + (float) resultY);
+			} else if (buffer > 0) {
+				buffer--;
 			}
+		} else if (buffer > 0) {
+			buffer--;
 		}
 		this.lastMotionXZ = xzDiff;
 	}

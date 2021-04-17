@@ -64,11 +64,11 @@ public class RayCaster {
 		return this;
 	}
 
-	public Block getBlockFounded() {
+	public Block getBlockFound() {
 		return blockFounded;
 	}
 
-	public Entity getEntityFounded() {
+	public Entity getEntityFound() {
 		return entityFounded;
 	}
 

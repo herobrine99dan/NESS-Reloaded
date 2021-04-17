@@ -27,46 +27,8 @@ public class Strafe extends ListeningCheck<PlayerMoveEvent> {
         Player p = e.getPlayer();
         NessPlayer nessPlayer = this.player();
         Vector dir = e.getTo().clone().subtract(e.getFrom()).toVector();
-
-        double dist = distanceXZ(e.getFrom(), e.getTo());
         double angle = Math.toDegrees(Math.atan2(dir.getX(), dir.getZ()));
         double yawDiff = nessPlayer.getMovementValues().getYawDiff();
-
-        angle = -angle;
-        if (angle < 0) {
-            angle += 360;
-        }
-        double result = Math.abs(lastStrafeAngle - angle);
-        if (lastStrafeAngle != 0 && result > 35 && result < 300 && Math.abs(yawDiff) < 8 && !nessPlayer.isOnGroundPacket()
-                && dist > .19 && !isAgainstBlock(e.getFrom()) && !isAgainstBlock(e.getTo())) {
-        	flagEvent(e);
-        	//if(player().setViolation(new Violation("Strafe", "High Angle Diff: " + Math.abs(lastStrafeAngle - angle)))) e.setCancelled(true);
-        }
-
         lastStrafeAngle = angle;
-    }
-
-    double distanceXZ(Location loc1, Location loc2) {
-        return Math.sqrt(
-                Math.pow(Math.abs(loc1.getX() - loc2.getX()), 2) + Math.pow(Math.abs(loc1.getZ() - loc2.getZ()), 2));
-    }
-
-    boolean isAgainstBlock(Location loc) {
-        double expand = 0.31;
-        for (double x = -expand; x <= expand; x += expand) {
-            for (double z = -expand; z <= expand; z += expand) {
-                if (!loc.clone().add(x, 0.0001, z).getBlock().getType().name().contains("AIR")) {
-                    return true;
-                }
-            }
-        }
-        for (double x = -expand; x <= expand; x += expand) {
-            for (double z = -expand; z <= expand; z += expand) {
-                if (!loc.clone().add(x, 1.0001, z).getBlock().getType().name().contains("AIR")) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }
