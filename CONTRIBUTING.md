@@ -17,6 +17,12 @@ You need to know Java.
 
 Ideally, you'll know git and maven. If you don't, message us on the discord and we can help you with some things.
 
+You'll want to install the following if you haven't already:
+
+* Git
+* Maven
+* JDK 11 or greater
+
 ### Creating Checks
 
 There are 2 ways you can specify checks.
