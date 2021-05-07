@@ -73,8 +73,8 @@ public class ViolationManager implements InfractionManager {
 		Map<String, CancelEvent> eventsCancellation = new HashMap<>();
 		//Actually this configuration setting was disabled due to test purposes
 		//TODO Fix the DazzleConf Bug
-		Map<String, CheckConfig> perCheckConfiguration = Collections.emptyMap();
-		//Map<String, CheckConfig> perCheckConfiguration = ness.getMainConfig().perCheckConfiguration();
+		//Map<String, CheckConfig> perCheckConfiguration = Collections.emptyMap();
+		Map<String, CheckConfig> perCheckConfiguration = ness.getMainConfig().perCheckConfiguration();
 		for (Map.Entry<String, CheckConfig> checkConfigEntry : perCheckConfiguration.entrySet()) {
 			String checkName = checkConfigEntry.getKey();
 			ViolationHandling checkViolationHandling = checkConfigEntry.getValue().violationHandling();

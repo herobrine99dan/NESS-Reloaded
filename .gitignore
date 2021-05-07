@@ -84,3 +84,4 @@ logs/
 .apt_generated
 
 .sts4-cache/
+/dependency-reduced-pom.xml.backup

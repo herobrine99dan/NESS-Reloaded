@@ -119,14 +119,14 @@ public interface NessConfig {
 	@SubSection
 	ViolationHandling getViolationHandling();
 
-	/*@ConfKey("per-check-overrides")
+	@ConfKey("per-check-overrides")
 	@ConfComments({
 			"Additional per-check overrides, specifically violation handling.",
 			"",
 			"Each section is named after the check name.",
 			"The AutoClicker check is given as an example"})
 	@ConfDefault.DefaultObject("defaultViolationHandlingPerCheck")
-	Map<String, @SubSection CheckConfig> perCheckConfiguration();*/
+	Map<String, @SubSection CheckConfig> perCheckConfiguration();
 
 	static Map<String, CheckConfig> defaultViolationHandlingPerCheck(CheckConfig defaultCheckConf) {
 		Map<String, CheckConfig> map = new HashMap<>();

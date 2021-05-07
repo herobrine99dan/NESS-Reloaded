@@ -83,7 +83,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		int rayTraceReachBuffer();
 
 		@ConfComments("Choose the correct buffer for Hitbox check")
-		@DefaultInteger(3)
+		@DefaultInteger(1)
 		int rayTraceHitboxBuffer();
 
 		@ConfComments("This is the max Reach allowed. The maxReach depends on this value, on lagAccount value and on reachExpansion. The real formula to calculate the maxReach is 'maxReach+reachExpansion= realMaxReach' where maxReach is this config option, reachExpansion is the config option under this and realMaxReach is the realMaxReach calculated by the RayTracer")
