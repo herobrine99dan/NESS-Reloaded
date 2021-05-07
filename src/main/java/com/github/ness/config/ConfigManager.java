@@ -17,6 +17,7 @@ import space.arim.dazzleconf.ConfigurationFactory;
 import space.arim.dazzleconf.ConfigurationOptions;
 import space.arim.dazzleconf.error.ConfigFormatSyntaxException;
 import space.arim.dazzleconf.error.InvalidConfigException;
+import space.arim.dazzleconf.ext.snakeyaml.CommentMode;
 import space.arim.dazzleconf.ext.snakeyaml.SnakeYamlConfigurationFactory;
 import space.arim.dazzleconf.ext.snakeyaml.SnakeYamlOptions;
 
@@ -45,9 +46,9 @@ public class ConfigManager {
 
 		ConfigurationOptions configOptions = new ConfigurationOptions.Builder()
 				.addSerialiser(new ColorSerialiser()).build();
-		SnakeYamlOptions yamlOptions = new SnakeYamlOptions.Builder().useCommentingWriter(true).build();
-		configFactory = new SnakeYamlConfigurationFactory<>(NessConfig.class, configOptions, yamlOptions);
-		messagesFactory = new SnakeYamlConfigurationFactory<>(NessMessages.class, configOptions, yamlOptions);
+		SnakeYamlOptions yamlOptions = new SnakeYamlOptions.Builder().commentMode(CommentMode.alternativeWriter()).build();
+		configFactory = SnakeYamlConfigurationFactory.create(NessConfig.class, configOptions, yamlOptions);
+		messagesFactory = SnakeYamlConfigurationFactory.create(NessMessages.class, configOptions, yamlOptions);
 	}
 	
 	/**
