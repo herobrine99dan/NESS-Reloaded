@@ -16,24 +16,31 @@ import com.github.ness.utility.Utility;
 public class SpeedAir extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
-
+	private final double speedAirBaseSpeed, speedAirIceSpeed, speedAirSlimeSpeed, speedAirUnderBlock;
 	int airTicks;
 
 	public SpeedAir(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
+		speedAirBaseSpeed = this.ness().getMainConfig().getCheckSection().speed().speedAirBaseSpeed();
+		speedAirIceSpeed = this.ness().getMainConfig().getCheckSection().speed().speedAirIceSpeed();
+		speedAirSlimeSpeed = this.ness().getMainConfig().getCheckSection().speed().speedAirSlimeSpeed();
+		speedAirUnderBlock = this.ness().getMainConfig().getCheckSection().speed().speedAirUnderBlock();
 	}
 
 	private float getBaseSpeed(NessPlayer player) {
-		float returner = 0.34f
+		float returner = (float) speedAirBaseSpeed
 				+ (Utility.getPotionEffectLevel(player.getBukkitPlayer(), PotionEffectType.SPEED) * 0.062f)
 				+ ((player.getBukkitPlayer().getWalkSpeed() - 0.2f) * 1.6f);
-		if (player.getMovementValues().isAroundIce() || player.getMovementValues().isAroundSlime()) {
-			returner += 0.34;
+		if (player.getMovementValues().isAroundIce()) {
+			returner += speedAirIceSpeed;
+		}
+		if (player.getMovementValues().isAroundIce()) {
+			returner += speedAirSlimeSpeed;
 		}
 		if (player.getMovementValues().hasBlockNearHead()) {
-			returner += 0.91;
+			returner += speedAirUnderBlock;
 		}
-		if (player.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500) {
+		if (player.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
 			returner += Math.hypot(player.getLastVelocity().getX(), player.getLastVelocity().getZ());
 		}
 		return returner;

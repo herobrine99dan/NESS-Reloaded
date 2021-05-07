@@ -10,6 +10,7 @@ import com.github.ness.check.movement.FastLadder;
 import com.github.ness.check.movement.Jesus;
 import com.github.ness.check.movement.fly.FlyInvalidClientGravity;
 import com.github.ness.check.movement.fly.FlyInvalidServerGravity;
+import com.github.ness.check.movement.oldmovementchecks.Speed;
 import com.github.ness.check.packet.Freecam;
 import com.github.ness.check.packet.MorePackets;
 import com.github.ness.check.packet.Timer;
@@ -153,4 +154,14 @@ public interface AllChecksConfig {
 		""})
 	@SubSection
 	VerticalVelocity.Config verticalVelocity();
+	@ConfKey("speed")
+	@ConfComments({
+		"",
+		"Check if a player walking/sprinting too fast.",
+		"",
+		"Performance impact: low", 
+		"Effectiveness: High",
+		""})
+	@SubSection
+	Speed.Config speed();
 }
