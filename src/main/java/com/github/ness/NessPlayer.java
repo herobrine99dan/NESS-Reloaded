@@ -80,10 +80,14 @@ public class NessPlayer implements AnticheatPlayer {
 	private volatile float timerTicks;
 	private final boolean isUsingGeyserMC;
 
-	public NessPlayer(Player player, boolean devMode, MaterialAccess access) {
-		FloodgatePlayer floodGatePlayer = FloodgateAPI.getPlayer(player);
-		if (floodGatePlayer != null) {
-			isUsingGeyserMC = true;
+	public NessPlayer(Player player, boolean devMode, NessAnticheat ness) {
+		if (ness.isUseFloodGate()) {
+			FloodgatePlayer floodGatePlayer = FloodgateAPI.getPlayer(player);
+			if (floodGatePlayer != null) {
+				isUsingGeyserMC = true;
+			} else {
+				isUsingGeyserMC = false;
+			}
 		} else {
 			isUsingGeyserMC = false;
 		}
@@ -92,7 +96,7 @@ public class NessPlayer implements AnticheatPlayer {
 		this.devMode = devMode;
 		this.userName = player.getName();
 		this.movementValues = new MovementValues(this, ImmutableLoc.of(player.getLocation()),
-				ImmutableLoc.of(player.getLocation()), access, 1122);
+				ImmutableLoc.of(player.getLocation()), ness.getMaterialAccess(), 1122);
 	}
 
 	/*

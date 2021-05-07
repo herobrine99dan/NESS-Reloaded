@@ -82,7 +82,7 @@ class PlayerManager implements PlayersManager {
 	
 	NessPlayer addPlayer(Player player) {
 		NessAnticheat ness = ness();
-		NessPlayer nessPlayer = new NessPlayer(player, ness.getMainConfig().isDevMode(), ness.getMaterialAccess());
+		NessPlayer nessPlayer = new NessPlayer(player, ness.getMainConfig().isDevMode(), ness);
 
 		Set<BaseCheckFactory<?>> enabledFactories = new HashSet<>();
 		for (BaseCheckFactory<?> factory : checkManager.getCheckFactories()) {

@@ -1,6 +1,7 @@
 package com.github.ness.utility.raytracer;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -53,8 +54,8 @@ public class RayCaster {
 					final Ray ray = Ray.from(player);
 					final AABB aabb = AABB.from(entity, ness, 0.25);
 					double range = aabb.collidesD(ray, 0, 10);
-					if(range != -1) {
-						if(range < maxDistance) {
+					if (range != -1) {
+						if (range < maxDistance) {
 							this.entityFounded = entity;
 						}
 					}
@@ -73,7 +74,7 @@ public class RayCaster {
 	}
 
 	public static enum RaycastType {
-		ENTITY, BLOCK, ENTITYBukkit, BLOCKBukkit;
+		ENTITY, BLOCK, ENTITYBukkit, BLOCKBukkit, BlockOther;
 	}
 
 }

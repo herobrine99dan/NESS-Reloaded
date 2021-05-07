@@ -54,6 +54,7 @@ public class NessAnticheat {
 	private final MaterialAccess materialAccess;
 	private final ReflectHelper reflectHelper;
 	private final PacketTypeRegistry packetTypeRegistry;
+	private final boolean useFloodGate;
 
 	NessAnticheat(JavaPlugin plugin, Path folder, MaterialAccess materialAccess) {
 		this.plugin = plugin;
@@ -66,6 +67,12 @@ public class NessAnticheat {
 		checkManager = new CheckManager(this);
 		violationManager = new ViolationManager(this);
 		this.materialAccess = materialAccess;
+		if(Bukkit.getPluginManager().getPlugin("floodgate") != null) {
+			logger.log(Level.INFO, "Floodgate was detected, NESS Reloaded will fix checks for Geyser's users!");
+			useFloodGate = true;
+		}else {
+			useFloodGate = false;
+		}
 
 		ClassLocator locator = SimpleClassLocator.create();
 		Reflection reflection = new InvokerCachingReflection(new MethodHandleReflection(new CoreReflection()));
@@ -185,6 +192,10 @@ public class NessAnticheat {
 		} catch (InterruptedException ex) {
 			logger.log(Level.WARNING, "Failed to complete thread pool termination", ex);
 		}
+	}
+
+	public boolean isUseFloodGate() {
+		return useFloodGate;
 	}
 
 }
