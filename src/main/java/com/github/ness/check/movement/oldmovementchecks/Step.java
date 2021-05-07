@@ -31,6 +31,7 @@ public class Step extends ListeningCheck<PlayerMoveEvent> {
 		double jumpBoost = Utility.getPotionEffectLevel(player, PotionEffectType.JUMP);
 		double yDiffUpper = values.getyDiff();
 		yDiffUpper -= jumpBoost * 0.1;
+		double minY = this.player().isUsingGeyserMC() ? 0.75 : 0.6;
 		if (yDiffUpper > 0.6 && values.isGroundAround() && !values.isAroundSlime()) {
 			if (player.getVelocity().getY() < 0.43) {
 				flagEvent(e, "High Distance: " + yDiffUpper);

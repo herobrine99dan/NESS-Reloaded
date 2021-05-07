@@ -17,6 +17,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.geysermc.floodgate.FloodgateAPI;
+import org.geysermc.floodgate.FloodgatePlayer;
 
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
@@ -72,12 +74,19 @@ public class NessPlayer implements AnticheatPlayer {
 
 	private UUID lastEntityAttacked;
 	private final String userName;
-	private Location safeLocation; //Not ThreadSafe
+	private Location safeLocation; // Not ThreadSafe
 	private boolean cinematic;
 	private float gcd;
 	private volatile float timerTicks;
+	private final boolean isUsingGeyserMC;
 
 	public NessPlayer(Player player, boolean devMode, MaterialAccess access) {
+		FloodgatePlayer floodGatePlayer = FloodgateAPI.getPlayer(player);
+		if (floodGatePlayer != null) {
+			isUsingGeyserMC = true;
+		} else {
+			isUsingGeyserMC = false;
+		}
 		uuid = player.getUniqueId();
 		this.player = player;
 		this.devMode = devMode;
@@ -214,7 +223,7 @@ public class NessPlayer implements AnticheatPlayer {
 	public long milliSecondTimeDifference(PlayerAction action) {
 		return (System.nanoTime() - this.actionTime.getOrDefault(action, (long) 0)) / 1000_000L;
 	}
-	
+
 	public long getMilliSecondTime(PlayerAction action) {
 		return (this.actionTime.getOrDefault(action, (long) 0)) / 1000_000L;
 	}
@@ -396,10 +405,10 @@ public class NessPlayer implements AnticheatPlayer {
 	}
 
 	public boolean isOnGroundPacket() {
-		/*if(Bukkit.getVersion().contains("1.16")) {
-		return onGroundPacket;	
-		}
-		return this.movementValues.isClientOnGround();*/
+		/*
+		 * if(Bukkit.getVersion().contains("1.16")) { return onGroundPacket; } return
+		 * this.movementValues.isClientOnGround();
+		 */
 		return onGroundPacket;
 	}
 
@@ -417,6 +426,10 @@ public class NessPlayer implements AnticheatPlayer {
 
 	public String getUserName() {
 		return userName;
+	}
+
+	public boolean isUsingGeyserMC() {
+		return isUsingGeyserMC;
 	}
 
 }

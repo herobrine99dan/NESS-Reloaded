@@ -125,7 +125,7 @@ public class Aimbot extends PacketCheck {
 		roundedValues(yawDeltaPacket, pitchDeltaPacket, lastYawBukkit, wrapper.pitch());
 	}
 
-	private double buffer5;
+	private double buffer5, buffer6;
 
 	private void roundedValues(float yawDeltaPacket, float pitchDeltaPacket, float yaw, float pitch) {
 		if (Math.abs(yawDeltaPacket) == Math.round(Math.abs(yawDeltaPacket)) && Math.abs(yawDeltaPacket) > 0.1) {

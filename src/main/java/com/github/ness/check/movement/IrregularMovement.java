@@ -66,7 +66,8 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		}
 		if (yDelta > 0) {
 			flyYSum += yDelta;
-			if (flyYSum % 0.5 == 0 && flyYSum > 0.52) {
+			double minY = this.player().isUsingGeyserMC() ? 1.3 : 0.52;
+			if (flyYSum % 0.5 == 0 && flyYSum > minY) {
 				this.flagEvent(e, "flyYSum: " + (float) flyYSum);
 			}
 		} else {
