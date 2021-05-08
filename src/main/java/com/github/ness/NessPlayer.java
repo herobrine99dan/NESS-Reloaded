@@ -11,7 +11,6 @@ import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.Consumer;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -22,7 +21,6 @@ import org.geysermc.floodgate.FloodgatePlayer;
 
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
-import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
@@ -79,6 +77,7 @@ public class NessPlayer implements AnticheatPlayer {
 	private float gcd;
 	private volatile float timerTicks;
 	private final boolean isUsingGeyserMC;
+	private int ping; //Not ThreadSafe
 
 	public NessPlayer(Player player, boolean devMode, NessAnticheat ness) {
 		if (ness.isUseFloodGate()) {
@@ -434,6 +433,14 @@ public class NessPlayer implements AnticheatPlayer {
 
 	public boolean isUsingGeyserMC() {
 		return isUsingGeyserMC;
+	}
+
+	public int getPing() {
+		return ping;
+	}
+
+	public void setPing(int ping) {
+		this.ping = ping;
 	}
 
 }

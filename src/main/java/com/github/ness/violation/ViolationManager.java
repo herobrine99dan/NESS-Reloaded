@@ -49,7 +49,8 @@ public class ViolationManager implements InfractionManager {
 				.replace("%PLAYER%", infraction.getPlayer().getBukkitPlayer().getName())
 				.replace("%HACK%", infraction.getCheck().getCheckName())
 				.replace("%VIOLATIONS%", Integer.toString(infraction.getCount()))
-				.replace("%DETAILS%", infraction.getDetails());
+				.replace("%DETAILS%", infraction.getDetails())
+				.replace("%PING%", Integer.toString(infraction.getPlayer().getPing()));
 		return ChatColor.translateAlternateColorCodes('&', replaced);
 	}
 

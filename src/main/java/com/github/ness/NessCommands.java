@@ -80,6 +80,9 @@ class NessCommands implements CommandExecutor {
 		case "version":
 			sendMessage(sender, "&7NESS Version: " + ness.getPlugin().getDescription().getVersion());
 			break;
+		case "info":
+			sendInfo(sender, (args.length >= 2) ? Bukkit.getPlayer(args[1]) : null);
+			break;
 		case "debug":
 			if (sender instanceof Player) {
 				NessPlayer np = ness.getCheckManager().getExistingPlayer((Player) sender);
@@ -150,6 +153,21 @@ class NessCommands implements CommandExecutor {
 		}
 		ness.getCheckManager().forEachCheck(target.getUniqueId(), Check::clearViolationCount);
 		sendMessage(sender, "&7Cleared violations for &e%TARGET%".replace("%TARGET%", target.getName()));
+	}
+	
+	private void sendInfo(CommandSender sender, Player target) {
+		if (target == null) {
+			sendUnknownTarget(sender);
+			return;
+		}
+		NessPlayer nessPlayer = ness.getCheckManager().getExistingPlayer(target);
+		if (nessPlayer == null) {
+			sendUnknownTarget(sender);
+			return;
+		}
+		sendMessage(sender, "&7Ping of &e%TARGET%:".replace("%TARGET%", target.getName()) + nessPlayer.getPing());
+		sendMessage(sender, "&7Is the player using GeyserMC (depends on Floodgate)? ".replace("%TARGET%", target.getName()) + nessPlayer.isUsingGeyserMC());
+		sendMessage(sender, "&7Ping of &e%TARGET%:".replace("%TARGET%", target.getName()) + nessPlayer.getPing());
 	}
 	
 	private void sendUnknownTarget(CommandSender sender) {

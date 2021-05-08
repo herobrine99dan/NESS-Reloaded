@@ -2,6 +2,7 @@ package com.github.ness.check.world;
 
 import java.time.Duration;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -22,7 +23,7 @@ public class ScaffoldOldNESS extends ListeningCheck<BlockPlaceEvent> {
 		super(factory, player);
 	}
 
-	private Location oldLoc;
+	private Location oldLoc = new Location(Bukkit.getWorlds().get(0),0,0,0);
 	private int placeTicks;
 
 	@Override
