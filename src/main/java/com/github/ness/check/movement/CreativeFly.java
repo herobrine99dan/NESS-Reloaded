@@ -35,7 +35,7 @@ public class CreativeFly extends ListeningCheck<PlayerMoveEvent> {
 		if (flyingTicks > 1 && player.isGliding()) {
 			flyingTicks -= 2;
 		}
-		if (flyingTicks > 10) {
+		if (flyingTicks > 20 && !values.isOnGroundCollider()) {
 			double predictedXZ = lastMotionXZ * 0.91f;
 			double predictedY = lastMotionY * 0.6;
 			double resultXZ = Math.abs(xzDiff - predictedXZ);
