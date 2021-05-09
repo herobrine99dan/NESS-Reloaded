@@ -9,6 +9,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import org.bukkit.Location;
@@ -77,9 +78,10 @@ public class NessPlayer implements AnticheatPlayer {
 	private float gcd;
 	private volatile float timerTicks;
 	private final boolean isUsingGeyserMC;
-	private int ping; //Not ThreadSafe
+	private AtomicInteger ping; //Not ThreadSafe
 
 	public NessPlayer(Player player, boolean devMode, NessAnticheat ness) {
+		ping = new AtomicInteger(0);
 		if (ness.isUseFloodGate()) {
 			FloodgatePlayer floodGatePlayer = FloodgateAPI.getPlayer(player);
 			if (floodGatePlayer != null) {
@@ -436,11 +438,11 @@ public class NessPlayer implements AnticheatPlayer {
 	}
 
 	public int getPing() {
-		return ping;
+		return this.ping.get();
 	}
 
 	public void setPing(int ping) {
-		this.ping = ping;
+		this.ping.set(ping);
 	}
 
 }
