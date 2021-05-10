@@ -36,7 +36,7 @@ public class MovementValuesHelper {
 	 */
 	public double getAngle(NessPlayer player, Location target) {
 		Location eye = getEyeLocation(player.getMovementValues().getTo().toBukkitLocation(), player.getBukkitPlayer());
-		Vector direction = player.getMovementValues().getDirection().toBukkitVector();
+		Vector direction = player.getMovementValues().getDirection();
 		Vector toEntity = target.toVector().subtract(eye.toVector());
 		double dot = toEntity.normalize().dot(direction);
 		return dot;
@@ -68,7 +68,7 @@ public class MovementValuesHelper {
 	 */
 	public double getAngle(NessPlayer player, LivingEntity target) {
 		Location eye = getEyeLocation(player.getMovementValues().getTo().toBukkitLocation(), player.getBukkitPlayer());
-		Vector direction = player.getMovementValues().getDirection().toBukkitVector();
+		Vector direction = player.getMovementValues().getDirection();
 		Vector toEntity = target.getLocation().add(0, target.getEyeHeight() / 2, 0).toVector().subtract(eye.toVector());
 		double dot = toEntity.normalize().dot(direction);
 		return dot;
@@ -165,7 +165,7 @@ public class MovementValuesHelper {
 	}
 
 	public boolean isMathematicallyOnGround(double y) {
-		return y % (1D / 64D) == 0;
+		return y % (1D / 64D) < 0.0001;
 	}
 
 	public boolean hasflybypass(NessPlayer nessPlayer) {

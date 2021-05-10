@@ -49,7 +49,7 @@ public class KillauraAnglePattern extends ListeningCheck<EntityDamageByEntityEve
 		if (!(e.getEntity() instanceof LivingEntity)) {
 			return;
 		}
-		Vector playerLookDir = this.player().getMovementValues().getDirection().toBukkitVector();
+		Vector playerLookDir = this.player().getMovementValues().getDirection();
 		Vector playerEyeLoc = this.player().getBukkitPlayer().getEyeLocation().toVector();
 		Vector entityLoc = e.getEntity().getLocation().toVector();
 		Vector playerEntityVec = entityLoc.subtract(playerEyeLoc);

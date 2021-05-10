@@ -1,9 +1,11 @@
 package com.github.ness.check.world;
 
-import org.bukkit.block.Block;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
@@ -16,6 +18,7 @@ public class GhostHand extends ListeningCheck<PlayerInteractEvent> {
 
 	public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos
 			.forEvent(PlayerInteractEvent.class);
+	private final Location EMPTYLOCATION = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
 
 	public GhostHand(ListeningCheckFactory<?, PlayerInteractEvent> factory, NessPlayer player) {
 		super(factory, player);
@@ -32,24 +35,52 @@ public class GhostHand extends ListeningCheck<PlayerInteractEvent> {
 	// If the custom raytracer also flags, then flag the check
 	public void Check(PlayerInteractEvent event) {
 		final Player player = event.getPlayer();
-		final Block targetBlock = player.getTargetBlock(null, 7);
 		NessPlayer nessPlayer = player();
 		if (event.getClickedBlock() == null || event.getBlockFace() == null) {
 			return;
 		}
 		if ((event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-			if (!targetBlock.equals(event.getClickedBlock())) {
-				final RayCaster customCaster = new RayCaster(event.getPlayer(), 6, RayCaster.RaycastType.BLOCK,
-						this.ness()).compute();
-				if (customCaster.getBlockFound() != null) {
-					if (!customCaster.getBlockFound().equals(event.getClickedBlock()) && player.getLocation().distance(targetBlock.getLocation()) > 1) {
-						this.flagEvent(event, "targetBlock: " + targetBlock.getType().name() + " customRayCaster:  "
-								+ customCaster.getBlockFound().getType().name());
-					}
-				}
-
+			Location bukkitBlock = getBukkitBlock(player);
+			Location rayTraceBlock = getRayTracerBlock(player);
+			Location otherRayTracerBlock = getOtherRayTracerBlock(player);
+			int correctness = 0;
+			if (bukkitBlock.equals(rayTraceBlock)) {
+				correctness++;
 			}
+			if (bukkitBlock.equals(otherRayTracerBlock)) {
+				correctness++;
+			}
+			if (rayTraceBlock.equals(otherRayTracerBlock)) {
+				correctness++;
+			}
+			nessPlayer.sendDevMessage("otherRayTracerBlock: " + otherRayTracerBlock);
+			double percentage = ((double) correctness / 3.0) * 100;
+			nessPlayer
+					.sendDevMessage("GhostHand Interaction Percentage: " + percentage + " correctness: " + correctness);
 		}
+	}
+
+	private Location getBukkitBlock(Player player) {
+		return player.getTargetBlock(null, 6).getLocation();
+	}
+
+	private Location getRayTracerBlock(Player player) {
+		final RayCaster customCaster = new RayCaster(player, 6, RayCaster.RaycastType.BLOCK, this.ness()).compute();
+		return customCaster.getBlockFound() != null ? customCaster.getBlockFound().getLocation() : EMPTYLOCATION;
+	}
+
+	private Location getOtherRayTracerBlock(Player player) {
+		Location fixedEyeLocation = player.getEyeLocation().subtract(0.0D, 1, 0.0D);
+		Vector direction = fixedEyeLocation.getDirection();
+		final int range = 6;
+		for (int i = 1; i <= range; i++) {
+			Location loc = fixedEyeLocation.add(direction);
+			if (!loc.getBlock().getType().isOccluding())
+				return loc.getBlock().getLocation();
+			if (i == range)
+				return loc.getBlock().getLocation();
+		}
+		return EMPTYLOCATION;
 	}
 
 }

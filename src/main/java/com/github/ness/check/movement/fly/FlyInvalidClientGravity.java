@@ -57,21 +57,21 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 	 */
 	public void Check(PlayerMoveEvent e) {
 		NessPlayer nessPlayer = this.player();
-		Player p = e.getPlayer();
+		Player player = e.getPlayer();
 		MovementValues values = nessPlayer.getMovementValues();
 		double deltaY = values.getyDiff();
-		if (values.getHelper().isMathematicallyOnGround(e.getTo().getY())) {
+		if (nessPlayer.isOnGroundPacket()) { //We shouldn't use isMathematicallyOnGround here, it has some bypasses. Instead we can simply use player.isOnGround because we have GroundSpoof checks
 			airTicks = 0;
 		} else {
 			airTicks++;
 		}
-		if (values.getHelper().hasflybypass(nessPlayer) || p.getAllowFlight() || values.isAroundLiquids()
-				|| Utility.hasVehicleNear(p) || values.isAroundWeb() || values.isAroundSlime()
+		if (values.getHelper().hasflybypass(nessPlayer) || player.getAllowFlight() || values.isAroundLiquids()
+				|| Utility.hasVehicleNear(player) || values.isAroundWeb() || values.isAroundSlime()
 				|| values.isAroundLadders() || values.isAroundSnow() || values.hasBlockNearHead() || values.isAroundKelp()) {
 			lastDeltaY = deltaY;
 			return;
 		}
-		//Even if this isn't the best fix, at least it allows for me to get good detection
+		//Even if this isn't the best fix, at least it allows for me to get working detection
 		final float yVelocityDelta = Math.abs(((float) values.getyDiff() - (float) values.getServerVelocity().getY()));
 		float yPredicted = (float) ((lastDeltaY - 0.08D) * 0.9800000190734863D);
 		float yResult = (float) Math.abs(deltaY - yPredicted);

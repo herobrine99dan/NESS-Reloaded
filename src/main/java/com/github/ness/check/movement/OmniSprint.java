@@ -36,7 +36,7 @@ public class OmniSprint extends ListeningCheck<PlayerMoveEvent> {
 			Vector moving = values.getFrom().toBukkitLocation().clone()
 					.subtract(values.getTo().toBukkitLocation().clone()).toVector();
 			double angle = moving.angle(getDirection(values.getTo()));
-			if (angle < 1.59 && values.getHelper().isMathematicallyOnGround(values.getTo().getY())) {
+			if (angle < 1.59) {
 				if (++buffer > 3) {
 					flagEvent(event, "Angle: " + (float) angle);
 				}

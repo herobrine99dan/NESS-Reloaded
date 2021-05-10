@@ -3,37 +3,9 @@ package com.github.ness.utility;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.ness.data.ImmutableVector;
+import org.bukkit.util.Vector;
 
 public class MathUtils {
-
-	private static final double[] table = new double[65536];
-
-	static {
-		for (int i = 0; i < table.length; ++i) {
-			table[i] = Math.sin((double) i * Math.PI * 2.0D / table.length);
-		}
-	}
-
-	/**
-	 * Get the sine of a double value from the table
-	 * 
-	 * @param double f
-	 * @return the sine of that double value
-	 */
-	public static final double sin(double f) {
-		return table[(int) (f * 10430.378F) & '\uffff'];
-	}
-
-	/**
-	 * Get the cosine of a double value from the table
-	 * 
-	 * @param double f
-	 * @return the cosine of that double value
-	 */
-	public static final double cos(double f) {
-		return table[(int) (f * 10430.378F + 16384.0F) & '\uffff'];
-	}
 
 	/**
 	 * Calculate Percentage
@@ -65,7 +37,7 @@ public class MathUtils {
 		return gcdRational(remainder, a);
 	}
 	
-    public static double getDirection(ImmutableVector from, ImmutableVector to) {
+    public static double getDirection(Vector from, Vector to) {
         if (from == null || to == null) {
             return 0.0D;
         }
@@ -83,26 +55,6 @@ public class MathUtils {
 
 	public static double getSensitivity(double gcd) {
 	    return  (Math.cbrt(gcd / 8 / 1 / 0.15) - 0.2) / 0.6;
-	}
-	
-	/**
-	 * toRadians optimized method
-	 * This give an aproximated value
-	 * @param angle
-	 * @return
-	 */
-	public static double toRadians(double angle) {
-		return angle * 0.01745;
-	}
-	
-	/**
-	 * toDegree optimized method
-	 * This give an aproximated value
-	 * @param angle
-	 * @return
-	 */
-	public static double toDegree(double angle) {
-		return angle * 57.33;
 	}
 
 	public static double average(List<Float> angles) {
@@ -130,6 +82,20 @@ public class MathUtils {
             out.add(list.get(i) - list.get(i - 1));
         }
         return out;
+    }
+    
+    //Trigonometry functions
+    
+    public static double getDegreeSine(double theta) {
+    	return Math.sin(Math.toRadians(theta));
+    }
+    
+    public static double getDegreeCosine(double theta) {
+    	return Math.cos(Math.toRadians(theta));
+    }
+    
+    public static double getDegreeTangent(double theta) {
+    	return Math.tan(Math.toRadians(theta));
     }
 	
 	public static double calculateStandardDeviation(List<Float> data) {

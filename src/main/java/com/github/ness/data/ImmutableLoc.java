@@ -4,8 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.util.NumberConversions;
-
-import com.github.ness.utility.MathUtils;
+import org.bukkit.util.Vector;
 
 public class ImmutableLoc {
 
@@ -18,7 +17,7 @@ public class ImmutableLoc {
 	private final float yaw;
 	private final double pitch;
 
-	private final ImmutableVector directionVector;
+	private final Vector directionVector;
 
 	public ImmutableLoc(String world, double x, double y, double z, float yaw, double pitch) {
 		this.world = world;
@@ -27,8 +26,24 @@ public class ImmutableLoc {
 		this.z = z;
 		this.pitch = pitch;
 		this.yaw = yaw;
-		directionVector = makeDirection(yaw, pitch);
+		directionVector = getDirection();
 	}
+	
+    public Vector getDirection() {
+        Vector vector = new Vector();
+
+        double rotX = this.getYaw();
+        double rotY = this.getPitch();
+
+        vector.setY(-Math.sin(Math.toRadians(rotY)));
+
+        double xz = Math.cos(Math.toRadians(rotY));
+
+        vector.setX(-xz * Math.sin(Math.toRadians(rotX)));
+        vector.setZ(xz * Math.cos(Math.toRadians(rotX)));
+
+        return vector;
+    }
 
 	/**
 	 * Creates an immutable location from a bukkit location
@@ -52,16 +67,6 @@ public class ImmutableLoc {
 	public static ImmutableLoc of(Location location, String world) {
 		return new ImmutableLoc(world, location.getX(), location.getY(), location.getZ(), location.getYaw(),
 				location.getPitch());
-	}
-
-	private static ImmutableVector makeDirection(double yaw, double pitch) {
-		double rotX = yaw;
-		double rotY = pitch;
-		double y = -MathUtils.sin(Math.toRadians(rotY));
-		double xz = MathUtils.cos(Math.toRadians(rotY));
-		double x = -xz * MathUtils.sin(Math.toRadians(rotX));
-		double z = xz * MathUtils.cos(Math.toRadians(rotX));
-		return new ImmutableVector(x, y, z);
 	}
 
 	public String getWorld() {
@@ -88,7 +93,7 @@ public class ImmutableLoc {
 		return pitch;
 	}
 
-	public ImmutableVector getDirectionVector() {
+	public Vector getDirectionVector() {
 		return directionVector;
 	}
 

@@ -27,7 +27,7 @@ public class ScaffoldAngle extends ListeningCheck<BlockPlaceEvent> {
 		}
 		NessPlayer nessPlayer = player();
 		final Vector placedVector = new Vector(placedFace.getModX(), placedFace.getModY(), placedFace.getModZ());
-		float placedAngle = nessPlayer.getMovementValues().getTo().getDirectionVector().toBukkitVector()
+		float placedAngle = nessPlayer.getMovementValues().getTo().getDirectionVector()
 				.angle(placedVector);
 		if (placedAngle > MAX_ANGLE) {
 			flagEvent(event, "placedAngle: " + placedAngle + " pitch: " + event.getPlayer().getLocation().getPitch());

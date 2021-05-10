@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.blockgetter.MaterialAccess;
@@ -74,7 +75,7 @@ public class MovementValues {
 
 	private final boolean aroundWeb;
 
-	private final ImmutableVector serverVelocity;
+	private final Vector serverVelocity;
 
 	private final boolean insideVehicle;
 
@@ -132,7 +133,7 @@ public class MovementValues {
 		clientGround = false;
 		aroundIce = false;
 		aroundSlabs = false;
-		serverVelocity = new ImmutableVector(0, 0, 0);
+		serverVelocity = new Vector(0, 0, 0);
 		aroundCarpet = false;
 		aroundLadders = false;
 		groundAround = false;
@@ -199,7 +200,7 @@ public class MovementValues {
 			boolean sea = false;
 			boolean stainedGlass = false;
 			boolean nonOccludingBlocks = false;
-			serverVelocity = new ImmutableVector(p.getVelocity().getX(), p.getVelocity().getY(),
+			serverVelocity = new Vector(p.getVelocity().getX(), p.getVelocity().getY(),
 					p.getVelocity().getZ());
 			gamemode = p.getGameMode();
 			isFlying = p.isFlying();
@@ -315,7 +316,7 @@ public class MovementValues {
 		} else {
 			aroundIce = false;
 			aroundSlabs = false;
-			serverVelocity = new ImmutableVector(0, 0, 0);
+			serverVelocity = new Vector(0, 0, 0);
 			aroundCarpet = false;
 			aroundLadders = false;
 			groundAround = false;
@@ -378,7 +379,7 @@ public class MovementValues {
 		return this.yDiff < 0;
 	}
 
-	public ImmutableVector getDirection() {
+	public Vector getDirection() {
 		return this.getTo().getDirectionVector();
 	}
 
@@ -514,7 +515,7 @@ public class MovementValues {
 		return aroundWeb;
 	}
 
-	public ImmutableVector getServerVelocity() {
+	public Vector getServerVelocity() {
 		return serverVelocity;
 	}
 

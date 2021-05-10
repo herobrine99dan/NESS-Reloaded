@@ -74,7 +74,7 @@ public class RayCaster {
 	}
 
 	public static enum RaycastType {
-		ENTITY, BLOCK, ENTITYBukkit, BLOCKBukkit, BlockOther;
+		ENTITY, BLOCK, ENTITYBukkit, BLOCKBukkit;
 	}
 
 }

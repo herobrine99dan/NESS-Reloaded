@@ -35,7 +35,7 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		final MovementValues movementValues = nessPlayer.getMovementValues();
 		double y = movementValues.getyDiff();
-		if (movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY()) || movementValues.isOnGroundCollider()
+		if (movementValues.isOnGroundCollider()
 				|| movementValues.getHelper().hasflybypass(nessPlayer) || movementValues.isAroundSlime()
 				|| p.getAllowFlight() || movementValues.isAroundLiquids() || movementValues.isAroundLily()
 				|| movementValues.isAroundSeaBlocks() || movementValues.isAroundSlabs()
@@ -45,8 +45,7 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 				|| this.ness().getMaterialAccess().getMaterial(e.getTo().clone().add(0, 0.5, 0)).name()
 						.contains("SCAFFOLD")
 				|| movementValues.isAroundKelp() || movementValues.isAroundSnow() || movementValues.isAroundLadders()
-				|| nessPlayer.isTeleported() || movementValues.hasBlockNearHead() || Utility.hasVehicleNear(p)
-				|| movementValues.isOnGroundCollider()) {
+				|| nessPlayer.isTeleported() || movementValues.hasBlockNearHead() || Utility.hasVehicleNear(p)) {
 			flyYSum = 0;
 			return;
 		}

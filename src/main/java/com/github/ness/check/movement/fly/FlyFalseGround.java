@@ -27,18 +27,14 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		return true;
 	}
 
-	private boolean isReallySmall(double d) {
-		return Math.abs(d) < 0.001;
-	}
-
 	@Override
 	protected void checkEvent(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
 		if (movementValues.isAroundLily() || movementValues.isAroundCarpet() || movementValues.isAroundSnow()
-				|| this.ness().getMinecraftVersion() > 1152 || this.ness().getMaterialAccess()
-						.getMaterial(player.getLocation().clone().add(0, -0.5, 0)).name().contains("SCAFFOLD")) {
+				|| this.ness().getMaterialAccess().getMaterial(player.getLocation().clone().add(0, -0.5, 0)).name()
+						.contains("SCAFFOLD")) {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1500
@@ -54,11 +50,11 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		}
 		if (nessPlayer.isOnGroundPacket() && !movementValues.isGroundAround() && !movementValues.isAroundLadders()) {
 			flagEvent(e, " FalseGround");
-		} else if (nessPlayer.isOnGroundPacket() && !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY())
-				&& ++buffer > 2) {
+		} else if (nessPlayer.isOnGroundPacket()
+				&& !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY()) && ++buffer > 1) {
 			flagEvent(e, " FalseGround1");
 		} else if (buffer > 0) {
-			buffer -= 0.25;
+			buffer -= 0.5;
 		}
 	}
 }
