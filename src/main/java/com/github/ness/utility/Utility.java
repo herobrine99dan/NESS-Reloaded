@@ -29,7 +29,7 @@ public class Utility {
 	}
 
 	public static boolean hasVehicleNear(Player player) {
-		final int range = 4;
+		final double range = 3;
 		for (Entity e : player.getNearbyEntities(range, range, range)) {
 			if (e instanceof Vehicle) {
 				return true;

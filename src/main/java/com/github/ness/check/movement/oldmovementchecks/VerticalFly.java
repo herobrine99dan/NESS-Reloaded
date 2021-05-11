@@ -37,7 +37,7 @@ public class VerticalFly extends ListeningCheck<PlayerMoveEvent> {
 			}
 		}
 		if (values.getTo().getY() > values.getFrom().getY() && !values.isGroundAround()) {
-			if (values.getXZDiff() == 0.0D && !player.hasPotionEffect(PotionEffectType.JUMP) && values.isAroundSlime()
+			if (values.getXZDiff() == 0.0D && !player.hasPotionEffect(PotionEffectType.JUMP) && !values.isAroundSlime()
 					&& !values.isAroundCactus()
 					&& this.player().milliSecondTimeDifference(PlayerAction.ATTACK) >= 500.0D) {
 				this.flagEvent(e);

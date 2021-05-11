@@ -38,12 +38,12 @@ public interface NessConfig {
 		"",
 		"Comment out a check to disable",
 		""})
-	@DefaultStrings({"#AbilititiesSpoofed",
+	@DefaultStrings({
 		"Aimbot",
 		"AimbotGCD",
 		"AimbotPattern",
 		"MaxCPS",
-		/* "AntiUnicode", */
+		"#AntiUnicode",
 		"AntiKb",
 		"BlockBreakAction",
 		"Timer",
@@ -54,7 +54,7 @@ public interface NessConfig {
 		"FastLadder",
 		"FastPlace",
 		/* "ChestESP", */
-		"FlyHighJump",
+		"#FlyHighJump",
 		//"FastSneak",
 		"FlyInvalidJumpMotion",
 		"FlyInvalidServerGravity",

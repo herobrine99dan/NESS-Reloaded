@@ -86,6 +86,9 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 			velocity = Math.hypot(player().getLastVelocity().getX(), player().getLastVelocity().getZ());
 			hozDist -= velocity;
 		}
+		if (!player.isInsideVehicle() && Utility.hasVehicleNear(player)) { //If the player isn't inside a vehicle, but has vehicle near,
+			return;
+		}
 		if (player.hasPotionEffect(PotionEffectType.SPEED)) {
 			final int level = Utility.getPotionEffectLevel(player, PotionEffectType.SPEED);
 			hozDist -= (float) (hozDist / 100.0D * level * 20.0D);

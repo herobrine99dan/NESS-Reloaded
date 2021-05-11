@@ -36,9 +36,18 @@ public class Spider extends ListeningCheck<PlayerMoveEvent> {
 		}
 		if (to.getY() > from.getY()) {
 			String diff = Double.toString(Math.abs(dTG - lastDTG));
+			boolean gotFire = false;
+			if (player.getLastDamageCause() != null) {
+				if (player.getLastDamageCause().getCause() != null) {
+					if (player.getLastDamageCause().getCause().name().toLowerCase().contains("fire")) {
+						gotFire = true;
+					}
+				}
+			}
+			gotFire = gotFire && this.player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 250;
 			if (player.getLocation().getY() % 0.5D != 0.0D && !player.isFlying()
 					&& !to.clone().add(0, -1, 0).getBlock().getType().isSolid()
-					&& this.player().milliSecondTimeDifference(PlayerAction.ATTACK) > 500) {
+					&& this.player().milliSecondTimeDifference(PlayerAction.ATTACK) > 500 && !gotFire && !values.isAroundSlime()) {
 				if (diff.startsWith("0.286") || dTGString.contains("99999999") || dTGString.contains("00000000")
 						|| diff.contains("000000")) {
 					this.flagEvent(e);
