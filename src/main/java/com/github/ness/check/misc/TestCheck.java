@@ -1,23 +1,31 @@
 package com.github.ness.check.misc;
 
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.utility.MathUtils;
 
-public class TestCheck extends ListeningCheck<BlockPlaceEvent> {
+public class TestCheck extends ListeningCheck<EntityDamageByEntityEvent> {
 
-	public static final ListeningCheckInfo<BlockPlaceEvent> checkInfo = CheckInfos.forEvent(BlockPlaceEvent.class);
+	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfos
+			.forEvent(EntityDamageByEntityEvent.class);
 
-	public TestCheck(ListeningCheckFactory<?, BlockPlaceEvent> factory, NessPlayer player) {
+	public TestCheck(ListeningCheckFactory<?, EntityDamageByEntityEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 
 	@Override
-	protected void checkEvent(BlockPlaceEvent event) {
+	protected void checkEvent(EntityDamageByEntityEvent e) {
+		if (player().isNot(e.getDamager()) || !(e.getEntity() instanceof LivingEntity)) {
+			return;
+		}
 	}
-
 }

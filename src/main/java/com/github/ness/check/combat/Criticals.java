@@ -29,21 +29,22 @@ public class Criticals extends ListeningCheck<EntityDamageByEntityEvent> {
 	}
 
 	private void check(EntityDamageByEntityEvent event) {
-		if (event.getDamager() instanceof Player) {
-			NessPlayer nessPlayer = player();
-
-			Player player = (Player) event.getDamager();
-			MovementValues values = player().getMovementValues();
-			if (!nessPlayer.isOnGroundPacket() && !values.getHelper().hasflybypass(nessPlayer)
-					&& !values.isAroundLiquids() && !Utility.hasVehicleNear(player) && !values.isAroundWeb()) {
-				if (nessPlayer.getMovementValues().getTo().getY() % 1.0D == 0.0D
-						&& player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
-					flagEvent(event);
-					// if(player().setViolation(new Violation("Criticals", "")))
-					// event.setCancelled(true);
-				}
-			}
+		NessPlayer nessPlayer = player();
+		Player player = (Player) event.getDamager();
+		MovementValues values = player().getMovementValues();
+		/*
+		 * if (!nessPlayer.isOnGroundPacket() &&
+		 * !values.getHelper().hasflybypass(nessPlayer) && !values.isAroundLiquids() &&
+		 * !Utility.hasVehicleNear(player) && !values.isAroundWeb()) { if
+		 * (nessPlayer.getMovementValues().getTo().getY() % 1.0D == 0.0D &&
+		 * player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().isSolid
+		 * ()) { flagEvent(event); } }
+		 */
+		if(player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid() || player.getLocation().getBlock().getRelative(BlockFace.DOWN).isLiquid() || Utility.hasVehicleNear(player) || values.isAroundWeb() || values.isAroundLiquids() || values.getHelper().hasflybypass(nessPlayer)) {
+			return;
+		}
+		if (!player.isOnGround() && player.getLocation().getY() % 1.0 == 0.0) {
+			flagEvent(event);
 		}
 	}
-
 }

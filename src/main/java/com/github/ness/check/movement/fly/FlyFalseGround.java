@@ -53,7 +53,7 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		} else if (nessPlayer.isOnGroundPacket()
 				&& !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY()) && ++buffer > 1) {
 			flagEvent(e, " FalseGround1");
-		} else if (buffer > 0) {
+		} else if (buffer > 2) {
 			buffer -= 0.5;
 		}
 	}

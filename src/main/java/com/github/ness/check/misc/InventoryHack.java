@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
@@ -52,6 +53,7 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 				|| nessPlayer.isHasSetback()) {
 			return;
 		}
+		boolean inventoryOpened = player.getOpenInventory().getType() != InventoryType.CRAFTING;
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 100
 				|| nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKBROKED) < 100) {
 			flagEvent(e, "IllegalBlockAction");
@@ -63,7 +65,11 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 				|| player.isConversing()) {
 			flagEvent(e, " IllegalAction");
 			return;
+		} else if (!inventoryOpened && e.getRawSlot() == -1) {
+			flagEvent(e);
+			return;
 		}
+
 		final Location from = player.getLocation();
 
 		runTaskLater(() -> {
