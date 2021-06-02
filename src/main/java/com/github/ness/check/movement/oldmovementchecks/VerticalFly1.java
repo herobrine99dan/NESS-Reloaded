@@ -27,7 +27,9 @@ public class VerticalFly1 extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues values = player().getMovementValues();
 		Player player = e.getPlayer();
 		if (values.getHelper().hasflybypass(player()) || player.getAllowFlight() || Utility.hasVehicleNear(player)
-				|| player().isTeleported()) {
+				|| player().isTeleported()
+				|| getMaterialAccess().getMaterial(e.getTo().clone().add(0, 0.5, 0)).name().contains("SCAFFOLD")
+				|| getMaterialAccess().getMaterial(e.getTo().clone().add(0, -0.5, 0)).name().contains("SCAFFOLD")) {
 			return;
 		}
 		if (values.isGroundAround()) {

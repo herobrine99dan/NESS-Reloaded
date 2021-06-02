@@ -35,7 +35,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		@DefaultInteger(4)
 		int airTicks();
 
-		//After some tests i discovered i fixed all the bugs maybe
+		// After some tests i discovered i fixed all the bugs maybe
 		@DefaultDouble(0)
 		double buffer();
 	}
@@ -60,18 +60,25 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		Player player = e.getPlayer();
 		MovementValues values = nessPlayer.getMovementValues();
 		double deltaY = values.getyDiff();
-		if (nessPlayer.isOnGroundPacket()) { //We shouldn't use isMathematicallyOnGround here, it has some bypasses. Instead we can simply use player.isOnGround because we have GroundSpoof checks
+		if (nessPlayer.isOnGroundPacket()) { // We shouldn't use isMathematicallyOnGround here, it has some bypasses.
+												// Instead we can simply use player.isOnGround because we have
+												// GroundSpoof checks
 			airTicks = 0;
 		} else {
 			airTicks++;
 		}
 		if (values.getHelper().hasflybypass(nessPlayer) || player.getAllowFlight() || values.isAroundLiquids()
 				|| Utility.hasVehicleNear(player) || values.isAroundWeb() || values.isAroundSlime()
-				|| values.isAroundLadders() || values.isAroundSnow() || values.hasBlockNearHead() || values.isAroundKelp()) {
+				|| values.isAroundLadders() || values.isAroundSnow() || values.hasBlockNearHead()
+				|| values.isAroundKelp()
+				|| getMaterialAccess().getMaterial(e.getTo().clone().add(0, 0.5, 0)).name().contains("SCAFFOLD")
+				|| getMaterialAccess().getMaterial(e.getTo().clone().add(0, -0.5, 0)).name().contains("SCAFFOLD")
+				|| nessPlayer.getAcquaticUpdateFixes().getRiptideEventTime() < 500) {
 			lastDeltaY = deltaY;
 			return;
 		}
-		//Even if this isn't the best fix, at least it allows for me to get working detection
+		// Even if this isn't the best fix, at least it allows for me to get working
+		// detection
 		final float yVelocityDelta = Math.abs(((float) values.getyDiff() - (float) values.getServerVelocity().getY()));
 		float yPredicted = (float) ((lastDeltaY - 0.08D) * 0.9800000190734863D);
 		float yResult = (float) Math.abs(deltaY - yPredicted);

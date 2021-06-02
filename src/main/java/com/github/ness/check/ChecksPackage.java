@@ -9,7 +9,8 @@ public enum ChecksPackage {
 	PACKET("packet"),
 	WORLD("world"),
 	OldMovementChecks("movement.oldmovementchecks"),
-	MISC("misc");
+	MISC("misc"),
+	ACQUATICUPDATEFIXES("aquaticupdatefix");
 
 	/**
 	 * Class names of checks in the required checks package. <br>

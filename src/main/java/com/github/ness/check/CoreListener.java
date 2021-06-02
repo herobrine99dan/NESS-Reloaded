@@ -1,6 +1,8 @@
 package com.github.ness.check;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -10,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
@@ -20,6 +23,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 
 import com.github.ness.NessPlayer;
+import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
@@ -27,9 +31,11 @@ import com.github.ness.data.PlayerAction;
 public class CoreListener implements Listener {
 
 	private final PlayerManager manager;
+	private final MaterialAccess access;
 
-	CoreListener(PlayerManager manager) {
+	CoreListener(PlayerManager manager, MaterialAccess access) {
 		this.manager = manager;
+		this.access = access;
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
@@ -110,6 +116,8 @@ public class CoreListener implements Listener {
 			setPlayerAction((Player) victim, PlayerAction.DAMAGE);
 		}
 	}
+	
+	
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onBreak(BlockBreakEvent event) {

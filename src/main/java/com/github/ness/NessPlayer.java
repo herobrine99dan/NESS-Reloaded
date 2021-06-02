@@ -22,6 +22,7 @@ import org.geysermc.floodgate.FloodgatePlayer;
 
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
+import com.github.ness.check.aquaticupdatefix.AcquaticUpdateFixes;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
@@ -80,6 +81,7 @@ public class NessPlayer implements AnticheatPlayer {
 	private final boolean isUsingGeyserMC;
 	private AtomicInteger ping; //Not ThreadSafe
 	private int animationPacketsCounter;
+	private final AcquaticUpdateFixes acquaticUpdateFixes;
 
 	public NessPlayer(Player player, boolean devMode, NessAnticheat ness) {
 		ping = new AtomicInteger(0);
@@ -100,6 +102,7 @@ public class NessPlayer implements AnticheatPlayer {
 		this.userName = player.getName();
 		this.movementValues = new MovementValues(this, ImmutableLoc.of(player.getLocation()),
 				ImmutableLoc.of(player.getLocation()), ness.getMaterialAccess(), 1122);
+		this.acquaticUpdateFixes = new AcquaticUpdateFixes(this);
 	}
 
 	/*
@@ -457,6 +460,10 @@ public class NessPlayer implements AnticheatPlayer {
 
 	public void setAnimationPacketsCounter(int animationPacketsCounter) {
 		this.animationPacketsCounter = animationPacketsCounter;
+	}
+
+	public AcquaticUpdateFixes getAcquaticUpdateFixes() {
+		return acquaticUpdateFixes;
 	}
 
 }

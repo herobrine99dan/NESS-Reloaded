@@ -25,19 +25,17 @@ public class Step extends ListeningCheck<PlayerMoveEvent> {
 		Player player = e.getPlayer();
 		MovementValues values = player().getMovementValues();
 		if (values.getHelper().hasflybypass(player()) || values.isAbleFly() || player().hasBeenInVehicle()
-				|| player().isTeleported()) {
+				|| player().isTeleported() || player().getAcquaticUpdateFixes().getRiptideEventTime() < 500) {
 			return;
 		}
 		double jumpBoost = Utility.getPotionEffectLevel(player, PotionEffectType.JUMP);
 		double yDiffUpper = values.getyDiff();
 		yDiffUpper -= jumpBoost * 0.1;
-		double minY = this.player().isUsingGeyserMC() ? 0.75 : 0.6;
-		if (yDiffUpper > 0.6 && values.isGroundAround() && !values.isAroundSlime()) {
+		double minY = this.player().isUsingGeyserMC() ? 0.76 : 0.6;
+		if (yDiffUpper > minY && values.isGroundAround() && !values.isAroundSlime()) {
 			if (player.getVelocity().getY() < 0.43) {
 				flagEvent(e, "High Distance: " + yDiffUpper);
 			}
-		} else if (yDiffUpper < -1.5 && player.getFallDistance() == 0.0 && player.getVelocity().getY() < 0.43) {
-			flagEvent(e, "LowDistance");
 		}
 	}
 

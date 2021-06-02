@@ -30,7 +30,8 @@ public class Spider extends ListeningCheck<PlayerMoveEvent> {
 		Location from = e.getFrom();
 		double dTG = values.getdTG();
 		String dTGString = Double.toString(dTG);
-		if (values.isAroundLiquids() || values.isAroundCactus()) {
+		if (values.isAroundLiquids() || values.isAroundCactus()
+				|| player().getAcquaticUpdateFixes().getRiptideEventTime() < 500) {
 			lastDTG = 0;
 			return;
 		}
@@ -47,7 +48,8 @@ public class Spider extends ListeningCheck<PlayerMoveEvent> {
 			gotFire = gotFire && this.player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 250;
 			if (player.getLocation().getY() % 0.5D != 0.0D && !player.isFlying()
 					&& !to.clone().add(0, -1, 0).getBlock().getType().isSolid()
-					&& this.player().milliSecondTimeDifference(PlayerAction.ATTACK) > 500 && !gotFire && !values.isAroundSlime()) {
+					&& this.player().milliSecondTimeDifference(PlayerAction.ATTACK) > 500 && !gotFire
+					&& !values.isAroundSlime()) {
 				if (diff.startsWith("0.286") || dTGString.contains("99999999") || dTGString.contains("00000000")
 						|| diff.contains("000000")) {
 					this.flagEvent(e);

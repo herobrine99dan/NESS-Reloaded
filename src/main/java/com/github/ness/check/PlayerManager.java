@@ -8,7 +8,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +31,7 @@ class PlayerManager implements PlayersManager {
 	PlayerManager(CheckManager checkManager) {
 		this.checkManager = checkManager;
 
-		coreListener = new CoreListener(this);
+		coreListener = new CoreListener(this, checkManager.getNess().getMaterialAccess());
 		playerCache = new ConcurrentHashMap<UUID, NessPlayerData>();
 	}
 	
