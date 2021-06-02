@@ -33,7 +33,7 @@ public class ScaffoldAir extends ListeningCheck<BlockPlaceEvent> {
 		if (player.getLocation().clone().subtract(0.0D, 1.0D, 0.0D).getBlock().getType().isSolid()
 				&& !player.getLocation().clone().subtract(0.0D, 2.0D, 0.0D).getBlock().getType().isSolid()
 				&& airTicks < 1 && values.getXZDiff() > 0.2D && ++buffer > 1) {
-			this.flag("Scaffold (aka Tower)");
+			this.flag();
 		} else if(buffer > 0) {
 			buffer -= 0.5;
 		}

@@ -86,7 +86,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 			velocity = Math.hypot(player().getLastVelocity().getX(), player().getLastVelocity().getZ());
 			hozDist -= velocity;
 		}
-		if (!player.isInsideVehicle() && Utility.hasVehicleNear(player)) { //If the player isn't inside a vehicle, but has vehicle near,
+		if (!player.isInsideVehicle()) { //If the player isn't inside a vehicle, but has vehicle near,
 			return;
 		}
 		if (player.hasPotionEffect(PotionEffectType.SPEED)) {
@@ -128,7 +128,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 					Material small = player.getWorld().getBlockAt(player.getLocation().subtract(0, .1, 0)).getType();
 					if (!player.getWorld().getBlockAt(from).getType().isSolid()
 							&& !player.getWorld().getBlockAt(to).getType().isSolid()) {
-						if (!small.name().contains("TRAPDOOR")) {
+						if (!small.name().contains("TRAPDOOR") && nessPlayer.milliSecondTimeDifference(PlayerAction.VEHICLEENTER) > 150) {
 							this.flagEvent(e, maxSpd + " Dist: " + hozDist);
 						}
 					}

@@ -79,9 +79,11 @@ public class NessPlayer implements AnticheatPlayer {
 	private volatile float timerTicks;
 	private final boolean isUsingGeyserMC;
 	private AtomicInteger ping; //Not ThreadSafe
+	private int animationPacketsCounter;
 
 	public NessPlayer(Player player, boolean devMode, NessAnticheat ness) {
 		ping = new AtomicInteger(0);
+		animationPacketsCounter = 0;
 		if (ness.isUseFloodGate()) {
 			FloodgatePlayer floodGatePlayer = FloodgateAPI.getPlayer(player);
 			if (floodGatePlayer != null) {
@@ -203,6 +205,10 @@ public class NessPlayer implements AnticheatPlayer {
 	 */
 	public void kickThreadSafe(String kickMessage) {
 		this.kickMessage = kickMessage;
+	}
+	
+	public boolean hasBeenInVehicle() {
+		return milliSecondTimeDifference(PlayerAction.VEHICLEENTER) < 150;
 	}
 
 	/*
@@ -443,6 +449,14 @@ public class NessPlayer implements AnticheatPlayer {
 
 	public void setPing(int ping) {
 		this.ping.set(ping);
+	}
+
+	public int getAnimationPacketsCounter() {
+		return animationPacketsCounter;
+	}
+
+	public void setAnimationPacketsCounter(int animationPacketsCounter) {
+		this.animationPacketsCounter = animationPacketsCounter;
 	}
 
 }

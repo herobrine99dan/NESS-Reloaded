@@ -1,7 +1,5 @@
 package com.github.ness.check;
 
-import java.util.concurrent.ExecutionException;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
@@ -19,6 +17,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.data.ImmutableLoc;
@@ -70,7 +69,8 @@ public class CoreListener implements Listener {
 		}
 
 		MovementValues values = new MovementValues(nessPlayer, ImmutableLoc.of(destination, destinationWorld),
-				ImmutableLoc.of(source, sourceWorld), this.manager.ness().getMaterialAccess(), this.manager.ness().getMinecraftVersion());
+				ImmutableLoc.of(source, sourceWorld), this.manager.ness().getMaterialAccess(),
+				this.manager.ness().getMinecraftVersion());
 		nessPlayer.updateMovementValue(values);
 		if (this.manager.getCheckManager().getNess().getMinecraftVersion() > 189) {
 			if (player.isGliding()) {
@@ -127,28 +127,37 @@ public class CoreListener implements Listener {
 	public void onPlace(BlockPlaceEvent event) {
 		setPlayerAction(event.getPlayer(), PlayerAction.BLOCKPLACED);
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onInvOpen(InventoryOpenEvent event) {
 		setPlayerAction(event.getPlayer(), PlayerAction.INVENTORYOPENED);
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onInvClosed(InventoryCloseEvent event) {
 		setPlayerAction(event.getPlayer(), PlayerAction.INVENTORYCLOSED);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onAnimation(PlayerAnimationEvent event) {
-		setPlayerAction(event.getPlayer(), PlayerAction.ANIMATION);
+	public void onVehicleEnter(VehicleEnterEvent event) {
+		if (event.getEntered() instanceof Player) {
+			setPlayerAction((Player) event.getEntered(), PlayerAction.VEHICLEENTER);
+		}
 	}
 
-	private void setPlayerAction(HumanEntity player, PlayerAction action) {
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onAnimation(PlayerAnimationEvent event) {
+		NessPlayer nessPlayer = setPlayerAction(event.getPlayer(), PlayerAction.ANIMATION);
+		nessPlayer.setAnimationPacketsCounter(nessPlayer.getAnimationPacketsCounter() + 1);
+	}
+
+	private NessPlayer setPlayerAction(HumanEntity player, PlayerAction action) {
 		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(player.getUniqueId());
 		if (nessPlayer == null) {
-			return;
+			return null;
 		}
 		nessPlayer.setPlayerAction(action);
+		return nessPlayer;
 	}
 
 }

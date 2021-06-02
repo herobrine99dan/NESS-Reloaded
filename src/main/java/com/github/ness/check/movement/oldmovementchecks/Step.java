@@ -24,7 +24,7 @@ public class Step extends ListeningCheck<PlayerMoveEvent> {
 	protected void checkEvent(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
 		MovementValues values = player().getMovementValues();
-		if (values.getHelper().hasflybypass(player()) || values.isAbleFly() || Utility.hasVehicleNear(player)
+		if (values.getHelper().hasflybypass(player()) || values.isAbleFly() || player().hasBeenInVehicle()
 				|| player().isTeleported()) {
 			return;
 		}

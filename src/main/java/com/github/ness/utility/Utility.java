@@ -12,6 +12,9 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.github.ness.NessPlayer;
+import com.github.ness.data.PlayerAction;
+
 public class Utility {
 
 	public static List<Block> getBlocksAround(Location loc, int radius) {
@@ -19,8 +22,9 @@ public class Utility {
 		for (int x = -radius; x < radius; x++) {
 			for (int y = -radius; y < radius; y++) {
 				for (int z = -radius; z < radius; z++) {
-					//Cloning location with default native method isn't good and cause performance issues
-					Location cloned = new Location(loc.getWorld(),loc.getX(),loc.getY(),loc.getZ());
+					// Cloning location with default native method isn't good and cause performance
+					// issues
+					Location cloned = new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());
 					result.add(loc.getWorld().getBlockAt(cloned.add(x, y, z)));
 				}
 			}
@@ -29,7 +33,7 @@ public class Utility {
 	}
 
 	public static boolean hasVehicleNear(Player player) {
-		final double range = 3;
+		final double range = 3.1;
 		for (Entity e : player.getNearbyEntities(range, range, range)) {
 			if (e instanceof Vehicle) {
 				return true;

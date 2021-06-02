@@ -35,7 +35,6 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 				|| movementValues.isAroundIce() || movementValues.isAroundSlime() || movementValues.getHelper().hasflybypass(nessPlayer)) {
 			return;
 		}
-		// !player.getNearbyEntities(4, 4, 4).isEmpty()
 		if (yDiff > 0 && !Utility.hasVehicleNear(player)) {
 			if (player.getVelocity().getY() == 0.42f && !movementValues.getHelper().isMathematicallyOnGround(event.getTo().getY())
 					&& movementValues.getHelper().isMathematicallyOnGround(event.getFrom().getY())) {
@@ -43,7 +42,6 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 				if (yResult != 0.0 && nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) > 1700
 						&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 1700) {
 					flagEvent(event, " yResult: " + yResult + "  yDiff: " + yDiff);
-	            	//if(player().setViolation(new Violation("Fly", "InvalidJumpMotion yResult: " + yResult + "  yDiff: " + yDiff))) event.setCancelled(true);
 				}
 			}
 		}

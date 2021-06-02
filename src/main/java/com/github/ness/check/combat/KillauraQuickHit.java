@@ -1,7 +1,5 @@
 package com.github.ness.check.combat;
 
-import java.time.Duration;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -12,23 +10,18 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
-import com.github.ness.check.PeriodicTaskInfo;
 
 public class KillauraQuickHit extends ListeningCheck<EntityDamageByEntityEvent> {
 	private Entity lastEntityHitted;
 	private Location lastHitLoc;
 	private long lastHit = System.nanoTime();
 	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfos
-			.forEventWithTask(EntityDamageByEntityEvent.class, PeriodicTaskInfo.asyncTask(Duration.ofMillis(4000)));
+			.forEvent(EntityDamageByEntityEvent.class);
 
 	public KillauraQuickHit(ListeningCheckFactory<?, EntityDamageByEntityEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
-
-	@Override
-	protected void checkAsyncPeriodic() {
-	}
-
+	
 	@Override
 	protected void checkEvent(final EntityDamageByEntityEvent e) {
 		if (player().isNot(e.getDamager()))

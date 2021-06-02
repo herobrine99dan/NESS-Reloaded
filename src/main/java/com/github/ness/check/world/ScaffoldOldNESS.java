@@ -29,12 +29,13 @@ public class ScaffoldOldNESS extends ListeningCheck<BlockPlaceEvent> {
 	@Override
 	protected void checkEvent(BlockPlaceEvent e) {
 		Check1(e);
-		placeTicks = 0;
+		
 	}
 	
 	@Override
 	protected void checkSyncPeriodic() {
 		oldLoc = this.player().getBukkitPlayer().getLocation();
+		placeTicks = 0;
 	}
 
 	public void Check1(BlockPlaceEvent event) {

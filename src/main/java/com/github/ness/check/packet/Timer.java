@@ -13,7 +13,7 @@ import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
 public class Timer extends PacketCheck {
-	private double MAX_PACKETS_PER_TICK = 1.07;
+	private double MAX_PACKETS_PER_TICK = 1.1;
 
 	public static final CheckInfo checkInfo = CheckInfos.forPackets();
 
@@ -70,7 +70,7 @@ public class Timer extends PacketCheck {
 					this.flagEvent(packet, "NegativeTimer " + (float) speed);
 				}
 			} else if (buffer > 0) {
-				buffer -= 0.25;
+				buffer -= 0.5;
 			}
 			nessPlayer.updateTimerTicks(speed);
 		}
