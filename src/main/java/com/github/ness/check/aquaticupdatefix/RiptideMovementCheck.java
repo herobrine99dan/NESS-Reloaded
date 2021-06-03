@@ -19,7 +19,6 @@ public class RiptideMovementCheck extends ListeningCheck<PlayerRiptideEvent> {
 	@Override
 	protected void checkEvent(PlayerRiptideEvent event) {
 		this.player().getAcquaticUpdateFixes().updateRiptideEvent();
-		event.getPlayer().sendMessage("You are riptiding!");
 	}
 
 }
