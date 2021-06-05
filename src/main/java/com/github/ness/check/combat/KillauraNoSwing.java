@@ -28,7 +28,7 @@ public class KillauraNoSwing extends PacketCheck {
 		long attackDelay = this.player().milliSecondTimeDifference(PlayerAction.ATTACK);
 		if (attackDelay < 600) {
 			long result = Math.abs(this.player().getMilliSecondTime(PlayerAction.ATTACK) - lastAnimation);
-			if (result > 570) {
+			if (result > 570 && !player().getAcquaticUpdateFixes().isRiptiding() && player().getAcquaticUpdateFixes().getDelayFromRiptideEvent() > 700) {
 				this.flag("Result: " + result + " attackDelay: " + attackDelay);
 			}
 		}

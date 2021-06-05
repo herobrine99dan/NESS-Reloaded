@@ -110,7 +110,6 @@ public class CoreListener implements Listener {
 			}
 			nessPlayer.setPlayerAction(PlayerAction.ATTACK);
 			nessPlayer.setLastEntityAttacked(victim.getUniqueId());
-			nessPlayer.getBukkitPlayer().sendMessage("CauseOfDamage: " + event.getCause().name());
 		}
 		if (victim instanceof Player) {
 			setPlayerAction((Player) victim, PlayerAction.DAMAGE);
