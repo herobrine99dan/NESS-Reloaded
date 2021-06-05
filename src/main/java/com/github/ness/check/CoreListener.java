@@ -103,7 +103,6 @@ public class CoreListener implements Listener {
 	public void onVelocity(EntityDamageByEntityEvent event) {
 		Entity damager = event.getDamager();
 		Entity victim = event.getEntity();
-
 		if (damager instanceof Player) {
 			NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer((Player) damager);
 			if (nessPlayer == null) {
@@ -111,6 +110,7 @@ public class CoreListener implements Listener {
 			}
 			nessPlayer.setPlayerAction(PlayerAction.ATTACK);
 			nessPlayer.setLastEntityAttacked(victim.getUniqueId());
+			nessPlayer.getBukkitPlayer().sendMessage("CauseOfDamage: " + event.getCause().name());
 		}
 		if (victim instanceof Player) {
 			setPlayerAction((Player) victim, PlayerAction.DAMAGE);

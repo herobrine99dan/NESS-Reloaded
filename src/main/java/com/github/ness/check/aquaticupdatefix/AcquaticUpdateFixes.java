@@ -5,23 +5,23 @@ import com.github.ness.NessPlayer;
 public class AcquaticUpdateFixes {
 
 	private final NessPlayer nessPlayer;
-	private volatile long riptideEvent;
+	private volatile boolean riptiding;
 
 	public AcquaticUpdateFixes(NessPlayer nessPlayer) {
 		this.nessPlayer = nessPlayer;
-		this.riptideEvent = 0;
-	}
-
-	public void updateRiptideEvent() {
-		riptideEvent = System.nanoTime();
+		this.riptiding = false;
 	}
 
 	public NessPlayer getNessPlayer() {
 		return nessPlayer;
 	}
 
-	public long getRiptideEventTime() {
-		return (long) ((System.nanoTime() - riptideEvent) / 1e+6);
+	public boolean isRiptiding() {
+		return riptiding;
+	}
+
+	public void setRiptiding(boolean riptiding) {
+		this.riptiding = riptiding;
 	}
 
 }

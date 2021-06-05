@@ -47,7 +47,7 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		}
 		double xzDiff = values.getXZDiff();
 		double yDiff = values.getyDiff();
-		if (xzDiff > 0.0D && Math.abs(yDiff) < 0.001) {
+		if (xzDiff > 0.0D && Math.abs(yDiff) < 0.005) {
 			if (++illegalXZBuffer > 3) {
 				this.flagEvent(e, "IllegalXZDistance");
 			}
@@ -67,7 +67,7 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		if (yDelta > 0) {
 			flyYSum += yDelta;
 			double minY = this.player().isUsingGeyserMC() ? 1.3 : 0.52;
-			if (flyYSum % 0.5 == 0 && flyYSum > minY) {
+			if (flyYSum % 0.5 == 0 && flyYSum > minY && !player().getAcquaticUpdateFixes().isRiptiding()) {
 				this.flagEvent(e, "flyYSum: " + (float) flyYSum);
 			}
 		} else {

@@ -25,7 +25,7 @@ public class Step extends ListeningCheck<PlayerMoveEvent> {
 		Player player = e.getPlayer();
 		MovementValues values = player().getMovementValues();
 		if (values.getHelper().hasflybypass(player()) || values.isAbleFly() || player().hasBeenInVehicle()
-				|| player().isTeleported() || player().getAcquaticUpdateFixes().getRiptideEventTime() < 500) {
+				|| player().isTeleported() || player().getAcquaticUpdateFixes().isRiptiding()) {
 			return;
 		}
 		double jumpBoost = Utility.getPotionEffectLevel(player, PotionEffectType.JUMP);

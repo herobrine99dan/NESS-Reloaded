@@ -12,15 +12,25 @@ import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
+import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
+import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
+
 public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
 	public FlyFalseGround(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
+		this.maxBuffer = this.ness().getMainConfig().getCheckSection().flyFalseGround().maxBuffer();
 	}
 
 	private double buffer;
+	private final double maxBuffer;
+	
+	public interface Config {
+		@DefaultDouble(2)
+		double maxBuffer();
+	}
 
 	@Override
 	protected boolean shouldDragDown() {
@@ -51,9 +61,9 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		if (nessPlayer.isOnGroundPacket() && !movementValues.isGroundAround() && !movementValues.isAroundLadders()) {
 			flagEvent(e, " FalseGround");
 		} else if (nessPlayer.isOnGroundPacket()
-				&& !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY()) && ++buffer > 1) {
+				&& !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY()) && ++buffer > maxBuffer) {
 			flagEvent(e, " FalseGround1");
-		} else if (buffer > 2) {
+		} else if (buffer > 0) {
 			buffer -= 0.5;
 		}
 	}

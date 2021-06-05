@@ -58,7 +58,8 @@ public class SpeedAir extends ListeningCheck<PlayerMoveEvent> {
 		}
 		final double maxDist = getBaseSpeed(nessPlayer);
 		if (airTicks > 3 && values.getXZDiff() > maxDist && !values.getHelper().hasflybypass(nessPlayer)
-				&& !player.getAllowFlight() && !Utility.hasVehicleNear(player)) {
+				&& !player.getAllowFlight() && !Utility.hasVehicleNear(player)
+				&& !player().getAcquaticUpdateFixes().isRiptiding()) {
 			flagEvent(event);
 		}
 	}

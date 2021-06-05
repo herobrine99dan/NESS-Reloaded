@@ -57,7 +57,7 @@ public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
 				|| Utility.hasVehicleNear(p) || values.isAroundIronBars()) {
 			return;
 		}
-		if(values.hasBubblesColumns() == 1) {
+		if(values.hasBubblesColumns() == 1 || player().getAcquaticUpdateFixes().isRiptiding()) {
 			return;
 		}
 		double max = maxInvalidVelocity;

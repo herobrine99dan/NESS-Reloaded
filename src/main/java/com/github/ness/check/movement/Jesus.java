@@ -74,7 +74,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
 		if (movementValues.getHelper().hasflybypass(nessPlayer) || Utility.hasVehicleNear(p) || p.getAllowFlight()
-				|| nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
+				|| nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000 && !nessPlayer.getAcquaticUpdateFixes().isRiptiding()) {
 			return;
 		}
 		// We handle Prediction for Y Value

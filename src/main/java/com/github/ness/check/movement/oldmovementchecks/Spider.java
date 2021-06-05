@@ -31,7 +31,7 @@ public class Spider extends ListeningCheck<PlayerMoveEvent> {
 		double dTG = values.getdTG();
 		String dTGString = Double.toString(dTG);
 		if (values.isAroundLiquids() || values.isAroundCactus()
-				|| player().getAcquaticUpdateFixes().getRiptideEventTime() < 500) {
+				|| player().getAcquaticUpdateFixes().isRiptiding()) {
 			lastDTG = 0;
 			return;
 		}

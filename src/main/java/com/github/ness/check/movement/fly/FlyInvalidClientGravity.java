@@ -73,7 +73,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 				|| values.isAroundKelp()
 				|| getMaterialAccess().getMaterial(e.getTo().clone().add(0, 0.5, 0)).name().contains("SCAFFOLD")
 				|| getMaterialAccess().getMaterial(e.getTo().clone().add(0, -0.5, 0)).name().contains("SCAFFOLD")
-				|| nessPlayer.getAcquaticUpdateFixes().getRiptideEventTime() < 500) {
+				|| nessPlayer.getAcquaticUpdateFixes().isRiptiding()) {
 			lastDeltaY = deltaY;
 			return;
 		}

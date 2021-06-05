@@ -45,7 +45,8 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 		Double hozDist = movementValues.getXZDiff();
 		Double fallDist = (double) player.getFallDistance();
 		if (movementValues.getHelper().hasflybypass(nessPlayer) || player.getAllowFlight()
-				|| Utility.hasVehicleNear(player) || nessPlayer.isTeleported()) {
+				|| Utility.hasVehicleNear(player) || nessPlayer.isTeleported()
+				|| player().getAcquaticUpdateFixes().isRiptiding()) {
 			return;
 		}
 		Double vertDist = movementValues.getyDiff();
@@ -53,7 +54,7 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 			hozDist -= Math.abs(nessPlayer.getLastVelocity().getX()) + Math.abs(nessPlayer.getLastVelocity().getZ());
 			vertDist -= Math.abs(nessPlayer.getLastVelocity().getY());
 		}
-		if (from.getY() - to.getY() > .3 && fallDist <= .4 && !below.name().contains("WATER")
+		if (from.getY() - to.getY() > 0.5 && fallDist <= 0.4 && !below.name().contains("WATER")
 				&& !player.getLocation().getBlock().isLiquid()) {
 			if (hozDist < .2 || !movementValues.isGroundAround()) {
 				if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKBROKED) >= 2000 && !nessPlayer.isTeleported()

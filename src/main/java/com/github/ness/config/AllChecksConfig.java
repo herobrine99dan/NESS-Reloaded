@@ -8,6 +8,7 @@ import com.github.ness.check.combat.autoclick.AutoClickConfig;
 import com.github.ness.check.movement.ElytraCheats;
 import com.github.ness.check.movement.FastLadder;
 import com.github.ness.check.movement.Jesus;
+import com.github.ness.check.movement.fly.FlyFalseGround;
 import com.github.ness.check.movement.fly.FlyInvalidClientGravity;
 import com.github.ness.check.movement.fly.FlyInvalidServerGravity;
 import com.github.ness.check.movement.oldmovementchecks.Speed;
@@ -164,4 +165,14 @@ public interface AllChecksConfig {
 		""})
 	@SubSection
 	Speed.Config speed();
+	@ConfKey("flyfalseground")
+	@ConfComments({
+		"",
+		"Check if a player is spoofing onGround value.",
+		"",
+		"Performance impact: low", 
+		"Effectiveness: High",
+		""})
+	@SubSection
+	FlyFalseGround.Config flyFalseGround();
 }

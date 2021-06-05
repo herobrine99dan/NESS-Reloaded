@@ -24,9 +24,10 @@ public class OmniSprint extends ListeningCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		NessPlayer nessPlayer = player();
-		//Minecraft is stupid: if you are in 1.13 you can sprint backwards in water
+		// Minecraft is stupid: if you are in 1.13 you can sprint backwards in water
 		MovementValues values = nessPlayer.getMovementValues();
-		if(values.getHelper().isNearLiquid(event.getTo()) || values.getHelper().isNearLiquid(event.getFrom()) || values.isAroundIce()) {
+		if (values.getHelper().isNearLiquid(event.getTo()) || values.getHelper().isNearLiquid(event.getFrom())
+				|| values.isAroundIce() || nessPlayer.getAcquaticUpdateFixes().isRiptiding()) {
 			return;
 		}
 		if (values.isSprinting()) {

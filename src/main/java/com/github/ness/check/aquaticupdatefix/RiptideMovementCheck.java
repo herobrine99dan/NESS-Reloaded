@@ -1,24 +1,27 @@
 package com.github.ness.check.aquaticupdatefix;
 
+import java.time.Duration;
+
 import org.bukkit.event.player.PlayerRiptideEvent;
 
 import com.github.ness.NessPlayer;
+import com.github.ness.check.Check;
+import com.github.ness.check.CheckFactory;
+import com.github.ness.check.CheckInfo;
 import com.github.ness.check.CheckInfos;
-import com.github.ness.check.ListeningCheck;
-import com.github.ness.check.ListeningCheckFactory;
-import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.check.PeriodicTaskInfo;
 
-public class RiptideMovementCheck extends ListeningCheck<PlayerRiptideEvent> {
+public class RiptideMovementCheck extends Check {
 
-	public static final ListeningCheckInfo<PlayerRiptideEvent> checkInfo = CheckInfos.forEvent(PlayerRiptideEvent.class);
+	public static final CheckInfo checkInfo = CheckInfos.withTask(PeriodicTaskInfo.syncTask(Duration.ofMillis(50)));
 
-	public RiptideMovementCheck(ListeningCheckFactory<?, PlayerRiptideEvent> factory, NessPlayer player) {
+	public RiptideMovementCheck(CheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
 	}
-
+	
 	@Override
-	protected void checkEvent(PlayerRiptideEvent event) {
-		this.player().getAcquaticUpdateFixes().updateRiptideEvent();
+	protected void checkSyncPeriodic() {
+		this.player().getAcquaticUpdateFixes().setRiptiding(this.player().getBukkitPlayer().isRiptiding());
 	}
 
 }
