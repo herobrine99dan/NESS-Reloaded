@@ -26,7 +26,7 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 
 	private double buffer;
 	private final double maxBuffer;
-	
+
 	public interface Config {
 		@DefaultDouble(2)
 		double maxBuffer();
@@ -58,10 +58,21 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		if (Utility.hasVehicleNear(player) || nessPlayer.getMovementValues().isAroundWeb()) {
 			return;
 		}
+		// boolean isReallyOnGround =
+		/*
+		 * nessPlayer.sendDevMessage( "FalseGround, blocks near player? " +
+		 * (movementValues.isGroundAround() ? "yes" : "no") + " The player says he " +
+		 * (nessPlayer.isOnGroundPacket() ? "is" : "isn't") + " onGround");
+		 * nessPlayer.sendDevMessage( "FalseGround1, is y divisible by 0,015625 ? " +
+		 * (e.getTo().getY() % 0.015625 < 0.001 ? "yes" : "no") + "Result: " + (float)
+		 * (e.getTo().getY() % 0.015625) + " The player says he " +
+		 * (nessPlayer.isOnGroundPacket() ? "is" : "isn't") + " onGround");
+		 */
 		if (nessPlayer.isOnGroundPacket() && !movementValues.isGroundAround() && !movementValues.isAroundLadders()) {
 			flagEvent(e, " FalseGround");
 		} else if (nessPlayer.isOnGroundPacket()
-				&& !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY()) && ++buffer > maxBuffer) {
+				&& !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY())
+				&& !movementValues.isOnGroundCollider() && ++buffer > maxBuffer) {
 			flagEvent(e, " FalseGround1");
 		} else if (buffer > 0) {
 			buffer -= 0.5;

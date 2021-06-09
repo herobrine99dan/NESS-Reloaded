@@ -206,7 +206,7 @@ public class MovementValuesHelper {
 	}
 
 	public boolean isOnGroundUsingCollider(Location loc) {
-		final double limit = 0.2;
+		final double limit = 0.25;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
 				Block block = loc.clone().add(x, -0.35, z).getBlock();
