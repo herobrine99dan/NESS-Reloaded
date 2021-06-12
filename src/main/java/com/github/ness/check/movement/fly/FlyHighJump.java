@@ -35,7 +35,7 @@ public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 		Player p = e.getPlayer();
 		final MovementValues movementValues = nessPlayer.getMovementValues();
 		double y = movementValues.getyDiff();
-		if (movementValues.isOnGroundCollider()
+		if (movementValues.isOnGroundCollider() || nessPlayer.isOnGroundPacket() //We have GroundSpoof checks
 				|| movementValues.getHelper().hasflybypass(nessPlayer) || movementValues.isAroundSlime()
 				|| p.getAllowFlight() || movementValues.isAroundLiquids() || movementValues.isAroundLily()
 				|| movementValues.isAroundSeaBlocks() || movementValues.isAroundSlabs()

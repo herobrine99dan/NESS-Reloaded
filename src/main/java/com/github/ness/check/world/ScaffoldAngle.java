@@ -25,6 +25,9 @@ public class ScaffoldAngle extends ListeningCheck<BlockPlaceEvent> {
 		if (placedFace == null) {
 			return;
 		}
+		if(this.getMaterialAccess().getMaterial(event.getBlockAgainst()).name().contains("SCAFFOLD")) { //Scaffoldings can be placed anywhere
+			return;
+		}
 		NessPlayer nessPlayer = player();
 		final Vector placedVector = new Vector(placedFace.getModX(), placedFace.getModY(), placedFace.getModZ());
 		float placedAngle = nessPlayer.getMovementValues().getTo().getDirectionVector()
