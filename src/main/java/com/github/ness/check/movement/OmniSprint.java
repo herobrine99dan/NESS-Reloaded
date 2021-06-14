@@ -8,7 +8,6 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
-import com.github.ness.data.ImmutableLoc;
 import com.github.ness.data.MovementValues;
 
 public class OmniSprint extends ListeningCheck<PlayerMoveEvent> {
@@ -30,15 +29,16 @@ public class OmniSprint extends ListeningCheck<PlayerMoveEvent> {
 				|| values.isAroundIce() || nessPlayer.getAcquaticUpdateFixes().isRiptiding()) {
 			return;
 		}
-		if (values.isSprinting()) {
-			if (values.getServerVelocity().getY() > 0.0 || nessPlayer.getMovementValues().getYawDiff() > 10) {
+		if (values.isSprinting() && values.getXZDiff() > 0.25) {
+			if (values.getServerVelocity().getY() > 0.0) {
 				return;
 			}
-			Vector moving = values.getFrom().toBukkitLocation().clone()
-					.subtract(values.getTo().toBukkitLocation().clone()).toVector();
-			double angle = moving.angle(getDirection(values.getTo()));
+			Vector from = new Vector(values.getFrom().getX(), 0, values.getFrom().getZ());
+			Vector to = new Vector(values.getTo().getX(), 0, values.getTo().getZ());
+			Vector moving = from.subtract(to);
+			double angle = moving.angle(getDirectionOfOnlyYaw(values.getTo().getYaw()));
 			if (angle < 1.59) {
-				if (++buffer > 3) {
+				if (++buffer > 2) {
 					flagEvent(event, "Angle: " + (float) angle);
 				}
 			} else if (buffer > 0) {
@@ -47,14 +47,13 @@ public class OmniSprint extends ListeningCheck<PlayerMoveEvent> {
 		}
 	}
 
-	private Vector getDirection(ImmutableLoc loc) {
+	private Vector getDirectionOfOnlyYaw(double yaw) {
 		Vector vector = new Vector();
-		double rotX = loc.getYaw();
-		double rotY = 3;
-		vector.setY(-Math.sin(Math.toRadians(rotY)));
-		double xz = Math.cos(Math.toRadians(rotY));
-		vector.setX(-xz * Math.sin(Math.toRadians(rotX)));
-		vector.setZ(xz * Math.cos(Math.toRadians(rotX)));
+		double rotX = Math.toRadians(yaw);
+		vector.setY(0);// vector.setY(-Math.sin(Math.toRadians(rotY))); sin(0)=0
+		double xz = 1.0;// double xz = Math.cos(Math.toRadians(rotY)); cos(0)=1
+		vector.setX(-xz * Math.sin(rotX));
+		vector.setZ(xz * Math.cos(rotX));
 		return vector;
 	}
 
