@@ -31,13 +31,13 @@ public class PredictionMovement extends ListeningCheck<PlayerMoveEvent> {
 																						// 0÷0
 		Vector direction = getDirectionOfOnlyYaw(values.getTo().getYaw());
 		float angle = (float) Math.toDegrees(moving.angle(direction));
-		Vector angle1 = moving.clone().crossProduct(direction);
+		//Vector angle1 = moving.clone().crossProduct(direction);
 		//this.player().sendDevMessage("Angle: " + angle);
 		//this.player().sendDevMessage("Vector: " + (float) Math.toDegrees(angle1.getY()));
 		float subtraction = Math.abs(Math.round(Math.abs(angle)) - Math.abs(angle));
-		if (subtraction < 0.001 && xzDiff > 0.2 && ++buffer > 2) {
+		if (subtraction < 0.001 && xzDiff > 0.1 && ++buffer > 2) {
 			this.flag("Strafe: " + subtraction);
-		} else if (angle < 0.001 && xzDiff > 0.2 && ++buffer > 2) {
+		} else if (angle < 0.001 && xzDiff > 0.1 && ++buffer > 2) {
 			this.flag("IrregularStrafeAngle");
 		} else if(buffer>0) {
 			buffer -= 0.5;

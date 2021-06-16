@@ -1,5 +1,6 @@
 package com.github.ness.check.movement;
 
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -23,7 +24,7 @@ public class InvalidSprint extends ListeningCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-		if (player.isSprinting()) {
+		if (player.isSprinting() && (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE)) {
 			if (player.hasPotionEffect(PotionEffectType.BLINDNESS) || player.getFoodLevel() < 7) {
 				flagEvent(event);
 				//if(player().setViolation(new Violation("Sprint", "ImpossibleActions"))) event.setCancelled(true);
