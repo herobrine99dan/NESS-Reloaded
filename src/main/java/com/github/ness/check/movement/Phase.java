@@ -29,20 +29,22 @@ public class Phase extends ListeningCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		Check(event);
-		//Check1(event);
+		// Check1(event);
 	}
 
 	private void Check(PlayerMoveEvent event) {
-		Block block = event.getTo().clone().add(0, event.getPlayer().getEyeHeight(), 0).getBlock();
+		Block block = event.getTo().clone().add(0, 0, 0).getBlock();
 		NessPlayer nessPlayer = this.player();
 		MovementValues values = nessPlayer.getMovementValues();
-		if (event.getPlayer().getGameMode().name().contains("SPECTATOR")) {
+		if (event.getPlayer().getGameMode().name().contains("SPECTATOR") || nessPlayer.isTeleported() || nessPlayer.getBukkitPlayer().isInsideVehicle()) {
 			return;
 		}
 		Material material = this.ness().getMaterialAccess().getMaterial(block);
 		boolean occluder = material.isOccluding() && material.isSolid() && !material.name().contains("STAINED");
-		if (occluder && !Utility.hasVehicleNear(event.getPlayer()) && values.isGroundAround()
-				&& !nessPlayer.isTeleported() && values.getXZDiff() > 0.25) {
+		//nessPlayer.sendDevMessage("Phase1, occluder: " + occluder);
+		//nessPlayer.sendDevMessage("groundAround: " + values.isGroundAround() + " xzDiffCondition: " + (values.getXZDiff() > 0.1));
+		if(occluder && values.isGroundAround() && values.getXZDiff() > 0.07) {
+			nessPlayer.sendDevMessage("Phase2");
 			if (++buffer > 1) {
 				flagEvent(event);
 			}
@@ -58,12 +60,12 @@ public class Phase extends ListeningCheck<PlayerMoveEvent> {
 				colliders++;
 			}
 		}
-		//this.player().sendDevMessage("PhaseColliders: " + colliders);
+		// this.player().sendDevMessage("PhaseColliders: " + colliders);
 	}
 
 	public Set<Block> isColliding(Location to) {
 		Set<Block> result = new HashSet<Block>();
-		double radius = 0.3; //0.3 is good
+		double radius = 0.3; // 0.3 is good
 		result.add(to.clone().add(radius, 0, radius).getBlock());
 		result.add(to.clone().add(-radius, 0, -radius).getBlock());
 
