@@ -17,7 +17,6 @@ import com.github.ness.utility.Utility;
 
 import space.arim.dazzleconf.annote.ConfComments;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
-import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
 public class Speed extends ListeningCheck<PlayerMoveEvent> {
 
@@ -85,9 +84,6 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 		if (player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
 			velocity = Math.hypot(player().getLastVelocity().getX(), player().getLastVelocity().getZ());
 			hozDist -= velocity;
-		}
-		if (!player.isInsideVehicle()) { //If the player isn't inside a vehicle, but has vehicle near,
-			return;
 		}
 		if (player.hasPotionEffect(PotionEffectType.SPEED)) {
 			final int level = Utility.getPotionEffectLevel(player, PotionEffectType.SPEED);
