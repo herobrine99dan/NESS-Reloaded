@@ -9,6 +9,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -79,11 +80,15 @@ public class NessPlayer implements AnticheatPlayer {
 	private float gcd;
 	private volatile float timerTicks;
 	private final boolean isUsingGeyserMC;
-	private AtomicInteger ping; //Not ThreadSafe
+	private AtomicInteger ping; // Not ThreadSafe
 	private int animationPacketsCounter;
 	private final AcquaticUpdateFixes acquaticUpdateFixes;
+	private final AtomicBoolean sprinting;
+	private final AtomicBoolean sneaking;
 
 	public NessPlayer(Player player, boolean devMode, NessAnticheat ness) {
+		sprinting = new AtomicBoolean(false);
+		sneaking = new AtomicBoolean(false);
 		ping = new AtomicInteger(0);
 		animationPacketsCounter = 0;
 		if (ness.isUseFloodGate()) {
@@ -209,7 +214,7 @@ public class NessPlayer implements AnticheatPlayer {
 	public void kickThreadSafe(String kickMessage) {
 		this.kickMessage = kickMessage;
 	}
-	
+
 	public boolean hasBeenInVehicle() {
 		return milliSecondTimeDifference(PlayerAction.VEHICLEENTER) < 150;
 	}
@@ -464,6 +469,14 @@ public class NessPlayer implements AnticheatPlayer {
 
 	public AcquaticUpdateFixes getAcquaticUpdateFixes() {
 		return acquaticUpdateFixes;
+	}
+
+	public AtomicBoolean getSprinting() {
+		return sprinting;
+	}
+
+	public AtomicBoolean getSneaking() {
+		return sneaking;
 	}
 
 }

@@ -52,7 +52,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		@DefaultDouble(0.302)
 		double maxHighDistanceY();
 
-		@DefaultDouble(-0.02)
+		@DefaultDouble(0.02)
 		double liquidGravity();
 
 		@DefaultDouble(0.8)
@@ -113,7 +113,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 			} else if (resultXZ > maxXZVariance) {
 				this.flagEvent(event, "HighDistanceXZ: " + resultXZ);
 			} else if (yDist == 0.0 && useNoGravityYCheck && xzDist > 0.05 && !values.hasBlockNearHead() && !nessPlayer.isUsingGeyserMC()) {
-				if (++noGravityBuffer > 4) {
+				if (++noGravityBuffer > 3) {
 					this.flagEvent(event, "NoGravityY");
 				}
 			} else if (Double.toString(Math.abs(yDist)).contains("00000000") && useImpossibleYPattern && !nessPlayer.isUsingGeyserMC()) {
@@ -147,7 +147,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 				this.flagEvent(event, "HighDistanceXZ");
 				this.player().sendDevMessage("resultXZ: " + (float) resultXZ + " resultY: " + (float) resultY);
 			} else if (yDist == 0.0 && useNoGravityYCheck && xzDist > 0.05 && !values.hasBlockNearHead() && !nessPlayer.isUsingGeyserMC()) {
-				if (++noGravityBuffer > 4) {
+				if (++noGravityBuffer > 3) {
 					this.flagEvent(event, "NoGravityY");
 				}
 			} else if (Double.toString(Math.abs(yDist)).contains("00000000") && useImpossibleYPattern && !nessPlayer.isUsingGeyserMC()) {

@@ -21,6 +21,7 @@ public final class SimplePacketTypeRegistry extends PacketTypeRegistry {
 	private static Map<Class<?>, PacketType<?>> buildPacketTypesMap(ReflectHelper helper) {
 		Map<Class<?>, PacketType<?>> packetTypesMap = new HashMap<>();
 		packetTypesMap.put(PlayInFlying.class, PlayInFlying.type(helper));
+		packetTypesMap.put(PlayInEntityAction.class, PlayInEntityAction.type(helper));
 		return packetTypesMap;
 	}
 

@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
@@ -96,7 +95,7 @@ public class MovementValuesHelper {
 	public List<Block> getCollidingBlocks(Location loc) {
 		List<Block> blocks = new ArrayList<Block>();
 		final Location cloned = loc.clone();
-		double limit = 0.42;
+		double limit = 0.3;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
 				for (double y = -0.1; y < 1.99; y += 0.1) {
@@ -206,10 +205,11 @@ public class MovementValuesHelper {
 	}
 
 	public boolean isOnGroundUsingCollider(Location loc) {
-		final double limit = 0.25;
+		final Location cloned = loc.clone();
+		double limit = 0.3;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
-				Block block = loc.clone().add(x, -0.35, z).getBlock();
+				Block block = cloned.clone().add(x, -0.35, z).getBlock();
 				Material material = access.getMaterial(block);
 				if (material.isSolid()) {
 					return true;

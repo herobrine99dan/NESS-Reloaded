@@ -208,4 +208,9 @@ public class AABB {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "AABB [min=" + min + ", max=" + max + "]";
+	}
 }

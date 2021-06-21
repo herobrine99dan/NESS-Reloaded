@@ -7,6 +7,20 @@ import org.bukkit.util.Vector;
 
 public class MathUtils {
 
+	private static final float[] SIN_TABLE = new float[65536];
+	static {
+		for (int i = 0; i < 65536; i++)
+			SIN_TABLE[i] = (float) Math.sin(i * Math.PI * 2.0D / 65536.0D);
+	}
+
+	public static float sin(float p_76126_0_) {
+		return SIN_TABLE[(int) (p_76126_0_ * 10430.378F) & 0xFFFF];
+	}
+
+	public static float cos(float value) {
+		return SIN_TABLE[(int) (value * 10430.378F + 16384.0F) & 0xFFFF];
+	}
+
 	/**
 	 * Calculate Percentage
 	 * 
@@ -36,16 +50,16 @@ public class MathUtils {
 			remainder = 0;
 		return gcdRational(remainder, a);
 	}
-	
-    public static double getDirection(Vector from, Vector to) {
-        if (from == null || to == null) {
-            return 0.0D;
-        }
-        double difX = to.getX() - from.getX();
-        double difZ = to.getZ() - from.getZ();
 
-        return (float) ((Math.atan2(difZ, difX) * 180.0D / Math.PI) - 90.0F);
-    }
+	public static double getDirection(Vector from, Vector to) {
+		if (from == null || to == null) {
+			return 0.0D;
+		}
+		double difX = to.getX() - from.getX();
+		double difZ = to.getZ() - from.getZ();
+
+		return (float) ((Math.atan2(difZ, difX) * 180.0D / Math.PI) - 90.0F);
+	}
 
 	public static int getIntQuotient(double dividend, double divisor) {
 		double ans = dividend / divisor;
@@ -54,7 +68,7 @@ public class MathUtils {
 	}
 
 	public static double getSensitivity(double gcd) {
-	    return  (Math.cbrt(gcd / 8 / 1 / 0.15) - 0.2) / 0.6;
+		return (Math.cbrt(gcd / 8 / 1 / 0.15) - 0.2) / 0.6;
 	}
 
 	public static double average(List<Float> angles) {
@@ -72,32 +86,32 @@ public class MathUtils {
 		}
 		return result;
 	}
-	
-    public static List<Double> calculateDelta(List<Double> list) {
-    	if(list.size() < 1) {
-    		throw new IllegalArgumentException("List must contains at least two values!");
-    	}
-        List<Double> out = new ArrayList<Double>();
-        for (int i = 1; i <= list.size() - 1; i++) {
-            out.add(list.get(i) - list.get(i - 1));
-        }
-        return out;
-    }
-    
-    //Trigonometry functions
-    
-    public static double getDegreeSine(double theta) {
-    	return Math.sin(Math.toRadians(theta));
-    }
-    
-    public static double getDegreeCosine(double theta) {
-    	return Math.cos(Math.toRadians(theta));
-    }
-    
-    public static double getDegreeTangent(double theta) {
-    	return Math.tan(Math.toRadians(theta));
-    }
-	
+
+	public static List<Double> calculateDelta(List<Double> list) {
+		if (list.size() < 1) {
+			throw new IllegalArgumentException("List must contains at least two values!");
+		}
+		List<Double> out = new ArrayList<Double>();
+		for (int i = 1; i <= list.size() - 1; i++) {
+			out.add(list.get(i) - list.get(i - 1));
+		}
+		return out;
+	}
+
+	// Trigonometry functions
+
+	public static double getDegreeSine(double theta) {
+		return Math.sin(Math.toRadians(theta));
+	}
+
+	public static double getDegreeCosine(double theta) {
+		return Math.cos(Math.toRadians(theta));
+	}
+
+	public static double getDegreeTangent(double theta) {
+		return Math.tan(Math.toRadians(theta));
+	}
+
 	public static double calculateStandardDeviation(List<Float> data) {
 		double sum = 0.0, standardDeviation = 0.0;
 		int length = data.size();

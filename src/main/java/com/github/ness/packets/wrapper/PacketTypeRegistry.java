@@ -21,4 +21,8 @@ public abstract class PacketTypeRegistry {
 	public final PacketType<PlayInFlying> playInFlying() {
 		return getPacketType(PlayInFlying.class);
 	}
+	
+	public final PacketType<PlayInEntityAction> playInEntityAction() {
+		return getPacketType(PlayInEntityAction.class);
+	}
 }
