@@ -1,8 +1,6 @@
 package com.github.ness.check.combat;
 
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfo;

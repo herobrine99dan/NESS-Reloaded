@@ -43,7 +43,7 @@ public class Phase extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		Material material = this.ness().getMaterialAccess().getMaterial(block);
-		boolean occluder = material.isOccluding() && material.isSolid() && !material.name().contains("STAINED");
+		boolean occluder = material.isOccluding() && material.isSolid() && !material.name().contains("STAINED") && !material.name().contains("SOUL");
 		// nessPlayer.sendDevMessage("Phase1, occluder: " + occluder);
 		// nessPlayer.sendDevMessage("groundAround: " + values.isGroundAround() + "
 		// xzDiffCondition: " + (values.getXZDiff() > 0.1));
