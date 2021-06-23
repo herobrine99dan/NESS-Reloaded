@@ -28,7 +28,6 @@ public class AABB {
 	private static MethodInvoker<?> craftLivingEntityMethod;
 	private static MethodInvoker<?> getBoundingBoxesMethod;
 	private static FieldInvoker<Double> xMinField, xMaxField, yMinField, yMaxField, zMinField, zMaxField;
-	private static ClassLocator locator = SimpleClassLocator.create();
 
 	// Create Bounding Box from min/max locations.
 	public AABB(Vector min, Vector max) {
@@ -52,17 +51,17 @@ public class AABB {
 			double xMax, xMin, yMax, yMin, zMax, zMin = 0;
 			if (craftLivingEntityMethod == null) {
 				craftLivingEntityMethod = ness.getReflectHelper().getMethod(
-						locator.getObcClass("entity.CraftLivingEntity"), MemberDescriptions.forMethod("getHandle"));
+						ness.getReflectHelper().getObcClass("entity.CraftLivingEntity"), MemberDescriptions.forMethod("getHandle"));
 			}
 			if (getBoundingBoxesMethod == null) {
-				getBoundingBoxesMethod = ness.getReflectHelper().getMethod(locator.getNmsClass("Entity"),
+				getBoundingBoxesMethod = ness.getReflectHelper().getMethod(ness.getReflectHelper().getNmsClass("Entity"),
 						MemberDescriptions.forMethod("getBoundingBox"));
 			}
 			if (xMaxField == null) {
 				// Max fields are "d" "e" and "f"
 				// Min fields are "a" "b" and "c"
 				// With newer versions (like 1.16.4) Spigot uses the Mojang's obfuscation map
-				Class<?> boxClass = locator.getNmsClass("AxisAlignedBB");
+				Class<?> boxClass = ness.getReflectHelper().getNmsClass("AxisAlignedBB");
 				xMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "d"),
 						MemberDescriptions.forField(double.class, "maxX"));
 				yMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "e"),

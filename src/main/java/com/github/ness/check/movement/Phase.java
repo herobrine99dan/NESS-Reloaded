@@ -101,25 +101,4 @@ public class Phase extends ListeningCheck<PlayerMoveEvent> {
 		}
 		return null;
 	}
-
-	public Set<Block> isColliding(Location to) {
-		Set<Block> result = new HashSet<Block>();
-		double radius = 0.3; // 0.3 is good
-		result.add(to.clone().add(radius, 0, radius).getBlock());
-		result.add(to.clone().add(-radius, 0, -radius).getBlock());
-
-		result.add(to.clone().add(-radius, 0, radius).getBlock());
-		result.add(to.clone().add(radius, 0, -radius).getBlock());
-
-		result.add(to.clone().add(radius, 0, -radius).getBlock());
-		result.add(to.clone().add(-radius, 0, radius).getBlock());
-
-		result.add(to.clone().add(radius, 0, 0).getBlock());
-		result.add(to.clone().add(-radius, 0, 0).getBlock());
-
-		result.add(to.clone().add(0, 0, radius).getBlock());
-		result.add(to.clone().add(0, 0, -radius).getBlock());
-		return result;
-	}
-
 }

@@ -59,7 +59,6 @@ public class MathUtils {
 		}
 		double difX = to.getX() - from.getX();
 		double difZ = to.getZ() - from.getZ();
-
 		return (float) ((Math.atan2(difZ, difX) * 180.0D / Math.PI) - 90.0F);
 	}
 
