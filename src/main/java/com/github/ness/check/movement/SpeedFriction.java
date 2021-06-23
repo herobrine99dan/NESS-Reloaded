@@ -33,7 +33,8 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 
 	@Override
 	/**
-	 * Simple Friction Check Made with help of Frap
+	 * Powerful Prediction check made with https://www.mcpk.wiki/wiki/
+	 * Loving those guys who made it.
 	 */
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
@@ -88,8 +89,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			float acceleration = (float) (baseSpeed * speedSlownessMultiplier * collidedBlockMultiplier
 					* (0.16277f / Math.pow(friction, 3)));
 			if (isInWeb) {
-				lastDeltaXZ *= 0.25f;
-				momentum = lastDeltaXZ; // Minecraft just multiply the motion, and then it set momentum to 0
+				momentum = lastDeltaXZ*0.25f; // Minecraft just multiply the motion, and then it set momentum to 0
 				//acceleration *= 0.25f;
 			}
 			float prediction = (momentum + acceleration);
