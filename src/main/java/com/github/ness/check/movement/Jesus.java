@@ -92,69 +92,8 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	public void handleWater(MovementValues values, Cancellable event, NessPlayer nessPlayer) {
-		double yDist = values.getyDiff();
-		double predictedY = lastYDist * waterFriction;
-		predictedY -= liquidGravity; // We handle Prediction for XZ Values
-		double resultY = yDist - predictedY;
-		double xzDist = values.getXZDiff();
-		double predictedXZ = lastXZDist * waterFriction;
-		double resultXZ = xzDist - predictedXZ;
-		// nessPlayer.sendDevMessage("WaterTicks: " + this.liquidTicks + " resultY: " +
-		// resultY);
-		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
-			if (yDist > maxHighDistanceY && !values.isGroundAround()) {
-				if (values.hasBubblesColumns() == 1 && yDist > maxHighDistanceY + 0.268) {
-					this.flagEvent(event, "HighDistanceYBubble");
-				} else {
-					this.flagEvent(event, "HighDistanceY");
-				}
-			} else if (resultY > maxYVariance && !values.isGroundAround()) {
-				this.flagEvent(event, "HighVarianceY: " + (float) resultY);
-			} else if (resultXZ > maxXZVariance) {
-				this.flagEvent(event, "HighDistanceXZ: " + resultXZ);
-			} else if (yDist == 0.0 && useNoGravityYCheck && xzDist > 0.05 && !values.hasBlockNearHead() && !nessPlayer.isUsingGeyserMC()) {
-				if (++noGravityBuffer > 3) {
-					this.flagEvent(event, "NoGravityY");
-				}
-			} else if (Double.toString(Math.abs(yDist)).contains("00000000") && useImpossibleYPattern && !nessPlayer.isUsingGeyserMC()) {
-				this.flagEvent(event, "ImpossibleYPattern");
-			} else if (noGravityBuffer > 0) {
-				noGravityBuffer -= 0.25;
-			}
-		}
 	}
 
 	public void handleLava(MovementValues values, Cancellable event, NessPlayer nessPlayer) {
-		double yDist = values.getyDiff();
-		double predictedY = lastYDist * lavaFriction;
-		predictedY -= liquidGravity; // We handle Prediction for XZ Values
-		double resultY = yDist - predictedY;
-		double xzDist = values.getXZDiff();
-		double predictedXZ = lastXZDist * lavaFriction;
-		double resultXZ = xzDist - predictedXZ;
-		// nessPlayer.sendDevMessage("LavaTicks: " + this.liquidTicks + " resultY: " +
-		// resultY);
-		if (!values.isOnGroundCollider() && !values.isAroundLily()) {
-			if (yDist > maxHighDistanceY) {
-				if (values.hasBubblesColumns() == 1 && yDist > maxHighDistanceY + 0.268) {
-					this.flagEvent(event, "HighDistanceYBubble");
-				} else {
-					this.flagEvent(event, "HighDistanceY");
-				}
-			} else if (resultY > maxYVariance + 0.25) {
-				this.flagEvent(event, "HighVarianceY");
-			} else if (resultXZ > (maxXZVariance + 0.05)) {
-				this.flagEvent(event, "HighDistanceXZ");
-				this.player().sendDevMessage("resultXZ: " + (float) resultXZ + " resultY: " + (float) resultY);
-			} else if (yDist == 0.0 && useNoGravityYCheck && xzDist > 0.05 && !values.hasBlockNearHead() && !nessPlayer.isUsingGeyserMC()) {
-				if (++noGravityBuffer > 3) {
-					this.flagEvent(event, "NoGravityY");
-				}
-			} else if (Double.toString(Math.abs(yDist)).contains("00000000") && useImpossibleYPattern && !nessPlayer.isUsingGeyserMC()) {
-				this.flagEvent(event, "ImpossibleYPattern");
-			} else if (noGravityBuffer > 0) {
-				noGravityBuffer -= 0.25;
-			}
-		}
 	}
 }

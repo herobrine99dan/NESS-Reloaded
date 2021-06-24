@@ -33,8 +33,8 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 
 	@Override
 	/**
-	 * Powerful Prediction check made with https://www.mcpk.wiki/wiki/
-	 * Loving those guys who made it.
+	 * Powerful Prediction check made with https://www.mcpk.wiki/wiki/ Loving those
+	 * guys who made it.
 	 */
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
@@ -72,7 +72,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		} else if (groundTicks > 2) {
 			final Location underBlock = event.getTo().clone().add(0, -0.8, 0);
 			float collidedBlockMultiplier = getCollidedBlockMultiplier(underBlock);
-
+			float limit = 0.001f;
 			float friction = getFrictionBlock(underBlock) * 0.91f;
 			float momentum = (lastDeltaXZ * friction);
 
@@ -80,22 +80,24 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			float baseSpeed = sprinting ? walkSpeed + walkSpeed * 0.3f : walkSpeed;
 			float speedSlownessMultiplier = getSlownessAndSpeedEffectMultiplier(player);
 
-			if (sneaking) { // TODO Implement WEB mechanic, Elytra mechanic, Trident mechanic and maybe
-							// Liquid mechanic (to
-							// replace Jesus)?
-							// TODO Find a fix for Slime and SoulSands multipliers
+			if (sneaking) { // TODO Elytra mechanic, Trident mechanic
 				baseSpeed = walkSpeed * 0.3f;
 			}
 			float acceleration = (float) (baseSpeed * speedSlownessMultiplier * collidedBlockMultiplier
 					* (0.16277f / Math.pow(friction, 3)));
 			if (isInWeb) {
-				momentum = lastDeltaXZ*0.25f; // Minecraft just multiply the motion, and then it set momentum to 0
-				//acceleration *= 0.25f;
+				// momentum = lastDeltaXZ * 0.25f; // Minecraft just multiply the motion, and
+				// then it set momentum to 0
+				// acceleration *= 0.25f;
+				acceleration *= 0.25f;
+				if(!sprinting) {
+					limit = 0.022f;
+				}
 			}
 			float prediction = (momentum + acceleration);
 			final float difference = (float) (xzDiff - prediction);
-			this.player().sendDevMessage("lastDeltaXZ: " + lastDeltaXZ + " acceleration: " + acceleration
-					+ " difference: " + difference);
+			this.player().sendDevMessage(
+					"lastDeltaXZ: " + lastDeltaXZ + " acceleration: " + acceleration + " difference: " + difference);
 		}
 		this.lastDeltaXZ = xzDiff;
 	}
@@ -107,12 +109,10 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
 				Block block = cloned.clone().add(x, 0, z).getBlock();
 				if (block.getType().name().contains(name)) {
-					AABB bb = getBoundingBoxFromBlock(block);
 					return true;
 				}
 				block = cloned.clone().add(x, 0.125, z).getBlock();
 				if (block.getType().name().contains(name)) {
-					AABB bb = getBoundingBoxFromBlock(block);
 					return true;
 				}
 			}

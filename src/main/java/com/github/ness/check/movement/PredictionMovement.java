@@ -33,7 +33,7 @@ public class PredictionMovement extends ListeningCheck<PlayerMoveEvent> {
 																						// 0÷0
 		Vector direction = getDirectionOfOnlyYaw(movementValues.getTo().getYaw());
 		float angle = (float) Math.toDegrees(moving.angle(direction));
-		// this.player().sendDevMessage("Angle: " + angle);
+		this.player().sendDevMessage("Angle: " + angle);
 		float subtraction = Math.abs(Math.round(Math.abs(angle)) - Math.abs(angle));
 		if (subtraction < 0.001 && xzDiff > 0.1 && ++buffer > 2) {
 			this.flag("Strafe: " + subtraction);
