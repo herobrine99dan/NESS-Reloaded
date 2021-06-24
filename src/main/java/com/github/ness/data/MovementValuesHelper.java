@@ -108,50 +108,44 @@ public class MovementValuesHelper {
 
 	public boolean isNearWater(Location loc) {
 		int water = 0;
-		double limit = 0.3;
+		double limit = 0.22;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
-				for (double y = -0.1; y < 0.2; y += 0.1) {
-					if (access.getMaterial(loc.clone().add(x, y, z)).name().contains("WATER")) {
-						water++;
-					}
+				if (access.getMaterial(loc.clone().add(x, 0, z)).name().contains("WATER")) {
+					water++;
 				}
 			}
 		}
-		return water > 4;
+		return water > 3;
 	}
 
 	public boolean isNearLiquid(Location loc) {
 		int water = 0;
-		double limit = 0.3;
+		double limit = 0.22;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
-				for (double y = -0.1; y < 0.2; y += 0.1) {
-					final Material material = access.getMaterial(loc.clone().add(x, y, z));
-					if (!material.isSolid()) {
-						if (material.name().contains("WATER") || material.name().contains("LAVA")) {
-							water++;
-						}
-					}
-				}
-			}
-		}
-		return water > 4;
-	}
-
-	public boolean isNearLava(Location loc) {
-		int water = 0;
-		double limit = 0.3;
-		for (double x = -limit; x < limit + 0.1; x += limit) {
-			for (double z = -limit; z < limit + 0.1; z += limit) {
-				for (double y = -0.1; y < 0.1; y += 0.1) {
-					if (access.getMaterial(loc.clone().add(x, y, z)).name().contains("LAVA")) {
+				final Material material = access.getMaterial(loc.clone().add(x, 0, z));
+				if (!material.isSolid()) {
+					if (material.name().contains("WATER") || material.name().contains("LAVA")) {
 						water++;
 					}
 				}
 			}
 		}
-		return water > 4;
+		return water > 3;
+	}
+
+	public boolean isNearLava(Location loc) {
+		int water = 0;
+		double limit = 0.22;
+		for (double x = -limit; x < limit + 0.1; x += limit) {
+			for (double z = -limit; z < limit + 0.1; z += limit) {
+					if (access.getMaterial(loc.clone().add(x, 0, z)).name().contains("LAVA")) {
+						water++;
+					}
+			}
+		}
+		return water > 3;
 	}
 
 	public boolean collideLadders(Location loc) {
