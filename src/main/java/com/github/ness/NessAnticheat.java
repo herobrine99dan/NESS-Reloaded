@@ -28,15 +28,13 @@ import com.github.ness.packets.PacketActorInterceptor;
 import com.github.ness.packets.PacketListener;
 import com.github.ness.packets.wrapper.PacketTypeRegistry;
 import com.github.ness.packets.wrapper.SimplePacketTypeRegistry;
-import com.github.ness.reflect.ClassLocator;
+import com.github.ness.reflect.locator.ClassLocator;
 import com.github.ness.reflect.CoreReflection;
 import com.github.ness.reflect.InvokerCachingReflection;
 import com.github.ness.reflect.MethodHandleReflection;
 import com.github.ness.reflect.ReflectHelper;
 import com.github.ness.reflect.Reflection;
-import com.github.ness.reflect.SimpleClassLocator;
 import com.github.ness.reflect.SimpleReflectHelper;
-import com.github.ness.utility.raytracer.RayCaster;
 import com.github.ness.violation.ViolationManager;
 
 public class NessAnticheat {
@@ -74,7 +72,7 @@ public class NessAnticheat {
 			useFloodGate = false;
 		}
 
-		ClassLocator locator = SimpleClassLocator.create();
+		ClassLocator locator = ClassLocator.create(plugin.getServer());
 		Reflection reflection = new InvokerCachingReflection(new MethodHandleReflection(new CoreReflection()));
 		networker = new Networker(plugin,
 				new PacketListener(

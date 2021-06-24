@@ -2,7 +2,7 @@ package com.github.ness.packets;
 
 import java.lang.invoke.MethodHandle;
 
-import com.github.ness.reflect.ClassLocator;
+import com.github.ness.reflect.locator.ClassLocator;
 import com.github.ness.reflect.MemberDescriptions;
 import com.github.ness.reflect.Reflection;
 

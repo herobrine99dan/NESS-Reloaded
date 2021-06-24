@@ -1,5 +1,7 @@
 package com.github.ness.reflect;
 
+import com.github.ness.reflect.locator.ClassLocator;
+
 public final class SimpleReflectHelper implements ReflectHelper {
 
 	private final ClassLocator locator;

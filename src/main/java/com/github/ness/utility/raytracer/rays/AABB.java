@@ -6,11 +6,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import com.github.ness.NessAnticheat;
-import com.github.ness.reflect.ClassLocator;
 import com.github.ness.reflect.FieldInvoker;
 import com.github.ness.reflect.MemberDescriptions;
 import com.github.ness.reflect.MethodInvoker;
-import com.github.ness.reflect.SimpleClassLocator;
 
 public class AABB {
 
