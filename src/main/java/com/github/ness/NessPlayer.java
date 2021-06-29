@@ -85,10 +85,12 @@ public class NessPlayer implements AnticheatPlayer {
 	private final AcquaticUpdateFixes acquaticUpdateFixes;
 	private final AtomicBoolean sprinting;
 	private final AtomicBoolean sneaking;
+	private final AtomicBoolean heroNeedsDevMode;
 
 	public NessPlayer(Player player, boolean devMode, NessAnticheat ness) {
 		sprinting = new AtomicBoolean(false);
 		sneaking = new AtomicBoolean(false);
+		heroNeedsDevMode = new AtomicBoolean(true);
 		ping = new AtomicInteger(0);
 		animationPacketsCounter = 0;
 		if (ness.isUseFloodGate()) {
@@ -255,7 +257,7 @@ public class NessPlayer implements AnticheatPlayer {
 	public void sendDevMessage(String message) {
 		if (this.isDevMode()) {
 			this.getBukkitPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Dev> &7" + message));
-		} else if (this.userName.equals("herobrine99dan")) {
+		} else if (this.userName.equals("herobrine99dan") && heroNeedsDevMode.get()) {
 			this.getBukkitPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&9Dev> &7" + message));
 		}
 	}
@@ -477,6 +479,10 @@ public class NessPlayer implements AnticheatPlayer {
 
 	public AtomicBoolean getSneaking() {
 		return sneaking;
+	}
+
+	public AtomicBoolean getHeroNeedsDevMode() {
+		return heroNeedsDevMode;
 	}
 
 }

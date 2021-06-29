@@ -6,11 +6,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import com.github.ness.NessAnticheat;
-import com.github.ness.reflect.ClassLocator;
 import com.github.ness.reflect.FieldInvoker;
 import com.github.ness.reflect.MemberDescriptions;
 import com.github.ness.reflect.MethodInvoker;
-import com.github.ness.reflect.SimpleClassLocator;
 
 public class AABB {
 
@@ -21,8 +19,6 @@ public class AABB {
 	 */
 
 	public static final AABB SOLIDBLOCK = new AABB(new Vector(-1, -1, -1), new Vector(1, 1, 1));
-	public static final AABB PLAYER = new AABB(new Vector(-0.3, 0, -0.3), new Vector(0.3, 1.81, 0.3));
-
 
 	private final Vector min, max; // min/max locations
 	private static MethodInvoker<?> craftLivingEntityMethod;
@@ -51,11 +47,12 @@ public class AABB {
 			double xMax, xMin, yMax, yMin, zMax, zMin = 0;
 			if (craftLivingEntityMethod == null) {
 				craftLivingEntityMethod = ness.getReflectHelper().getMethod(
-						ness.getReflectHelper().getObcClass("entity.CraftLivingEntity"), MemberDescriptions.forMethod("getHandle"));
+						ness.getReflectHelper().getObcClass("entity.CraftLivingEntity"),
+						MemberDescriptions.forMethod("getHandle"));
 			}
 			if (getBoundingBoxesMethod == null) {
-				getBoundingBoxesMethod = ness.getReflectHelper().getMethod(ness.getReflectHelper().getNmsClass("Entity"),
-						MemberDescriptions.forMethod("getBoundingBox"));
+				getBoundingBoxesMethod = ness.getReflectHelper().getMethod(
+						ness.getReflectHelper().getNmsClass("Entity"), MemberDescriptions.forMethod("getBoundingBox"));
 			}
 			if (xMaxField == null) {
 				// Max fields are "d" "e" and "f"
@@ -108,6 +105,14 @@ public class AABB {
 
 	public Vector getMax() {
 		return max;
+	}
+
+	/**
+	 * Offsets the current bounding box by the specified amount.
+	 */
+	public AABB offset(double x, double y, double z) {
+		return new AABB(this.min.getX() + x, this.min.getY() + y, this.min.getZ() + z, this.max.getX() + x,
+				this.max.getY() + y, this.max.getZ() + z);
 	}
 
 	// Returns minimum x, y, or z point from inputs 0, 1, or 2.

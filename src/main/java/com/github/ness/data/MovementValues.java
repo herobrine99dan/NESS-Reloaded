@@ -100,6 +100,8 @@ public class MovementValues {
 	private final boolean aroundKelp;
 
 	private final double dTG;
+	
+	private final boolean collidedHorizontally;
 
 	private final boolean aroundWalls;
 	private final boolean aroundFire;
@@ -160,6 +162,7 @@ public class MovementValues {
 		ableFly = false;
 		dTG = 0.0;
 		aroundLiquids = false;
+		collidedHorizontally = false;
 		aroundSlime = false;
 		aroundStairs = false;
 		aroundFence = false;
@@ -308,6 +311,11 @@ public class MovementValues {
 				}
 				this.onGroundCollider = onGroundCollider;
 			}
+			boolean colliderHorizon = this.getHelper().isCollidedHorizontally(to.toBukkitLocation());
+			if(!colliderHorizon) {
+				colliderHorizon = this.getHelper().isCollidedHorizontally(from.toBukkitLocation());
+			}
+			collidedHorizontally = colliderHorizon;
 			dTG = makeDTG();
 			if(trasparentMaterials.size() == 0.0) { //We add in a set all the non-occluding materials
 				trasparentMaterials = access.nonOccludingMaterials();
@@ -347,6 +355,7 @@ public class MovementValues {
 			aroundStairs = false;
 			aroundFence = false;
 			clientGround = false;
+			collidedHorizontally = false;
 			aroundSeaBlocks = false;
 		}
 		yawDiff = to.getYaw() - from.getYaw();
@@ -608,5 +617,9 @@ public class MovementValues {
 
 	public boolean isClientOnGround() {
 		return clientGround;
+	}
+	
+	public boolean isCollidedHorizontally() {
+		return collidedHorizontally;
 	}
 }

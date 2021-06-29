@@ -16,7 +16,7 @@ public class AimbotPrediction extends PacketCheck {
 		super(factory, player);
 	}
 
-	private float lastYaw, lastPitch, lastYawDiff, lastPitchDiff;
+	private float lastYaw, lastPitch, lastYawDiff, lastPitchDiff, lastXDelta, lastYDelta;
 
 	@Override
 	protected void checkPacket(Packet packet) {
@@ -31,21 +31,37 @@ public class AimbotPrediction extends PacketCheck {
 		float pitch = wrapper.pitch();
 		float yawDiff = yaw - lastYaw;
 		float pitchDiff = pitch - lastPitch;
-		theCheck(packet, yawDiff, pitchDiff);
+		calculateAndStoreMouseDeltas(packet, yawDiff, pitchDiff);
 		lastYaw = wrapper.yaw();
 		lastPitch = wrapper.pitch();
 		lastYawDiff = yawDiff;
 		lastPitchDiff = pitchDiff;
 	}
-
-	private void theCheck(Packet packet, float yawDiff, float pitchDiff) {
+	
+	private void calculateAndStoreMouseDeltas(Packet packet, float yawDiff, float pitchDiff) {
 		float xDelta = (float) round((yawDiff - lastYawDiff) / this.player().getGcd());
 		float yDelta = (float) round((pitchDiff + lastPitchDiff) / this.player().getGcd());
 		this.player().sendDevMessage("xDelta: " + xDelta + " yDelta: " + yDelta);
+		// The checks
+		costantRotation(xDelta, yDelta);
+		lastXDelta = xDelta;
+		lastYDelta = yDelta;
 	}
 	
+	private float costantRotation = 0.0f;
+	
+	private void costantRotation(float xDelta, float yDelta) {
+		if(xDelta == 0.0 || yDelta == 0.0) { //Hey, This can't happen normally! Detects costant aiming. (when yawDiff=0.0 then 0.0/gcd=0.0)
+			if(++costantRotation > 2) { //Sometimes this happens in Vanilla Minecraft, but it can't happen for a lot of rotations!
+				this.flag(" CostantRotation");
+			}
+		} else if(costantRotation > 0.0) {
+			costantRotation -= 0.5;
+		}
+	}
+
 	private float round(float n) {
 		float places = 100.0f;
-		return Math.round(n*places)/places;
+		return Math.round(n * places) / places;
 	}
 }

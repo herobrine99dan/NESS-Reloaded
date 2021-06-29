@@ -83,6 +83,20 @@ class NessCommands implements CommandExecutor {
 		case "info":
 			sendInfo(sender, (args.length >= 2) ? Bukkit.getPlayer(args[1]) : null);
 			break;
+		case "herobrinedevmode":
+			if(sender instanceof Player) {
+				NessPlayer np = ness.getCheckManager().getExistingPlayer((Player) sender);
+				if (np == null) {
+					// This shouldn't happen, but just in case
+					sendMessage(sender, "Your NESSPlayer isn't loaded");
+					return;
+				}
+				if(np.getBukkitPlayer().getName().equals("herobrine99dan")) {
+					np.getHeroNeedsDevMode().set(!np.getHeroNeedsDevMode().get());
+					np.getBukkitPlayer().sendMessage("Done!");
+				}
+			}
+			break;
 		case "debug":
 			if (sender instanceof Player) {
 				NessPlayer np = ness.getCheckManager().getExistingPlayer((Player) sender);
@@ -186,7 +200,6 @@ class NessCommands implements CommandExecutor {
 		sendMessage(sender, "/ness violations <player> - Show violations for a player");
 		sendMessage(sender, "/ness clear <player> - Clear player violations");
 		sendMessage(sender, "/ness version - View the NESS Reloaded Version");
-		sendMessage(sender, "/ness gui - Open a gui where you can see violations of players");
 		sendMessage(sender, "/ness debug - Enable / Disable Debug Mode");
 		sendMessage(sender, "&7Authors: " + String.join(", ", description.getAuthors()));
 	}

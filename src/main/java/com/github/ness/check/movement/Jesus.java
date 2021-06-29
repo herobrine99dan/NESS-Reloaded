@@ -45,7 +45,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		@DefaultDouble(0.022)
 		double maxXZVariance();
 
-		@DefaultDouble(0.302)
+		@DefaultDouble(0.322)
 		double maxHighDistanceWaterY();
 
 	}
@@ -91,7 +91,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		}
 		float predictionXZ = lastXZDist * waterInertia;
 		predictionXZ += acceleration;
-		float predictionY = (lastYDist * 0.8f);// - 0.02f; // The jump motion
+		float predictionY = (lastYDist * 0.8f);
 		float resultXZ = xzDist - predictionXZ;
 		float resultY = Math.abs(yDist - predictionY);
 		if (values.getHelper().isMathematicallyOnGround(values.getTo().getY())) {
@@ -106,7 +106,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 			buffer -= 0.5;
 		}
 		// Second check
-		if (yDist > maxHighDistanceWaterY && !values.isAroundLily()) {
+		if (yDist > maxHighDistanceWaterY && !values.isAroundLily() && !values.isGroundAround()) {
 			if (values.hasBubblesColumns() == 1 && yDist > maxHighDistanceWaterY + 0.268) {
 				this.flagEvent(event, "HighDistanceYBubble");
 			} else {
@@ -127,9 +127,9 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		float yDist = (float) values.getyDiff();
 		boolean onGroundCollider = values.isOnGroundCollider();
 		float predictionXZ = lastXZDist * 0.5f + 0.02f;
-		float predictionY = lastYDist * 0.5f;
+		float predictionY = lastYDist * 0.5f - 0.04f;
 		float resultXZ = xzDist - predictionXZ;
-		float resultY = Math.abs(yDist - predictionY - 0.04f); // The jump motion		
+		float resultY = Math.abs(yDist - predictionY); // The jump motion		
 		if (values.isOnGroundCollider()) {
 			resultY -= 0.05;
 		}
@@ -137,9 +137,13 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 			resultY = 0.0f;
 		}
 		// Second check
-		if (yDist > maxHighDistanceWaterY && !values.isAroundLily()) {
+		if (yDist > maxHighDistanceWaterY && !values.isAroundLily() && !values.isGroundAround()) {
 			this.flagEvent(event, "HighDistanceY");
 		}
-		nessPlayer.sendDevMessage("resultXZ: " + resultXZ + " resultY: " + resultY);
+		if ((resultXZ > maxXZVariance || resultY > maxYVariance) && ++buffer > 3) {
+			nessPlayer.sendDevMessage("Cheat: resultXZ: " + resultXZ + " resultY: " + resultY);
+		} else if (buffer > 0) {
+			buffer -= 0.5;
+		}
 	}
 }

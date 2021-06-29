@@ -213,6 +213,21 @@ public class MovementValuesHelper {
 		return false;
 	}
 
+	public boolean isCollidedHorizontally(Location loc) {
+		final Location cloned = loc.clone();
+		double limit = 0.1;
+		for (double x = -limit; x < limit + 0.1; x += limit) {
+			for (double z = -limit; z < limit + 0.1; z += limit) {
+				Block block = cloned.clone().add(x, 0, z).getBlock();
+				Material material = access.getMaterial(block);
+				if (material.isSolid()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public boolean hasBlock(Player p, String m) {
 		m = m.toUpperCase();
 		boolean done = false;

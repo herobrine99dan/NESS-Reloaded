@@ -1,8 +1,5 @@
 package com.github.ness.check.movement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -33,8 +30,8 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 
 	@Override
 	/**
-	 * Powerful Prediction check made with https://www.mcpk.wiki/wiki/ Loving those
-	 * guys who made it.
+	 * Powerful XZ-Prediction check made with https://www.mcpk.wiki/wiki/ 
+	 * Loving those guys who made it.
 	 */
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
@@ -47,9 +44,10 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		float xzDiff = (float) values.getXZDiff();
-		this.player().sendDevMessage("xzDiff: " + (float) xzDiff + " speed: " + player.getWalkSpeed());
 		final boolean sprinting = nessPlayer.getSprinting().get();
 		final boolean sneaking = nessPlayer.getSneaking().get();
+		this.player().sendDevMessage("xzDiff: " + (float) xzDiff + " speed: " + player.getWalkSpeed() + " sprint: "
+				+ sprinting + " sneak: " + sneaking);
 		final boolean isInWeb = isCollidingWithMaterial(event.getTo(), "WEB");
 		if (!values.getHelper().isMathematicallyOnGround(values.getTo().getY())) {
 			airTicks++;
@@ -62,6 +60,8 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			float prediction = (lastDeltaXZ * 0.91f);
 			float difference = xzDiff - prediction;
 			float maxSpeed = sprinting ? 0.026f : 0.02f;
+			//TODO There are some errors doing some calculations, so you get 0.0254f instead of 0.026f
+			//this.player().sendDevMessage("AirSpeed diff: " + difference);
 			if (difference > maxSpeed && prediction > 0.075) {
 				if (++buffer > 1) {
 					this.flagEvent(event);
@@ -90,14 +90,16 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 				// then it set momentum to 0
 				// acceleration *= 0.25f;
 				acceleration *= 0.25f;
-				if(!sprinting) {
-					limit = 0.022f;
+				if (!sprinting) {
+					xzDiff /= 2.0f; //Fixing Minecraft retarded not sending position packet is xzDiff is low
 				}
 			}
 			float prediction = (momentum + acceleration);
 			final float difference = (float) (xzDiff - prediction);
-			this.player().sendDevMessage(
-					"lastDeltaXZ: " + lastDeltaXZ + " acceleration: " + acceleration + " difference: " + difference);
+			if (difference > 0.01) {
+				this.player().sendDevMessage("CHEATS! lastDeltaXZ: " + lastDeltaXZ + " acceleration: " + acceleration
+						+ " difference: " + difference);
+			}
 		}
 		this.lastDeltaXZ = xzDiff;
 	}
