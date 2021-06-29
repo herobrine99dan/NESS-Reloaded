@@ -14,7 +14,6 @@ import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
-import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 
 public class Jesus extends ListeningCheck<PlayerMoveEvent> {
@@ -100,10 +99,21 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		if (values.isOnGroundCollider()) {
 			resultY -= 0.05;
 		}
-		if ((resultXZ > maxXZVariance || resultY > maxYVariance) && ++buffer > 3) {
-			nessPlayer.sendDevMessage("Cheat: resultXZ: " + resultXZ + " resultY: " + resultY);
+		if (resultXZ > maxXZVariance) {
+			if(++buffer > 3) {
+			this.flag("HighVarianceXZ");
+			}
+			return;
 		} else if (buffer > 0) {
-			buffer -= 0.5;
+			buffer -= 1;
+		}
+		if (resultY > maxYVariance) {
+			if(++buffer > 3) {
+			this.flag("HighVarianceY");
+			}
+			return;
+		} else if (buffer > 0) {
+			buffer -= 1;
 		}
 		// Second check
 		if (yDist > maxHighDistanceWaterY && !values.isAroundLily() && !values.isGroundAround()) {
@@ -123,27 +133,6 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	public void handleLava(MovementValues values, Cancellable event, NessPlayer nessPlayer) {
-		float xzDist = (float) values.getXZDiff();
-		float yDist = (float) values.getyDiff();
-		boolean onGroundCollider = values.isOnGroundCollider();
-		float predictionXZ = lastXZDist * 0.5f + 0.02f;
-		float predictionY = lastYDist * 0.5f - 0.04f;
-		float resultXZ = xzDist - predictionXZ;
-		float resultY = Math.abs(yDist - predictionY); // The jump motion		
-		if (values.isOnGroundCollider()) {
-			resultY -= 0.05;
-		}
-		if (values.getHelper().isMathematicallyOnGround(values.getTo().getY())) {
-			resultY = 0.0f;
-		}
-		// Second check
-		if (yDist > maxHighDistanceWaterY && !values.isAroundLily() && !values.isGroundAround()) {
-			this.flagEvent(event, "HighDistanceY");
-		}
-		if ((resultXZ > maxXZVariance || resultY > maxYVariance) && ++buffer > 3) {
-			nessPlayer.sendDevMessage("Cheat: resultXZ: " + resultXZ + " resultY: " + resultY);
-		} else if (buffer > 0) {
-			buffer -= 0.5;
-		}
+		//TODO Lava check
 	}
 }
