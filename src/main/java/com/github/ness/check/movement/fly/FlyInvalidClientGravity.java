@@ -1,5 +1,8 @@
 package com.github.ness.check.movement.fly;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -10,8 +13,8 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.utility.Utility;
 
+import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
@@ -20,24 +23,29 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 	private final int minAirTicks;
 	private final double minBuffer;
+	private final boolean useAbsoluteDifference;
 
 	public FlyInvalidClientGravity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 		minAirTicks = this.ness().getMainConfig().getCheckSection().flyInvalidClientGravity().airTicks();
 		minBuffer = this.ness().getMainConfig().getCheckSection().flyInvalidClientGravity().buffer();
+		useAbsoluteDifference = this.ness().getMainConfig().getCheckSection().flyInvalidClientGravity()
+				.useAbsoluteDifference();
 	}
 
-	private double lastDeltaY;
+	private float lastDeltaY;
 	private int airTicks;
 	private double buffer;
 
 	public interface Config {
-		@DefaultInteger(4)
+		@DefaultInteger(2)
 		int airTicks();
 
-		// After some tests i discovered i fixed all the bugs maybe
 		@DefaultDouble(0)
 		double buffer();
+
+		@DefaultBoolean(false)
+		boolean useAbsoluteDifference();
 	}
 
 	@Override
@@ -46,53 +54,77 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	@Override
-	protected void checkEvent(PlayerMoveEvent e) {
-		Check(e);
-	}
-
 	/**
-	 * Check for Invalid Gravity
-	 *
-	 * @param e
+	 * Powerful Y-Prediction check made with https://www.mcpk.wiki/wiki/ Loving
+	 * those guys who made it. This is the young-brother of SpeedFriction :D
 	 */
-	public void Check(PlayerMoveEvent e) {
+	protected void checkEvent(PlayerMoveEvent event) {
+		Player player = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
-		Player player = e.getPlayer();
 		MovementValues values = nessPlayer.getMovementValues();
-		double deltaY = values.getyDiff();
-		if (nessPlayer.isOnGroundPacket()) { // We shouldn't use isMathematicallyOnGround here, it has some bypasses.
-												// Instead we can simply use player.isOnGround because we have
-												// GroundSpoof checks
-			airTicks = 0;
-		} else {
-			airTicks++;
-		}
-		if (values.getHelper().hasflybypass(nessPlayer) || player.getAllowFlight() || values.isAroundLiquids()
-				|| Utility.hasVehicleNear(player) || values.isAroundWeb() || values.isAroundSlime()
-				|| values.isAroundLadders() || values.isAroundSnow() || values.hasBlockNearHead()
-				|| values.isAroundKelp()
-				|| getMaterialAccess().getMaterial(e.getTo().clone().add(0, 0.5, 0)).name().contains("SCAFFOLD")
-				|| getMaterialAccess().getMaterial(e.getTo().clone().add(0, -0.5, 0)).name().contains("SCAFFOLD")
-				|| nessPlayer.getAcquaticUpdateFixes().isRiptiding() || nessPlayer.isTeleported() || nessPlayer.isHasSetback()) {
-			lastDeltaY = deltaY;
+		// Flying will be handled in another class. Same thing for Elytra. Lava and
+		// Water are handled in Jesus
+		if (player.isFlying() || values.getHelper().isPlayerUsingElytra(nessPlayer) || values.isAroundLiquids()) {
 			return;
 		}
-		// Even if this isn't the best fix, at least it allows for me to get working
-		// detection
-		final float yVelocityDelta = Math.abs(((float) values.getyDiff() - (float) values.getServerVelocity().getY()));
-		float yPredicted = (float) ((lastDeltaY - 0.08D) * 0.9800000190734863D);
-		float yResult = (float) Math.abs(deltaY - yPredicted);
-		if (airTicks > minAirTicks && nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 1000) {
-			if (Math.abs(yPredicted) > 0.01 && yVelocityDelta > 0.1) {
-				if (Math.abs(yResult) > 0.005) {
-					if (++buffer > minBuffer) {
-						this.flagEvent(e, "yResult: " + yResult + " AirTicks: " + airTicks);
-					}
-				} else if (buffer > 0) {
-					buffer -= 0.5;
+		// Velocity won't be handled for now: when i finish the check, i will simply
+		// handle it
+		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
+			return;
+		}
+		//TODO There is one false flag with jump boost because Minecraft (aka Shitcraft) rounds the number if it is very low
+		final boolean onGround = isOnGround(event.getTo());
+
+		float yDiff = (float) values.getyDiff();
+		if (onGround) {
+			yDiff = 0.0f;
+		}
+		if (!onGround) {
+			airTicks++;
+		} else {
+			airTicks = 0;
+		}
+		float motionY = lastDeltaY;
+		motionY -= 0.08f;
+		motionY *= 0.98f;
+		float result = yDiff - motionY;
+		if (useAbsoluteDifference) {
+			result = Math.abs(result);
+		}
+		if (result > 0.001 && airTicks > minAirTicks) {
+			if (++buffer > minBuffer) {
+				this.flagEvent(event, "yResult: " + result + " airTicks: " + airTicks);
+			}
+		} else if (buffer > 0) {
+			buffer -= 0.5;
+		}
+		this.lastDeltaY = yDiff;
+	}
+
+	private boolean isOnGround(Location loc) {
+		final Location cloned = loc.clone();
+		double limit = 0.30;
+		for (double x = -limit; x < limit + 0.1; x += limit) {
+			for (double z = -limit; z < limit + 0.1; z += limit) {
+				if (isBlockConsideredOnGround(cloned.clone().add(x, -0.15, z))
+						|| isBlockConsideredOnGround(cloned.clone().add(x, -0.2, z))
+						|| isBlockConsideredOnGround(cloned.clone().add(x, -0.25, z))) {
+					return true;
 				}
 			}
 		}
-		lastDeltaY = deltaY;
+		return false;
+	}
+
+	private boolean isBlockConsideredOnGround(Location loc) {
+		Block block = loc.getBlock();
+		Material material = this.getMaterialAccess().getMaterial(block);
+		String name = material.name();
+		// TODO Walls aren't handled correctly
+		if (material.isSolid() || name.contains("SNOW") || name.contains("CARPET") || name.contains("SCAFFOLDING")
+				|| name.contains("SKULL") || name.contains("LADDER") || name.contains("WEB") || name.contains("WALL")) {
+			return true;
+		}
+		return false;
 	}
 }

@@ -101,12 +101,12 @@ public class LongRingBuffer {
 	 * 
 	 * @return the average
 	 */
-	public long average() {
+	public double average() {
 		int size = size();
 		if (size == 0) {
 			return 0L;
 		}
-		return sum() / size;
+		return (double) sum() / (double) size;
 	}
 
 	/**
@@ -163,38 +163,83 @@ public class LongRingBuffer {
 	public long variationRange() {
 		return this.biggestValue() - this.smallestValue();
 	}
-	
+
 	/**
 	 * Get the simple average waste
 	 * 
 	 * @return the simple average waste
 	 */
-	public long simpleAverageWaste() {
-		long number = 0;
+	public double simpleAverageWaste() {
+		double number = 0;
 
-		long mean = average();
+		double mean = average();
 
 		for (long num : values) {
 			number += Math.abs(num - mean);
 		}
-		return number/this.values.length;
+		return number / this.values.length;
 	}
 
 	/**
-	 * Get standard Deviation beetween values
+	 * Search a simple pattern in the array. Examples of simple pattern: 1,2,3,4,5 →
+	 * average = 3 → (1-3)+(2-3)+(3-3)+(4-3)+(5-3)=0 0,2,4,6,8 → average = 4 →
+	 * (0-4)+(2-4)+(4-4)+(6-4)+(8-4)=0
 	 * 
-	 * @return the standard Deviation
+	 * @return 0.0 if there is a perfect-pattern, else another number that ......
 	 */
-	public long standardDeviation() {
-		long standardDeviation = 0;
+	public double searchASimplePattern() {
+		double number = 0;
 
-		long mean = average();
+		double mean = average();
+
+		for (long num : values) {
+			number += num - mean;
+		}
+		return number / (double) this.values.length;
+	}
+
+	/**
+	 * Get variance beetween values
+	 * 
+	 * @return the variance
+	 */
+	public double variance() {
+		double standardDeviation = 0;
+
+		double mean = average();
 
 		for (long num : values) {
 			standardDeviation += Math.pow(num - mean, 2);
 		}
 
-		return (long) Math.sqrt(standardDeviation / values.length);
+		return (double) standardDeviation / (double) this.values.length;
+	}
+
+	/**
+	 * Get Standard Score of an x number
+	 * 
+	 * @param x
+	 * @return how many standard deviations an element is from the mean.
+	 */
+	public double standardScore(long x) {
+		return (x - average()) / standardDeviation();
+	}
+
+	/**
+	 * Get standard deviation beetween values
+	 * 
+	 * @return the standard Deviation
+	 */
+	public double standardDeviation() {
+		double standardDeviation = 0;
+
+		double mean = average();
+
+		for (long num : values) {
+			standardDeviation += Math.pow(num - mean, 2);
+		}
+
+		return (double) Math.sqrt(standardDeviation / values.length);
 	}
 
 	/**
@@ -208,6 +253,10 @@ public class LongRingBuffer {
 			sum += value;
 		}
 		return sum;
+	}
+
+	public long[] getValues() {
+		return values;
 	}
 
 }

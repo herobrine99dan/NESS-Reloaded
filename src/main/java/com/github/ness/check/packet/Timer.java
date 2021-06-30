@@ -56,7 +56,7 @@ public class Timer extends PacketCheck {
 		if (result > 5) {
 			delay.add(result);
 		}
-		final long average = delay.average();
+		final double average = delay.average();
 		final float speed = 50.0f / (float) average;
 		// nessPlayer.sendDevMessage("Average: " + average + " Speed: " + speed + "
 		// size: " + delay.size());
