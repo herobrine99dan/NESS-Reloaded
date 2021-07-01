@@ -35,8 +35,8 @@ public class LongRingBufferTest {
 		Random random = ThreadLocalRandom.current();
 
 		int count = buffer.getCapacity() + 1 + random.nextInt(10);
-		long sum = new SumComputer(count).generateAndComputeSum();
-
+		double sum = new SumComputer(count).generateAndComputeSum();
+		
 		assertTrue(count > buffer.getCapacity());
 		assertEquals(sum, buffer.sum());
 		assertEquals(sum / buffer.getCapacity(), buffer.average());
