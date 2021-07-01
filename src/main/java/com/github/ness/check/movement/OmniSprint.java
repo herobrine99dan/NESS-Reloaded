@@ -9,16 +9,28 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
+import com.github.ness.utility.LongRingBuffer;
+
+import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 
 public class OmniSprint extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
+	
+	private final double minAngle;
 
 	public OmniSprint(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
+		minAngle = this.ness().getMainConfig().getCheckSection().omniSprint().minAngle();
+	}
+	
+	public interface Config {
+		@DefaultDouble(1.59)
+		double minAngle();
 	}
 
 	private double buffer;
+	private LongRingBuffer angles = new LongRingBuffer(5);
 
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
@@ -29,21 +41,23 @@ public class OmniSprint extends ListeningCheck<PlayerMoveEvent> {
 				|| values.isAroundIce() || nessPlayer.getAcquaticUpdateFixes().isRiptiding()) {
 			return;
 		}
-		if (values.isSprinting() && values.getXZDiff() > 0.25) {
-			if (values.getServerVelocity().getY() > 0.0) {
-				return;
-			}
+		if (values.isSprinting() && values.getXZDiff() > 0.2) {
 			Vector from = new Vector(values.getFrom().getX(), 0, values.getFrom().getZ());
 			Vector to = new Vector(values.getTo().getX(), 0, values.getTo().getZ());
 			Vector moving = from.subtract(to);
-			double angle = moving.angle(getDirectionOfOnlyYaw(values.getTo().getYaw()));
-			if (angle < 1.59) {
-				if (++buffer > 2) {
-					flagEvent(event, "Angle: " + (float) angle);
+			double angleToStore = moving.angle(getDirectionOfOnlyYaw(values.getTo().getYaw()));
+			angles.add((long) (angleToStore * 100000));
+			if (angles.size() > 4) {
+				float median = (float) angles.average() / 100000.0f;
+				if (median < minAngle) {
+					if (++buffer > 2) {
+						flagEvent(event, "Angle: " + (float) median);
+					}
+				} else if (buffer > 0) {
+					buffer -= 0.25;
 				}
-			} else if (buffer > 0) {
-				buffer -= 0.25;
 			}
+
 		}
 	}
 
