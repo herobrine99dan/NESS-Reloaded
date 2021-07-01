@@ -1,27 +1,16 @@
-package com.github.ness.reflect;
+package com.github.ness.reflect.locator;
 
-import org.bukkit.Bukkit;
+import com.github.ness.reflect.ReflectionException;
 
-public final class SimpleClassLocator implements ClassLocator {
+final class SimpleClassLocator implements ClassLocator {
 
 	private final String nmsVersion;
 
-	private SimpleClassLocator(String nmsVersion) {
+	SimpleClassLocator(String nmsVersion) {
 		this.nmsVersion = nmsVersion;
 	}
 
-	public static ClassLocator create() {
-		return create(Bukkit.getServer().getClass().getPackage().getName());
-	}
-
-	static SimpleClassLocator create(String packageName) {
-		return new SimpleClassLocator(packageName.substring(packageName.lastIndexOf(".") + 1));
-	}
-
-	String nmsVersion() {
-		return nmsVersion;
-	}
-
+	@Override
 	public Class<?> getNmsClass(String className) {
 		return classForName(getNmsClassName(className));
 	}
@@ -30,6 +19,7 @@ public final class SimpleClassLocator implements ClassLocator {
 		return formatWithNms("net.minecraft.server", className);
 	}
 
+	@Override
 	public Class<?> getObcClass(String className) {
 		return classForName(getObcClassName(className));
 	}
@@ -39,7 +29,7 @@ public final class SimpleClassLocator implements ClassLocator {
 	}
 
 	private String formatWithNms(String packageName, String className) {
-		return packageName + "." + nmsVersion + "." + className;
+		return packageName + '.' + nmsVersion + '.' + className;
 	}
 
 	private Class<?> classForName(String clazzName) {
