@@ -10,7 +10,6 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
-import com.github.ness.utility.Utility;
 
 public class Criticals extends ListeningCheck<EntityDamageByEntityEvent> {
 
@@ -40,10 +39,18 @@ public class Criticals extends ListeningCheck<EntityDamageByEntityEvent> {
 		 * player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().isSolid
 		 * ()) { flagEvent(event); } }
 		 */
-		if(player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid() || player.getLocation().getBlock().getRelative(BlockFace.DOWN).isLiquid() || Utility.hasVehicleNear(player) || values.isAroundWeb() || values.isAroundLiquids() || values.getHelper().hasflybypass(nessPlayer)) {
+		if (player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid()
+				|| player.getLocation().getBlock().getRelative(BlockFace.DOWN).isLiquid()) {
+
 			return;
 		}
-		if (!player.isOnGround() && player.getLocation().getY() % 1.0 == 0.0) {
+		if(values.isAroundWeb()) {
+			return;
+		}
+		if (values.isAroundLiquids() || values.getHelper().hasflybypass(nessPlayer)) {
+			return;
+		}
+		if (!player.isOnGround() && this.player().getMovementValues().getTo().getY() % 1.0 == 0.0) {
 			flagEvent(event);
 		}
 	}

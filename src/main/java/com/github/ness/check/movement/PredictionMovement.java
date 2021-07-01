@@ -42,43 +42,9 @@ public class PredictionMovement extends ListeningCheck<PlayerMoveEvent> {
 		} else if (buffer > 0) {
 			buffer -= 0.5;
 		}
-		float[] values = getForwardAndStrafe(angle);
-		//makeThePrediction(values[0], values[1]);
 	}
 
 	private LongRingBuffer angles = new LongRingBuffer(5);
-
-	private float[] getForwardAndStrafe(float angle) {
-		angles.add((long) (angle * 100000));
-		double median = angles.median() / 100000.0;
-		int forwardMedian = 0;
-		int strafeMedian = 0;
-		// this.player().sendDevMessage("median: " + median);
-		if (median > 140) {
-			forwardMedian = 1;
-		} else if (median < 50) {
-			forwardMedian = -1;
-		}
-		double subtractionForStrafe = Math.abs(90 - median);
-		if (subtractionForStrafe < 40) {
-			strafeMedian = 1;
-		}
-		this.player().sendDevMessage("forward: " + forwardMedian + " strafe: " + strafeMedian);
-		return new float[] { forwardMedian, strafeMedian };
-	}
-
-	/*private void makeThePrediction(float moveForward, float moveStrafe) {
-		PlayerPrediction player = this.player().getPredictionMotion();
-		MovementValues movementValues = this.player().getMovementValues();
-		player.setAngles(movementValues.getTo().getYaw(), 0);
-		float[] toReturn = player.tick(moveForward, moveStrafe);
-		// this.player().sendDevMessage("xzDiff: " + xzDiff);
-		// this.player().sendDevMessage("xzDiff: " + (float)
-		// movementValues.getXZDiff());
-		this.player().sendDevMessage(
-				"xReal: " + (float) movementValues.getxDiff() + " zReal: " + (float) movementValues.getzDiff());
-		this.player().sendDevMessage("xCalculated: " + toReturn[0] + " zCalculated: " + toReturn[2]);
-	}*/
 
 	private float getCorrectFriction() {
 		return 0.91f * 0.6f; // Only for now

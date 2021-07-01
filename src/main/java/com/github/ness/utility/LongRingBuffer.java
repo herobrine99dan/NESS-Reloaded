@@ -231,15 +231,7 @@ public class LongRingBuffer {
 	 * @return the standard Deviation
 	 */
 	public double standardDeviation() {
-		double standardDeviation = 0;
-
-		double mean = average();
-
-		for (long num : values) {
-			standardDeviation += Math.pow(num - mean, 2);
-		}
-
-		return (double) Math.sqrt(standardDeviation / values.length);
+		return (double) Math.sqrt(variance());
 	}
 
 	/**

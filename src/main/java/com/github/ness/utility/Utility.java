@@ -12,9 +12,6 @@ import org.bukkit.entity.Vehicle;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.github.ness.NessPlayer;
-import com.github.ness.data.PlayerAction;
-
 public class Utility {
 
 	public static List<Block> getBlocksAround(Location loc, int radius) {

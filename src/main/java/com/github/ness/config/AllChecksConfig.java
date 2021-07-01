@@ -82,16 +82,6 @@ public interface AllChecksConfig {
 		""})
 	@SubSection
 	FastPlace.Config fastPlace();
-	@ConfKey("elytracheats")
-	@ConfComments({
-		"",
-		"Check if a player fly too quickly with elytra", 
-		"",
-		"Performance impact: low", 
-		"Effectiveness: Medium",
-		""})
-	@SubSection
-	ElytraCheats.Config elytraCheats();
 	@ConfKey("morepackets")
 	@ConfComments({
 		"",
