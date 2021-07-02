@@ -72,6 +72,10 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
 			return;
 		}
+		
+		if(player.isInsideVehicle() || nessPlayer.milliSecondTimeDifference(PlayerAction.VEHICLEENTER) < 500) {
+			
+		}
 		//TODO There is one false flag with jump boost because Minecraft (aka Shitcraft) rounds the number if it is very low
 		final boolean onGround = isOnGround(event.getTo());
 

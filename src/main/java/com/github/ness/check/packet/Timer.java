@@ -13,20 +13,22 @@ import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
 public class Timer extends PacketCheck {
-	private double MAX_PACKETS_PER_TICK = 1.1;
+	private final double MAX_PACKETS_PER_TICK;
 
 	public static final CheckInfo checkInfo = CheckInfos.forPackets();
 
 	private long lastDelay = System.nanoTime();
 	private LongRingBuffer delay;
 	private double buffer;
-	private boolean negativeTimerEnabled = true;
+	private final boolean negativeTimerEnabled;
+	private final boolean useMedian;
 
 	public Timer(PacketCheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
 		this.MAX_PACKETS_PER_TICK = this.ness().getMainConfig().getCheckSection().timer().maxpackets();
 		this.delay = new LongRingBuffer(this.ness().getMainConfig().getCheckSection().timer().delaysSize());
 		this.negativeTimerEnabled = this.ness().getMainConfig().getCheckSection().timer().negativetimer();
+		this.useMedian = this.ness().getMainConfig().getCheckSection().timer().useMedian();
 	}
 
 	public interface Config {
@@ -38,6 +40,9 @@ public class Timer extends PacketCheck {
 
 		@DefaultBoolean(false)
 		boolean negativetimer();
+		
+		@DefaultBoolean(false)
+		boolean useMedian();
 	}
 
 	/**
@@ -56,7 +61,10 @@ public class Timer extends PacketCheck {
 		if (result > 5) {
 			delay.add(result);
 		}
-		final double average = delay.average();
+		double average = delay.average();
+		if(useMedian) {
+			average = delay.median();
+		}
 		final float speed = 50.0f / (float) average;
 		// nessPlayer.sendDevMessage("Average: " + average + " Speed: " + speed + "
 		// size: " + delay.size());

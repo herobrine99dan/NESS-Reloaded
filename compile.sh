@@ -1,1 +1,1 @@
-mvn clean verify
+mvn package

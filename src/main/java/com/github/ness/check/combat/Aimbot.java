@@ -98,11 +98,11 @@ public class Aimbot extends PacketCheck {
 		PlayInFlying wrapper = e.toPacketWrapper(this.packetTypeRegistry().playInFlying());
 		float yawDelta = (float) (Math.abs(wrapper.yaw()) - Math.abs(lastYaw)) % 360;
 		float pitchDelta = (float) (wrapper.pitch() - lastPitch);
-		if (yawDelta > 30 && isReallySmall(pitchDelta)) {
+		if (yawDelta > 30 && isReallySmall(pitchDelta) && !this.player().isCinematic()) {
 			if (++buffer4 > 15) {
 				this.flag("IrregularYaw");
 			}
-		} else if (pitchDelta > 30 && isReallySmall(yawDelta)) {
+		} else if (pitchDelta > 30 && isReallySmall(yawDelta) && !this.player().isCinematic()) {
 			if (++buffer4 > 8) {
 				this.flag("IrregularPitch");
 			}

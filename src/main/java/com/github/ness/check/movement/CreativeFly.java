@@ -32,7 +32,7 @@ public class CreativeFly extends ListeningCheck<PlayerMoveEvent> {
 		} else {
 			flyingTicks = 0;
 		}
-		if (flyingTicks > 1 && player.isGliding()) {
+		if (flyingTicks > 1) {
 			flyingTicks -= 2;
 		}
 		if (flyingTicks > 20 && !values.isOnGroundCollider()) {
