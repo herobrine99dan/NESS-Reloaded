@@ -80,7 +80,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			float baseSpeed = sprinting ? walkSpeed + walkSpeed * 0.3f : walkSpeed;
 			float speedSlownessMultiplier = getSlownessAndSpeedEffectMultiplier(player);
 
-			if (sneaking) { // TODO Elytra mechanic, Trident mechanic
+			if (sneaking) {
 				baseSpeed = walkSpeed * 0.3f;
 			}
 			float acceleration = (float) (baseSpeed * speedSlownessMultiplier * collidedBlockMultiplier
@@ -91,7 +91,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 				// acceleration *= 0.25f;
 				acceleration *= 0.25f;
 				if (!sprinting) {
-					xzDiff /= 2.0f; //Fixing Minecraft retarded not sending position packet is xzDiff is low
+					xzDiff /= 2.0f; //Fixing retarded Minecraft not sending position packet is xzDiff is low
 				}
 			}
 			float prediction = (momentum + acceleration);

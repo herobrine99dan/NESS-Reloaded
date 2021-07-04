@@ -1,8 +1,6 @@
 package com.github.ness.check.combat;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -20,7 +18,7 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.check.PeriodicTaskInfo;
-import com.github.ness.utility.MathUtils;
+import com.github.ness.utility.LongRingBuffer;
 import com.github.ness.utility.raytracer.RayCaster;
 import com.github.ness.utility.raytracer.rays.AABB;
 import com.github.ness.utility.raytracer.rays.Ray;
@@ -42,7 +40,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	private final int rayTraceHitboxBuffer;
 	private double buffer;
 	private final boolean useBukkitLocationForRayTrace;
-	private List<Float> angleList;
+	private LongRingBuffer angleList;
 
 	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfos
 			.forEventWithTask(EntityDamageByEntityEvent.class, PeriodicTaskInfo.syncTask(Duration.ofMillis(70)));
@@ -59,7 +57,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		this.rayTraceReachBuffer = this.ness().getMainConfig().getCheckSection().killaura().rayTraceReachBuffer();
 		this.useBukkitLocationForRayTrace = this.ness().getMainConfig().getCheckSection().killaura()
 				.useBukkitLocationForRayTrace();
-		this.angleList = new ArrayList<Float>();
+		this.angleList = new LongRingBuffer(angleListSize);
 	}
 
 	public interface Config {
@@ -133,7 +131,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		final AABB aabb = AABB.from(entity, this.ness(), this.reachExpansion);
 		double range = aabb.collidesD(ray, 0, 10);
 		final float angle1 = (float) nessPlayer.getMovementValues().getHelper().getAngle(nessPlayer, entity);
-		angleList.add(angle1);
+		angleList.add((long) (angle1 * 10000));
 		if (player.getGameMode().equals(GameMode.CREATIVE)) {
 			maxReach = (5.5 * this.maxReach) / 3;
 		}
@@ -147,7 +145,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		}
 		if (range == -1) { // If the RayTrace doesn't find an hitpoint on the entity
 			if (angleList.size() > this.angleListSize) {
-				double average = MathUtils.average(angleList);
+				double average = angleList.average() / 10000.0;
 				nessPlayer.sendDevMessage("Hitbox: " + average);
 				if (average < maxAngle) {
 					if (++angleBuffer > this.rayTraceHitboxBuffer) {

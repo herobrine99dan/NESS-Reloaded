@@ -1,6 +1,8 @@
 package com.github.ness.utility;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * A ring buffer of {@code long} values which can grow to its maximum size. When
@@ -232,6 +234,17 @@ public class LongRingBuffer {
 	 */
 	public double standardDeviation() {
 		return (double) Math.sqrt(variance());
+	}
+	
+	public List<Long> calculateDelta() {
+		if (values.length < 1) {
+			throw new IllegalArgumentException("List must contains at least two values!");
+		}
+		List<Long> out = new ArrayList<Long>();
+		for (int i = 1; i <= values.length - 1; i++) {
+			out.add(values[i] - values[i - 1]);
+		}
+		return out;
 	}
 
 	/**

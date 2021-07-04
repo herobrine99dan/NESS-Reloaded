@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.util.Vector;
 
 public class MathUtils {
 
@@ -53,26 +51,6 @@ public class MathUtils {
 		return gcdRational(remainder, a);
 	}
 
-	public static double getDirection(Vector from, Vector to) {
-		if (from == null || to == null) {
-			return 0.0D;
-		}
-		double difX = to.getX() - from.getX();
-		double difZ = to.getZ() - from.getZ();
-		return (float) ((Math.atan2(difZ, difX) * 180.0D / Math.PI) - 90.0F);
-	}
-
-	public static float[] getRotations(LivingEntity origin, LivingEntity point) {
-		Location two = point.getLocation(), one = origin.getLocation();
-		double diffX = two.getX() - one.getX();
-		double diffZ = two.getZ() - one.getZ();
-		double diffY = two.getY() + 2.0D - 0.4D - one.getY() + 2.0D;
-		double dist = Math.sqrt(diffX * diffX + diffZ * diffZ);
-		float yaw = (float) (Math.atan2(diffZ, diffX) * 180.0D / Math.PI) - 90.0F;
-		float pitch = (float) (-Math.atan2(diffY, dist) * 180.0D / Math.PI);
-		return new float[] { yaw, pitch };
-	}
-
 	public static int getIntQuotient(double dividend, double divisor) {
 		double ans = dividend / divisor;
 		double error = Math.max(dividend, divisor) * 1E-3F;
@@ -86,59 +64,12 @@ public class MathUtils {
 	public static double otherGetSensitivity(double gcd) {
 		return (1.655 * Math.cbrt(0.8333 * gcd)) - 0.3333;
 	}
-
-	public static double average(List<Float> angles) {
-		double sum = 0;
-		for (float f : angles) {
-			sum += f;
-		}
-		return sum / angles.size();
-	}
-
 	public static double gcdRational(List<Double> numbers) {
 		double result = numbers.get(0);
 		for (int i = 1; i < numbers.size(); i++) {
 			result = gcdRational(numbers.get(i), result);
 		}
 		return result;
-	}
-
-	public static List<Double> calculateDelta(List<Double> list) {
-		if (list.size() < 1) {
-			throw new IllegalArgumentException("List must contains at least two values!");
-		}
-		List<Double> out = new ArrayList<Double>();
-		for (int i = 1; i <= list.size() - 1; i++) {
-			out.add(list.get(i) - list.get(i - 1));
-		}
-		return out;
-	}
-
-	// Trigonometry functions
-
-	public static double getDegreeSine(double theta) {
-		return Math.sin(Math.toRadians(theta));
-	}
-
-	public static double getDegreeCosine(double theta) {
-		return Math.cos(Math.toRadians(theta));
-	}
-
-	public static double getDegreeTangent(double theta) {
-		return Math.tan(Math.toRadians(theta));
-	}
-
-	public static double calculateStandardDeviation(List<Float> data) {
-		double sum = 0.0, standardDeviation = 0.0;
-		int length = data.size();
-		for (double num : data) {
-			sum += num;
-		}
-		double mean = sum / length;
-		for (double num : data) {
-			standardDeviation += Math.pow(num - mean, 2);
-		}
-		return Math.sqrt(standardDeviation / length);
 	}
 
 	public static float yawTo180F(float flub) {

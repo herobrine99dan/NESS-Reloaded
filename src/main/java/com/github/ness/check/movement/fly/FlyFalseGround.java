@@ -13,7 +13,6 @@ import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
-import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
 public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 
@@ -58,7 +57,6 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		if (Utility.hasVehicleNear(player) || nessPlayer.getMovementValues().isAroundWeb()) {
 			return;
 		}
-		nessPlayer.sendDevMessage("buffer: " + buffer);
 		// boolean isReallyOnGround =
 		/*
 		 * nessPlayer.sendDevMessage( "FalseGround, blocks near player? " +

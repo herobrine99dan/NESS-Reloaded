@@ -100,16 +100,17 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 			resultY -= 0.05;
 		}
 		if (resultXZ > maxXZVariance) {
-			if(++buffer > 3) {
-			this.flag("HighVarianceXZ");
+
+			if (++buffer > 3) {
+				this.flag("HighVarianceXZ");
 			}
 			return;
 		} else if (buffer > 0) {
 			buffer -= 1;
 		}
 		if (resultY > maxYVariance) {
-			if(++buffer > 3) {
-			this.flag("HighVarianceY");
+			if (++buffer > 3) {
+				this.flag("HighVarianceY");
 			}
 			return;
 		} else if (buffer > 0) {
@@ -133,6 +134,24 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	public void handleLava(MovementValues values, Cancellable event, NessPlayer nessPlayer) {
-		//TODO Lava check
+		// First Check
+		float xzDist = (float) values.getXZDiff();
+		float yDist = (float) values.getyDiff();
+		float lavaInertia = 0.5F;
+		float acceleration = 0.02F;
+		float predictionXZ = lastXZDist * lavaInertia;
+		predictionXZ += acceleration;
+		float predictionY = (lastYDist * 0.5f);
+		float resultXZ = xzDist - predictionXZ;
+		float resultY = yDist - predictionY;
+		if ((resultY > 0.04 || resultXZ > 0.04) && !values.isOnGroundCollider() && ++buffer > 2) {
+			this.player().sendDevMessage("resultY: " + resultY + " resultXZ: " + resultXZ);
+		} else if (buffer > 0) {
+			buffer -= 0.25;
+		}
+		// Second check
+		if (yDist > maxHighDistanceWaterY && !values.isAroundLily() && !values.isGroundAround()) {
+			this.flagEvent(event, "HighDistanceY");
+		}
 	}
 }
