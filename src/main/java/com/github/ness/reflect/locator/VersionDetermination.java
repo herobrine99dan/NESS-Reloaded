@@ -47,7 +47,7 @@ public class VersionDetermination {
 	 * @return if the server's version is newer than 1.8
 	 */
 	public boolean hasCombatUpdate() {
-		for (int version = 9; version < LATEST_MINECRAFT_VERSION + 1; version++) {
+		for (int version = 9; version <= LATEST_MINECRAFT_VERSION; version++) {
 			if (isVersion(version)) {
 				return true;
 			}
@@ -61,8 +61,8 @@ public class VersionDetermination {
 	 * 
 	 * @return if the server's version is newer than 1.13
 	 */
-	public boolean hasAcquaticUpdate() {
-		for (int version = 13; version < LATEST_MINECRAFT_VERSION + 1; version++) {
+	public boolean hasAquaticUpdate() {
+		for (int version = 13; version <= LATEST_MINECRAFT_VERSION; version++) {
 			if (isVersion(version)) {
 				return true;
 			}
