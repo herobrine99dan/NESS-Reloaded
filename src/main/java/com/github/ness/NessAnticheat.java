@@ -28,13 +28,14 @@ import com.github.ness.packets.PacketActorInterceptor;
 import com.github.ness.packets.PacketListener;
 import com.github.ness.packets.wrapper.PacketTypeRegistry;
 import com.github.ness.packets.wrapper.SimplePacketTypeRegistry;
-import com.github.ness.reflect.locator.ClassLocator;
 import com.github.ness.reflect.CoreReflection;
 import com.github.ness.reflect.InvokerCachingReflection;
 import com.github.ness.reflect.MethodHandleReflection;
 import com.github.ness.reflect.ReflectHelper;
 import com.github.ness.reflect.Reflection;
 import com.github.ness.reflect.SimpleReflectHelper;
+import com.github.ness.reflect.locator.ClassLocator;
+import com.github.ness.reflect.locator.VersionDetermination;
 import com.github.ness.violation.ViolationManager;
 
 public class NessAnticheat {
@@ -42,9 +43,8 @@ public class NessAnticheat {
 	private static final Logger logger = NessLogger.getLogger(NessAnticheat.class);
 
 	private final JavaPlugin plugin;
-	private final int minecraftVersion;
 	private final ScheduledExecutorService executor;
-
+	private final VersionDetermination versionDetermination;
 	private final ConfigManager configManager;
 	private final CheckManager checkManager;
 	private final Networker networker;
@@ -60,7 +60,6 @@ public class NessAnticheat {
 		MovementValues emptyObject = new MovementValues(materialAccess);
 		emptyObject.getHelper().calcDamageFall(5); //Executing a method to force Java to load completely the MovementValuesHelper
 		executor = Executors.newSingleThreadScheduledExecutor();
-		this.minecraftVersion = getVersion();
 		configManager = new ConfigManager(folder);
 		checkManager = new CheckManager(this);
 		violationManager = new ViolationManager(this);
@@ -80,18 +79,12 @@ public class NessAnticheat {
 						new PacketActorInterceptor(checkManager::receivePacket, reflection)));
 		reflectHelper = new SimpleReflectHelper(locator, reflection);
 		packetTypeRegistry = new SimplePacketTypeRegistry(reflectHelper);
-	}
-
-	private static int getVersion() {
-		String first = Bukkit.getVersion().substring(Bukkit.getVersion().indexOf("(MC: "));
-		return Integer.valueOf(first.replace("(MC: ", "").replace(")", "").replace(" ", "").replace(".", ""));
+	       String craftbukkitPackage = Bukkit.getServer().getClass().getPackage().getName();
+	        String nmsVersion = VersionDetermination.getNmsVersion(craftbukkitPackage);
+		versionDetermination = new VersionDetermination(nmsVersion);
 	}
 
 	void start() {
-		// Detect version
-		if (minecraftVersion > 1152 && minecraftVersion < 1162) {
-			logger.warning("Please use 1.16.2 Spigot Version since 1.16/1.16.1 has a lot of false flags");
-		}
 
 		// Start configuration
 		configManager.reload().join();
@@ -134,15 +127,6 @@ public class NessAnticheat {
 	 */
 	public JavaPlugin getPlugin() {
 		return plugin;
-	}
-
-	/**
-	 * Gets the detected minecraft version number, e.g. '1162'
-	 * 
-	 * @return the version number
-	 */
-	public int getMinecraftVersion() {
-		return minecraftVersion;
 	}
 
 	public ScheduledExecutorService getExecutor() {
@@ -194,6 +178,10 @@ public class NessAnticheat {
 
 	public boolean isUseFloodGate() {
 		return useFloodGate;
+	}
+
+	public VersionDetermination getVersionDetermination() {
+		return versionDetermination;
 	}
 
 }

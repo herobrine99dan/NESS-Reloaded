@@ -13,6 +13,7 @@ import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.blockgetter.MaterialAccess;
+import com.github.ness.reflect.locator.VersionDetermination;
 import com.github.ness.utility.Utility;
 
 //Need a refactor
@@ -170,7 +171,7 @@ public class MovementValues {
 	}
 
 	public MovementValues(NessPlayer nessPlayer, ImmutableLoc to, ImmutableLoc from, MaterialAccess access,
-			int bukkitVersion) {
+			VersionDetermination determination) {
 		Player p = nessPlayer.getBukkitPlayer();
 		this.to = to;
 		this.from = from;
@@ -281,7 +282,7 @@ public class MovementValues {
 			}
 			aroundSlime = slime;
 			aroundIce = ice;
-			if (bukkitVersion > 1122) { // We aren't stupid! columns of Bubbles don't exists in 1.12 or below!
+			if (determination.hasAcquaticUpdate()) { // We aren't stupid! columns of Bubbles don't exists in 1.12 or below!
 				hasBubblesColumns = 0;
 			} else {
 				hasBubblesColumns = isInColumnOfBubbles();
