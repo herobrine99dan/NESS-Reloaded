@@ -30,7 +30,7 @@ public class KillauraAnglePattern extends ListeningCheck<EntityDamageByEntityEve
 	protected void checkAsyncPeriodic() {
 		if (anglePatternList.size() > 1) {// Prevents math errors
 			double averageAngle = anglePatternList.average() / 10000;
-			double standardDeviationSample = ((anglePatternList.standardDeviation() / 10000) * 100) / averageAngle;
+			double standardDeviationSample = ((anglePatternList.standardDeviation(false) / 10000) * 100) / averageAngle;
 			player().sendDevMessage("standardDeviationSample: " + (float) standardDeviationSample);
 			if (standardDeviationSample < anglePatternMaxPrecision
 					&& Math.abs(this.player().getMovementValues().getYawDiff()) > 10) { // If you don't move, obviously

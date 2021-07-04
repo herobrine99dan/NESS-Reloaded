@@ -205,7 +205,7 @@ public class LongRingBuffer {
 	 * 
 	 * @return the variance
 	 */
-	public double variance() {
+	public double variance(boolean sample) {
 		double standardDeviation = 0;
 
 		double mean = average();
@@ -213,8 +213,8 @@ public class LongRingBuffer {
 		for (long num : values) {
 			standardDeviation += Math.pow(num - mean, 2);
 		}
-
-		return (double) standardDeviation / (double) this.values.length;
+		int sampleFixer = sample ? 1 : 0;
+		return (double) standardDeviation / (double) (this.values.length - sampleFixer);
 	}
 
 	/**
@@ -223,8 +223,12 @@ public class LongRingBuffer {
 	 * @param x
 	 * @return how many standard deviations an element is from the mean.
 	 */
-	public double standardScore(long x) {
-		return (x - average()) / standardDeviation();
+	public double standardScore(boolean sample, long x) {
+		return (x - average()) / standardDeviation(sample);
+	}
+	
+	public double coefficientOfVariation(boolean sample) {
+		return this.standardDeviation(sample) / this.average();
 	}
 
 	/**
@@ -232,8 +236,8 @@ public class LongRingBuffer {
 	 * 
 	 * @return the standard Deviation
 	 */
-	public double standardDeviation() {
-		return (double) Math.sqrt(variance());
+	public double standardDeviation(boolean sample) {
+		return (double) Math.sqrt(variance(sample));
 	}
 	
 	public List<Long> calculateDelta() {

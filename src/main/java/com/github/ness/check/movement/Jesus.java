@@ -147,7 +147,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		if ((resultY > 0.04 || resultXZ > 0.04) && !values.isOnGroundCollider() && ++buffer > 2) {
 			this.player().sendDevMessage("resultY: " + resultY + " resultXZ: " + resultXZ);
 		} else if (buffer > 0) {
-			buffer -= 0.25;
+			buffer -= 0.5;
 		}
 		// Second check
 		if (yDist > maxHighDistanceWaterY && !values.isAroundLily() && !values.isGroundAround()) {
