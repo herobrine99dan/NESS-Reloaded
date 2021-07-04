@@ -40,7 +40,7 @@ public class Utility {
 	}
 
 	public static boolean hasLivingEntityNear(Player player) {
-		final int range = 4;
+		final int range = 2;
 		for (Entity e : player.getNearbyEntities(range, range, range)) {
 			if (e instanceof LivingEntity && !e.getUniqueId().equals(player.getUniqueId())) {
 				return true;

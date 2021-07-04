@@ -28,7 +28,7 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 	private final double maxBuffer;
 
 	public interface Config {
-		@DefaultDouble(2)
+		@DefaultDouble(1)
 		double maxBuffer();
 	}
 
@@ -58,6 +58,7 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		if (Utility.hasVehicleNear(player) || nessPlayer.getMovementValues().isAroundWeb()) {
 			return;
 		}
+		nessPlayer.sendDevMessage("buffer: " + buffer);
 		// boolean isReallyOnGround =
 		/*
 		 * nessPlayer.sendDevMessage( "FalseGround, blocks near player? " +
@@ -71,11 +72,10 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		if (nessPlayer.isOnGroundPacket() && !movementValues.isGroundAround() && !movementValues.isAroundLadders()) {
 			flagEvent(e, " TypeB");
 		} else if (nessPlayer.isOnGroundPacket()
-				&& !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY())
-				&& !movementValues.isOnGroundCollider() && ++buffer > maxBuffer) {
+				&& !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY()) && ++buffer > maxBuffer) {
 			flagEvent(e, " TypeA, result: " + (float) (movementValues.getTo().getY() % (1D / 64D)));
 		} else if (buffer > 0) {
-			buffer -= 0.5;
+			buffer -= 0.25;
 		}
 	}
 }
