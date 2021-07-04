@@ -147,6 +147,16 @@ public class LongRingBuffer {
 	 * @return the median
 	 */
 	public long median() {
+		return calculateMedian(this.values);
+	}
+	
+	/**
+	 * Get the median beetween values
+	 * 
+	 * @param the long array
+	 * @return the median
+	 */
+	public long calculateMedian(long[] values) {
 		Arrays.sort(values);
 		long median;
 		if (values.length % 2 == 0) {
@@ -183,21 +193,37 @@ public class LongRingBuffer {
 	}
 
 	/**
-	 * Search a simple pattern in the array. Examples of simple pattern: 1,2,3,4,5 →
-	 * average = 3 → (1-3)+(2-3)+(3-3)+(4-3)+(5-3)=0 0,2,4,6,8 → average = 4 →
-	 * (0-4)+(2-4)+(4-4)+(6-4)+(8-4)=0
+	 * Calculate the wastes from median/average
 	 * 
-	 * @return 0.0 if there is a perfect-pattern, else another number that ......
+	 * @param boolean median, should we use median or average?
+	 * 
+	 * @return the wastes
 	 */
-	public double searchASimplePattern() {
+	public double calculateWastes(boolean median) {
 		double number = 0;
 
-		double mean = average();
+		double mean = median ? median() : average();
 
 		for (long num : values) {
 			number += num - mean;
 		}
 		return number / (double) this.values.length;
+	}
+
+	/**
+	 * Calculate the MAD. 
+	 * MAD is a more robust than Standard Deviation measure of statistical dispersion.
+	 * MAD And Standard Deviation are linked by a relationship: deviationStandard = k*MAD
+	 * For normally distributed data the k is 1.4826 (MAD/deviationStandard=0.6745)
+	 * @return
+	 */
+	public long calculateMAD() {
+		long median = this.median();
+		long[] wastes = new long[this.values.length];
+		for (int i = 0; i < wastes.length; i++) {
+			wastes[i] = Math.abs(values[i] - median);
+		}
+		return calculateMedian(wastes);
 	}
 
 	/**
@@ -226,7 +252,7 @@ public class LongRingBuffer {
 	public double standardScore(boolean sample, long x) {
 		return (x - average()) / standardDeviation(sample);
 	}
-	
+
 	public double coefficientOfVariation(boolean sample) {
 		return this.standardDeviation(sample) / this.average();
 	}
@@ -239,7 +265,7 @@ public class LongRingBuffer {
 	public double standardDeviation(boolean sample) {
 		return (double) Math.sqrt(variance(sample));
 	}
-	
+
 	public List<Long> calculateDelta() {
 		if (values.length < 1) {
 			throw new IllegalArgumentException("List must contains at least two values!");
