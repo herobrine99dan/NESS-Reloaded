@@ -12,7 +12,7 @@ import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 
-public class Spider extends ListeningCheck<PlayerMoveEvent> {
+@Deprecated public class Spider extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
@@ -28,7 +28,7 @@ public class Spider extends ListeningCheck<PlayerMoveEvent> {
 		Player player = e.getPlayer();
 		Location to = e.getTo();
 		Location from = e.getFrom();
-		double dTG = values.getdTG();
+		double dTG = makeDTG();
 		String dTGString = Double.toString(dTG);
 		if (values.isAroundLiquids() || values.isAroundCactus()
 				|| player().getAcquaticUpdateFixes().isRiptiding()) {
@@ -57,6 +57,22 @@ public class Spider extends ListeningCheck<PlayerMoveEvent> {
 			}
 			lastDTG = dTG;
 		}
+	}
+	
+	private double makeDTG() {
+		double dTG = 0.0;
+		Player player = this.player().getBukkitPlayer();
+		for (int x = -1; x <= 1; x++) {
+			for (int z = -1; z <= 1; z++) {
+				int y = 0;
+				while (!player.getLocation().subtract(x, y, z).getBlock().getType().isSolid() && y < 20)
+					y++;
+				if (y < dTG || dTG == 0.0D)
+					dTG = y;
+			}
+		}
+		dTG += player.getLocation().getY() % 1.0D;
+		return dTG;
 	}
 
 }

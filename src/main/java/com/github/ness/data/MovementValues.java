@@ -16,7 +16,7 @@ import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.reflect.locator.VersionDetermination;
 import com.github.ness.utility.Utility;
 
-//Need a refactor
+@Deprecated //THIS IS THE CAUSE OF ALL BYPASSES (Needs a recode)
 public class MovementValues {
 
 	/**
@@ -66,8 +66,6 @@ public class MovementValues {
 
 	private final boolean aroundLily;
 
-	private final boolean aroundIronBars;
-
 	private final boolean aroundCarpet;
 
 	private final boolean groundAround;
@@ -86,10 +84,6 @@ public class MovementValues {
 
 	private final GameMode gamemode;
 
-	private final boolean isFlying;
-
-	private final boolean ableFly;
-
 	private final boolean aroundCactus;
 
 	private final boolean aroundFence;
@@ -100,25 +94,18 @@ public class MovementValues {
 
 	private final boolean aroundKelp;
 
-	private final double dTG;
-	
 	private final boolean collidedHorizontally;
-
-	private final boolean aroundWalls;
 	private final boolean aroundFire;
-	private final boolean aroundStainedGlass;
 	private final int hasBubblesColumns;
-	private final boolean aroundGlass;
 	private final boolean sprinting;
 	private final boolean blockUnderHead;
 	private final boolean aroundSeaBlocks;
 	private static MovementValuesHelper helper;
-	private final Player player; // Not Thread Safe
-	private final boolean clientGround;
 	private static volatile HashSet<Material> trasparentMaterials = new HashSet<Material>();
 
 	/**
 	 * WARNING: USE THIS CONSTRUCTOR ONLY TO SETUP THE MOVEMENTVALUESHELPER OBJECT
+	 * 
 	 * @param MaterialAccess access
 	 */
 	public MovementValues(MaterialAccess access) {
@@ -129,26 +116,20 @@ public class MovementValues {
 		this.xDiff = 0;
 		this.to = null;
 		this.from = null;
-		this.player = null;
 		this.yDiff = 0;
 		this.yawDiff = 0;
 		this.zDiff = 0;
-		clientGround = false;
 		aroundIce = false;
 		aroundSlabs = false;
 		serverVelocity = new Vector(0, 0, 0);
 		aroundCarpet = false;
 		aroundLadders = false;
 		groundAround = false;
-		aroundStainedGlass = false;
 		aroundGate = false;
-		aroundGlass = false;
-		aroundWalls = false;
 		sprinting = false;
 		aroundKelp = false;
 		aroundNonOccludingBlocks = false;
 		aroundLily = false;
-		aroundIronBars = false;
 		aroundFire = false;
 		aroundWeb = false;
 		blockUnderHead = false;
@@ -158,10 +139,7 @@ public class MovementValues {
 		insideVehicle = false;
 		hasBubblesColumns = 0;
 		gamemode = GameMode.SURVIVAL;
-		isFlying = false;
 		aroundChorus = false;
-		ableFly = false;
-		dTG = 0.0;
 		aroundLiquids = false;
 		collidedHorizontally = false;
 		aroundSlime = false;
@@ -175,10 +153,8 @@ public class MovementValues {
 		Player p = nessPlayer.getBukkitPlayer();
 		this.to = to;
 		this.from = from;
-		this.player = p;
 		if (Bukkit.isPrimaryThread()) {
 			boolean liquids = false;
-			boolean ironbars = false;
 			boolean ice = false;
 			boolean slime = false;
 			boolean stairs = false;
@@ -194,21 +170,15 @@ public class MovementValues {
 			boolean gate = false;
 			boolean cactus = false;
 			boolean kelp = false;
-			boolean glass = false;
-			boolean walls = false;
 			if (helper.isMathematicallyOnGround(to.getY()) && helper.isOnGroundUsingCollider(to.toBukkitLocation())) {
 				nessPlayer.updateSafeLocation(to.toBukkitLocation());
 			}
 			boolean fence = false;
 			boolean onGroundCollider = false;
 			boolean sea = false;
-			boolean stainedGlass = false;
 			boolean nonOccludingBlocks = false;
-			serverVelocity = new Vector(p.getVelocity().getX(), p.getVelocity().getY(),
-					p.getVelocity().getZ());
+			serverVelocity = new Vector(p.getVelocity().getX(), p.getVelocity().getY(), p.getVelocity().getZ());
 			gamemode = p.getGameMode();
-			isFlying = p.isFlying();
-			ableFly = p.getAllowFlight();
 			for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 2)) {
 				Material material = access.getMaterial(b);
 				String name = material.name();
@@ -244,22 +214,14 @@ public class MovementValues {
 					fence = true;
 				} else if (name.contains("GATE")) {
 					gate = true;
-				} else if (name.contains("WALL")) {
-					walls = true;
 				} else if (name.contains("FIRE")) {
 					fire = true;
 				} else if (name.contains("CHORUS")) {
 					chorus = true;
 				} else if (name.contains("SEA")) {
 					sea = true;
-				} else if (name.contains("STAINED")) {
-					stainedGlass = true;
-				} else if (name.contains("BARS")) {
-					ironbars = true;
 				} else if (name.contains("CACTUS")) {
 					cactus = true;
-				} else if (name.contains("GLASS")) {
-					glass = true;
 				} else if (name.contains("KELP")) {
 					kelp = true;
 				}
@@ -268,21 +230,20 @@ public class MovementValues {
 				}
 			}
 			aroundSnow = snow;
-			aroundStainedGlass = stainedGlass;
 			blockUnderHead = helper.groundAround(to.toBukkitLocation().add(0, 2.5, 0));
 			aroundLadders = ladder;
 			aroundSlabs = slab;
 			aroundNonOccludingBlocks = nonOccludingBlocks;
 			aroundWeb = web;
 			aroundStairs = stairs;
-			aroundIronBars = ironbars;
 			sprinting = p.isSprinting();
 			if (!slime) {
 				slime = helper.hasBlock(p, "SLIME");
 			}
 			aroundSlime = slime;
 			aroundIce = ice;
-			if (determination.hasAcquaticUpdate()) { // We aren't stupid! columns of Bubbles don't exists in 1.12 or below!
+			if (determination.hasAquaticUpdate()) { // We aren't stupid! columns of Bubbles don't exists in 1.12 or
+													// below!
 				hasBubblesColumns = 0;
 			} else {
 				hasBubblesColumns = isInColumnOfBubbles();
@@ -299,10 +260,8 @@ public class MovementValues {
 			aroundFire = fire;
 			aroundSeaBlocks = sea;
 			aroundGate = gate;
-			aroundGlass = glass;
-			aroundWalls = walls;
 			onGroundCollider = this.isAroundCarpet() || this.isAroundSlabs() || this.isAroundStairs()
-					|| this.isAroundSnow() || this.isAroundFence() || this.isAroundGate() || this.isAroundWalls();
+					|| this.isAroundSnow() || this.isAroundFence() || this.isAroundGate();
 			if (onGroundCollider) {
 				this.onGroundCollider = onGroundCollider;
 			} else {
@@ -313,15 +272,13 @@ public class MovementValues {
 				this.onGroundCollider = onGroundCollider;
 			}
 			boolean colliderHorizon = this.getHelper().isCollidedHorizontally(to.toBukkitLocation());
-			if(!colliderHorizon) {
+			if (!colliderHorizon) {
 				colliderHorizon = this.getHelper().isCollidedHorizontally(from.toBukkitLocation());
 			}
 			collidedHorizontally = colliderHorizon;
-			dTG = makeDTG();
-			if(trasparentMaterials.size() == 0.0) { //We add in a set all the non-occluding materials
+			if (trasparentMaterials.size() == 0.0) { // We add in a set all the non-occluding materials
 				trasparentMaterials = access.nonOccludingMaterials();
 			}
-			clientGround = player.isOnGround();
 		} else {
 			aroundIce = false;
 			aroundSlabs = false;
@@ -329,15 +286,11 @@ public class MovementValues {
 			aroundCarpet = false;
 			aroundLadders = false;
 			groundAround = false;
-			aroundStainedGlass = false;
 			aroundGate = false;
-			aroundGlass = false;
-			aroundWalls = false;
 			sprinting = false;
 			aroundKelp = false;
 			aroundNonOccludingBlocks = false;
 			aroundLily = false;
-			aroundIronBars = false;
 			aroundFire = false;
 			aroundWeb = false;
 			blockUnderHead = false;
@@ -347,15 +300,11 @@ public class MovementValues {
 			insideVehicle = false;
 			hasBubblesColumns = 0;
 			gamemode = GameMode.SURVIVAL;
-			isFlying = false;
 			aroundChorus = false;
-			ableFly = false;
-			dTG = 0.0;
 			aroundLiquids = false;
 			aroundSlime = false;
 			aroundStairs = false;
 			aroundFence = false;
-			clientGround = false;
 			collidedHorizontally = false;
 			aroundSeaBlocks = false;
 		}
@@ -371,41 +320,8 @@ public class MovementValues {
 		return blockUnderHead;
 	}
 
-	/**
-	 * Check if the player is falling using his server Motion
-	 * 
-	 * @return true if the player is falling
-	 */
-	public boolean isServerFalling() {
-		return this.serverVelocity.getY() < 0;
-	}
-
-	/**
-	 * Check if the player is falling using his yDifference
-	 * 
-	 * @return true if the player is falling
-	 */
-	public boolean isClientFalling() {
-		return this.yDiff < 0;
-	}
-
 	public Vector getDirection() {
 		return this.getTo().getDirectionVector();
-	}
-
-	private double makeDTG() {
-		double dTG = 0.0;
-		for (int x = -1; x <= 1; x++) {
-			for (int z = -1; z <= 1; z++) {
-				int y = 0;
-				while (!player.getLocation().subtract(x, y, z).getBlock().getType().isSolid() && y < 20)
-					y++;
-				if (y < dTG || dTG == 0.0D)
-					dTG = y;
-			}
-		}
-		dTG += player.getLocation().getY() % 1.0D;
-		return dTG;
 	}
 
 	/**
@@ -537,24 +453,12 @@ public class MovementValues {
 		return gamemode;
 	}
 
-	public boolean isFlying() {
-		return isFlying;
-	}
-
-	public boolean isAbleFly() {
-		return ableFly;
-	}
-
 	public boolean isSprinting() {
 		return sprinting;
 	}
 
 	public MovementValuesHelper getHelper() {
 		return helper;
-	}
-
-	public boolean isAroundWalls() {
-		return aroundWalls;
 	}
 
 	public boolean isAroundFire() {
@@ -565,17 +469,6 @@ public class MovementValues {
 		return aroundChorus;
 	}
 
-	/**
-	 * Executing actions on Player object in another thread isn't thread safe.
-	 * Please, if you can, use values already calculated on MovementValues or on
-	 * MovementValuesHelper
-	 * 
-	 * @return Player Object of this MovementValues object
-	 */
-	public Player getPlayer() {
-		return player;
-	}
-
 	public boolean isAroundSeaBlocks() {
 		return aroundSeaBlocks;
 	}
@@ -584,24 +477,8 @@ public class MovementValues {
 		return aroundNonOccludingBlocks;
 	}
 
-	public boolean isAroundStainedGlass() {
-		return aroundStainedGlass;
-	}
-
-	public boolean isAroundGlass() {
-		return aroundGlass;
-	}
-
-	public boolean isAroundIronBars() {
-		return aroundIronBars;
-	}
-
 	public boolean isAroundCactus() {
 		return aroundCactus;
-	}
-
-	public double getdTG() {
-		return dTG;
 	}
 
 	public boolean isAroundKelp() {
@@ -612,14 +489,6 @@ public class MovementValues {
 		return hasBubblesColumns;
 	}
 
-	public static HashSet<Material> getTrasparentMaterials() {
-		return trasparentMaterials;
-	}
-
-	public boolean isClientOnGround() {
-		return clientGround;
-	}
-	
 	public boolean isCollidedHorizontally() {
 		return collidedHorizontally;
 	}

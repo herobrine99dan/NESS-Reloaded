@@ -108,7 +108,7 @@ public class NessPlayer implements AnticheatPlayer {
 		this.devMode = devMode;
 		this.userName = player.getName();
 		this.movementValues = new MovementValues(this, ImmutableLoc.of(player.getLocation()),
-				ImmutableLoc.of(player.getLocation()), ness.getMaterialAccess(), 1122);
+				ImmutableLoc.of(player.getLocation()), ness.getMaterialAccess(), ness.getVersionDetermination());
 		this.acquaticUpdateFixes = new AcquaticUpdateFixes(this);
 	}
 

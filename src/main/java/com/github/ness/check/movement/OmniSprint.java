@@ -30,7 +30,7 @@ public class OmniSprint extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	private double buffer;
-	private LongRingBuffer angles = new LongRingBuffer(5);
+	private LongRingBuffer angles = new LongRingBuffer(10);
 
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {

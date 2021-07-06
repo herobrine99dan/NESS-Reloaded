@@ -15,7 +15,7 @@ import com.github.ness.utility.Utility;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 
-public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
+@Deprecated public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
 
 	double maxInvalidVelocity;
 	private double buffer;
@@ -42,7 +42,7 @@ public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
 		Check(e);
 	}
 
-	/**
+	/** TODO This has a lot of false flags, if FlyInvalidClientGravity gets stronger enough i can remove this.
 	 * Check for Invalid Gravity
 	 *
 	 * @param e
@@ -54,7 +54,7 @@ public class FlyInvalidServerGravity extends ListeningCheck<PlayerMoveEvent> {
 		double y = values.getyDiff();
 		double yresult = y - p.getVelocity().getY();
 		if (values.getHelper().hasflybypass(nessPlayer) || values.isAroundSlime() || p.getAllowFlight() || values.isAroundLily()
-				|| Utility.hasVehicleNear(p) || values.isAroundIronBars()) {
+				|| Utility.hasVehicleNear(p)) {
 			return;
 		}
 		if(values.hasBubblesColumns() == 1 || player().getAcquaticUpdateFixes().isRiptiding()) {

@@ -1,6 +1,7 @@
 package com.github.ness.check.movement;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
@@ -41,7 +42,8 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 
 	public void IllegalXZDistance(Cancellable e) {
 		MovementValues values = player().getMovementValues();
-		if (values.isGroundAround() || values.isAbleFly() || values.isFlying() || values.isInsideVehicle()
+		Player player = player().getBukkitPlayer();
+		if (values.isGroundAround() || player.getAllowFlight() || player.isFlying() || values.isInsideVehicle()
 				|| Utility.hasVehicleNear(player().getBukkitPlayer()) || values.isAroundLiquids()) {
 			return;
 		}

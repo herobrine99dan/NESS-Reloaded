@@ -3,6 +3,8 @@ package com.github.ness.check.movement.fly;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -72,12 +74,13 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
 			return;
 		}
-		//When you fly, the gravity is the one of the entity, TODO Make checks for that
-		if(player.isInsideVehicle() || nessPlayer.milliSecondTimeDifference(PlayerAction.VEHICLEENTER) < 500) {
+		// When you fly, the gravity is the one of the entity, TODO Make checks for that
+		if (player.isInsideVehicle() || nessPlayer.milliSecondTimeDifference(PlayerAction.VEHICLEENTER) < 500) {
 			return;
 		}
-		//TODO There is one false flag with jump boost because Minecraft (aka Shitcraft) rounds the number if it is very low
-		final boolean onGround = isOnGround(event.getTo());
+		// TODO There is one false flag with jump boost because Minecraft (aka
+		// Shitcraft) rounds the number if it is very low
+		final boolean onGround = isOnGround(event.getTo()) || isOnGround(event.getFrom());
 
 		float yDiff = (float) values.getyDiff();
 		if (onGround) {
@@ -89,15 +92,17 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 			airTicks = 0;
 		}
 		float motionY = lastDeltaY;
-		motionY -= 0.08f;
-		motionY *= 0.98f;
+		motionY -= 0.08f; // Gravity
+		motionY *= 0.98f; // Air Resistance
 		float result = yDiff - motionY;
 		if (useAbsoluteDifference) {
 			result = Math.abs(result);
 		}
 		if (result > 0.001 && airTicks > minAirTicks) {
 			if (++buffer > minBuffer) {
-				this.flagEvent(event, "yResult: " + result + " airTicks: " + airTicks);
+				spawnArmorStand("To", event.getTo());
+				spawnArmorStand("From", event.getFrom());
+				this.flag("yResult: " + result + " ground: " + onGround + " yDiff: " + yDiff + " motionY: " + motionY);
 			}
 		} else if (buffer > 0) {
 			buffer -= 0.5;
@@ -105,15 +110,27 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		this.lastDeltaY = yDiff;
 	}
 
+	private void spawnArmorStand(String name, Location loc) {
+		//Spawn the stands only in dev mode
+		if(this.player().isDevMode()) {
+			ArmorStand stand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+			stand.setGravity(false);
+			stand.setAI(false);
+			stand.setSmall(true);
+			stand.setCustomNameVisible(true);
+			stand.setCustomName(name);
+		}
+	}
+
 	private boolean isOnGround(Location loc) {
 		final Location cloned = loc.clone();
-		double limit = 0.30;
-		for (double x = -limit; x < limit + 0.1; x += limit) {
-			for (double z = -limit; z < limit + 0.1; z += limit) {
-				if (isBlockConsideredOnGround(cloned.clone().add(x, -0.15, z))
-						|| isBlockConsideredOnGround(cloned.clone().add(x, -0.2, z))
-						|| isBlockConsideredOnGround(cloned.clone().add(x, -0.25, z))) {
-					return true;
+		double limit = 0.4;
+		for (double x = -limit; x < limit; x += 0.1) {
+			for (double z = -limit; z < limit; z += 0.1) {
+				for (double y = -0.7; y < 0; y += 0.1) {
+					if (isBlockConsideredOnGround(cloned.clone().add(x, y, z))) {
+						return true;
+					}
 				}
 			}
 		}

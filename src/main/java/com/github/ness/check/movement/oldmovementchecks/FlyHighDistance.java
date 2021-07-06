@@ -43,7 +43,7 @@ public class FlyHighDistance extends ListeningCheck<PlayerMoveEvent> {
 				flagEvent(e);
 			}
 		} else if (player.getLocation().getY() % .5 != 0.0 && !player.isFlying() && !values.isGroundAround()
-				&& !values.isAroundFence() && below.isOccluding() && !values.isAroundWalls() && !values.isAroundWeb()
+				&& !values.isAroundFence() && below.isOccluding() && !values.isAroundWeb()
 				&& !values.isAroundCarpet() && !values.isAroundSnow() && !values.isAroundLily()
 				&& !values.isAroundLiquids()) {
 			if (preVL++ > 2) {

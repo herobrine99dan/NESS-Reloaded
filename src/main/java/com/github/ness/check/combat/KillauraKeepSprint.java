@@ -47,26 +47,27 @@ public class KillauraKeepSprint extends ListeningCheck<PlayerMoveEvent> {
 
 		final long swingDelay = player.milliSecondTimeDifference(PlayerAction.ATTACK);
 
-		final boolean sprinting = values.isSprinting();
+		final boolean sprinting = player.getSprinting().get();
 		LivingEntity entity = getEntityById(e.getPlayer().getWorld(), player.getLastEntityAttacked());
-		if(entity == null) { //The Entity can be dead.
+		if (entity == null) { // The Entity can be dead.
 			return;
 		}
 		final boolean validTarget = entity instanceof Player;
 		final boolean invalid = acceleration < .0025 && sprinting && deltaXZ > .22 && swingDelay < 150 && validTarget;
 		if (invalid) {
-			if (++bufferViolation > 4) {
+			if (++bufferViolation > 2) {
+				this.player().sendDevMessage("invalid: " + invalid);
 				this.flagEvent(e);
 			}
 		} else if (bufferViolation > 0) {
-			bufferViolation--;
+			bufferViolation -= 0.5;
 		}
 		this.lastDeltaXZ = deltaXZ;
 	}
-	
+
 	private LivingEntity getEntityById(World w, UUID uuid) {
-		for(LivingEntity l : w.getLivingEntities()) {
-			if(l.getUniqueId().equals(uuid)) {
+		for (LivingEntity l : w.getLivingEntities()) {
+			if (l.getUniqueId().equals(uuid)) {
 				return l;
 			}
 		}
