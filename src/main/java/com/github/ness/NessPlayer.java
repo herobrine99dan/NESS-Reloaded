@@ -86,6 +86,7 @@ public class NessPlayer implements AnticheatPlayer {
 	private final AtomicBoolean sprinting;
 	private final AtomicBoolean sneaking;
 	private final AtomicBoolean heroNeedsDevMode;
+	private float lastYDeltaPrediction;
 
 	public NessPlayer(Player player, boolean devMode, NessAnticheat ness) {
 		sprinting = new AtomicBoolean(false);
@@ -483,6 +484,14 @@ public class NessPlayer implements AnticheatPlayer {
 
 	public AtomicBoolean getHeroNeedsDevMode() {
 		return heroNeedsDevMode;
+	}
+
+	public float getLastYDeltaPrediction() {
+		return lastYDeltaPrediction;
+	}
+
+	public void setLastYDeltaPrediction(float lastYDeltaPrediction) {
+		this.lastYDeltaPrediction = lastYDeltaPrediction;
 	}
 
 }
