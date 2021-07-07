@@ -31,10 +31,7 @@ public class SpeedAir extends ListeningCheck<PlayerMoveEvent> {
 		float returner = (float) speedAirBaseSpeed
 				+ (Utility.getPotionEffectLevel(player.getBukkitPlayer(), PotionEffectType.SPEED) * 0.062f)
 				+ ((player.getBukkitPlayer().getWalkSpeed() - 0.2f) * 1.6f);
-		if (player.getMovementValues().isAroundIce()) {
-			returner += speedAirIceSpeed;
-		}
-		if (player.getMovementValues().isAroundIce()) {
+		if (player.getMovementValues().isNearMaterials("ICE")) {
 			returner += speedAirSlimeSpeed;
 		}
 		if (player.getMovementValues().hasBlockNearHead()) {

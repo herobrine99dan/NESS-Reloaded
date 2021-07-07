@@ -32,7 +32,7 @@ public class Step extends ListeningCheck<PlayerMoveEvent> {
 		double yDiffUpper = values.getyDiff();
 		yDiffUpper -= jumpBoost * 0.1;
 		double minY = this.player().isUsingGeyserMC() ? 0.76 : 0.6;
-		if (yDiffUpper > minY && values.isGroundAround() && !values.isAroundSlime()) {
+		if (yDiffUpper > minY && values.isGroundAround() && !values.isNearMaterials("SLIME")) {
 			if (player.getVelocity().getY() < 0.43) {
 				flagEvent(e, "High Distance: " + yDiffUpper);
 			}

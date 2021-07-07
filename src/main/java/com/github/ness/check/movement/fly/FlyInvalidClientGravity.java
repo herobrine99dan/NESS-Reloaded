@@ -66,7 +66,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues values = nessPlayer.getMovementValues();
 		// Flying will be handled in another class. Same thing for Elytra. Lava and
 		// Water are handled in Jesus
-		if (player.isFlying() || values.getHelper().isPlayerUsingElytra(nessPlayer) || values.isAroundLiquids()) {
+		if (player.isFlying() || values.getHelper().isPlayerUsingElytra(nessPlayer) || values.isNearLiquid()) {
 			return;
 		}
 		// Velocity won't be handled for now: when i finish the check, i will simply
@@ -111,8 +111,8 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	private void spawnArmorStand(String name, Location loc) {
-		//Spawn the stands only in dev mode
-		if(this.player().isDevMode()) {
+		// Spawn the stands only in dev mode
+		if (this.player().isDevMode()) {
 			ArmorStand stand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
 			stand.setGravity(false);
 			stand.setAI(false);
@@ -125,8 +125,8 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 	private boolean isOnGround(Location loc) {
 		final Location cloned = loc.clone();
 		double limit = 0.4;
-		for (double x = -limit; x < limit; x += 0.1) {
-			for (double z = -limit; z < limit; z += 0.1) {
+		for (double x = -limit; x < limit; x += 0.05) {
+			for (double z = -limit; z < limit; z += 0.05) {
 				for (double y = -0.7; y < 0; y += 0.1) {
 					if (isBlockConsideredOnGround(cloned.clone().add(x, y, z))) {
 						return true;
@@ -143,7 +143,8 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		String name = material.name();
 		// TODO Walls aren't handled correctly
 		if (material.isSolid() || name.contains("SNOW") || name.contains("CARPET") || name.contains("SCAFFOLDING")
-				|| name.contains("SKULL") || name.contains("LADDER") || name.contains("WEB") || name.contains("WALL")) {
+				|| name.contains("SKULL") || name.contains("LADDER") || name.contains("WEB") || name.contains("WALL")
+				|| name.contains("LILY")) {
 			return true;
 		}
 		return false;

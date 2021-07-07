@@ -1,8 +1,7 @@
 package com.github.ness.check;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Arrow;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -12,10 +11,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -76,9 +75,9 @@ public class CoreListener implements Listener {
 
 		MovementValues values = new MovementValues(nessPlayer, ImmutableLoc.of(destination, destinationWorld),
 				ImmutableLoc.of(source, sourceWorld), this.manager.ness().getMaterialAccess(),
-				this.manager.ness().getMinecraftVersion());
+				this.manager.ness().getVersionDetermination());
 		nessPlayer.updateMovementValue(values);
-		if (this.manager.getCheckManager().getNess().getMinecraftVersion() > 189) {
+		if (this.manager.ness().getVersionDetermination().hasCombatUpdate()) {
 			if (player.isGliding()) {
 				nessPlayer.setPlayerAction(PlayerAction.GLIDING);
 			}
@@ -115,8 +114,6 @@ public class CoreListener implements Listener {
 			setPlayerAction((Player) victim, PlayerAction.DAMAGE);
 		}
 	}
-	
-	
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onBreak(BlockBreakEvent event) {
@@ -131,6 +128,23 @@ public class CoreListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
+	public void onClick(PlayerInteractEvent e) {
+		NessPlayer nessPlayer = manager.getCheckManager().getExistingPlayer(e.getPlayer());
+		if (nessPlayer == null) {
+			return;
+		}
+		if(e.hasItem()) {
+			/*Material material = e.getPlayer().getInventory().getItemInMainHand().getType();
+			if(material.name().contains("FIREWORK")) {
+				nessPlayer.setPlayerAction(PlayerAction.FIREWORKUSED);
+			}
+			material = this.access.getMaterial(e.getPlayer().getInventory().getItemInOffHand());
+			if(material.name().contains("FIREWORK")) {
+				nessPlayer.setPlayerAction(PlayerAction.FIREWORKUSED);
+			}*/ 
+		}
+	}
+
 	public void onPlace(BlockPlaceEvent event) {
 		setPlayerAction(event.getPlayer(), PlayerAction.BLOCKPLACED);
 	}

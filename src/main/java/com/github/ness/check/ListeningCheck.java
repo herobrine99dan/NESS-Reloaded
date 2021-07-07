@@ -2,12 +2,14 @@ package com.github.ness.check;
 
 import java.time.Duration;
 
-import com.github.ness.NessPlayer;
-import com.github.ness.check.dragdown.SetBack;
-import com.github.ness.violation.ViolationManager;
-
+import org.bukkit.Location;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+
+import com.github.ness.NessPlayer;
+import com.github.ness.check.dragdown.SetBack;
+import com.github.ness.data.ImmutableLoc;
+import com.github.ness.violation.ViolationManager;
 
 /**
  * A check listening to a certain event
@@ -61,6 +63,14 @@ public abstract class ListeningCheck<E extends Event> extends Check {
 	 */
 	protected final void flagEvent(Cancellable evt) {
 		flagEvent(evt, "");
+	}
+	
+	/**
+	 * Utility method to get material name with MaterialAccess implementation
+	 */
+	
+	public String getMaterialName(ImmutableLoc loc) {
+		return this.getMaterialAccess().getMaterial(loc.toBukkitLocation()).name();
 	}
 	
 	/**

@@ -16,7 +16,7 @@ import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.reflect.locator.VersionDetermination;
 import com.github.ness.utility.Utility;
 
-@Deprecated //THIS IS THE CAUSE OF ALL BYPASSES (Needs a recode)
+@Deprecated // THIS IS THE CAUSE OF ALL BYPASSES (Needs a recode)
 public class MovementValues {
 
 	/**
@@ -42,37 +42,7 @@ public class MovementValues {
 
 	private final double XZDiff;
 
-	private final boolean aroundIce;
-	/**
-	 * Liquids= Lava and Water
-	 */
-
-	private final boolean aroundLiquids;
-
-	private final boolean aroundStairs;
-	/**
-	 * Utility.specificBlockNear(to, "slime"); or Utility.hasBlock(p, "slime");
-	 */
-
-	private final boolean aroundSlime;
-
-	private final boolean aroundSlabs;
-
-	private final boolean aroundChorus;
-
-	private final boolean aroundSnow;
-
-	private final boolean aroundLadders;
-
-	private final boolean aroundLily;
-
-	private final boolean aroundCarpet;
-
 	private final boolean groundAround;
-
-	private final boolean onGroundCollider;
-
-	private final boolean aroundWeb;
 
 	private final Vector serverVelocity;
 
@@ -84,22 +54,8 @@ public class MovementValues {
 
 	private final GameMode gamemode;
 
-	private final boolean aroundCactus;
-
-	private final boolean aroundFence;
-
-	private final boolean aroundNonOccludingBlocks;
-
-	private final boolean aroundGate;
-
-	private final boolean aroundKelp;
-
-	private final boolean collidedHorizontally;
-	private final boolean aroundFire;
 	private final int hasBubblesColumns;
-	private final boolean sprinting;
 	private final boolean blockUnderHead;
-	private final boolean aroundSeaBlocks;
 	private static MovementValuesHelper helper;
 	private static volatile HashSet<Material> trasparentMaterials = new HashSet<Material>();
 
@@ -119,33 +75,12 @@ public class MovementValues {
 		this.yDiff = 0;
 		this.yawDiff = 0;
 		this.zDiff = 0;
-		aroundIce = false;
-		aroundSlabs = false;
 		serverVelocity = new Vector(0, 0, 0);
-		aroundCarpet = false;
-		aroundLadders = false;
 		groundAround = false;
-		aroundGate = false;
-		sprinting = false;
-		aroundKelp = false;
-		aroundNonOccludingBlocks = false;
-		aroundLily = false;
-		aroundFire = false;
-		aroundWeb = false;
 		blockUnderHead = false;
-		onGroundCollider = false;
-		aroundSnow = false;
-		aroundCactus = false;
 		insideVehicle = false;
 		hasBubblesColumns = 0;
 		gamemode = GameMode.SURVIVAL;
-		aroundChorus = false;
-		aroundLiquids = false;
-		collidedHorizontally = false;
-		aroundSlime = false;
-		aroundStairs = false;
-		aroundFence = false;
-		aroundSeaBlocks = false;
 	}
 
 	public MovementValues(NessPlayer nessPlayer, ImmutableLoc to, ImmutableLoc from, MaterialAccess access,
@@ -154,159 +89,38 @@ public class MovementValues {
 		this.to = to;
 		this.from = from;
 		if (Bukkit.isPrimaryThread()) {
-			boolean liquids = false;
-			boolean ice = false;
-			boolean slime = false;
-			boolean stairs = false;
-			boolean slab = false;
-			boolean ladder = false;
-			boolean fire = false;
-			boolean snow = false;
-			boolean lily = false;
-			boolean carpet = false;
 			boolean ground = false;
-			boolean web = false;
-			boolean chorus = false;
-			boolean gate = false;
-			boolean cactus = false;
-			boolean kelp = false;
-			if (helper.isMathematicallyOnGround(to.getY()) && helper.isOnGroundUsingCollider(to.toBukkitLocation())) {
-				nessPlayer.updateSafeLocation(to.toBukkitLocation());
-			}
-			boolean fence = false;
-			boolean onGroundCollider = false;
-			boolean sea = false;
-			boolean nonOccludingBlocks = false;
 			serverVelocity = new Vector(p.getVelocity().getX(), p.getVelocity().getY(), p.getVelocity().getZ());
 			gamemode = p.getGameMode();
 			for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 2)) {
-				Material material = access.getMaterial(b);
-				String name = material.name();
-				if (b.isLiquid()) {
-					liquids = true;
-				}
 				if (b.getType().isSolid()) { // Doing all things in a single loop is better than 12 loops
 					ground = true;
 				}
-				if (name.contains("ICE")) {
-					ice = true;
-				} else if (name.contains("SLIME")) {
-					slime = true;
-				} else if (name.contains("STAIR")) {
-					stairs = true;
-				} else if (name.contains("SLAB") || name.contains("STEP")) {
-					slab = true;
-				} else if (name.contains("LADDER")) {
-					ladder = true;
-				} else if (name.contains("VINE")) {
-					ladder = true;
-				} else if (name.contains("SNOW")) {
-					snow = true;
-				} else if (name.contains("LILY")) {
-					lily = true;
-				} else if (name.contains("PAD")) {
-					lily = true;
-				} else if (name.contains("CARPET")) {
-					carpet = true;
-				} else if (name.contains("WEB")) {
-					web = true;
-				} else if (name.contains("FENCE")) {
-					fence = true;
-				} else if (name.contains("GATE")) {
-					gate = true;
-				} else if (name.contains("FIRE")) {
-					fire = true;
-				} else if (name.contains("CHORUS")) {
-					chorus = true;
-				} else if (name.contains("SEA")) {
-					sea = true;
-				} else if (name.contains("CACTUS")) {
-					cactus = true;
-				} else if (name.contains("KELP")) {
-					kelp = true;
-				}
-				if (material.isSolid() && !material.isOccluding()) {
-					nonOccludingBlocks = true;
-				}
 			}
-			aroundSnow = snow;
-			blockUnderHead = helper.groundAround(to.toBukkitLocation().add(0, 2.5, 0));
-			aroundLadders = ladder;
-			aroundSlabs = slab;
-			aroundNonOccludingBlocks = nonOccludingBlocks;
-			aroundWeb = web;
-			aroundStairs = stairs;
-			sprinting = p.isSprinting();
-			if (!slime) {
-				slime = helper.hasBlock(p, "SLIME");
-			}
-			aroundSlime = slime;
-			aroundIce = ice;
+			// blockUnderHead = helper.groundAround(to.toBukkitLocation().add(0, 2.5, 0));
+			blockUnderHead = false;
 			if (determination.hasAquaticUpdate()) { // We aren't stupid! columns of Bubbles don't exists in 1.12 or
 													// below!
 				hasBubblesColumns = 0;
 			} else {
 				hasBubblesColumns = isInColumnOfBubbles();
 			}
-			aroundLily = lily;
-			aroundCactus = cactus;
 			groundAround = ground;
 			insideVehicle = p.isInsideVehicle();
-			aroundCarpet = carpet;
-			aroundKelp = kelp;
-			aroundChorus = chorus;
-			aroundLiquids = liquids;
-			aroundFence = fence;
-			aroundFire = fire;
-			aroundSeaBlocks = sea;
-			aroundGate = gate;
-			onGroundCollider = this.isAroundCarpet() || this.isAroundSlabs() || this.isAroundStairs()
-					|| this.isAroundSnow() || this.isAroundFence() || this.isAroundGate();
-			if (onGroundCollider) {
-				this.onGroundCollider = onGroundCollider;
-			} else {
-				onGroundCollider = this.getHelper().isOnGroundUsingCollider(to.toBukkitLocation());
-				if (!onGroundCollider) {
-					onGroundCollider = this.getHelper().isOnGroundUsingCollider(from.toBukkitLocation());
-				}
-				this.onGroundCollider = onGroundCollider;
-			}
 			boolean colliderHorizon = this.getHelper().isCollidedHorizontally(to.toBukkitLocation());
 			if (!colliderHorizon) {
 				colliderHorizon = this.getHelper().isCollidedHorizontally(from.toBukkitLocation());
 			}
-			collidedHorizontally = colliderHorizon;
 			if (trasparentMaterials.size() == 0.0) { // We add in a set all the non-occluding materials
 				trasparentMaterials = access.nonOccludingMaterials();
 			}
 		} else {
-			aroundIce = false;
-			aroundSlabs = false;
 			serverVelocity = new Vector(0, 0, 0);
-			aroundCarpet = false;
-			aroundLadders = false;
 			groundAround = false;
-			aroundGate = false;
-			sprinting = false;
-			aroundKelp = false;
-			aroundNonOccludingBlocks = false;
-			aroundLily = false;
-			aroundFire = false;
-			aroundWeb = false;
 			blockUnderHead = false;
-			onGroundCollider = false;
-			aroundSnow = false;
-			aroundCactus = false;
 			insideVehicle = false;
 			hasBubblesColumns = 0;
 			gamemode = GameMode.SURVIVAL;
-			aroundChorus = false;
-			aroundLiquids = false;
-			aroundSlime = false;
-			aroundStairs = false;
-			aroundFence = false;
-			collidedHorizontally = false;
-			aroundSeaBlocks = false;
 		}
 		yawDiff = to.getYaw() - from.getYaw();
 		pitchDiff = to.getPitch() - from.getPitch();
@@ -353,6 +167,15 @@ public class MovementValues {
 		return columnOfBubbles;
 	}
 
+	/**
+	 * Is the player near Liquids? This method uses getHelper().isNearLiquid(loc)
+	 * 
+	 * @return
+	 */
+	public boolean isNearLiquid() {
+		return getHelper().isNearLiquid(from.toBukkitLocation()) || getHelper().isNearLiquid(to.toBukkitLocation());
+	}
+
 	public ImmutableLoc getTo() {
 		return to;
 	}
@@ -385,60 +208,8 @@ public class MovementValues {
 		return XZDiff;
 	}
 
-	public boolean isAroundIce() {
-		return aroundIce;
-	}
-
-	public boolean isAroundLiquids() {
-		return aroundLiquids;
-	}
-
-	public boolean isAroundStairs() {
-		return aroundStairs;
-	}
-
-	public boolean isAroundSlime() {
-		return aroundSlime;
-	}
-
-	public boolean isAroundSlabs() {
-		return aroundSlabs;
-	}
-
-	public boolean isOnGroundCollider() {
-		return onGroundCollider;
-	}
-
-	public boolean isAroundGate() {
-		return aroundGate;
-	}
-
-	public boolean isAroundFence() {
-		return aroundFence;
-	}
-
-	public boolean isAroundSnow() {
-		return aroundSnow;
-	}
-
-	public boolean isAroundLadders() {
-		return aroundLadders;
-	}
-
-	public boolean isAroundLily() {
-		return aroundLily;
-	}
-
-	public boolean isAroundCarpet() {
-		return aroundCarpet;
-	}
-
 	public boolean isGroundAround() {
 		return groundAround;
-	}
-
-	public boolean isAroundWeb() {
-		return aroundWeb;
 	}
 
 	public Vector getServerVelocity() {
@@ -453,43 +224,45 @@ public class MovementValues {
 		return gamemode;
 	}
 
-	public boolean isSprinting() {
-		return sprinting;
-	}
-
 	public MovementValuesHelper getHelper() {
 		return helper;
 	}
 
-	public boolean isAroundFire() {
-		return aroundFire;
+	/**
+	 * This is a shortcut for the getHelper().isOnGround(loc) This checks both to
+	 * and from locations
+	 * 
+	 * @return
+	 */
+	public boolean isOnGround() {
+		return getHelper().isOnGround(to.toBukkitLocation()) || getHelper().isOnGround(from.toBukkitLocation());
 	}
 
-	public boolean isAroundChorus() {
-		return aroundChorus;
+	/**
+	 * This is a shortcut for the getHelper().isNearMaterial(material, loc) This
+	 * checks both to and from locations
+	 * 
+	 * @return
+	 */
+	public boolean isNearMaterials(String... materials) {
+		return getHelper().isNearMaterials(to.toBukkitLocation(), materials)
+				|| getHelper().isNearMaterials(from.toBukkitLocation(), materials);
 	}
 
-	public boolean isAroundSeaBlocks() {
-		return aroundSeaBlocks;
-	}
-
+	/**
+	 * This is method checks if the player is near nonOccluding blocks This checks
+	 * both to and from locations
+	 * 
+	 * @return
+	 */
 	public boolean isAroundNonOccludingBlocks() {
-		return aroundNonOccludingBlocks;
-	}
-
-	public boolean isAroundCactus() {
-		return aroundCactus;
-	}
-
-	public boolean isAroundKelp() {
-		return aroundKelp;
+		return this.getHelper().getBoundingBoxesAroundPlayer(to.toBukkitLocation()).stream()
+				.anyMatch((newLoc) -> !this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding())
+				|| this.getHelper().getBoundingBoxesAroundPlayer(from.toBukkitLocation()).stream()
+						.anyMatch((newLoc) -> !this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding());
 	}
 
 	public int hasBubblesColumns() {
 		return hasBubblesColumns;
-	}
-
-	public boolean isCollidedHorizontally() {
-		return collidedHorizontally;
 	}
 }

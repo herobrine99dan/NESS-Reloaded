@@ -12,6 +12,13 @@ import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
+/**
+ * Effective, but not enough. It can work Better. Also it isn't following new
+ * specs
+ * 
+ *
+ */
+@Deprecated
 public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
@@ -26,17 +33,16 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 		double yDiff = event.getTo().getY() - event.getFrom().getY();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
-		if (movementValues.isAroundSlabs()
-				|| event.getTo().getBlock().isLiquid() || movementValues.isAroundLiquids() || movementValues.isAroundSnow()
+		if (event.getTo().getBlock().isLiquid()
+				|| movementValues.isNearLiquid()
 				|| movementValues.hasBlockNearHead()
-				|| movementValues.isAroundLadders()
-				|| movementValues.isAroundNonOccludingBlocks() || movementValues.isAroundStairs()
-				|| movementValues.isAroundChorus()
-				|| movementValues.isAroundIce() || movementValues.isAroundSlime() || movementValues.getHelper().hasflybypass(nessPlayer)) {
+				|| movementValues.isNearMaterials("LADDER", "STAIR", "CHORUS", "ICE", "SLIME", "SLAB", "SNOW")
+				|| movementValues.isAroundNonOccludingBlocks() || movementValues.getHelper().hasflybypass(nessPlayer)) {
 			return;
 		}
 		if (yDiff > 0 && !Utility.hasVehicleNear(player)) {
-			if (player.getVelocity().getY() == 0.42f && !movementValues.getHelper().isMathematicallyOnGround(event.getTo().getY())
+			if (player.getVelocity().getY() == 0.42f
+					&& !movementValues.getHelper().isMathematicallyOnGround(event.getTo().getY())
 					&& movementValues.getHelper().isMathematicallyOnGround(event.getFrom().getY())) {
 				double yResult = Math.abs(yDiff - player.getVelocity().getY());
 				if (yResult != 0.0 && nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) > 1700

@@ -14,6 +14,13 @@ import com.github.ness.utility.Utility;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 
+/**
+ * Deprecated: Not that effective, code is hard to handle and doesn't follow new
+ * specs
+ * 
+ *
+ */
+@Deprecated
 public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
@@ -41,7 +48,7 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		Player player = e.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
-		if (movementValues.isAroundLily() || movementValues.isAroundCarpet() || movementValues.isAroundSnow()
+		if (movementValues.getHelper().isOnGround(e.getTo())
 				|| this.ness().getMaterialAccess().getMaterial(player.getLocation().clone().add(0, -0.5, 0)).name()
 						.contains("SCAFFOLD")) {
 			return;
@@ -50,11 +57,11 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 				&& nessPlayer.getLastVelocity().getY() > 0.35) {
 			return;
 		}
-		if (movementValues.getHelper().hasflybypass(nessPlayer) || movementValues.isAroundSlime()
-				|| Utility.hasLivingEntityNear(player)) {
+		if (movementValues.getHelper().hasflybypass(nessPlayer) || Utility.hasLivingEntityNear(player)) {
 			return;
 		}
-		if (Utility.hasVehicleNear(player) || nessPlayer.getMovementValues().isAroundWeb()) {
+		if (Utility.hasVehicleNear(player)
+				|| nessPlayer.getMovementValues().getHelper().isNearMaterials(e.getTo(), "SLIME", "WEB", "LILY", "LADDER")) {
 			return;
 		}
 		// boolean isReallyOnGround =
@@ -67,7 +74,7 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		 * (e.getTo().getY() % 0.015625) + " The player says he " +
 		 * (nessPlayer.isOnGroundPacket() ? "is" : "isn't") + " onGround");
 		 */
-		if (nessPlayer.isOnGroundPacket() && !movementValues.isGroundAround() && !movementValues.isAroundLadders()) {
+		if (nessPlayer.isOnGroundPacket() && !movementValues.isGroundAround()) {
 			flagEvent(e, " TypeB");
 		} else if (nessPlayer.isOnGroundPacket()
 				&& !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY()) && ++buffer > maxBuffer) {

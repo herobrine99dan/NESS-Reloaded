@@ -39,15 +39,10 @@ public class Criticals extends ListeningCheck<EntityDamageByEntityEvent> {
 		 * player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().isSolid
 		 * ()) { flagEvent(event); } }
 		 */
-		if (player.getLocation().getBlock().getRelative(BlockFace.UP).isLiquid()
-				|| player.getLocation().getBlock().getRelative(BlockFace.DOWN).isLiquid()) {
-
+		if(getMaterialName(values.getTo()).contains("WEB") || getMaterialName(values.getFrom()).contains("WEB")) {
 			return;
 		}
-		if(values.isAroundWeb()) {
-			return;
-		}
-		if (values.isAroundLiquids() || values.getHelper().hasflybypass(nessPlayer)) {
+		if (values.isNearLiquid() || values.getHelper().hasflybypass(nessPlayer)) {
 			return;
 		}
 		if (!player.isOnGround() && this.player().getMovementValues().getTo().getY() % 1.0 == 0.0) {

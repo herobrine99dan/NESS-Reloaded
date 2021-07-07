@@ -5,12 +5,11 @@ import com.github.ness.check.combat.MaxCPS;
 import com.github.ness.check.combat.PlayerESP;
 import com.github.ness.check.combat.VerticalVelocity;
 import com.github.ness.check.combat.autoclick.AutoClickConfig;
-import com.github.ness.check.movement.ElytraCheats;
 import com.github.ness.check.movement.FastLadder;
 import com.github.ness.check.movement.Jesus;
+import com.github.ness.check.movement.OmniSprint;
 import com.github.ness.check.movement.fly.FlyFalseGround;
 import com.github.ness.check.movement.fly.FlyInvalidClientGravity;
-import com.github.ness.check.movement.fly.FlyInvalidServerGravity;
 import com.github.ness.check.movement.oldmovementchecks.Speed;
 import com.github.ness.check.packet.Freecam;
 import com.github.ness.check.packet.MorePackets;
@@ -92,16 +91,6 @@ public interface AllChecksConfig {
 		""})
 	@SubSection
 	MorePackets.Config morePackets();
-	@ConfKey("gravity-fly")
-	@ConfComments({
-		"",
-		"Check if a player is editing gravity using Mojang's velocity.",
-		"",
-		"Performance impact: low", 
-		"Effectiveness: High",
-		""})
-	@SubSection
-	FlyInvalidServerGravity.Config flyInvalidServerGravity();
 	@ConfKey("freecam")
 	@SubSection
 	Freecam.Config freecam();
@@ -165,4 +154,14 @@ public interface AllChecksConfig {
 		""})
 	@SubSection
 	FlyFalseGround.Config flyFalseGround();
+	@ConfKey("omnisprint")
+	@ConfComments({
+		"",
+		"Check if a player is sprinting backwards.",
+		"",
+		"Performance impact: low", 
+		"Effectiveness: High",
+		""})
+	@SubSection
+	OmniSprint.Config omniSprint();
 }

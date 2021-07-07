@@ -1,16 +1,14 @@
 package com.github.ness.check.misc;
 
-import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.data.MovementValues;
 import com.github.ness.utility.MathUtils;
 
 public class TestCheck extends ListeningCheck<EntityDamageByEntityEvent> {

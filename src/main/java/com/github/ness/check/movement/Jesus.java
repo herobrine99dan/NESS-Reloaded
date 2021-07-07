@@ -96,7 +96,8 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		if (values.getHelper().isMathematicallyOnGround(values.getTo().getY())) {
 			resultY = 0.0f;
 		}
-		if (values.isOnGroundCollider()) {
+		boolean onGround = values.getHelper().isOnGround(values.getTo().toBukkitLocation()) || values.getHelper().isOnGround(values.getFrom().toBukkitLocation());
+		if (onGround) {
 			resultY -= 0.05;
 		}
 		if (resultXZ > maxXZVariance) {
@@ -117,7 +118,7 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 			buffer -= 1;
 		}
 		// Second check
-		if (yDist > maxHighDistanceWaterY && !values.isAroundLily() && !values.isGroundAround()) {
+		if (yDist > maxHighDistanceWaterY && !values.isNearMaterials("LILY") && !values.isGroundAround()) {
 			if (values.hasBubblesColumns() == 1 && yDist > maxHighDistanceWaterY + 0.268) {
 				this.flagEvent(event, "HighDistanceYBubble");
 			} else {
@@ -144,13 +145,14 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
 		float predictionY = (lastYDist * 0.5f);
 		float resultXZ = xzDist - predictionXZ;
 		float resultY = yDist - predictionY;
-		if ((resultY > 0.04 || resultXZ > 0.04) && !values.isOnGroundCollider() && ++buffer > 2) {
+		boolean onGround = values.getHelper().isOnGround(values.getTo().toBukkitLocation()) || values.getHelper().isOnGround(values.getFrom().toBukkitLocation());
+		if ((resultY > 0.04 || resultXZ > 0.04) && !onGround && ++buffer > 2) {
 			this.player().sendDevMessage("resultY: " + resultY + " resultXZ: " + resultXZ);
 		} else if (buffer > 0) {
 			buffer -= 0.5;
 		}
 		// Second check
-		if (yDist > maxHighDistanceWaterY && !values.isAroundLily() && !values.isGroundAround()) {
+		if (yDist > maxHighDistanceWaterY && !values.isNearMaterials("LILY")  && !values.isGroundAround()) {
 			this.flagEvent(event, "HighDistanceY");
 		}
 	}

@@ -130,7 +130,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		final Ray ray = Ray.from(nessPlayer, useBukkitLocationForRayTrace);
 		final AABB aabb = AABB.from(entity, this.ness(), this.reachExpansion);
 		double range = aabb.collidesD(ray, 0, 10);
-		final float angle1 = (float) nessPlayer.getMovementValues().getHelper().getAngle(nessPlayer, entity);
+		final float angle1 = (float) nessPlayer.getMovementValues().getHelper().getAngle(nessPlayer.getBukkitPlayer(), entity.getLocation());
 		angleList.add((long) (angle1 * 10000));
 		if (player.getGameMode().equals(GameMode.CREATIVE)) {
 			maxReach = (5.5 * this.maxReach) / 3;

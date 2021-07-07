@@ -44,7 +44,7 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues values = player().getMovementValues();
 		Player player = player().getBukkitPlayer();
 		if (values.isGroundAround() || player.getAllowFlight() || player.isFlying() || values.isInsideVehicle()
-				|| Utility.hasVehicleNear(player().getBukkitPlayer()) || values.isAroundLiquids()) {
+				|| Utility.hasVehicleNear(player().getBukkitPlayer()) || values.isNearLiquid()) {
 			return;
 		}
 		double xzDiff = values.getXZDiff();
@@ -62,7 +62,7 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 	public void stepYCheck(Cancellable e) {
 		MovementValues values = player().getMovementValues();
 		double yDelta = values.getyDiff();
-		if (values.isAroundStairs() || player().isTeleported() || player().isHasSetback()
+		if (values.isNearMaterials("STAIR") || player().isTeleported() || player().isHasSetback()
 				|| Utility.hasVehicleNear(player().getBukkitPlayer())) {
 			flyYSum = 0.0;
 		}

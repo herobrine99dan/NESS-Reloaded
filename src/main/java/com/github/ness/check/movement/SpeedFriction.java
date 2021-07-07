@@ -37,7 +37,7 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		Player player = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues values = nessPlayer.getMovementValues();
-		if (player.isFlying() || values.getHelper().isPlayerUsingElytra(nessPlayer) || values.isAroundLiquids()) {
+		if (player.isFlying() || values.getHelper().isPlayerUsingElytra(nessPlayer) || values.isNearLiquid()) {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
@@ -120,20 +120,6 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			}
 		}
 		return false;
-	}
-
-	private AABB getBoundingBoxFromBlock(Block block) {
-		Material material = block.getType();
-		String name = material.name();
-		if (material.isSolid() && material.isOccluding()) {
-			return new AABB(block.getX(), block.getY(), block.getZ(), block.getX() + 1, block.getY() + 1,
-					block.getZ() + 1);
-		}
-		if (name.contains("WEB")) {
-			return new AABB(block.getX(), block.getY(), block.getZ(), block.getX() + 1, block.getY() + 1,
-					block.getZ() + 1);
-		}
-		return null;
 	}
 
 	private float getSlownessAndSpeedEffectMultiplier(Player player) {

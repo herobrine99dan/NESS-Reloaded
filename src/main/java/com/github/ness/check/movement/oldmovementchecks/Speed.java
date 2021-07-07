@@ -101,13 +101,13 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 				}
 			}
 		}
-		if (movementValues.isAroundSlabs() || movementValues.isAroundStairs()) {
+		if (movementValues.isNearMaterials("SLAB", "STAIRS")) {
 			maxSpd += player.getWalkSpeed() * speedNearSlabs;
 		}
-		if (movementValues.isAroundIce() || nessPlayer.getTimeSinceLastWasOnIce() < 1000) {
+		if (movementValues.isNearMaterials("ICE") || nessPlayer.getTimeSinceLastWasOnIce() < 1000) {
 			maxSpd += player.getWalkSpeed();
 		}
-		if (movementValues.isAroundSlime()) {
+		if (movementValues.isNearMaterials("SLIME")) {
 			maxSpd += velocity;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 1000) {

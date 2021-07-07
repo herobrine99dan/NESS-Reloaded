@@ -40,7 +40,7 @@ public class CreativeFly extends ListeningCheck<PlayerMoveEvent> {
 			flyingTicks -= 2;
 		}
 		boolean onGround = isOnGround(event.getTo());
-		if (flyingTicks > 20 && !values.isOnGroundCollider()) {
+		if (flyingTicks > 20 && !values.isOnGround()) {
 			final Location underBlock = event.getTo().clone().add(0, -0.8, 0);
 			float friction = getFrictionBlock(underBlock);
 			float f1 = 0.16277136F / (friction * friction * friction);
