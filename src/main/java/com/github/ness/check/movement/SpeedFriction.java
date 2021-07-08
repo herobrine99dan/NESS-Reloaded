@@ -46,8 +46,6 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		float xzDiff = (float) values.getXZDiff();
 		final boolean sprinting = nessPlayer.getSprinting().get();
 		final boolean sneaking = nessPlayer.getSneaking().get();
-		this.player().sendDevMessage("xzDiff: " + (float) xzDiff + " speed: " + player.getWalkSpeed() + " sprint: "
-				+ sprinting + " sneak: " + sneaking);
 		final boolean isInWeb = isCollidingWithMaterial(event.getTo(), "WEB");
 		if (!values.getHelper().isMathematicallyOnGround(values.getTo().getY())) {
 			airTicks++;

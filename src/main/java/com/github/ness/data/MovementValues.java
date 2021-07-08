@@ -16,7 +16,6 @@ import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.reflect.locator.VersionDetermination;
 import com.github.ness.utility.Utility;
 
-@Deprecated // THIS IS THE CAUSE OF ALL BYPASSES (Needs a recode)
 public class MovementValues {
 
 	/**
@@ -256,10 +255,13 @@ public class MovementValues {
 	 * @return
 	 */
 	public boolean isAroundNonOccludingBlocks() {
-		return this.getHelper().getBoundingBoxesAroundPlayer(to.toBukkitLocation()).stream()
-				.anyMatch((newLoc) -> !this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding())
-				|| this.getHelper().getBoundingBoxesAroundPlayer(from.toBukkitLocation()).stream()
-						.anyMatch((newLoc) -> !this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding());
+		for(Location newLoc : getHelper().getBoundingBoxesAroundPlayer(to.toBukkitLocation())) {
+			if(this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding()) return true;
+		}
+		for(Location newLoc : getHelper().getBoundingBoxesAroundPlayer(from.toBukkitLocation())) {
+			if(this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding()) return true;
+		}
+		return false;
 	}
 
 	public int hasBubblesColumns() {

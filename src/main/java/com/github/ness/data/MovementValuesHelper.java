@@ -162,8 +162,12 @@ public class MovementValuesHelper {
 	}
 	
 	private boolean isNearMaterial(Location loc, String material) {
-		return getBoundingBoxesAroundPlayer(loc).stream()
-				.anyMatch((newLoc) -> this.materialAccess.getMaterial(newLoc).name().contains(material));
+		for(Location newLoc : getBoundingBoxesAroundPlayer(loc)) {
+			if(this.materialAccess.getMaterial(newLoc).name().contains(material)) return true;
+		}
+		//return getBoundingBoxesAroundPlayer(loc).stream()
+		//		.anyMatch((newLoc) -> this.materialAccess.getMaterial(newLoc).name().contains(material));
+		return false;
 	}
 
 	private boolean isBlockConsideredOnGround(Location loc, List<String> otherBlocksToCheck) {

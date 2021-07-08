@@ -14,11 +14,13 @@ import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
 /**
- * This doesn't follow the new specs + it has a lot of bypasses due to use of the old MovementValues class
+ * This doesn't follow the new specs + it has a lot of bypasses due to use of
+ * the old MovementValues class
  * 
  *
  */
-@Deprecated public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
+@Deprecated
+public class FlyHighJump extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
@@ -40,14 +42,16 @@ import com.github.ness.utility.Utility;
 		Player p = e.getPlayer();
 		final MovementValues movementValues = nessPlayer.getMovementValues();
 		double y = movementValues.getyDiff();
-		if (movementValues.getHelper().isOnGround(e.getTo(), "SEA", "LILY", "SLIME", "KELP", "LADDER") || nessPlayer.isOnGroundPacket() // We have GroundSpoof checks
-				|| movementValues.getHelper().hasflybypass(nessPlayer)
-				|| p.getAllowFlight() || movementValues.isNearLiquid()
+		if (movementValues.getHelper().isOnGround(e.getTo(), "SEA", "LILY", "SLIME", "KELP", "LADDER")
+				|| nessPlayer.isOnGroundPacket() // We have GroundSpoof checks
+				|| movementValues.getHelper().hasflybypass(nessPlayer) || p.getAllowFlight()
+				|| movementValues.isNearLiquid()
 				|| this.ness().getMaterialAccess().getMaterial(e.getTo().clone().add(0, -0.5, 0)).name()
 						.contains("SCAFFOLD")
 				|| this.ness().getMaterialAccess().getMaterial(e.getTo().clone().add(0, 0.5, 0)).name()
 						.contains("SCAFFOLD")
-				|| nessPlayer.isTeleported() || movementValues.hasBlockNearHead() || Utility.hasVehicleNear(p) || movementValues.getHelper().isOnGround(e.getFrom(), "SEA", "LILY", "SLIME", "KELP", "LADDER")) {
+				|| nessPlayer.isTeleported() || movementValues.hasBlockNearHead() || Utility.hasVehicleNear(p)
+				|| movementValues.getHelper().isOnGround(e.getFrom(), "SEA", "LILY", "SLIME", "KELP", "LADDER")) {
 			flyYSum = 0;
 			return;
 		}

@@ -47,14 +47,14 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 				|| Utility.hasVehicleNear(player().getBukkitPlayer()) || values.isNearLiquid()) {
 			return;
 		}
-		double xzDiff = values.getXZDiff();
-		double yDiff = values.getyDiff();
+		float xzDiff = (float) values.getXZDiff();
+		float yDiff = (float) values.getyDiff();
 		if (xzDiff > 0.0D && Math.abs(yDiff) < 0.005) {
-			if (++illegalXZBuffer > 3) {
-				this.flagEvent(e, "IllegalXZDistance");
+			if (++illegalXZBuffer > 5) {
+				this.flagEvent(e, "IllegalXZDistance yDiff: " + yDiff + " xDiff: " + xzDiff);
 			}
 		} else if(illegalXZBuffer > 0) {
-			illegalXZBuffer -= 0.25;
+			illegalXZBuffer -= 0.5;
 		}
 	}
 
@@ -62,7 +62,7 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 	public void stepYCheck(Cancellable e) {
 		MovementValues values = player().getMovementValues();
 		double yDelta = values.getyDiff();
-		if (values.isNearMaterials("STAIR") || player().isTeleported() || player().isHasSetback()
+		if (values.isNearMaterials("STAIR","SKULL") || player().isTeleported() || player().isHasSetback()
 				|| Utility.hasVehicleNear(player().getBukkitPlayer())) {
 			flyYSum = 0.0;
 		}

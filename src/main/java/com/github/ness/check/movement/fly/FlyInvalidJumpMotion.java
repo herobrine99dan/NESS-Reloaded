@@ -33,9 +33,7 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 		double yDiff = event.getTo().getY() - event.getFrom().getY();
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
-		if (event.getTo().getBlock().isLiquid()
-				|| movementValues.isNearLiquid()
-				|| movementValues.hasBlockNearHead()
+		if (movementValues.isNearLiquid() || movementValues.hasBlockNearHead()
 				|| movementValues.isNearMaterials("LADDER", "STAIR", "CHORUS", "ICE", "SLIME", "SLAB", "SNOW")
 				|| movementValues.isAroundNonOccludingBlocks() || movementValues.getHelper().hasflybypass(nessPlayer)) {
 			return;
@@ -45,8 +43,7 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 					&& !movementValues.getHelper().isMathematicallyOnGround(event.getTo().getY())
 					&& movementValues.getHelper().isMathematicallyOnGround(event.getFrom().getY())) {
 				double yResult = Math.abs(yDiff - player.getVelocity().getY());
-				if (yResult != 0.0 && nessPlayer.milliSecondTimeDifference(PlayerAction.DAMAGE) > 1700
-						&& nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 1700) {
+				if (yResult != 0.0 && nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 1700) {
 					flagEvent(event, " yResult: " + yResult + "  yDiff: " + yDiff);
 				}
 			}

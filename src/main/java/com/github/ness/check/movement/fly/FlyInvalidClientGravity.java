@@ -27,6 +27,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 	private final double minBuffer;
 	private final boolean useAbsoluteDifference;
 	private final boolean usePlayerIsOnGround;
+	private boolean lastOnGround;
 
 	public FlyInvalidClientGravity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
@@ -88,10 +89,16 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		if (player.isInsideVehicle() || nessPlayer.milliSecondTimeDifference(PlayerAction.VEHICLEENTER) < 500) {
 			return;
 		}
+		if (this.getMaterialAccess().getMaterial(event.getTo()).name().contains("LADDER")
+				|| this.getMaterialAccess().getMaterial(event.getFrom()).name().contains("LADDER")) {
+			return;
+		}
 		// TODO There is one false flag with jump boost because Minecraft (aka
 		// Shitcraft) rounds the number if it is very low
 		// final boolean onGround = nessPlayer.isOnGroundPacket();
-		final boolean onGround = usePlayerIsOnGround ? nessPlayer.isOnGroundPacket() : isOnGround1(event.getTo());
+		
+		final boolean onGroundFixer = usePlayerIsOnGround ? nessPlayer.isOnGroundPacket() : isOnGround1(event.getTo());
+		boolean onGround = !isOnGround(event.getTo()) ? onGroundFixer : true;
 
 		float yDiff = (float) values.getyDiff();
 		if (onGround) {
@@ -102,16 +109,23 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		} else {
 			airTicks = 0;
 		}
+		//To make a prediction we get the last Y value and we try to predict the next.
 		float motionY = nessPlayer.getLastYDeltaPrediction();
+		if(this.getMaterialAccess().getMaterial(event.getTo()).name().contains("WEB")) {
+			motionY *= 0.25f;
+			motionY = 0.0f;
+		}
 		motionY -= 0.08f; // Gravity
 		motionY *= 0.98f; // Air Resistance
+
 		float result = yDiff - motionY;
 		// this.player().sendDevMessage("result: " + result + " onGround: " + onGround +
 		// " airTicks: " + airTicks);
 		if (useAbsoluteDifference) {
 			result = Math.abs(result);
 		}
-		if (result > 0.001 && airTicks > minAirTicks) {
+		//Here we use 0.005 because in some Minecraft versions the yDelta is clamped.
+		if (result > 0.005 && airTicks > minAirTicks) {
 			if (++buffer > minBuffer) {
 				spawnArmorStand("To", event.getTo());
 				spawnArmorStand("From", event.getFrom());
@@ -141,10 +155,10 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 
 	private boolean isOnGround(Location loc) {
 		final Location cloned = loc.clone();
-		double limit = 0.35;
+		double limit = 0.28;
 		for (double x = -limit; x <= limit; x += 0.05) {
 			for (double z = -limit; z <= limit; z += 0.05) {
-				for (double y = -0.7; y <= 0; y += 0.05) {
+				for (double y = -0.3; y <= 0; y += 0.05) {
 					if (isBlockConsideredOnGround(cloned.clone().add(x, y, z))) {
 						return true;
 					}
@@ -158,10 +172,8 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		Material material = this.getMaterialAccess().getMaterial(loc);
 		String name = material.name();
 		if (material.isSolid() || name.contains("SNOW") || name.contains("CARPET") || name.contains("SCAFFOLDING")
-				|| name.contains("SKULL") || name.contains("LADDER") || name.contains("WEB") || name.contains("WALL")
+				|| name.contains("SKULL") || name.contains("WALL")
 				|| name.contains("LILY")) {
-			this.player().sendDevMessage("Solid Block At " + " X: " + (float) loc.getBlockX() + " Y: "
-					+ (float) loc.getBlockY() + " Z: " + (float) loc.getBlockZ());
 			return true;
 		}
 		return false;
