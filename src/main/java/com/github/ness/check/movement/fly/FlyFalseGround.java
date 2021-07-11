@@ -14,13 +14,6 @@ import com.github.ness.utility.Utility;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 
-/**
- * Deprecated: Not that effective, code is hard to handle and doesn't follow new
- * specs
- * 
- *
- */
-@Deprecated
 public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);

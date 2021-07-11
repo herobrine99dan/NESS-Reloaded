@@ -255,11 +255,15 @@ public class MovementValues {
 	 * @return
 	 */
 	public boolean isAroundNonOccludingBlocks() {
-		for(Location newLoc : getHelper().getBoundingBoxesAroundPlayer(to.toBukkitLocation())) {
-			if(this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding()) return true;
+		for (Location newLoc : getHelper().getBoundingBoxesAroundPlayer(to.toBukkitLocation())) {
+			if (!this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding()
+					&& this.getHelper().getMaterialAccess().getMaterial(newLoc).isSolid())
+				return true;
 		}
-		for(Location newLoc : getHelper().getBoundingBoxesAroundPlayer(from.toBukkitLocation())) {
-			if(this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding()) return true;
+		for (Location newLoc : getHelper().getBoundingBoxesAroundPlayer(from.toBukkitLocation())) {
+			if (!this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding()
+					&& this.getHelper().getMaterialAccess().getMaterial(newLoc).isSolid())
+				return true;
 		}
 		return false;
 	}

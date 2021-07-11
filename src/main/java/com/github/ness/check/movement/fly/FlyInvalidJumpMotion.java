@@ -12,13 +12,7 @@ import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
-/**
- * Effective, but not enough. It can work Better. Also it isn't following new
- * specs
- * 
- *
- */
-@Deprecated
+
 public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
@@ -34,7 +28,7 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
 		if (movementValues.isNearLiquid() || movementValues.hasBlockNearHead()
-				|| movementValues.isNearMaterials("LADDER", "STAIR", "CHORUS", "ICE", "SLIME", "SLAB", "SNOW")
+				|| movementValues.isNearMaterials("ICE", "SLIME", "SLAB", "SNOW")
 				|| movementValues.isAroundNonOccludingBlocks() || movementValues.getHelper().hasflybypass(nessPlayer)) {
 			return;
 		}

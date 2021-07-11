@@ -27,7 +27,6 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 	private final double minBuffer;
 	private final boolean useAbsoluteDifference;
 	private final boolean usePlayerIsOnGround;
-	private boolean lastOnGround;
 
 	public FlyInvalidClientGravity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
@@ -60,16 +59,11 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		boolean usePlayerIsOnGroundMethod();
 	}
 
-	@Override
-	protected boolean shouldDragDown() {
-		return true;
-	}
-
-	@Override
 	/**
 	 * Powerful Y-Prediction check made with https://www.mcpk.wiki/wiki/ Loving
 	 * those guys who made it. This is the young-brother of SpeedFriction :D
 	 */
+	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
@@ -95,10 +89,14 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		}
 		// TODO There is one false flag with jump boost because Minecraft (aka
 		// Shitcraft) rounds the number if it is very low
-		// final boolean onGround = nessPlayer.isOnGroundPacket();
-		
+
+		// Sometimes this onGround Value is too
 		final boolean onGroundFixer = usePlayerIsOnGround ? nessPlayer.isOnGroundPacket() : isOnGround1(event.getTo());
-		boolean onGround = !isOnGround(event.getTo()) ? onGroundFixer : true;
+		// boolean onGround = !isOnGround(event.getTo()) ? onGroundFixer : true;
+		boolean onGround = !onGroundFixer ? isOnGround(event.getTo()) : true; // Little micro optimization: if the
+																				// player isn't onGround, then use the
+																				// boolean value from
+																				// isOnGround(Location loc)
 
 		float yDiff = (float) values.getyDiff();
 		if (onGround) {
@@ -109,11 +107,10 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		} else {
 			airTicks = 0;
 		}
-		//To make a prediction we get the last Y value and we try to predict the next.
+		// To make a prediction we get the last Y value and we try to predict the next.
 		float motionY = nessPlayer.getLastYDeltaPrediction();
-		if(this.getMaterialAccess().getMaterial(event.getTo()).name().contains("WEB")) {
-			motionY *= 0.25f;
-			motionY = 0.0f;
+		if (this.getMaterialAccess().getMaterial(event.getTo()).name().contains("WEB")) {
+			motionY = 0.31f; //Web gravity is too small and there are issues with PlayerMoveEvent, so we just set a limit for this
 		}
 		motionY -= 0.08f; // Gravity
 		motionY *= 0.98f; // Air Resistance
@@ -124,10 +121,12 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		if (useAbsoluteDifference) {
 			result = Math.abs(result);
 		}
-		//Here we use 0.005 because in some Minecraft versions the yDelta is clamped.
-		if (result > 0.005 && airTicks > minAirTicks) {
-			if (++buffer > minBuffer) {
-				spawnArmorStand("To", event.getTo());
+		// Here we use 0.005 because in newer Minecraft versions the yMotion is clamped
+		// if it's low.
+		if (result > 0.005 && airTicks > minAirTicks) { // After some tests i discovered that minAirTicks should be two
+			if (++buffer > minBuffer) { // And that we don't need a buffer
+				spawnArmorStand("To", event.getTo()); // These armor stands are just for me to see the exact position
+														// where false flags happens
 				spawnArmorStand("From", event.getFrom());
 				this.flag("yResult: " + result + " ground: " + onGround + " yDiff: " + yDiff + " motionY: " + motionY);
 			}
@@ -172,8 +171,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		Material material = this.getMaterialAccess().getMaterial(loc);
 		String name = material.name();
 		if (material.isSolid() || name.contains("SNOW") || name.contains("CARPET") || name.contains("SCAFFOLDING")
-				|| name.contains("SKULL") || name.contains("WALL")
-				|| name.contains("LILY")) {
+				|| name.contains("SKULL") || name.contains("WALL") || name.contains("LILY")) {
 			return true;
 		}
 		return false;

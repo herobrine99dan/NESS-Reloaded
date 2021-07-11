@@ -59,15 +59,12 @@ public class Aimbot extends PacketCheck {
 	 */
 	private void Check2(Packet e) {
 		PlayInFlying wrapper = e.toPacketWrapper(this.packetTypeRegistry().playInFlying());
-		float yawChange = (float) (wrapper.yaw() % 360 - lastYaw % 360);
-		float yawDelta = (float) (wrapper.yaw() - lastYaw);
+		float yawChange = (float) (wrapper.yaw() - lastYaw); 
 		float pitchChange = (float) (wrapper.pitch() - lastPitch);
 		if (yawChange >= 1 && yawChange % 0.1f == 0.0f) {
 			flag(" PerfectAura");
 		} else if (pitchChange >= 1 && pitchChange % 0.1f == 0.0f) {
 			flag(" PerfectAura1");
-		} else if (yawDelta >= 1 && yawDelta % 0.1f == 0.0f) {
-			flag(" PerfectAura2");
 		}
 	}
 
@@ -81,8 +78,8 @@ public class Aimbot extends PacketCheck {
 		NessPlayer player = player();
 		if (player.milliSecondTimeDifference(PlayerAction.ATTACK) < 1000) {
 			PlayInFlying wrapper = e.toPacketWrapper(this.packetTypeRegistry().playInFlying());
-			float yawChange = (float) (wrapper.yaw() % 360 - lastYaw % 360);
-			if (yawChange % .25 == 0.0 && this.player().getMovementValues().getYawDiff() > 1) {
+			float yawChange = (float) (wrapper.yaw() - lastYaw);
+			if (yawChange % .25 == 0.0 && yawChange > 1) {
 				if (++buffer3 > 2) {
 					flag("PerfectAura3");
 				}
@@ -96,7 +93,7 @@ public class Aimbot extends PacketCheck {
 
 	private void Check4(Packet e) {
 		PlayInFlying wrapper = e.toPacketWrapper(this.packetTypeRegistry().playInFlying());
-		float yawDelta = (float) (Math.abs(wrapper.yaw()) - Math.abs(lastYaw)) % 360;
+		float yawDelta = (float) (Math.abs(wrapper.yaw()) - Math.abs(lastYaw));
 		float pitchDelta = (float) (wrapper.pitch() - lastPitch);
 		if (yawDelta > 30 && isReallySmall(pitchDelta) && !this.player().isCinematic()) {
 			if (++buffer4 > 15) {
@@ -119,13 +116,12 @@ public class Aimbot extends PacketCheck {
 
 	private void Check5(Packet e) {
 		PlayInFlying wrapper = e.toPacketWrapper(this.packetTypeRegistry().playInFlying());
-		float yawDeltaPacket = (float) (wrapper.yaw() % 360 - lastYaw % 360);
+		float yawDeltaPacket = (float) (wrapper.yaw() - lastYaw);
 		float pitchDeltaPacket = (float) (wrapper.pitch() - lastPitch);
-		float lastYawBukkit = this.player().getMovementValues().getTo().getYaw();
-		roundedValues(yawDeltaPacket, pitchDeltaPacket, lastYawBukkit, wrapper.pitch());
+		roundedValues(yawDeltaPacket, pitchDeltaPacket, wrapper.yaw(), wrapper.pitch());
 	}
 
-	private double buffer5, buffer6;
+	private double buffer5;
 
 	private void roundedValues(float yawDeltaPacket, float pitchDeltaPacket, float yaw, float pitch) {
 		if (Math.abs(yawDeltaPacket) == Math.round(Math.abs(yawDeltaPacket)) && Math.abs(yawDeltaPacket) > 0.1) {
@@ -153,7 +149,6 @@ public class Aimbot extends PacketCheck {
 
 	// TODO Check if there is a pattern on
 	// Math.abs(entityAttacked.yaw()-player.yaw())
-	// TODO Get more ideas to find pattern using vectors
 
 	private boolean isReallySmall(double d) {
 		return Math.abs(d) < 0.001;

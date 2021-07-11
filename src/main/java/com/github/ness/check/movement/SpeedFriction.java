@@ -14,7 +14,6 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
-import com.github.ness.utility.raytracer.rays.AABB;
 
 public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 
@@ -30,8 +29,8 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 
 	@Override
 	/**
-	 * Powerful XZ-Prediction check made with https://www.mcpk.wiki/wiki/ 
-	 * Loving those guys who made it.
+	 * Powerful XZ-Prediction check made with https://www.mcpk.wiki/wiki/ Loving
+	 * those guys who made it.
 	 */
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
@@ -44,62 +43,45 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		float xzDiff = (float) values.getXZDiff();
+		float yDiff = (float) values.getyDiff();
 		final boolean sprinting = nessPlayer.getSprinting().get();
 		final boolean sneaking = nessPlayer.getSneaking().get();
 		final boolean isInWeb = isCollidingWithMaterial(event.getTo(), "WEB");
-		if (!values.getHelper().isMathematicallyOnGround(values.getTo().getY())) {
+		if (!values.getHelper().isMathematicallyOnGround(values.getFrom().getY())) {
 			airTicks++;
 			groundTicks = 0;
 		} else {
 			airTicks = 0;
 			groundTicks++;
 		}
-		if (airTicks > 1) {
-			float prediction = (lastDeltaXZ * 0.91f);
-			float difference = xzDiff - prediction;
-			float maxSpeed = sprinting ? 0.026f : 0.02f;
-			//TODO There are some errors doing some calculations, so you get 0.0254f instead of 0.026f
-			//this.player().sendDevMessage("AirSpeed diff: " + difference);
-			if (difference > maxSpeed && prediction > 0.075) {
-				if (++buffer > 1) {
-					this.flagEvent(event);
-				}
-			} else if (buffer > 0) {
-				buffer -= 0.5;
-			}
-		} else if (groundTicks > 2) {
-			final Location underBlock = event.getTo().clone().add(0, -0.8, 0);
-			float collidedBlockMultiplier = getCollidedBlockMultiplier(underBlock);
-			float limit = 0.001f;
-			float friction = getFrictionBlock(underBlock) * 0.91f;
-			float momentum = (lastDeltaXZ * friction);
-
-			float walkSpeed = (player.getWalkSpeed() / 2f);
-			float baseSpeed = sprinting ? walkSpeed + walkSpeed * 0.3f : walkSpeed;
-			float speedSlownessMultiplier = getSlownessAndSpeedEffectMultiplier(player);
-
-			if (sneaking) {
-				baseSpeed = walkSpeed * 0.3f;
-			}
-			float acceleration = (float) (baseSpeed * speedSlownessMultiplier * collidedBlockMultiplier
-					* (0.16277f / Math.pow(friction, 3)));
-			if (isInWeb) {
-				// momentum = lastDeltaXZ * 0.25f; // Minecraft just multiply the motion, and
-				// then it set momentum to 0
-				// acceleration *= 0.25f;
-				acceleration *= 0.25f;
-				if (!sprinting) {
-					xzDiff /= 2.0f; //Fixing retarded Minecraft not sending position packet is xzDiff is low
-				}
-			}
-			float prediction = (momentum + acceleration);
-			final float difference = (float) (xzDiff - prediction);
-			if (difference > 0.01) {
-				this.player().sendDevMessage("CHEATS! lastDeltaXZ: " + lastDeltaXZ + " acceleration: " + acceleration
-						+ " difference: " + difference);
-			}
+		final Location underBlock = event.getTo().clone().add(0, -1.0, 0);
+		float friction = 0.91f * getFrictionBlock(underBlock);
+		float walkSpeed = (player.getWalkSpeed() / 2f);
+		float baseSpeed = sprinting ? walkSpeed + walkSpeed * 0.3f : walkSpeed;
+		float speedSlownessMultiplier = getSlownessAndSpeedEffectMultiplier(player);
+		float collidedBlockMultiplier = getCollidedBlockMultiplier(underBlock);
+		if (sneaking) {
+			baseSpeed = walkSpeed * 0.3f;
 		}
+		float movementSpeed = (float) 0.0f;
+		if (groundTicks > 0) {
+			movementSpeed = (float) (baseSpeed * speedSlownessMultiplier * collidedBlockMultiplier
+					* (0.16277136f / Math.pow(friction, 3)));
+		} else if (airTicks > 0) {
+			movementSpeed = sprinting ? 0.026f : 0.02f;
+		}
+		if (yDiff == 0.42f) {
+			movementSpeed += 0.2f;
+		}
+		float prediction = this.lastDeltaXZ * friction + movementSpeed;
+		float result = xzDiff - prediction;
+		this.player().sendDevMessage("xzDiff: " + roundNumber(xzDiff) + " yDiff: " + roundNumber(yDiff) + " prediction:"
+				+ roundNumber(prediction) + " Result: " + roundNumber(result));
 		this.lastDeltaXZ = xzDiff;
+	}
+
+	private double roundNumber(double n) {
+		return Math.round(n * 1000.0) / 1000.0;
 	}
 
 	private boolean isCollidingWithMaterial(Location loc, String name) {
@@ -158,9 +140,11 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		} else if (isIce) {
 			return 0.98f;
 		} else if (name.contains("SLIME")) {
-			return 0.8f; // or 0,68, default 0.8
+			return 0.8f;
+		} else if (name.contains("AIR")) {
+			return 1f;
 		} else {
-			return 0.6f;
+			return 0.6f; // Normal OnGround friction
 		}
 	}
 }
