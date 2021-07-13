@@ -1,5 +1,6 @@
 package com.github.ness.packets.wrapper;
 
+import com.github.ness.data.ImmutableLoc;
 import com.github.ness.packets.PacketType;
 import com.github.ness.reflect.FieldInvoker;
 import com.github.ness.reflect.MemberDescriptions;
@@ -16,8 +17,8 @@ public final class PlayInFlying {
 	private final boolean hasPosition;
 	private final boolean hasLook;
 
-	private PlayInFlying(double x, double y, double z, float yaw, float pitch,
-						 boolean onGround, boolean hasPosition, boolean hasLook) {
+	private PlayInFlying(double x, double y, double z, float yaw, float pitch, boolean onGround, boolean hasPosition,
+			boolean hasLook) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -39,16 +40,16 @@ public final class PlayInFlying {
 		FieldInvoker<Boolean> onGround = helper.getField(packetClass,
 				MemberDescriptions.forField(boolean.class, "onGround"),
 				MemberDescriptions.forField(boolean.class, "f")); // The field name is 'f' in some versions
-		FieldInvoker<Boolean> hasPosition = helper.getField(packetClass, MemberDescriptions.forField(boolean.class, "hasPos"));
-		FieldInvoker<Boolean> hasLook = helper.getField(packetClass, MemberDescriptions.forField(boolean.class, "hasLook"));
+		FieldInvoker<Boolean> hasPosition = helper.getField(packetClass,
+				MemberDescriptions.forField(boolean.class, "hasPos"));
+		FieldInvoker<Boolean> hasLook = helper.getField(packetClass,
+				MemberDescriptions.forField(boolean.class, "hasLook"));
 
 		return new RawPacketType<PlayInFlying>(packetClass) {
 
 			@Override
 			public PlayInFlying convertPacket(Object packet) {
-				return new PlayInFlying(
-						x.get(packet), y.get(packet), z.get(packet),
-						yaw.get(packet), pitch.get(packet),
+				return new PlayInFlying(x.get(packet), y.get(packet), z.get(packet), yaw.get(packet), pitch.get(packet),
 						onGround.get(packet), hasPosition.get(packet), hasLook.get(packet));
 			}
 		};
@@ -74,7 +75,6 @@ public final class PlayInFlying {
 		return pitch;
 	}
 
-
 	public boolean onGround() {
 		return onGround;
 	}
@@ -87,10 +87,16 @@ public final class PlayInFlying {
 		return hasLook;
 	}
 
+	public ImmutableLoc toImmutableLoc() {
+		return new ImmutableLoc("useless", x, y, z, yaw, pitch);
+	}
+
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 		PlayInFlying that = (PlayInFlying) o;
 		return Double.compare(that.x, x) == 0 && Double.compare(that.y, y) == 0 && Double.compare(that.z, z) == 0
 				&& Float.compare(that.yaw, yaw) == 0 && Float.compare(that.pitch, pitch) == 0

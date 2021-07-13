@@ -74,22 +74,19 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 				|| values.isNearLiquid()) {
 			return;
 		}
-		// Velocity won't be handled for now: when i finish the check, i will simply
-		// handle it
-		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1000) {
-			return;
-		}
 		// When you fly, the gravity is the one of the entity, TODO Make checks for that
 		if (player.isInsideVehicle() || nessPlayer.milliSecondTimeDifference(PlayerAction.VEHICLEENTER) < 500) {
 			return;
 		}
-		if (this.getMaterialAccess().getMaterial(event.getTo()).name().contains("LADDER")
-				|| this.getMaterialAccess().getMaterial(event.getFrom()).name().contains("LADDER")) {
+		if (this.getMaterialAccess().getMaterial(event.getTo().clone().subtract(0, 0.005, 0)).name().contains("LADDER")
+				|| this.getMaterialAccess().getMaterial(event.getFrom().clone().subtract(0, 0.005, 0)).name()
+						.contains("LADDER") || this.getMaterialAccess().getMaterial(event.getFrom()).name()
+						.contains("LADDER") || this.getMaterialAccess().getMaterial(event.getTo()).name()
+						.contains("LADDER")) {
 			return;
 		}
 		// TODO There is one false flag with jump boost because Minecraft (aka
 		// Shitcraft) rounds the number if it is very low
-
 		// Sometimes this onGround Value is too
 		final boolean onGroundFixer = usePlayerIsOnGround ? nessPlayer.isOnGroundPacket() : isOnGround1(event.getTo());
 		// boolean onGround = !isOnGround(event.getTo()) ? onGroundFixer : true;
@@ -99,6 +96,8 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 																				// isOnGround(Location loc)
 
 		float yDiff = (float) values.getyDiff();
+		float yVelocity = nessPlayer.getLastVelocity() != null ? (float) nessPlayer.getLastVelocity().getY() : 0.0f;
+		this.player().sendDevMessage("yDiff: " + yDiff + " yVelocity: " + yVelocity);
 		if (onGround) {
 			yDiff = 0.0f;
 		}
@@ -110,7 +109,8 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		// To make a prediction we get the last Y value and we try to predict the next.
 		float motionY = nessPlayer.getLastYDeltaPrediction();
 		if (this.getMaterialAccess().getMaterial(event.getTo()).name().contains("WEB")) {
-			motionY = 0.31f; //Web gravity is too small and there are issues with PlayerMoveEvent, so we just set a limit for this
+			motionY = 0.31f; // Web gravity is too small and there are issues with PlayerMoveEvent, so we
+								// just set a limit for this
 		}
 		motionY -= 0.08f; // Gravity
 		motionY *= 0.98f; // Air Resistance
@@ -155,9 +155,9 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 	private boolean isOnGround(Location loc) {
 		final Location cloned = loc.clone();
 		double limit = 0.28;
-		for (double x = -limit; x <= limit; x += 0.05) {
-			for (double z = -limit; z <= limit; z += 0.05) {
-				for (double y = -0.3; y <= 0; y += 0.05) {
+		for (double x = -limit; x <= limit; x += 0.1) {
+			for (double z = -limit; z <= limit; z += 0.1) {
+				for (double y = -0.4; y <= 0; y += 0.1) {
 					if (isBlockConsideredOnGround(cloned.clone().add(x, y, z))) {
 						return true;
 					}
