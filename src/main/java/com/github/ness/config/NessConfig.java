@@ -60,7 +60,7 @@ public interface NessConfig {
 		"FlyInvalidJumpMotion",
 		"FlyInvalidServerGravity",
 		"FlyFalseGround",
-		"FlyHighDistance",
+		"#FlyHighDistance",
 		"Spider",
 		"VerticalFly",
 		"CreativeFly",

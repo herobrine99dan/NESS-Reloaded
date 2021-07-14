@@ -9,6 +9,7 @@ public enum ChecksPackage {
 	PACKET("packet"),
 	WORLD("world"),
 	OldMovementChecks("movement.oldmovementchecks"),
+	PREDICTIONS("movement.predictions"),
 	MISC("misc"),
 	ACQUATICUPDATEFIXES("aquaticupdatefix");
 

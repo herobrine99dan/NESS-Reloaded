@@ -1,4 +1,4 @@
-package com.github.ness.check.movement;
+package com.github.ness.check.movement.predictions;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,7 +36,8 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		Player player = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues values = nessPlayer.getMovementValues();
-		if (player.isFlying() || values.getHelper().isPlayerUsingElytra(nessPlayer) || values.isNearLiquid()) {
+		if (player.isFlying() || values.getHelper().isPlayerUsingElytra(nessPlayer)
+				|| values.getHelper().isNearLiquid(event.getTo()) || values.getHelper().isNearLiquid(event.getFrom())) {
 			return;
 		}
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
@@ -47,36 +48,48 @@ public class SpeedFriction extends ListeningCheck<PlayerMoveEvent> {
 		final boolean sprinting = nessPlayer.getSprinting().get();
 		final boolean sneaking = nessPlayer.getSneaking().get();
 		final boolean isInWeb = isCollidingWithMaterial(event.getTo(), "WEB");
-		if (!values.getHelper().isMathematicallyOnGround(values.getFrom().getY())) {
-			airTicks++;
-			groundTicks = 0;
-		} else {
-			airTicks = 0;
+		//boolean onGround = values.getHelper().isMathematicallyOnGround(values.getTo().getY());
+		boolean lastOnGround = values.getHelper().isMathematicallyOnGround(values.getFrom().getY());
+		if(lastOnGround) {
 			groundTicks++;
+		} else {
+			groundTicks = 0;
 		}
-		final Location underBlock = event.getTo().clone().add(0, -1.0, 0);
-		float friction = 0.91f * getFrictionBlock(underBlock);
-		float walkSpeed = (player.getWalkSpeed() / 2f);
-		float baseSpeed = sprinting ? walkSpeed + walkSpeed * 0.3f : walkSpeed;
-		float speedSlownessMultiplier = getSlownessAndSpeedEffectMultiplier(player);
-		float collidedBlockMultiplier = getCollidedBlockMultiplier(underBlock);
-		if (sneaking) {
-			baseSpeed = walkSpeed * 0.3f;
-		}
-		float movementSpeed = (float) 0.0f;
+		float friction = 0.91f;
+		float acceleration = 0.0f;
 		if (groundTicks > 0) {
-			movementSpeed = (float) (baseSpeed * speedSlownessMultiplier * collidedBlockMultiplier
-					* (0.16277136f / Math.pow(friction, 3)));
-		} else if (airTicks > 0) {
-			movementSpeed = sprinting ? 0.026f : 0.02f;
+			final Location underBlock = event.getTo().clone().add(0, -0.8, 0);
+			float collidedBlockMultiplier = getCollidedBlockMultiplier(underBlock);
+			friction *= getFrictionBlock(underBlock);
+			float walkSpeed = (player.getWalkSpeed() / 2f);
+			float baseSpeed = sprinting ? walkSpeed + walkSpeed * 0.3f : walkSpeed;
+			float speedSlownessMultiplier = getSlownessAndSpeedEffectMultiplier(player);
+			if (sneaking) {
+				baseSpeed = walkSpeed * 0.3f;
+			}
+			acceleration = (float) (baseSpeed * speedSlownessMultiplier * collidedBlockMultiplier
+					* (0.16277f / Math.pow(friction, 3)));
+			if (isInWeb) {
+				// momentum = lastDeltaXZ * 0.25f; // Minecraft just multiply the motion, and
+				// then it set momentum to 0
+				// acceleration *= 0.25f;
+				acceleration *= 0.25f;
+				if (!sprinting) {
+					xzDiff /= 2.0f; // Fixing retarded Minecraft not sending position packet is xzDiff is low
+				}
+			}
+		} else {
+			acceleration = sprinting ? 0.026f : 0.02f;
 		}
-		if (yDiff == 0.42f) {
-			movementSpeed += 0.2f;
+		if(yDiff == 0.42f && groundTicks > 0 && sprinting) {
+			acceleration += 0.2f;
 		}
-		float prediction = this.lastDeltaXZ * friction + movementSpeed;
+		float prediction = (lastDeltaXZ * friction) + acceleration; // Momentum + acceleration
 		float result = xzDiff - prediction;
-		this.player().sendDevMessage("xzDiff: " + roundNumber(xzDiff) + " yDiff: " + roundNumber(yDiff) + " prediction:"
-				+ roundNumber(prediction) + " Result: " + roundNumber(result));
+		this.player()
+				.sendDevMessage("xzDiff: " + roundNumber(xzDiff) + " predict: " + roundNumber(prediction)
+						+ " result: " + roundNumber(result) + " accel: " + roundNumber(acceleration)
+						+ " groundTicks: " + groundTicks + " lastXZDiff: " + roundNumber(lastDeltaXZ));
 		this.lastDeltaXZ = xzDiff;
 	}
 
