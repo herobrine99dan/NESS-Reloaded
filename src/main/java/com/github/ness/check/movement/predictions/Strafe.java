@@ -1,4 +1,4 @@
-package com.github.ness.check.movement;
+package com.github.ness.check.movement.predictions;
 
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
@@ -8,15 +8,14 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
-import com.github.ness.check.movement.predictionhelper.PlayerPrediction;
 import com.github.ness.data.MovementValues;
-import com.github.ness.utility.LongRingBuffer;
+import com.github.ness.data.PlayerAction;
 
-public class PredictionMovement extends ListeningCheck<PlayerMoveEvent> {
+public class Strafe extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
-	public PredictionMovement(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
+	public Strafe(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 
@@ -33,18 +32,17 @@ public class PredictionMovement extends ListeningCheck<PlayerMoveEvent> {
 																						// 0÷0
 		Vector direction = getDirectionOfOnlyYaw(movementValues.getTo().getYaw());
 		float angle = (float) Math.toDegrees(moving.angle(direction));
-		this.player().sendDevMessage("Angle: " + angle);
 		float subtraction = Math.abs(Math.round(Math.abs(angle)) - Math.abs(angle));
-		if (subtraction < 0.001 && xzDiff > 0.1 && ++buffer > 2) {
-			this.flag("Strafe: " + subtraction);
-		} else if (angle < 0.001 && xzDiff > 0.1 && ++buffer > 2) {
-			this.flag("IrregularStrafeAngle");
-		} else if (buffer > 0) {
-			buffer -= 0.5;
+		if (this.player().milliSecondTimeDifference(PlayerAction.JOIN) > 2000) {
+			if (subtraction < 0.001 && xzDiff > 0.1 && ++buffer > 1) {
+				this.flagEvent(e, "Strafe: " + subtraction);
+			} else if (angle < 0.001 && xzDiff > 0.1 && ++buffer > 1) {
+				this.flagEvent(e, "IrregularStrafeAngle");
+			} else if (buffer > 0) {
+				buffer -= 0.5;
+			}
 		}
 	}
-
-	private LongRingBuffer angles = new LongRingBuffer(5);
 
 	private float getCorrectFriction() {
 		return 0.91f * 0.6f; // Only for now

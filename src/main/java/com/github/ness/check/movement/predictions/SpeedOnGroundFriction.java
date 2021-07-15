@@ -1,5 +1,9 @@
 package com.github.ness.check.movement.predictions;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,6 +18,7 @@ import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
+import com.github.ness.utility.raytracer.rays.AABB;
 
 public class SpeedOnGroundFriction extends ListeningCheck<PlayerMoveEvent> {
 
@@ -43,67 +48,76 @@ public class SpeedOnGroundFriction extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		float xzDiff = (float) values.getXZDiff();
-		boolean lastOnGround = values.getHelper().isMathematicallyOnGround(values.getFrom().getY());
-		if (lastOnGround) {
+		final boolean lastOnGround = values.getHelper().isMathematicallyOnGround(values.getFrom().getY());
+		final boolean onGround = values.getHelper().isMathematicallyOnGround(values.getTo().getY());
+		final boolean sprinting = nessPlayer.getSprinting().get();
+		final boolean sneaking = nessPlayer.getSneaking().get();
+		final boolean isOnSoulSand = isOnSoulSand(player);
+
+		if (lastOnGround && onGround) {
 			groundTicks++;
 		} else {
 			groundTicks = 0;
 		}
-		float friction = 0.91f;
-		float acceleration = 0;
-		final boolean sprinting = nessPlayer.getSprinting().get();
-		final boolean sneaking = nessPlayer.getSneaking().get();
-		final boolean isInWeb = isCollidingWithMaterial(event.getTo(), "WEB");
-		if (groundTicks > 1) {
-			final Location underBlock = event.getTo().clone().add(0, -0.8, 0);
-			float collidedBlockMultiplier = getCollidedBlockMultiplier(underBlock);
-			friction *= getFrictionBlock(underBlock);
-			float walkSpeed = (player.getWalkSpeed() / 2f);
-			float baseSpeed = sprinting ? walkSpeed + walkSpeed * 0.3f : walkSpeed;
-			float speedSlownessMultiplier = getSlownessAndSpeedEffectMultiplier(player);
-			if (sneaking) {
-				baseSpeed = walkSpeed * 0.3f;
+		if (groundTicks > 2) {
+			float momentum = 0.91f * getFrictionBlock(event.getFrom().clone().add(0, -1.0, 0));
+			float baseSpeed = getBaseSpeed(player, sprinting);
+			float acceleration = (float) (baseSpeed * getEffectMultipliers(player)
+					* (0.16277f / Math.pow(momentum, 3)));
+			float prediction = (lastDeltaXZ * momentum) + acceleration; // Momentum + acceleration
+			float result = (xzDiff - prediction) * 0.98f;
+			if(result > 0.005) {
+				this.player().sendDevMessage("result: " + result);
 			}
-			acceleration = (float) (baseSpeed * speedSlownessMultiplier * collidedBlockMultiplier
-					* (0.16277f / Math.pow(friction, 3)));
-			if (isInWeb) {
-				// momentum = lastDeltaXZ * 0.25f; // Minecraft just multiply the motion, and
-				// then it set momentum to 0
-				// acceleration *= 0.25f;
-				acceleration *= 0.25f;
-				if (!sprinting) {
-					xzDiff /= 2.0f; // Fixing retarded Minecraft not sending position packet is xzDiff is low
-				}
-			}
-			float prediction = (lastDeltaXZ * friction) + acceleration; // Momentum + acceleration
-			float result = xzDiff - prediction;
-			this.player()
-					.sendDevMessage("xzDiff: " + roundNumber(xzDiff) + " predict: " + roundNumber(prediction)
-							+ " result: " + roundNumber(result) + " accel: " + roundNumber(acceleration)
-							+ " lastXZDiff: " + roundNumber(lastDeltaXZ));
 		}
 		this.lastDeltaXZ = xzDiff;
 	}
-	
-	private boolean isCollidingWithMaterial(Location loc, String name) {
-		final Location cloned = loc.clone().add(0, -0.125, 0);
+
+	private float getBaseSpeed(Player player, boolean sprinting) {
+		float walkSpeed = (player.getWalkSpeed() / 2f);
+		float baseSpeed = sprinting ? walkSpeed + walkSpeed * 0.3f : walkSpeed;
+		return baseSpeed;
+	}
+
+	private float getFrictionBlock(Location loc) {
+		Material material = this.getMaterialAccess().getMaterial(loc);
+		final String name = material.name();
+		final boolean isIce = name.contains("ICE");
+		if (name.contains("BLUE") && isIce) {
+			return 0.989f;
+		} else if (isIce) {
+			return 0.98f;
+		} else if (name.contains("SLIME")) {
+			return 0.8f;
+		} else if (name.contains("AIR")) {
+			return 1f;
+		} else {
+			return 0.6f; // Normal OnGround friction
+		}
+	}
+
+	private boolean isOnSoulSand(Player player) {
+		// Better detection with boundingboxes
+		AABB playerBB = AABB.from(player, null, 0);
+		final Location cloned = player.getLocation().clone().add(0, 0.1, 0);
 		final double limit = 0.3;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
 			for (double z = -limit; z < limit + 0.1; z += limit) {
 				Block block = cloned.clone().add(x, 0, z).getBlock();
-				if (block.getType().name().contains(name)) {
-					return true;
-				}
-				block = cloned.clone().add(x, 0.125, z).getBlock();
-				if (block.getType().name().contains(name)) {
-					return true;
+				String name = this.getMaterialAccess().getMaterial(block).name();
+				if (name.contains("SOUL") && name.contains("SAND")) {
+					AABB bb = new AABB(block.getX(), block.getY(), block.getZ(), block.getX() + 1, block.getY() + 1,
+							block.getZ() + 1);
+					if (bb.collides(playerBB)) {
+						return true;
+					}
 				}
 			}
 		}
 		return false;
 	}
-	
-	private float getSlownessAndSpeedEffectMultiplier(Player player) {
+
+	private float getEffectMultipliers(Player player) {
 		float speed = 0;
 		float slowness = 0;
 		for (PotionEffect pe : player.getActivePotionEffects()) {
@@ -125,32 +139,14 @@ public class SpeedOnGroundFriction extends ListeningCheck<PlayerMoveEvent> {
 		if (name.contains("SOUL") && name.contains("SAND")) {
 			return 0.4f;
 		} else if (name.contains("SLIME")) {
-			final float entityMotionY = 0.0f;
+			final float entityMotionY = 0;
 			float mult = 0.4f + entityMotionY * 0.2f;
 			return mult;
 		}
 		return 1f;
 	}
 
-	private float getFrictionBlock(Location loc) {
-		Material material = this.getMaterialAccess().getMaterial(loc);
-		final String name = material.name();
-		final boolean isIce = name.contains("ICE");
-		if (name.contains("BLUE") && isIce) {
-			return 0.989f;
-		} else if (isIce) {
-			return 0.98f;
-		} else if (name.contains("SLIME")) {
-			return 0.8f;
-		} else if (name.contains("AIR")) {
-			return 1f;
-		} else {
-			return 0.6f; // Normal OnGround friction
-		}
-	}
-
 	private double roundNumber(double n) {
 		return Math.round(n * 1000.0) / 1000.0;
 	}
 }
-

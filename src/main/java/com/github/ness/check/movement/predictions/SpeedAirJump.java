@@ -11,15 +11,14 @@ import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 
-public class SpeedAirFriction extends ListeningCheck<PlayerMoveEvent> {
+public class SpeedAirJump extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
-	private int airTicks;
+	private int groundTicks;
 	private float lastDeltaXZ;
-	private float buffer;
 
-	public SpeedAirFriction(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
+	public SpeedAirJump(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}
 
@@ -40,35 +39,14 @@ public class SpeedAirFriction extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		float xzDiff = (float) values.getXZDiff();
-		final boolean sprinting = nessPlayer.getSprinting().get() || player.isSprinting(); // Use also the old tick
-																							// sprinting value
-		// boolean onGround =
-		// values.getHelper().isMathematicallyOnGround(values.getTo().getY());
-		boolean onGround = values.getHelper().isMathematicallyOnGround(values.getTo().getY());
-		if (!onGround) {
-			airTicks++;
-		} else {
-			airTicks = 0;
-		}
-		float friction = 0.91f;
-		float acceleration = sprinting ? 0.026f : 0.02f;
-		if (airTicks > 1) {
-			float momentum = lastDeltaXZ * friction;
-			float prediction = momentum + acceleration;
-			float result = xzDiff - prediction;
-			if (result > 1.0E-12D && prediction > 0.075D) {
-				if (++this.buffer > 1) {
-					this.flagEvent(event,
-							"predictAccel: " + acceleration + " realAccell: " + roundNumber(xzDiff - momentum));
-				}
-			} else if (this.buffer > 0) {
-				this.buffer -= 0.5f;
-			}
+		float yDiff = (float) values.getyDiff();
+		final boolean lastOnGround = values.getHelper().isMathematicallyOnGround(values.getFrom().getY());
+		final boolean onGround = values.getHelper().isMathematicallyOnGround(values.getTo().getY());
+		final boolean sprinting = nessPlayer.getSprinting().get();
+		final boolean sneaking = nessPlayer.getSneaking().get();
+		if (lastOnGround && !onGround && yDiff > 0.0) {
+			this.player().sendDevMessage("yDiff: " + yDiff + " xzDiff: " + xzDiff);
 		}
 		this.lastDeltaXZ = xzDiff;
-	}
-
-	private double roundNumber(double n) {
-		return Math.round(n * 1000.0) / 1000.0;
 	}
 }
