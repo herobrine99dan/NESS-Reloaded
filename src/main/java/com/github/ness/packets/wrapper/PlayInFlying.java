@@ -32,18 +32,15 @@ public final class PlayInFlying {
 	public static PacketType<PlayInFlying> type(ReflectHelper helper) {
 		Class<?> packetClass = helper.getNmsClass("PacketPlayInFlying");
 
-		FieldInvoker<Double> x = helper.getField(packetClass, MemberDescriptions.forField(double.class, "x"));
-		FieldInvoker<Double> y = helper.getField(packetClass, MemberDescriptions.forField(double.class, "y"));
-		FieldInvoker<Double> z = helper.getField(packetClass, MemberDescriptions.forField(double.class, "z"));
-		FieldInvoker<Float> yaw = helper.getField(packetClass, MemberDescriptions.forField(float.class, "yaw"));
-		FieldInvoker<Float> pitch = helper.getField(packetClass, MemberDescriptions.forField(float.class, "pitch"));
-		FieldInvoker<Boolean> onGround = helper.getField(packetClass,
-				MemberDescriptions.forField(boolean.class, "onGround"),
-				MemberDescriptions.forField(boolean.class, "f")); // The field name is 'f' in some versions
-		FieldInvoker<Boolean> hasPosition = helper.getField(packetClass,
-				MemberDescriptions.forField(boolean.class, "hasPos"));
-		FieldInvoker<Boolean> hasLook = helper.getField(packetClass,
-				MemberDescriptions.forField(boolean.class, "hasLook"));
+		FieldInvoker<Double> x = helper.getFieldFromNames(packetClass, double.class, "x", "a");
+		FieldInvoker<Double> y = helper.getFieldFromNames(packetClass, double.class, "y", "b");
+		FieldInvoker<Double> z = helper.getFieldFromNames(packetClass, double.class, "z","c");
+		FieldInvoker<Float> yaw = helper.getFieldFromNames(packetClass, float.class, "yaw","d");
+		FieldInvoker<Float> pitch = helper.getFieldFromNames(packetClass, float.class, "pitch","e");
+		FieldInvoker<Boolean> onGround = helper.getFieldFromNames(packetClass,
+				boolean.class, "onGround", "f"); // The field name is 'f' in some versions
+		FieldInvoker<Boolean> hasPosition = helper.getFieldFromNames(packetClass, boolean.class, "hasPos","g");
+		FieldInvoker<Boolean> hasLook = helper.getFieldFromNames(packetClass,boolean.class, "hasLook","h");
 
 		return new RawPacketType<PlayInFlying>(packetClass) {
 

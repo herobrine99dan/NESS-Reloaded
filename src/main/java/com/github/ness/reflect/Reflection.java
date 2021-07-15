@@ -11,10 +11,11 @@ import java.util.Arrays;
 public interface Reflection {
 
 	/**
-	 * Finds a method matching the given description. May locate inherited and non public fields.
+	 * Finds a method matching the given description. May locate inherited and non
+	 * public fields.
 	 * 
-	 * @param <T> the field type
-	 * @param clazz the class in which to search
+	 * @param <T>         the field type
+	 * @param clazz       the class in which to search
 	 * @param description the field description
 	 * @return the field invoker
 	 * @throws MemberNotFoundException if not found
@@ -22,30 +23,56 @@ public interface Reflection {
 	<T> FieldInvoker<T> getField(Class<?> clazz, FieldDescription<T> description);
 
 	/**
-	 * Finds a method matching any of the given descriptions, in order. This is a convenience method
-	 * to attempt to find a field matching any one of the descriptions.
+	 * Finds a method matching any of the given descriptions, in order. This is a
+	 * convenience method to attempt to find a field matching any one of the
+	 * descriptions.
 	 *
-	 * @param <T> the field type
-	 * @param clazz the class in which to search
+	 * @param <T>          the field type
+	 * @param clazz        the class in which to search
 	 * @param descriptions the field descriptions to try
 	 * @return the field invoker
 	 * @throws MemberNotFoundException if not found
 	 */
-	default <T> FieldInvoker<T> getField(Class<?> clazz, FieldDescription<T>...descriptions) {
+	default <T> FieldInvoker<T> getFieldFromDescriptions(Class<?> clazz, FieldDescription<T>... descriptions) {
 		for (FieldDescription<T> description : descriptions) {
 			try {
 				return getField(clazz, description);
-			} catch (MemberNotFoundException ignored) {}
+			} catch (MemberNotFoundException ignored) {
+			}
 		}
 		throw new MemberNotFoundException(
 				"Finding field in " + clazz.getName() + " for descriptions " + Arrays.toString(descriptions));
 	}
 
 	/**
-	 * Finds a method matching the given description. May locate inherited methods and non public methods.
-	 * 
-	 * @param <R> the method return type
+	 * Finds a method matching any of the given names, in order. This is a
+	 * convenience method to attempt to find a field matching any one of the
+	 * names.
+	 *
+	 * @param <T>   the field type
 	 * @param clazz the class in which to search
+	 * @param type the type of the field you want to get
+	 * @param names the field names to try
+	 * @return the field invoker
+	 * @throws MemberNotFoundException if not found
+	 */
+	default <T> FieldInvoker<T> getFieldFromNames(Class<?> clazz, Class<T> type, String... names) {
+		for (String s : names) {
+			try {
+				return getField(clazz, MemberDescriptions.forField(type, s));
+			} catch (MemberNotFoundException ignored) {
+			}
+		}
+		throw new MemberNotFoundException(
+				"Finding field in " + clazz.getName() + " for descriptions " + Arrays.toString(names));
+	}
+
+	/**
+	 * Finds a method matching the given description. May locate inherited methods
+	 * and non public methods.
+	 * 
+	 * @param <R>         the method return type
+	 * @param clazz       the class in which to search
 	 * @param description the method description
 	 * @return the method invoker
 	 * @throws MemberNotFoundException if not found
@@ -53,20 +80,21 @@ public interface Reflection {
 	<R> MethodInvoker<R> getMethod(Class<?> clazz, MethodDescription<R> description);
 
 	/**
-	 * Finds a method matching any of the given descriptions. This is a convenience method
-	 * to attempt to find a method matching any one of the descriptions.
+	 * Finds a method matching any of the given descriptions. This is a convenience
+	 * method to attempt to find a method matching any one of the descriptions.
 	 *
-	 * @param <R> the method return type
-	 * @param clazz the class in which to search
+	 * @param <R>          the method return type
+	 * @param clazz        the class in which to search
 	 * @param descriptions the method descriptions to try
 	 * @return the method invoker
 	 * @throws MemberNotFoundException if not found
 	 */
-	default <R> MethodInvoker<R> getMethod(Class<?> clazz, MethodDescription<R>...descriptions) {
+	default <R> MethodInvoker<R> getMethod(Class<?> clazz, MethodDescription<R>... descriptions) {
 		for (MethodDescription<R> description : descriptions) {
 			try {
 				return getMethod(clazz, description);
-			} catch (MemberNotFoundException ignored) {}
+			} catch (MemberNotFoundException ignored) {
+			}
 		}
 		throw new MemberNotFoundException(
 				"Finding method in " + clazz.getName() + " for descriptions " + Arrays.toString(descriptions));

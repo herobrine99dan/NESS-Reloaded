@@ -59,18 +59,12 @@ public class AABB {
 				// Min fields are "a" "b" and "c"
 				// With newer versions (like 1.16.4) Spigot uses the Mojang's obfuscation map
 				Class<?> boxClass = ness.getReflectHelper().getNmsClass("AxisAlignedBB");
-				xMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "d"),
-						MemberDescriptions.forField(double.class, "maxX"));
-				yMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "e"),
-						MemberDescriptions.forField(double.class, "maxY"));
-				zMaxField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "f"),
-						MemberDescriptions.forField(double.class, "maxZ"));
-				xMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "a"),
-						MemberDescriptions.forField(double.class, "minX"));
-				yMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "b"),
-						MemberDescriptions.forField(double.class, "minY"));
-				zMinField = ness.getReflectHelper().getField(boxClass, MemberDescriptions.forField(double.class, "c"),
-						MemberDescriptions.forField(double.class, "minZ"));
+				xMaxField = ness.getReflectHelper().getFieldFromNames(boxClass, double.class, "d", "maxX");
+				yMaxField = ness.getReflectHelper().getFieldFromNames(boxClass, double.class, "e", "maxY");
+				zMaxField = ness.getReflectHelper().getFieldFromNames(boxClass, double.class, "f", "maxZ");
+				xMinField = ness.getReflectHelper().getFieldFromNames(boxClass, double.class, "a", "minX");
+				yMinField = ness.getReflectHelper().getFieldFromNames(boxClass, double.class, "b", "minY");
+				zMinField = ness.getReflectHelper().getFieldFromNames(boxClass, double.class, "c", "minZ");
 			}
 			Object entitynms = craftLivingEntityMethod.invoke(entity);
 			Object boundingBox = getBoundingBoxesMethod.invoke(entitynms);
