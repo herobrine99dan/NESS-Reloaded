@@ -21,6 +21,8 @@ public class VerticalVelocity extends ListeningCheck<PlayerMoveEvent> {
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 	private double minVelocityPercentage = 95;
 	private double buffer;
+	private int velocityTicks = 0;
+	private float yVelocity;
 
 	public VerticalVelocity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
@@ -38,32 +40,36 @@ public class VerticalVelocity extends ListeningCheck<PlayerMoveEvent> {
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
 		MovementValues values = this.player().getMovementValues();
-		double yDelta = values.getyDiff();
+		float yDelta = (float) values.getyDiff();
 		NessPlayer nessPlayer = this.player();
 		if (getMaterialName(values.getTo()).contains("WEB")) {
 			return;
 		}
-		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 500) {
-			if (nessPlayer.getLastVelocity().getY() < 0.1) {
-				return;
-			}
-			lastYDistances.add((float) yDelta); // We actually get the last 5 movements when the player gets velocity
-			if (lastYDistances.size() > 7) {
+		if (nessPlayer.hasAlreadyVerticalVelocityUsedVelocity()) {
+			nessPlayer.setAlreadyVerticalVelocityUsedVelocity(false);
+			yVelocity = (float) nessPlayer.getLastVelocity().getY();
+			velocityTicks = 5;
+		}
+		if (velocityTicks > 0) {
+			lastYDistances.add(yDelta); // We actually get the last 5 movements of when the player gets velocity
+			if (lastYDistances.size() > 4) {
 				float max = Collections.max(lastYDistances); // We get the max value and we check how much it is similar
 																// to the velocity
-				float ySubtract = (float) (max / nessPlayer.getLastVelocity().getY());
+				float ySubtract = max / yVelocity;
 				lastYDistances.clear();
-				float percentage = Math.abs(ySubtract * 100);
-				if (percentage < minVelocityPercentage && ++buffer > 1) {
+				float percentage = roundNumber(ySubtract * 100);
+				if (percentage < minVelocityPercentage) {
 					this.flag("percentage: " + percentage);
 				} else if (buffer > 0) {
 					buffer -= 0.5;
 				}
 			}
+			velocityTicks--;
 		}
-		if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 1000) {
-			lastYDistances.clear(); // This is done to remove memory leaks
-		}
+	}
+	
+	private float roundNumber(float n) {
+		return Math.round(n * 100.0f) / 100.0f;
 	}
 
 }

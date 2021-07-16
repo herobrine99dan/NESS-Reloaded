@@ -93,6 +93,7 @@ public class CoreListener implements Listener {
 		}
 		nessPlayer.setPlayerAction(PlayerAction.VELOCITY);
 		nessPlayer.setLastVelocity(ImmutableLoc.of(event.getVelocity().toLocation(player.getWorld())));
+		nessPlayer.setAlreadyVerticalVelocityUsedVelocity(true);
 		if (nessPlayer.isDevMode()) {
 			player.sendMessage("Velocity: " + nessPlayer.getLastVelocity());
 		}
