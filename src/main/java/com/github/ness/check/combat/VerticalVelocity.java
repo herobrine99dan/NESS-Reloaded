@@ -50,6 +50,10 @@ public class VerticalVelocity extends ListeningCheck<PlayerMoveEvent> {
 			yVelocity = (float) nessPlayer.getLastVelocity().getY();
 			velocityTicks = 5;
 		}
+		if(yVelocity < 0) {
+			velocityTicks = 0;
+			return;
+		}
 		if (velocityTicks > 0) {
 			lastYDistances.add(yDelta); // We actually get the last 5 movements of when the player gets velocity
 			if (lastYDistances.size() > 4) {
@@ -57,9 +61,9 @@ public class VerticalVelocity extends ListeningCheck<PlayerMoveEvent> {
 																// to the velocity
 				float ySubtract = max / yVelocity;
 				lastYDistances.clear();
-				float percentage = roundNumber(ySubtract * 100);
+				float percentage = Math.abs(roundNumber(ySubtract * 100, 100));
 				if (percentage < minVelocityPercentage) {
-					this.flag("percentage: " + percentage);
+					this.flag("percent: " + percentage + " velocity: " + roundNumber(yVelocity, 1000));
 				} else if (buffer > 0) {
 					buffer -= 0.5;
 				}
@@ -68,8 +72,8 @@ public class VerticalVelocity extends ListeningCheck<PlayerMoveEvent> {
 		}
 	}
 	
-	private float roundNumber(float n) {
-		return Math.round(n * 100.0f) / 100.0f;
+	private float roundNumber(float n, float places) {
+		return Math.round(n * places) / places;
 	}
 
 }

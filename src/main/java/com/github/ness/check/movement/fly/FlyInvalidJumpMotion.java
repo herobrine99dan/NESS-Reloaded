@@ -29,7 +29,8 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
 		if (movementValues.isNearLiquid() || movementValues.hasBlockNearHead()
-				|| movementValues.isNearMaterials("ICE", "SLIME", "SNOW", "VINE", "LADDER") || isBlockUpperHeadOnGround(event.getTo()) || isBlockUpperHeadOnGround(event.getFrom())
+				|| movementValues.isNearMaterials("ICE", "SLIME", "SNOW", "VINE", "LADDER")
+				|| isBlockUpperHeadOnGround(event.getTo()) || isBlockUpperHeadOnGround(event.getFrom())
 				|| movementValues.isAroundNonOccludingBlocks() || movementValues.getHelper().hasflybypass(nessPlayer)) {
 			return;
 		}
@@ -47,7 +48,15 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 
 	private boolean isBlockUpperHeadOnGround(Location loc) {
 		MovementValuesHelper helper = this.player().getMovementValues().getHelper();
-		return helper.isBlockConsideredOnGround(loc.clone().add(0, 1.9, 0));
+		if (helper.isBlockConsideredOnGround(loc.clone().add(0, 1.9, 0)))
+			return true; // little optimization
+		for (double x = -0.25; x <= 0.25; x += 0.1) {
+			for (double z = -0.25; z <= 0.25; z += 0.1) {
+				if (helper.isBlockConsideredOnGround(loc.clone().add(x, 1.9, z)))
+					return true;
+			}
+		}
+		return false;
 	}
 
 }

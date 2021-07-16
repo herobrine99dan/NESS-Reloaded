@@ -39,6 +39,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	private int airTicks;
+	private float lastYDelta;
 	private double buffer;
 
 	public interface Config {
@@ -79,10 +80,10 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		if (this.getMaterialAccess().getMaterial(event.getTo().clone().subtract(0, 0.005, 0)).name().contains("LADDER")
-				|| this.getMaterialAccess().getMaterial(event.getFrom().clone().subtract(0, 0.005, 0)).name()
-						.contains("LADDER") || this.getMaterialAccess().getMaterial(event.getFrom()).name()
-						.contains("LADDER") || this.getMaterialAccess().getMaterial(event.getTo()).name()
-						.contains("LADDER")) {
+				|| this.getMaterialAccess().getMaterial(event.getFrom().clone().subtract(0, 0.005, 0)).name().contains(
+						"LADDER")
+				|| this.getMaterialAccess().getMaterial(event.getFrom()).name().contains("LADDER")
+				|| this.getMaterialAccess().getMaterial(event.getTo()).name().contains("LADDER")) {
 			return;
 		}
 		// TODO There is one false flag with jump boost because Minecraft (aka
@@ -92,12 +93,9 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		// boolean onGround = !isOnGround(event.getTo()) ? onGroundFixer : true;
 		boolean onGround = !onGroundFixer ? isOnGround(event.getTo()) : true; // Little micro optimization: if the
 																				// player isn't onGround, then use the
-																				// boolean value from
+																				// boolean value from //
 																				// isOnGround(Location loc)
-
 		float yDiff = (float) values.getyDiff();
-		float yVelocity = nessPlayer.getLastVelocity() != null ? (float) nessPlayer.getLastVelocity().getY() : 0.0f;
-		this.player().sendDevMessage("yDiff: " + yDiff + " yVelocity: " + yVelocity);
 		if (onGround) {
 			yDiff = 0.0f;
 		}
@@ -107,7 +105,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 			airTicks = 0;
 		}
 		// To make a prediction we get the last Y value and we try to predict the next.
-		float motionY = nessPlayer.getLastYDeltaPrediction();
+		float motionY = lastYDelta;
 		if (this.getMaterialAccess().getMaterial(event.getTo()).name().contains("WEB")) {
 			motionY = 0.31f; // Web gravity is too small and there are issues with PlayerMoveEvent, so we
 								// just set a limit for this
@@ -133,7 +131,7 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		} else if (buffer > 0) {
 			buffer -= 0.5;
 		}
-		nessPlayer.setLastYDeltaPrediction(yDiff);
+		lastYDelta = yDiff;
 	}
 
 	private void spawnArmorStand(String name, Location loc) {
