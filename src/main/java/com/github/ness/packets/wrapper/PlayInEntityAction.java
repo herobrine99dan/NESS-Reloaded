@@ -1,11 +1,9 @@
 package com.github.ness.packets.wrapper;
 
-import java.lang.reflect.Field;
 import java.util.Objects;
 
 import com.github.ness.packets.PacketType;
 import com.github.ness.reflect.FieldInvoker;
-import com.github.ness.reflect.MemberDescriptions;
 import com.github.ness.reflect.ReflectHelper;
 
 public class PlayInEntityAction {
@@ -18,11 +16,8 @@ public class PlayInEntityAction {
 
 	public static PacketType<PlayInEntityAction> type(ReflectHelper helper) {
 		Class<?> packetClass = helper.getNmsClass("PacketPlayInEntityAction");
-		//For now this will remain here for testing purposes
-		for (Field field : packetClass.getDeclaredFields()) {
-			System.out.println("name: " + field.getName() + " type: " + field.getType().getSimpleName());
-		}
-		FieldInvoker<?> animation = helper.getFieldFromNames(packetClass, Object.class, "b", "animation");
+		Class<?> enumPlayerActionClass = helper.getNmsClass("PacketPlayInEntityAction$EnumPlayerAction");
+		FieldInvoker<?> animation = helper.getFieldFromNames(packetClass, enumPlayerActionClass, "b", "animation");
 
 		return new RawPacketType<PlayInEntityAction>(packetClass) {
 
