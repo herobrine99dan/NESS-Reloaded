@@ -24,6 +24,7 @@ public class OnTickEvent extends PacketCheck {
 		if (packet.isPacketType(packetTypeRegistry().playInEntityAction())) {
 			PlayInEntityAction entityAction = packet.toPacketWrapper(packetTypeRegistry().playInEntityAction());
 			String animation = entityAction.animation().toString();
+			this.player().sendDevMessage("animation: " + animation);
 			if (animation.equals("PRESS_SHIFT_KEY") || animation.equals("START_SNEAKING")) {
 				this.player().getSneaking().set(true);
 			} else if (animation.equals("RELEASE_SHIFT_KEY") || animation.equals("STOP_SNEAKING")) {

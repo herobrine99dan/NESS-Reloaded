@@ -34,9 +34,9 @@ public class Strafe extends ListeningCheck<PlayerMoveEvent> {
 		float angle = (float) Math.toDegrees(moving.angle(direction));
 		float subtraction = Math.abs(Math.round(Math.abs(angle)) - Math.abs(angle));
 		if (this.player().milliSecondTimeDifference(PlayerAction.JOIN) > 2000) {
-			if (subtraction < 0.001 && xzDiff > 0.1 && ++buffer > 1) {
+			if (subtraction < 0.001 && xzDiff > 0.15 && ++buffer > 1) {
 				this.flagEvent(e, "Strafe: " + subtraction);
-			} else if (angle < 0.001 && xzDiff > 0.1 && ++buffer > 1) {
+			} else if (angle < 0.001 && xzDiff > 0.15 && ++buffer > 1) {
 				this.flagEvent(e, "IrregularStrafeAngle");
 			} else if (buffer > 0) {
 				buffer -= 0.5;

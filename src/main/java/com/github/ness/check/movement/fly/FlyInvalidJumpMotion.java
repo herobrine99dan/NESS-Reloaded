@@ -1,5 +1,6 @@
 package com.github.ness.check.movement.fly;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -9,6 +10,7 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
+import com.github.ness.data.MovementValuesHelper;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
 
@@ -27,7 +29,7 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
 		if (movementValues.isNearLiquid() || movementValues.hasBlockNearHead()
-				|| movementValues.isNearMaterials("ICE", "SLIME", "SNOW", "VINE", "LADDER")
+				|| movementValues.isNearMaterials("ICE", "SLIME", "SNOW", "VINE", "LADDER") || isBlockUpperHeadOnGround(event.getTo()) || isBlockUpperHeadOnGround(event.getFrom())
 				|| movementValues.isAroundNonOccludingBlocks() || movementValues.getHelper().hasflybypass(nessPlayer)) {
 			return;
 		}
@@ -41,6 +43,11 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 				}
 			}
 		}
+	}
+
+	private boolean isBlockUpperHeadOnGround(Location loc) {
+		MovementValuesHelper helper = this.player().getMovementValues().getHelper();
+		return helper.isBlockConsideredOnGround(loc.clone().add(0, 1.9, 0));
 	}
 
 }

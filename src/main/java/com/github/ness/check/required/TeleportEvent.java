@@ -21,11 +21,14 @@ public class TeleportEvent extends ListeningCheck<PlayerTeleportEvent> {
 			.forEventWithTask(PlayerTeleportEvent.class, PeriodicTaskInfo.syncTask(Duration.ofMillis(1500)));
 	private MethodInvoker<?> entityPlayerMethod;
 	FieldInvoker<?> fieldPing;
+
 	public TeleportEvent(ListeningCheckFactory<?, PlayerTeleportEvent> factory, NessPlayer player) {
 		super(factory, player);
-		entityPlayerMethod = this.ness().getReflectHelper().getMethod(ness().getReflectHelper().getObcClass("entity.CraftPlayer"),
+		entityPlayerMethod = this.ness().getReflectHelper().getMethod(
+				ness().getReflectHelper().getObcClass("entity.CraftPlayer"),
 				MemberDescriptions.forMethod("getHandle", new Class<?>[] {}));
-		fieldPing = ness().getReflectHelper().getField(ness().getReflectHelper().getNmsClass("EntityPlayer"), MemberDescriptions.forField("ping"));
+		fieldPing = ness().getReflectHelper().getFieldFromNames(ness().getReflectHelper().getNmsClass("EntityPlayer"),
+				int.class, "ping", "e"); //After 15 minutes of research, in 1.17 the "ping field" is called "e"
 	}
 
 	@Override

@@ -129,7 +129,7 @@ public class MovementValuesHelper {
 		for (double x = -limit; x < limit; x += 0.05) {
 			for (double z = -limit; z < limit; z += 0.05) {
 				for (double y = -ONGROUNDBOUNDINGBOXHEIGHT; y < 0; y += 0.05) {
-					if (isBlockConsideredOnGround(cloned.clone().add(x, y, z), Arrays.asList(otherBlocksToCheck))) {
+					if (isBlockConsideredOnGround(cloned.clone().add(x, y, z), otherBlocksToCheck)) {
 						return true;
 					}
 				}
@@ -170,14 +170,23 @@ public class MovementValuesHelper {
 		return false;
 	}
 
-	private boolean isBlockConsideredOnGround(Location loc, List<String> otherBlocksToCheck) {
+	public boolean isBlockConsideredOnGround(Location loc, String... otherBlocksToCheck) {
 		Block block = loc.getBlock();
 		Material material = this.materialAccess.getMaterial(block);
 		String name = material.name();
 		if (material.isSolid() || name.contains("SNOW") || name.contains("CARPET") || name.contains("SCAFFOLDING")
 				|| name.contains("SKULL") || name.contains("LADDER") || name.contains("WALL")
-				|| otherBlocksToCheck.stream().anyMatch((newMaterial) -> newMaterial.contains(name))) {
+				|| elementOfStringContainsMaterial(name, otherBlocksToCheck)) {
 			return true;
+		}
+		return false;
+	}
+	
+	private boolean elementOfStringContainsMaterial(String material, String... otherBlocksToCheck) {
+		for(String s : otherBlocksToCheck) {
+			if(s.contains(material)) {
+				return true;
+			}
 		}
 		return false;
 	}
