@@ -25,4 +25,10 @@ public abstract class PacketTypeRegistry {
 	public final PacketType<PlayInEntityAction> playInEntityAction() {
 		return getPacketType(PlayInEntityAction.class);
 	}
+	public final PacketType<PlayInArmAnimation> playInArmAnimation() {
+		return getPacketType(PlayInArmAnimation.class);
+	}
+	public final PacketType<PlayInUseEntity> playInUseEntity() {
+		return getPacketType(PlayInUseEntity.class);
+	}
 }

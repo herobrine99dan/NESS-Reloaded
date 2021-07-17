@@ -1,6 +1,5 @@
 package com.github.ness.check.combat;
 
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
@@ -39,7 +38,7 @@ public class Criticals extends ListeningCheck<EntityDamageByEntityEvent> {
 		 * player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType().isSolid
 		 * ()) { flagEvent(event); } }
 		 */
-		if(getMaterialName(values.getTo()).contains("WEB") || getMaterialName(values.getFrom()).contains("WEB")) {
+		if(values.isNearMaterials("WEB")) {
 			return;
 		}
 		if (values.isNearLiquid() || values.getHelper().hasflybypass(nessPlayer)) {

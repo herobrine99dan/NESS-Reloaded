@@ -1,6 +1,7 @@
 package com.github.ness.config;
 
 import com.github.ness.check.combat.Killaura;
+import com.github.ness.check.combat.KillauraHitMissRatio;
 import com.github.ness.check.combat.MaxCPS;
 import com.github.ness.check.combat.PlayerESP;
 import com.github.ness.check.combat.VerticalVelocity;
@@ -164,4 +165,14 @@ public interface AllChecksConfig {
 		""})
 	@SubSection
 	OmniSprint.Config omniSprint();
+	@ConfKey("killaurahitmissratio")
+	@ConfComments({
+		"",
+		"Check the percentage hits/swings of a specific playe",
+		"",
+		"Performance impact: low", 
+		"Effectiveness: High",
+		""})
+	@SubSection
+	KillauraHitMissRatio.Config killauraHitMissRatio();
 }

@@ -56,32 +56,32 @@ public class NessAnticheat {
 
 	NessAnticheat(JavaPlugin plugin, Path folder, MaterialAccess materialAccess) {
 		this.plugin = plugin;
-		//We setup the MovementValuesHelper creating an empty MovementValues object
+		// We setup the MovementValuesHelper creating an empty MovementValues object
 		MovementValues emptyObject = new MovementValues(materialAccess);
-		emptyObject.getHelper().calcDamageFall(5); //Executing a method to force Java to load completely the MovementValuesHelper
+		emptyObject.getHelper().calcDamageFall(5); // Executing a method to force Java to load completely the
+													// MovementValuesHelper
 		executor = Executors.newSingleThreadScheduledExecutor();
 		configManager = new ConfigManager(folder);
 		checkManager = new CheckManager(this);
 		violationManager = new ViolationManager(this);
 		this.materialAccess = materialAccess;
-		if(Bukkit.getPluginManager().getPlugin("floodgate") != null) {
+		if (Bukkit.getPluginManager().getPlugin("floodgate") != null) {
 			logger.log(Level.INFO, "Floodgate was detected, NESS Reloaded will fix checks for Geyser's users!");
 			useFloodGate = true;
-		}else {
+		} else {
 			useFloodGate = false;
 		}
 
 		ClassLocator locator = ClassLocator.create(plugin.getServer());
 		Reflection reflection = new InvokerCachingReflection(new MethodHandleReflection(new CoreReflection()));
 		networker = new Networker(plugin,
-				new PacketListener(
-						new NetworkReflectionCreation(reflection, locator).create(),
+				new PacketListener(new NetworkReflectionCreation(reflection, locator).create(),
 						new PacketActorInterceptor(checkManager::receivePacket, reflection)));
 		reflectHelper = new SimpleReflectHelper(locator, reflection);
-		packetTypeRegistry = new SimplePacketTypeRegistry(reflectHelper);
-	       String craftbukkitPackage = Bukkit.getServer().getClass().getPackage().getName();
-	        String nmsVersion = VersionDetermination.getNmsVersion(craftbukkitPackage);
+		String craftbukkitPackage = Bukkit.getServer().getClass().getPackage().getName();
+		String nmsVersion = VersionDetermination.getNmsVersion(craftbukkitPackage);
 		versionDetermination = new VersionDetermination(nmsVersion);
+		packetTypeRegistry = new SimplePacketTypeRegistry(this.versionDetermination, reflectHelper);
 	}
 
 	void start() {

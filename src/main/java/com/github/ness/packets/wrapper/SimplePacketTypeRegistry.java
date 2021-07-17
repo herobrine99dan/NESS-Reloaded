@@ -1,10 +1,11 @@
 package com.github.ness.packets.wrapper;
 
-import com.github.ness.packets.PacketType;
-import com.github.ness.reflect.ReflectHelper;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import com.github.ness.packets.PacketType;
+import com.github.ness.reflect.ReflectHelper;
+import com.github.ness.reflect.locator.VersionDetermination;
 
 public final class SimplePacketTypeRegistry extends PacketTypeRegistry {
 
@@ -14,14 +15,16 @@ public final class SimplePacketTypeRegistry extends PacketTypeRegistry {
 		this.packetTypesMap = packetTypesMap;
 	}
 
-	public SimplePacketTypeRegistry(ReflectHelper helper) {
-		this(buildPacketTypesMap(helper));
+	public SimplePacketTypeRegistry(VersionDetermination version, ReflectHelper helper) {
+		this(buildPacketTypesMap(version, helper));
 	}
 
-	private static Map<Class<?>, PacketType<?>> buildPacketTypesMap(ReflectHelper helper) {
+	private static Map<Class<?>, PacketType<?>> buildPacketTypesMap(VersionDetermination version, ReflectHelper helper) {
 		Map<Class<?>, PacketType<?>> packetTypesMap = new HashMap<>();
 		packetTypesMap.put(PlayInFlying.class, PlayInFlying.type(helper));
-		packetTypesMap.put(PlayInEntityAction.class, PlayInEntityAction.type(helper));
+		packetTypesMap.put(PlayInEntityAction.class, PlayInEntityAction.type(version, helper));
+		packetTypesMap.put(PlayInArmAnimation.class, PlayInArmAnimation.type(helper));
+		packetTypesMap.put(PlayInUseEntity.class, PlayInUseEntity.type(version, helper));
 		return packetTypesMap;
 	}
 

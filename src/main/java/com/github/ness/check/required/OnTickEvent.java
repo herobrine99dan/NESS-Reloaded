@@ -6,7 +6,9 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.PacketCheck;
 import com.github.ness.check.PacketCheckFactory;
 import com.github.ness.packets.Packet;
+import com.github.ness.packets.wrapper.PlayInArmAnimation;
 import com.github.ness.packets.wrapper.PlayInEntityAction;
+import com.github.ness.packets.wrapper.PlayInUseEntity;
 
 public class OnTickEvent extends PacketCheck {
 
@@ -35,6 +37,10 @@ public class OnTickEvent extends PacketCheck {
 			} else if (animation.equals("STOP_SPRINTING")) {
 				this.player().getSprinting().set(false);
 			}
+		}
+		if (packet.isPacketType(packetTypeRegistry().playInUseEntity())) {
+			PlayInUseEntity entityAction = packet.toPacketWrapper(packetTypeRegistry().playInUseEntity());
+			//this.player().sendDevMessage("useEntity: " + entityAction.isAttack() + " id: " + entityAction.getEntityID());
 		}
 	}
 }

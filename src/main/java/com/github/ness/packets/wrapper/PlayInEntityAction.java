@@ -5,6 +5,7 @@ import java.util.Objects;
 import com.github.ness.packets.PacketType;
 import com.github.ness.reflect.FieldInvoker;
 import com.github.ness.reflect.ReflectHelper;
+import com.github.ness.reflect.locator.VersionDetermination;
 
 public class PlayInEntityAction {
 
@@ -14,7 +15,7 @@ public class PlayInEntityAction {
 		this.animation = (Enum) animation;
 	}
 
-	public static PacketType<PlayInEntityAction> type(ReflectHelper helper) {
+	public static PacketType<PlayInEntityAction> type(VersionDetermination version, ReflectHelper helper) {
 		Class<?> packetClass = helper.getNmsClass("PacketPlayInEntityAction");
 		Class<?> enumPlayerActionClass = helper.getNmsClass("PacketPlayInEntityAction$EnumPlayerAction");
 		FieldInvoker<?> animation = helper.getFieldFromNames(packetClass, enumPlayerActionClass, "b", "animation");
