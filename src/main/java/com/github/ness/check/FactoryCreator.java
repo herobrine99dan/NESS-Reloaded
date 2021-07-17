@@ -42,7 +42,8 @@ class FactoryCreator<C extends BaseCheck> {
 	private BaseCheckFactory<C> getFactoryUsingItsConstructor(Class<? extends BaseCheckFactory<C>> factoryClass) {
 		try {
 			return factoryClass.getDeclaredConstructor(CheckManager.class).newInstance(manager);
-		} catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+		} catch (NoSuchMethodException | InstantiationException | IllegalAccessException
+				| InvocationTargetException ex) {
 			throw new UncheckedReflectiveOperationException(
 					"Unable to instantiate factory " + factoryClass.getSimpleName(), ex);
 		}
@@ -59,14 +60,16 @@ class FactoryCreator<C extends BaseCheck> {
 	private Constructor<C> getCheckConstructor(Class<C> checkClass) {
 		try {
 			return checkClass.getDeclaredConstructor(BaseCheckFactory.class);
-		} catch (NoSuchMethodException ignored) {}
+		} catch (NoSuchMethodException ignored) {
+		}
 
-		List<Class<?>> checkFactoryClasses = Arrays.asList(
-				CheckFactory.class, ListeningCheckFactory.class, PacketCheckFactory.class);
+		List<Class<?>> checkFactoryClasses = Arrays.asList(CheckFactory.class, ListeningCheckFactory.class,
+				PacketCheckFactory.class, MultipleListeningCheckFactory.class);
 		for (Class<?> checkFactoryClass : checkFactoryClasses) {
 			try {
 				return checkClass.getDeclaredConstructor(checkFactoryClass, NessPlayer.class);
-			} catch (NoSuchMethodException ignored) {}
+			} catch (NoSuchMethodException ignored) {
+			}
 		}
 		throw new IllegalStateException("Unable to find check constructor");
 	}
@@ -113,18 +116,19 @@ class FactoryCreator<C extends BaseCheck> {
 
 		if (ListeningCheck.class.isAssignableFrom(checkClass)) {
 			if (!(checkInfo instanceof ListeningCheckInfo)) {
-				throw new IllegalStateException(
-						"Check " + checkClass.getName() + " has mismatched check info");
+				throw new IllegalStateException("Check " + checkClass.getName() + " has mismatched check info");
 			}
 			ListeningCheckInfo<?> listeningCheckInfo = (ListeningCheckInfo<?>) checkInfo;
 			return createListening(constructor, listeningCheckInfo);
 		}
 		if (checkInfo instanceof ListeningCheckInfo) {
-			throw new IllegalStateException(
-					"Check " + checkClass.getName() + " has mismatched check info");
+			throw new IllegalStateException("Check " + checkClass.getName() + " has mismatched check info");
 		}
 		if (PacketCheck.class.isAssignableFrom(checkClass)) {
 			return createPacket(constructor, checkInfo);
+		}
+		if (MultipleListeningCheck.class.isAssignableFrom(checkClass)) {
+			return createMultipleEventListener(constructor, checkInfo);
 		}
 		return create(constructor, checkInfo);
 	}
@@ -140,48 +144,50 @@ class FactoryCreator<C extends BaseCheck> {
 	@SuppressWarnings("unchecked")
 	private <L extends ListeningCheck<E>, E extends Event> BaseCheckFactory<C> createListening(
 			Constructor<C> constructor, ListeningCheckInfo<?> listeningCheckInfo) {
-		return (BaseCheckFactory<C>) createListeningChecked(
-				(Constructor<L>) constructor, (ListeningCheckInfo<E>) listeningCheckInfo);
+		return (BaseCheckFactory<C>) createListeningChecked((Constructor<L>) constructor,
+				(ListeningCheckInfo<E>) listeningCheckInfo);
 	}
 
 	private <L extends ListeningCheck<E>, E extends Event> ListeningCheckFactory<L, E> createListeningChecked(
 			Constructor<L> constructor, ListeningCheckInfo<E> listeningCheckInfo) {
-		return new ListeningCheckFactory<>(
-				CheckInstantiators.fromConstructor(constructor),
-				constructor.getDeclaringClass().getSimpleName(),
-				manager, listeningCheckInfo);
+		return new ListeningCheckFactory<>(CheckInstantiators.fromConstructor(constructor),
+				constructor.getDeclaringClass().getSimpleName(), manager, listeningCheckInfo);
 	}
 
 	// PacketCheckFactory
 
 	@SuppressWarnings("unchecked")
-	private <L extends PacketCheck> BaseCheckFactory<C> createPacket(
-			Constructor<C> constructor, CheckInfo checkInfo) {
+	private <L extends PacketCheck> BaseCheckFactory<C> createPacket(Constructor<C> constructor, CheckInfo checkInfo) {
 		return (BaseCheckFactory<C>) createPacketChecked((Constructor<L>) constructor, checkInfo);
 	}
 
-	private <L extends PacketCheck> PacketCheckFactory<L> createPacketChecked(
-			Constructor<L> constructor, CheckInfo checkInfo) {
-		return new PacketCheckFactory<>(
-				CheckInstantiators.fromConstructor(constructor),
-				constructor.getDeclaringClass().getSimpleName(),
-				manager, checkInfo);
+	private <L extends PacketCheck> PacketCheckFactory<L> createPacketChecked(Constructor<L> constructor,
+			CheckInfo checkInfo) {
+		return new PacketCheckFactory<>(CheckInstantiators.fromConstructor(constructor),
+				constructor.getDeclaringClass().getSimpleName(), manager, checkInfo);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <L extends MultipleListeningCheck> BaseCheckFactory<C> createMultipleEventListener(Constructor<C> constructor, CheckInfo checkInfo) {
+		return (BaseCheckFactory<C>) createMultipleEventListenerChecked((Constructor<L>) constructor, checkInfo);
+	}
+
+	private <L extends MultipleListeningCheck> MultipleListeningCheckFactory<L> createMultipleEventListenerChecked(Constructor<L> constructor,
+			CheckInfo checkInfo) {
+		return new MultipleListeningCheckFactory<>(CheckInstantiators.fromConstructor(constructor),
+				constructor.getDeclaringClass().getSimpleName(), manager, checkInfo);
 	}
 
 	// CheckFactory
 
 	@SuppressWarnings("unchecked")
-	private <L extends Check> BaseCheckFactory<C> create(
-			Constructor<C> constructor, CheckInfo checkInfo) {
+	private <L extends Check> BaseCheckFactory<C> create(Constructor<C> constructor, CheckInfo checkInfo) {
 		return (BaseCheckFactory<C>) createChecked((Constructor<L>) constructor, checkInfo);
 	}
 
-	private <L extends Check> CheckFactory<L> createChecked(
-			Constructor<L> constructor, CheckInfo checkInfo) {
-		return new CheckFactory<>(
-				CheckInstantiators.fromConstructor(constructor),
-				constructor.getDeclaringClass().getSimpleName(),
-				manager, checkInfo);
+	private <L extends Check> CheckFactory<L> createChecked(Constructor<L> constructor, CheckInfo checkInfo) {
+		return new CheckFactory<>(CheckInstantiators.fromConstructor(constructor),
+				constructor.getDeclaringClass().getSimpleName(), manager, checkInfo);
 	}
 
 }

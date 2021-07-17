@@ -89,6 +89,15 @@ public final class CheckInfos {
 	public static CheckInfo forPackets() {
 		return withTask(PeriodicTaskInfo.none());
 	}
+	
+	/**
+	 * Gets a check info to be used with multiple-events checks
+	 *
+	 * @return a check info for multiple-events checks
+	 */
+	public static CheckInfo forMultipleEventListener() {
+		return withTask(PeriodicTaskInfo.none());
+	}
 
 	/**
 	 * Gets a check info to be used with packet checks, plus a periodic sync or async task.
@@ -97,6 +106,16 @@ public final class CheckInfos {
 	 * @return a check info for packet checks
 	 */
 	public static CheckInfo forPacketsWithTask(PeriodicTaskInfo taskInfo) {
+		return withTask(taskInfo);
+	}
+	
+	/**
+	 * Gets a check info to be used with multiple-event checks, plus a periodic sync or async task.
+	 *
+	 * @param taskInfo the periodic task info
+	 * @return a check info for multple-events checks
+	 */
+	public static CheckInfo forMultipleEventListenerWithTask(PeriodicTaskInfo taskInfo) {
 		return withTask(taskInfo);
 	}
 }

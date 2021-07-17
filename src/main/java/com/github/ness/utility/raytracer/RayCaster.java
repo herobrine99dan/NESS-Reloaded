@@ -1,7 +1,6 @@
 package com.github.ness.utility.raytracer;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -27,18 +26,7 @@ public class RayCaster {
 	}
 
 	public RayCaster compute() {
-		if (type == RayCaster.RaycastType.ENTITYBukkit) {
-			for (Entity entity : this.player.getWorld().getNearbyEntities(this.player.getLocation(), maxDistance,
-					maxDistance, maxDistance)) {
-				if (entity instanceof LivingEntity) {
-					if (player.hasLineOfSight(entity) && !entity.equals(player)) {
-						entityFounded = entity;
-					}
-				}
-			}
-		} else if (type == RayCaster.RaycastType.BLOCKBukkit) {
-			blockFounded = player.getTargetBlock(null, (int) maxDistance);
-		} else if (type == RayCaster.RaycastType.BLOCK) {
+		if (type == RayCaster.RaycastType.BLOCK) {
 			Ray ray = Ray.from(player);
 			for (double x = 0; x < maxDistance; x += 0.3) {
 				Location vector = ray.getPoint(x).toLocation(player.getWorld());
@@ -53,11 +41,9 @@ public class RayCaster {
 				if (entity instanceof LivingEntity) {
 					final Ray ray = Ray.from(player);
 					final AABB aabb = AABB.from(entity, ness, 0.25);
-					double range = aabb.collidesD(ray, 0, 10);
+					double range = aabb.collidesD(ray, 0, maxDistance);
 					if (range != -1) {
-						if (range < maxDistance) {
-							this.entityFounded = entity;
-						}
+						this.entityFounded = entity;
 					}
 				}
 			}
@@ -74,7 +60,7 @@ public class RayCaster {
 	}
 
 	public static enum RaycastType {
-		ENTITY, BLOCK, ENTITYBukkit, BLOCKBukkit;
+		ENTITY, BLOCK;
 	}
 
 }
