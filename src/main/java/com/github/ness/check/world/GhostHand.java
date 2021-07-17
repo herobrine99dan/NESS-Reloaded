@@ -2,6 +2,7 @@ package com.github.ness.check.world;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -40,47 +41,30 @@ public class GhostHand extends ListeningCheck<PlayerInteractEvent> {
 			return;
 		}
 		if ((event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-			Location bukkitBlock = getBukkitBlock(player);
-			Location rayTraceBlock = getRayTracerBlock(player);
-			Location otherRayTracerBlock = getOtherRayTracerBlock(player);
-			int correctness = 0;
-			if (bukkitBlock.equals(rayTraceBlock)) {
-				correctness++;
+			Location fixedEyeLocation = event.getPlayer().getEyeLocation().subtract(0.0D, 0.0, 0.0D);
+			// int interactedBlockCorrect = traceLocation(fixedEyeLocation,
+			// event.getBlock().getLocation(), 6,
+			// event.getBlock());
+			int interactedBlockCorrect = traceLocation1(event.getPlayer().getLocation().getDirection(),
+					fixedEyeLocation, 6, event.getClickedBlock());
+			if (interactedBlockCorrect > 0) {
+				this.flagEvent(event, "val: " + interactedBlockCorrect);
 			}
-			if (bukkitBlock.equals(otherRayTracerBlock)) {
-				correctness++;
-			}
-			if (rayTraceBlock.equals(otherRayTracerBlock)) {
-				correctness++;
-			}
-			nessPlayer.sendDevMessage("otherRayTracerBlock: " + otherRayTracerBlock);
-			double percentage = ((double) correctness / 3.0) * 100;
-			nessPlayer
-					.sendDevMessage("GhostHand Interaction Percentage: " + percentage + " correctness: " + correctness);
 		}
 	}
 
-	private Location getBukkitBlock(Player player) {
-		return player.getTargetBlock(null, 6).getLocation();
-	}
-
-	private Location getRayTracerBlock(Player player) {
-		final RayCaster customCaster = new RayCaster(player, 6, RayCaster.RaycastType.BLOCK, this.ness()).compute();
-		return customCaster.getBlockFound() != null ? customCaster.getBlockFound().getLocation() : EMPTYLOCATION;
-	}
-
-	private Location getOtherRayTracerBlock(Player player) {
-		Location fixedEyeLocation = player.getEyeLocation().subtract(0.0D, 1, 0.0D);
-		Vector direction = fixedEyeLocation.getDirection();
-		final int range = 6;
-		for (int i = 1; i <= range; i++) {
-			Location loc = fixedEyeLocation.add(direction);
-			if (!loc.getBlock().getType().isOccluding())
-				return loc.getBlock().getLocation();
-			if (i == range)
-				return loc.getBlock().getLocation();
+	private int traceLocation1(Vector direction, Location from, float maxDistance, Block blockToFind) {
+		int impossibleLocations = 0;
+		for (double i = 0; i < maxDistance; i+=0.1) {
+			Location newLoc = direction.clone().normalize().multiply(i).add(from.toVector()).toLocation(from.getWorld());
+			if (newLoc.getBlock().equals(blockToFind)) {
+				return impossibleLocations;
+			}
+			if (newLoc.getBlock().getType().isOccluding() && newLoc.getBlock().getType().isSolid()) {
+				impossibleLocations++;
+			}
 		}
-		return EMPTYLOCATION;
+		return impossibleLocations;
 	}
 
 }

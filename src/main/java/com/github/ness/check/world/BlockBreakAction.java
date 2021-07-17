@@ -1,7 +1,11 @@
 package com.github.ness.check.world;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.util.Vector;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
@@ -34,18 +38,29 @@ public class BlockBreakAction extends ListeningCheck<BlockBreakEvent> {
 		} else if (placedAngle > MAX_ANGLE) {
 			flagEvent(event, " Angle: " + placedAngle);
 		} else {
-			Block targetBlock = event.getPlayer().getTargetBlock(null, 7);
-			if (targetBlock.getType() != block.getType()) {
-				final RayCaster customCaster = new RayCaster(event.getPlayer(), 6, RayCaster.RaycastType.BLOCK,
-						this.ness()).compute();
-				if (customCaster.getBlockFound() != null) {
-					if (!customCaster.getBlockFound().equals(block)) {
-						this.flagEvent(event, "targetBlock: " + targetBlock.getType().name() + " customRayCaster:  "
-								+ customCaster.getBlockFound().getType().name());
-					}
-				}
+			Location fixedEyeLocation = event.getPlayer().getEyeLocation().subtract(0.0D, 0.0, 0.0D);
+			// int interactedBlockCorrect = traceLocation(fixedEyeLocation,
+			// event.getBlock().getLocation(), 6,
+			// event.getBlock());
+			int interactedBlockCorrect = traceLocation1(event.getPlayer().getLocation().getDirection(),
+					fixedEyeLocation, 6, event.getBlock());
+			if (interactedBlockCorrect > 0) {
+				this.flagEvent(event, "val: " + interactedBlockCorrect);
 			}
 		}
+	}
 
+	private int traceLocation1(Vector direction, Location from, float maxDistance, Block blockToFind) {
+		int impossibleLocations = 0;
+		for (double i = 0; i < maxDistance; i+=0.1) {
+			Location newLoc = direction.clone().normalize().multiply(i).add(from.toVector()).toLocation(from.getWorld());
+			if (newLoc.getBlock().equals(blockToFind)) {
+				return impossibleLocations;
+			}
+			if (newLoc.getBlock().getType().isOccluding() && newLoc.getBlock().getType().isSolid()) {
+				impossibleLocations++;
+			}
+		}
+		return impossibleLocations;
 	}
 }
