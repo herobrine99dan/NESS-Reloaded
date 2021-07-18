@@ -95,8 +95,8 @@ public final class CheckInfos {
 	 *
 	 * @return a check info for multiple-events checks
 	 */
-	public static CheckInfo forMultipleEventListener() {
-		return withTask(PeriodicTaskInfo.none());
+	public static MultipleListeningCheckInfo forMultipleEventListener(Class<? extends Event>... array) {
+		return new MultipleListeningCheckInfo(PeriodicTaskInfo.none(), array);
 	}
 
 	/**
@@ -105,7 +105,7 @@ public final class CheckInfos {
 	 * @param taskInfo the periodic task info
 	 * @return a check info for packet checks
 	 */
-	public static CheckInfo forPacketsWithTask(PeriodicTaskInfo taskInfo) {
+	public static CheckInfo forPacketsWithTask(PeriodicTaskInfo taskInfo, Class<? extends Event>... array) {
 		return withTask(taskInfo);
 	}
 	
@@ -115,7 +115,7 @@ public final class CheckInfos {
 	 * @param taskInfo the periodic task info
 	 * @return a check info for multple-events checks
 	 */
-	public static CheckInfo forMultipleEventListenerWithTask(PeriodicTaskInfo taskInfo) {
-		return withTask(taskInfo);
+	public static MultipleListeningCheckInfo forMultipleEventListenerWithTask(PeriodicTaskInfo taskInfo, Class<? extends Event>... array) {
+		return new MultipleListeningCheckInfo(PeriodicTaskInfo.none(), array);
 	}
 }

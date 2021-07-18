@@ -128,7 +128,10 @@ class FactoryCreator<C extends BaseCheck> {
 			return createPacket(constructor, checkInfo);
 		}
 		if (MultipleListeningCheck.class.isAssignableFrom(checkClass)) {
-			return createMultipleEventListener(constructor, checkInfo);
+			if (!(checkInfo instanceof MultipleListeningCheckInfo))
+				throw new IllegalStateException("Check " + checkClass.getName() + " has mismatched check info");
+
+			return createMultipleEventListener(constructor, (MultipleListeningCheckInfo) checkInfo);
 		}
 		return create(constructor, checkInfo);
 	}
@@ -166,14 +169,15 @@ class FactoryCreator<C extends BaseCheck> {
 		return new PacketCheckFactory<>(CheckInstantiators.fromConstructor(constructor),
 				constructor.getDeclaringClass().getSimpleName(), manager, checkInfo);
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	private <L extends MultipleListeningCheck> BaseCheckFactory<C> createMultipleEventListener(Constructor<C> constructor, CheckInfo checkInfo) {
+	private <L extends MultipleListeningCheck> BaseCheckFactory<C> createMultipleEventListener(
+			Constructor<C> constructor, MultipleListeningCheckInfo checkInfo) {
 		return (BaseCheckFactory<C>) createMultipleEventListenerChecked((Constructor<L>) constructor, checkInfo);
 	}
 
-	private <L extends MultipleListeningCheck> MultipleListeningCheckFactory<L> createMultipleEventListenerChecked(Constructor<L> constructor,
-			CheckInfo checkInfo) {
+	private <L extends MultipleListeningCheck> MultipleListeningCheckFactory<L> createMultipleEventListenerChecked(
+			Constructor<L> constructor, MultipleListeningCheckInfo checkInfo) {
 		return new MultipleListeningCheckFactory<>(CheckInstantiators.fromConstructor(constructor),
 				constructor.getDeclaringClass().getSimpleName(), manager, checkInfo);
 	}
