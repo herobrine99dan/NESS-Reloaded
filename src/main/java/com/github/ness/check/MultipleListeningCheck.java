@@ -15,7 +15,6 @@ public abstract class MultipleListeningCheck extends Check{
 	
 	@Override
 	public MultipleListeningCheckFactory<?> getFactory() {
-		@SuppressWarnings("unchecked")
 		MultipleListeningCheckFactory<?> factory = (MultipleListeningCheckFactory<?>) super.getFactory();
 		return factory;
 	}

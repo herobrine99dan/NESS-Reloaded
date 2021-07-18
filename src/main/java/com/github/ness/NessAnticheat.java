@@ -113,10 +113,12 @@ public class NessAnticheat {
 			networker.start();
 		}
 		// Start plugin message listener if bungeecord notify-staff hook enabled
+		String formatted = getMainConfig().getViolationHandling().notifyStaff().bungeecord()?"is" : "isn't";
+		logger.info("NESS Reloaded " + formatted + " going to hook into BungeeCord!");
 		if (getMainConfig().getViolationHandling().notifyStaff().bungeecord()) {
 			Messenger messenger = plugin.getServer().getMessenger();
 			messenger.registerOutgoingPluginChannel(plugin, "BungeeCord");
-			messenger.registerIncomingPluginChannel(plugin, "BungeeCord", new BungeeCordListener());
+			messenger.registerIncomingPluginChannel(plugin, "BungeeCord", new BungeeCordListener()); //TODO Test Return
 		}
 	}
 

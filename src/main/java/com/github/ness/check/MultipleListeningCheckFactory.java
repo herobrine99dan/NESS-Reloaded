@@ -5,12 +5,12 @@ import org.bukkit.event.HandlerList;
 
 public class MultipleListeningCheckFactory<C extends MultipleListeningCheck> extends CheckFactory<C> {
 	
-	private ScalableRegisteredMultipleListener registeredListener;
+	private RegisteredMultipleListener registeredListener;
 
 	protected MultipleListeningCheckFactory(CheckInstantiator<C> instantiator, String checkName, CheckManager manager,
 			CheckInfo checkInfo) {
 		super(instantiator, checkName, manager, checkInfo);
-		registeredListener = new ScalableRegisteredMultipleListener(manager, this);
+		registeredListener = new RegisteredMultipleListener(manager, this);
 	}
 	
 	void checkEvent(Event event) {

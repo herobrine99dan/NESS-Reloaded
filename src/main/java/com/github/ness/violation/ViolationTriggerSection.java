@@ -3,6 +3,7 @@ package com.github.ness.violation;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.github.ness.NessAnticheat;
 import com.github.ness.NessLogger;
@@ -66,7 +67,7 @@ public interface ViolationTriggerSection {
 		@Override
 		default InfractionTrigger toTrigger(ViolationManager manager, NessAnticheat ness) {
 			return new InfractionTrigger() {
-				
+
 				private long lastWebHookTime = System.nanoTime();
 
 				@Override
@@ -80,9 +81,11 @@ public interface ViolationTriggerSection {
 					String notification = manager.addViolationVariables(notification(), infractionImpl);
 
 					JavaPlugin plugin = ness.getPlugin();
-
 					if (bungeecord()) {
+						//Remember to read https://www.spigotmc.org/wiki/bukkit-bungee-plugin-messaging-channel/ when changing this
 						ByteArrayDataOutput out = ByteStreams.newDataOutput();
+						out.writeUTF("Forward"); // So BungeeCord knows to forward it
+						out.writeUTF("ALL");
 						out.writeUTF("NESS-Reloaded");
 						out.writeUTF(notification);
 						infractionImpl.getPlayer().getBukkitPlayer().sendPluginMessage(plugin, "BungeeCord",
@@ -113,13 +116,13 @@ public interface ViolationTriggerSection {
 						sendWebHook0(webHookUrl, name, infraction);
 					});
 				}
-				
+
 				private void sendWebHook0(String url, String name, InfractionImpl infraction) {
 					DiscordWebhook webhook = new DiscordWebhook(url);
 
 					DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject().setTitle(discordTitle())
-							.setDescription(discordDescription().replace("%HACKER%", name))
-							.setColor(discordColor()).addField("Cheater", name, true)
+							.setDescription(discordDescription().replace("%HACKER%", name)).setColor(discordColor())
+							.addField("Cheater", name, true)
 							.addField("Cheat", infraction.getCheck().getCheckName(), true)
 							.addField("Violations", Integer.toString(infraction.getCount()), false);
 

@@ -2,11 +2,16 @@ package com.github.ness.listener;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
+
+import java.util.logging.Logger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 public class BungeeCordListener implements PluginMessageListener {
+	
+	private Logger logger = Logger.getLogger(this.getClass().getName());
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {

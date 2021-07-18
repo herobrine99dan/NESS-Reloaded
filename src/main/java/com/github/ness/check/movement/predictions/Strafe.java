@@ -26,10 +26,14 @@ public class Strafe extends ListeningCheck<PlayerMoveEvent> {
 		MovementValues movementValues = this.player().getMovementValues();
 		float friction = getCorrectFriction();
 		final double xzDiff = movementValues.getXZDiff();
+		if(e.getPlayer().isInsideVehicle()) {
+			return;
+		}
 		Vector from = new Vector(movementValues.getFrom().getX(), 0, movementValues.getFrom().getZ());
 		Vector to = new Vector(movementValues.getTo().getX(), 0, movementValues.getTo().getZ());
 		Vector moving = from.subtract(to).divide(new Vector(friction, 1, friction)); // With 0 we get an Exception doing
 																						// 0÷0
+		
 		Vector direction = getDirectionOfOnlyYaw(movementValues.getTo().getYaw());
 		float angle = (float) Math.toDegrees(moving.angle(direction));
 		float subtraction = Math.abs(Math.round(Math.abs(angle)) - Math.abs(angle));
@@ -45,7 +49,7 @@ public class Strafe extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	private float getCorrectFriction() {
-		return 0.91f * 0.6f; // Only for now
+		return 0.91f; // Only for now
 	}
 
 	private Vector getDirectionOfOnlyYaw(double yaw) {

@@ -7,11 +7,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.RegisteredListener;
 
-class ScalableRegisteredMultipleListener extends RegisteredListener {
+class RegisteredMultipleListener extends RegisteredListener {
 
 	private final MultipleListeningCheckFactory<?> checkFactory;
 
-	ScalableRegisteredMultipleListener(CheckManager manager, MultipleListeningCheckFactory<?> checkFactory) {
+	RegisteredMultipleListener(CheckManager manager, MultipleListeningCheckFactory<?> checkFactory) {
 		super(DummyListener.INSTANCE, DummyEventExecutor.INSTANCE, EventPriority.LOW, manager.getNess().getPlugin(),
 				false);
 		this.checkFactory = checkFactory;
