@@ -87,9 +87,6 @@ public class NessPlayer implements AnticheatPlayer {
 	private final AtomicBoolean sneaking;
 	private final AtomicBoolean heroNeedsDevMode;
 	
-	//This field is shared beetween CoreListener (it updates the velocity values) and VerticalVelocity
-	private boolean alreadyVerticalVelocityUsedVelocity;
-
 	public NessPlayer(Player player, boolean devMode, NessAnticheat ness) {
 		sprinting = new AtomicBoolean(false);
 		sneaking = new AtomicBoolean(false);
@@ -486,13 +483,5 @@ public class NessPlayer implements AnticheatPlayer {
 
 	public AtomicBoolean getHeroNeedsDevMode() {
 		return heroNeedsDevMode;
-	}
-
-	public boolean hasAlreadyVerticalVelocityUsedVelocity() {
-		return alreadyVerticalVelocityUsedVelocity;
-	}
-
-	public void setAlreadyVerticalVelocityUsedVelocity(boolean yesorno) {
-		this.alreadyVerticalVelocityUsedVelocity = yesorno;
 	}
 }

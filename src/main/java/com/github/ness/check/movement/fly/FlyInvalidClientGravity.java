@@ -5,13 +5,16 @@ import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerVelocityEvent;
 
 import com.github.ness.NessPlayer;
+import com.github.ness.check.CheckInfo;
 import com.github.ness.check.CheckInfos;
-import com.github.ness.check.ListeningCheck;
-import com.github.ness.check.ListeningCheckFactory;
-import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.check.MultipleListeningCheck;
+import com.github.ness.check.MultipleListeningCheckFactory;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 
@@ -20,15 +23,18 @@ import space.arim.dazzleconf.annote.ConfDefault.DefaultBoolean;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultDouble;
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
-public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
+public class FlyInvalidClientGravity extends MultipleListeningCheck {
 
-	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
+	public static final CheckInfo checkInfo = CheckInfos.forMultipleEventListener(PlayerMoveEvent.class,
+			PlayerVelocityEvent.class);
 	private final int minAirTicks;
 	private final double minBuffer;
 	private final boolean useAbsoluteDifference;
 	private final boolean usePlayerIsOnGround;
+	private float yVelocity;
+	private boolean velocityAlreadyUsed = false;
 
-	public FlyInvalidClientGravity(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
+	public FlyInvalidClientGravity(MultipleListeningCheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
 		minAirTicks = this.ness().getMainConfig().getCheckSection().flyInvalidClientGravity().airTicks();
 		minBuffer = this.ness().getMainConfig().getCheckSection().flyInvalidClientGravity().buffer();
@@ -62,10 +68,27 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 
 	/**
 	 * Powerful Y-Prediction check made with https://www.mcpk.wiki/wiki/ Loving
-	 * those guys who made it. This is the young-brother of SpeedFriction :D
+	 * those guys who made it.
 	 */
+
 	@Override
-	protected void checkEvent(PlayerMoveEvent event) {
+	protected void checkEvent(Event event) {
+		Player player = ((PlayerEvent) event).getPlayer(); // It must extends at least PlayerEvent, we declared this
+															// before!
+		if (player().isNot(player))
+			return;
+		if (event instanceof PlayerVelocityEvent)
+			onVelocity((PlayerVelocityEvent) event);
+		if (event instanceof PlayerMoveEvent)
+			onMove((PlayerMoveEvent) event);
+	}
+
+	private void onVelocity(PlayerVelocityEvent e) {
+		yVelocity = (float) e.getVelocity().getY();
+		velocityAlreadyUsed = true;
+	}
+
+	private void onMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues values = nessPlayer.getMovementValues();
@@ -75,10 +98,11 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 				|| values.isNearLiquid()) {
 			return;
 		}
-		// When you fly, the gravity is the one of the entity, TODO Make checks for that
+		// When you fly, the gravity is the one of the entity
 		if (player.isInsideVehicle() || nessPlayer.milliSecondTimeDifference(PlayerAction.VEHICLEENTER) < 500) {
 			return;
 		}
+		// Ladders aren't handled by this check
 		if (this.getMaterialAccess().getMaterial(event.getTo().clone().subtract(0, 0.005, 0)).name().contains("LADDER")
 				|| this.getMaterialAccess().getMaterial(event.getFrom().clone().subtract(0, 0.005, 0)).name().contains(
 						"LADDER")
@@ -112,7 +136,12 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 		}
 		motionY -= 0.08f; // Gravity
 		motionY *= 0.98f; // Air Resistance
-
+		if (velocityAlreadyUsed) {
+			velocityAlreadyUsed = false;
+			//if (yVelocity > 0) {
+				motionY = yVelocity;
+			//}
+		}
 		float result = yDiff - motionY;
 		// this.player().sendDevMessage("result: " + result + " onGround: " + onGround +
 		// " airTicks: " + airTicks);
@@ -127,6 +156,9 @@ public class FlyInvalidClientGravity extends ListeningCheck<PlayerMoveEvent> {
 														// where false flags happens
 				spawnArmorStand("From", event.getFrom());
 				this.flag("yResult: " + result + " ground: " + onGround + " yDiff: " + yDiff + " motionY: " + motionY);
+				this.player().sendDevMessage("yVelocity: " + yVelocity + " motionY: " + motionY);
+				this.player().sendDevMessage("lastYDelta: " + lastYDelta);
+				this.player().sendDevMessage("yDiff: " + yDiff);
 			}
 		} else if (buffer > 0) {
 			buffer -= 0.5;

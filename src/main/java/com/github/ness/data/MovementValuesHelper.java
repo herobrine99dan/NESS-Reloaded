@@ -126,9 +126,9 @@ public class MovementValuesHelper {
 	public boolean isOnGround(Location loc, String... otherBlocksToCheck) {
 		final Location cloned = loc.clone();
 		double limit = ONGROUNDBOUNDINGBOXWITDH;
-		for (double x = -limit; x < limit; x += 0.05) {
-			for (double z = -limit; z < limit; z += 0.05) {
-				for (double y = -ONGROUNDBOUNDINGBOXHEIGHT; y < 0; y += 0.05) {
+		for (double x = -limit; x < limit; x += 0.1) {
+			for (double z = -limit; z < limit; z += 0.1) {
+				for (double y = -ONGROUNDBOUNDINGBOXHEIGHT; y < 0; y += 0.1) {
 					if (isBlockConsideredOnGround(cloned.clone().add(x, y, z), otherBlocksToCheck)) {
 						return true;
 					}
@@ -142,9 +142,9 @@ public class MovementValuesHelper {
 		List<Location> list = new ArrayList<Location>();
 		final Location cloned = loc.clone();
 		double limit = ONGROUNDBOUNDINGBOXWITDH;
-		for (double x = -limit; x < limit; x += 0.05) {
-			for (double z = -limit; z < limit; z += 0.05) {
-				for (double y = -ONGROUNDBOUNDINGBOXHEIGHT; y < 0; y += 0.05) {
+		for (double x = -limit; x < limit; x += 0.1) {
+			for (double z = -limit; z < limit; z += 0.1) {
+				for (double y = -ONGROUNDBOUNDINGBOXHEIGHT; y < 0; y += 0.1) {
 					list.add(cloned.clone().add(x, y, z));
 				}
 			}

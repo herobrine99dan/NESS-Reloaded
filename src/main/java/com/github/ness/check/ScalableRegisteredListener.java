@@ -40,7 +40,7 @@ class ScalableRegisteredListener<E extends Event> extends RegisteredListener {
 	 *
 	 * @author A248
 	 */
-	private static final class DummyListener implements Listener {
+	static final class DummyListener implements Listener {
 
 		static final DummyListener INSTANCE = new DummyListener();
 
@@ -55,7 +55,7 @@ class ScalableRegisteredListener<E extends Event> extends RegisteredListener {
 	 *
 	 * @author A248
 	 */
-	private static final class DummyEventExecutor implements EventExecutor {
+	static final class DummyEventExecutor implements EventExecutor {
 
 		static final DummyEventExecutor INSTANCE = new DummyEventExecutor();
 
