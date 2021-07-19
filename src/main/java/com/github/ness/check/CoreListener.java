@@ -147,16 +147,6 @@ public class CoreListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onInvOpen(InventoryOpenEvent event) {
-		setPlayerAction(event.getPlayer(), PlayerAction.INVENTORYOPENED);
-	}
-
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onInvClosed(InventoryCloseEvent event) {
-		setPlayerAction(event.getPlayer(), PlayerAction.INVENTORYCLOSED);
-	}
-
-	@EventHandler(priority = EventPriority.LOWEST)
 	public void onVehicleEnter(VehicleEnterEvent event) {
 		if (event.getEntered() instanceof Player) {
 			setPlayerAction((Player) event.getEntered(), PlayerAction.VEHICLEENTER);
