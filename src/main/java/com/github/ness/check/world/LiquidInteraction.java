@@ -21,7 +21,7 @@ public class LiquidInteraction extends ListeningCheck<BlockPlaceEvent> {
 	protected void checkEvent(BlockPlaceEvent e) {
 		if (e.getBlockAgainst().isLiquid() && !e.isCancelled()) {
 			String type = e.getBlock().getType().name();
-			if (!type.contains("LILY") || !type.contains("SEA")) {
+			if (!type.contains("LILY") && !type.contains("SEA")) {
 				flagEvent(e);
 			}
 		}

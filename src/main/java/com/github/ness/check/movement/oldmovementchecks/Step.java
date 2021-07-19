@@ -52,12 +52,13 @@ public class Step extends MultipleListeningCheck {
 			return;
 		}
 		double jumpBoost = Utility.getPotionEffectLevel(player, PotionEffectType.JUMP);
-		float yDiffUpper = (float) values.getyDiff();
-		if(yDiffUpper < 0.001) { //This check is for high y Values, not low ones!
+		float yDiff = (float) values.getyDiff();
+		if(yDiff < 0.001) { //This check is for high y Values, not low ones!
 			return;
 		}
 		float minY = this.player().isUsingGeyserMC() ? 0.76f : 0.6f;
 		minY += jumpBoost * 0.1;
+		this.player().sendDevMessage("yDiff: " + yDiff);
 		//Handling Velocity: one tick velocity isn't enough, we have to even predict the next ticks!!
 		if (velocityAlreadyUsed) {
 			velocityAlreadyUsed = false;
@@ -72,8 +73,8 @@ public class Step extends MultipleListeningCheck {
 				lastYVelocity = predictedY;
 			}
 		}
-		if (yDiffUpper > minY && !values.isNearMaterials("SLIME")) { // TODO Add groundAround
-			flagEvent(e, "High Distance: " + yDiffUpper + " minY: " + minY);
+		if (yDiff > minY && !values.isNearMaterials("SLIME")) { // TODO Add groundAround
+			flagEvent(e, "High Distance: " + yDiff + " minY: " + minY);
 		}
 	}
 

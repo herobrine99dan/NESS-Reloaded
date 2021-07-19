@@ -11,6 +11,7 @@ public enum ChecksPackage {
 	OldMovementChecks("movement.oldmovementchecks"),
 	PREDICTIONS("movement.predictions"),
 	MISC("misc"),
+	TESTCHECKS("tests"),
 	ACQUATICUPDATEFIXES("aquaticupdatefix");
 
 	/**

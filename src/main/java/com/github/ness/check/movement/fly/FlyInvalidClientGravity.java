@@ -130,17 +130,18 @@ public class FlyInvalidClientGravity extends MultipleListeningCheck {
 		}
 		// To make a prediction we get the last Y value and we try to predict the next.
 		float motionY = lastYDelta;
-		if (this.getMaterialAccess().getMaterial(event.getTo()).name().contains("WEB")) {
-			motionY = 0.31f; // Web gravity is too small and there are issues with PlayerMoveEvent, so we
-								// just set a limit for this
+		if (this.getMaterialAccess().getMaterial(event.getTo()).name().contains("WEB")
+				|| this.getMaterialAccess().getMaterial(event.getFrom()).name().contains("WEB")) {
+			motionY = 0.2f; // Web gravity is too small and there are issues with PlayerMoveEvent, so we
+							// just set a limit for this
 		}
 		motionY -= 0.08f; // Gravity
 		motionY *= 0.98f; // Air Resistance
 		if (velocityAlreadyUsed) {
 			velocityAlreadyUsed = false;
-			//if (yVelocity > 0) {
-				motionY = yVelocity;
-			//}
+			// if (yVelocity > 0) {
+			motionY = yVelocity;
+			// }
 		}
 		float result = yDiff - motionY;
 		// this.player().sendDevMessage("result: " + result + " onGround: " + onGround +

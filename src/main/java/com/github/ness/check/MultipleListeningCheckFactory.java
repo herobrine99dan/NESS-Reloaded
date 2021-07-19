@@ -1,7 +1,6 @@
 package com.github.ness.check;
 
 import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
 public class MultipleListeningCheckFactory<C extends MultipleListeningCheck> extends CheckFactory<C> {
 

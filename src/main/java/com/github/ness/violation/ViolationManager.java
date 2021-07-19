@@ -1,6 +1,5 @@
 package com.github.ness.violation;
 
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +20,6 @@ import com.github.ness.api.InfractionTrigger.SynchronisationContext;
 import com.github.ness.check.Check;
 import com.github.ness.check.CheckManager;
 import com.github.ness.check.InfractionImpl;
-import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.PacketCheck;
 import com.github.ness.check.dragdown.SetBack;
 import com.github.ness.config.CheckConfig;
@@ -103,7 +101,7 @@ public class ViolationManager implements InfractionManager {
 	 * @param violations the violation count
 	 * @return the setback to use, or {@code null} for none
 	 */
-	public SetBack shouldCancelWithSetBack(ListeningCheck<?> check, int violations) {
+	public SetBack shouldCancelWithSetBack(Check check, int violations) {
 		CancelEvent cancelEvent = getCancelEventTrigger(check);
 		int violationsThreshold = cancelEvent.violations();
 		if (violationsThreshold != -1 && violations >= violationsThreshold) {
