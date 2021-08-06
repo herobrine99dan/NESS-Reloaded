@@ -62,7 +62,7 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 	public void stepYCheck(Cancellable e) {
 		MovementValues values = player().getMovementValues();
 		double yDelta = values.getyDiff();
-		if (values.isNearMaterials("STAIR","SKULL") || player().isTeleported() || player().isHasSetback()
+		if (values.isNearMaterials("STAIR","SKULL","SLIME") || player().isTeleported() || player().isHasSetback()
 				|| Utility.hasVehicleNear(player().getBukkitPlayer())) {
 			flyYSum = 0.0;
 		}

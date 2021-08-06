@@ -202,7 +202,7 @@ public class FlyInvalidClientGravity extends MultipleListeningCheck {
 		Material material = this.getMaterialAccess().getMaterial(loc);
 		String name = material.name();
 		if (material.isSolid() || name.contains("SNOW") || name.contains("CARPET") || name.contains("SCAFFOLDING")
-				|| name.contains("SKULL") || name.contains("WALL") || name.contains("LILY")) {
+				|| name.contains("SKULL") || name.contains("WALL") || name.contains("LILY") || name.contains("SLIME")) {
 			return true;
 		}
 		return false;
