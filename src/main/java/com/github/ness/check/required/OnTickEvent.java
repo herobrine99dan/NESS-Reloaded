@@ -21,6 +21,10 @@ public class OnTickEvent extends PacketCheck {
 	@Override
 	protected void checkPacket(Packet packet) {
 		if (packet.isPacketType(packetTypeRegistry().playInFlying())) {
+			//Update ground processor
+			PlayInFlying wrapper = packet.toPacketWrapper(packetTypeRegistry().playInFlying());
+			this.player().setOnGroundPacket(wrapper.onGround());
+			//Flag the client tick method
 			player().onClientTick();
 		}
 		if (packet.isPacketType(packetTypeRegistry().playInEntityAction())) {
