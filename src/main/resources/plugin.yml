@@ -1,7 +1,7 @@
 name: NESS
 main: com.github.ness.NessPlugin
 version: ${project.version}
-authors: [herobrine99dan, A248]
+authors: [herobrine99dan, A248, MatuloM]
 softdepend: [floodgate]
 description: 'A free, open-source anticheat which seeks to block hackers with simple yet effective checks.'
 api-version: 1.13

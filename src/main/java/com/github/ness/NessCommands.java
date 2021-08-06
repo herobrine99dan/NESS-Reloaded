@@ -120,8 +120,14 @@ class NessCommands implements CommandExecutor {
 			if (sender instanceof Player) {
 				Player p = (Player) sender;
 				if (args.length > 1) {
-					p.setVelocity(p.getLocation().getDirection().multiply(Double.parseDouble(args[1])));
-					p.sendMessage("Done!");
+					try {
+						p.setVelocity(p.getLocation().getDirection().multiply(Double.parseDouble(args[1])));
+					    p.sendMessage("Velocity applied!");
+					} catch(Exception ex) {
+					    p.sendMessage(args[1] + "can't be recognized as a number.");
+					}
+				} else {
+					p.sendMessage("You have to include the multiplier!");
 				}
 			} else {
 				mustBePlayer(sender);
