@@ -1,6 +1,7 @@
 package com.github.ness.check.world;
 
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.Location;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
@@ -32,7 +33,7 @@ public class IllegalPlace extends ListeningCheck<BlockPlaceEvent> {
 			return;
 		}
 		Location blockFace = e.getBlockAgainst().getLocation().clone().subtract(e.getBlockPlaced().getLocation());
-		if(Math.abs(blockface.getX()) == 1 && Math.abs(blockface.getZ())) {
+		if(Math.abs(blockFace.getX()) == 1 && Math.abs(blockFace.getZ()) == 1) {
 			flagEvent(e, "DiagonalPlacement");
 			return;
 		}
