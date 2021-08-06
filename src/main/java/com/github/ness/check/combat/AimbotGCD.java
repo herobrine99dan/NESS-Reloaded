@@ -92,7 +92,7 @@ public class AimbotGCD extends PacketCheck {
 		NessPlayer player = player();
 		double yawDelta = Math.abs(rotation.getX() - lastRotation.getX());
 		double pitchDelta = Math.abs(rotation.getY() - lastRotation.getY());
-		if (player.isTeleported() || player.isHasSetback() || Math.abs(rotation.getY()) == 90 || player.isCinematic()) {
+		if (player.isTeleported() || player.isHasSetback() || player.isCinematic()) {
 			if (buffer > 0) {
 				buffer--;
 			}
@@ -104,6 +104,14 @@ public class AimbotGCD extends PacketCheck {
 		// .sendDevMessage("buffer: " + buffer + " gcdYaw: " + (float) gcdYaw + "
 		// gcdPitch: " + (float) gcdPitch);
 		if (gcdYaw < 0.005 || gcdPitch < 0.005) {
+			if (++buffer > 25) {
+				this.flag();
+			}
+		} else if (player.getSensitivity() > 202) {
+			if (++buffer > 5) {
+				this.flag();
+			}
+		} else if (player.getSensitivity() < 1) {
 			if (++buffer > 25) {
 				this.flag();
 			}
