@@ -8,6 +8,7 @@ import com.github.ness.check.PacketCheckFactory;
 import com.github.ness.packets.Packet;
 import com.github.ness.packets.wrapper.PlayInArmAnimation;
 import com.github.ness.packets.wrapper.PlayInEntityAction;
+import com.github.ness.packets.wrapper.PlayInFlying;
 import com.github.ness.packets.wrapper.PlayInUseEntity;
 
 public class OnTickEvent extends PacketCheck {

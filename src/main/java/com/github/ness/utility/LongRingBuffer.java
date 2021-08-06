@@ -209,6 +209,15 @@ public class LongRingBuffer {
 		}
 		return number / (double) this.values.length;
 	}
+	
+	/**
+	 * Get the Skewness of this sample with the Pearson formula.
+	 * 	 * 
+	 * @return the skewness, calculated with: 3*(x̄-M)/σ
+	 */
+	public double getSkewness() {
+		return 3*(average()-median())/standardDeviation();
+	}
 
 	/**
 	 * Calculate the MAD. 
