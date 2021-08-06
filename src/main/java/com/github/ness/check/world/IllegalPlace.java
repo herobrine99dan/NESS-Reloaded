@@ -8,22 +8,33 @@ import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
 
-public class LiquidInteraction extends ListeningCheck<BlockPlaceEvent> {
+public class IllegalPlace extends ListeningCheck<BlockPlaceEvent> {
 
 	public static final ListeningCheckInfo<BlockPlaceEvent> checkInfo = CheckInfos.forEvent(BlockPlaceEvent.class);
 
-	public LiquidInteraction(ListeningCheckFactory<?, BlockPlaceEvent> factory, NessPlayer player) {
+	public IllegalPlace(ListeningCheckFactory<?, BlockPlaceEvent> factory, NessPlayer player) {
 		super(factory, player);
 
 	}
 
 	@Override
 	protected void checkEvent(BlockPlaceEvent e) {
-		if (e.getBlockAgainst().isLiquid() && !e.isCancelled()) {
+		if(e.isCancelled()) return;
+		if (e.getBlockAgainst().isLiquid()) {
 			String type = e.getBlock().getType().name();
 			if (!type.contains("LILY") && !type.contains("SEA")) {
-				flagEvent(e);
+				flagEvent(e, "LiquidPlacement");
+				return;
 			}
+		}
+		if (e.getBlockAgainst().getType().name().contains("AIR")) {
+			flagEvent(e, "AirPlacement");
+			return;
+		}
+		Location blockFace = e.getBlockAgainst().getLocation().clone().subtract(e.getBlockPlaced().getLocation());
+		if(Math.abs(blockface.getX()) == 1 && Math.abs(blockface.getZ())) {
+			flagEvent(e, "DiagonalPlacement");
+			return;
 		}
 	}
 
