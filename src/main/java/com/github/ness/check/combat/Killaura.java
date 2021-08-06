@@ -36,8 +36,8 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	private final double lagAccount;
 	private final int angleListSize;
 	private final double maxAngle;
-	private final int rayTraceReachBuffer;
-	private final int rayTraceHitboxBuffer;
+	private final double rayTraceReachBuffer;
+	private final double rayTraceHitboxBuffer;
 	private double buffer;
 	private final boolean useBukkitLocationForRayTrace;
 	private LongRingBuffer angleList;
@@ -78,11 +78,11 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 
 		@ConfComments("Choose the correct buffer for Reach check")
 		@DefaultInteger(2)
-		int rayTraceReachBuffer();
+		double rayTraceReachBuffer();
 
 		@ConfComments("Choose the correct buffer for Hitbox check")
 		@DefaultInteger(1)
-		int rayTraceHitboxBuffer();
+		double rayTraceHitboxBuffer();
 
 		@ConfComments("This is the max Reach allowed. The maxReach depends on this value, on lagAccount value and on reachExpansion. The real formula to calculate the maxReach is 'maxReach+reachExpansion= realMaxReach' where maxReach is this config option, reachExpansion is the config option under this and realMaxReach is the realMaxReach calculated by the RayTracer")
 		@DefaultDouble(3.05)
@@ -137,7 +137,9 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		}
 		// nessPlayer.sendDevMessage("Reach: " + range + " Angle:1 " + angle1);
 		if (range > maxReach && range < 6.5D) {
-			if (++buffer > rayTraceReachBuffer) {
+			final double bufferAdder = range / maxReach;
+			buffer += bufferAdder;
+			if (buffer > rayTraceReachBuffer) {
 				flagEvent(event, "Reach: " + range);
 			}
 		} else if (buffer > 0) {
@@ -148,7 +150,9 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 				double average = angleList.average() / 10000.0;
 				nessPlayer.sendDevMessage("Hitbox: " + average);
 				if (average < maxAngle) {
-					if (++angleBuffer > this.rayTraceHitboxBuffer) {
+					final double bufferAdder = average / maxAngle;
+					angleBuffer += bufferAdder;
+					if (angleBuffer > this.rayTraceHitboxBuffer) {
 						flagEvent(event, "Hitbox");
 					}
 				} else if (angleBuffer > 0) {
