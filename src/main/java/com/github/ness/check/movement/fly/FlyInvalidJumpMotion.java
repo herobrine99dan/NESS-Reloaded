@@ -50,8 +50,8 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 		MovementValuesHelper helper = this.player().getMovementValues().getHelper();
 		if (helper.isBlockConsideredOnGround(loc.clone().add(0, 1.9, 0)))
 			return true; // little optimization
-		for (double x = -0.25; x <= 0.25; x += 0.1) {
-			for (double z = -0.25; z <= 0.25; z += 0.1) {
+		for (double x = -0.29; x <= 0.29; x += 0.29) {
+			for (double z = -0.29; z <= 0.29; z += 0.29) {
 				if (helper.isBlockConsideredOnGround(loc.clone().add(x, 1.9, z)))
 					return true;
 			}

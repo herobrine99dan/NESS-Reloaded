@@ -115,10 +115,8 @@ public class FlyInvalidClientGravity extends MultipleListeningCheck {
 		// Sometimes this onGround Value is too
 		final boolean onGroundFixer = usePlayerIsOnGround ? nessPlayer.isOnGroundPacket() : isOnGround1(event.getTo());
 		// boolean onGround = !isOnGround(event.getTo()) ? onGroundFixer : true;
-		boolean onGround = !onGroundFixer ? isOnGround(event.getTo()) : true; // Little micro optimization: if the
-																				// player isn't onGround, then use the
-																				// boolean value from //
-																				// isOnGround(Location loc)
+		boolean onGroundCalculated = isOnGround(event.getTo()) || isOnGround(event.getFrom());
+		boolean onGround = onGroundCalculated || onGroundFixer;
 		float yDiff = (float) values.getyDiff();
 		if (onGround) {
 			yDiff = 0.0f;
@@ -149,6 +147,7 @@ public class FlyInvalidClientGravity extends MultipleListeningCheck {
 		if (useAbsoluteDifference) {
 			result = Math.abs(result);
 		}
+		this.player().sendDevMessage("onGroundCalculated: " + onGroundCalculated);
 		// Here we use 0.005 because in newer Minecraft versions the yMotion is clamped
 		// if it's low.
 		if (result > 0.005 && airTicks > minAirTicks) { // After some tests i discovered that minAirTicks should be two
@@ -185,10 +184,10 @@ public class FlyInvalidClientGravity extends MultipleListeningCheck {
 
 	private boolean isOnGround(Location loc) {
 		final Location cloned = loc.clone();
-		double limit = 0.28;
-		for (double x = -limit; x <= limit; x += 0.1) {
-			for (double z = -limit; z <= limit; z += 0.1) {
-				for (double y = -0.4; y <= 0; y += 0.1) {
+		double limit = 0.3; //TODO Maybe this fix allows some little WallClimb that glitch you in the wall
+		for (double x = -limit; x <= limit; x += limit) {
+			for (double z = -limit; z <= limit; z += limit) {
+				for (double y = -0.5; y <= 0; y += 0.1) {
 					if (isBlockConsideredOnGround(cloned.clone().add(x, y, z))) {
 						return true;
 					}

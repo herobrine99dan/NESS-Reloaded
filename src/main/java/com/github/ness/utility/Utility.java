@@ -16,9 +16,9 @@ public class Utility {
 
 	public static List<Block> getBlocksAround(Location loc, int radius) {
 		List<Block> result = new ArrayList<>();
-		for (int x = -radius; x < radius; x++) {
-			for (int y = -radius; y < radius; y++) {
-				for (int z = -radius; z < radius; z++) {
+		for (int x = -radius; x <= radius; x++) {
+			for (int y = -radius; y <= radius; y++) {
+				for (int z = -radius; z <= radius; z++) {
 					// Cloning location with default native method isn't good and cause performance
 					// issues
 					Location cloned = new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());

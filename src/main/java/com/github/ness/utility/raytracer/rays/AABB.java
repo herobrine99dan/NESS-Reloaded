@@ -206,6 +206,14 @@ public class AABB {
 			return false;
 		return true;
 	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if(object == null) return false;
+		if(!(object instanceof AABB)) return false;
+		AABB other = (AABB) object;
+		return other.min.equals(min) && other.max.equals(max);
+	}
 
 	@Override
 	public String toString() {

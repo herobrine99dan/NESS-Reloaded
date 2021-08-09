@@ -91,7 +91,7 @@ public class MovementValues {
 			boolean ground = false;
 			serverVelocity = new Vector(p.getVelocity().getX(), p.getVelocity().getY(), p.getVelocity().getZ());
 			gamemode = p.getGameMode();
-			for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 2)) {
+			for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 1)) {
 				if (b.getType().isSolid()) { // Doing all things in a single loop is better than 12 loops
 					ground = true;
 				}
