@@ -23,21 +23,25 @@ public class VerticalVelocity extends MultipleListeningCheck {
 
 	public static final CheckInfo checkInfo = CheckInfos.forMultipleEventListener(PlayerMoveEvent.class,
 			PlayerVelocityEvent.class);
-	private final double minVelocityPercentage;
+	private final double minVelocityPercentage, maxVelocityPercentage;
 	private double buffer;
 	private int velocityTicks = 0;
 	private float yVelocity;
-	private boolean velocityAlreadyUsed = false;
 
 	public VerticalVelocity(MultipleListeningCheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
 		this.minVelocityPercentage = this.ness().getMainConfig().getCheckSection().verticalVelocity()
 				.minVelocityPercentage();
+		this.maxVelocityPercentage = this.ness().getMainConfig().getCheckSection().verticalVelocity()
+				.maxVelocityPercentage();
 	}
 
 	public interface Config {
 		@DefaultDouble(95)
 		double minVelocityPercentage();
+		
+		@DefaultDouble(102)
+		double maxVelocityPercentage();
 	}
 
 	private List<Float> lastYDistances = new ArrayList<Float>();
@@ -53,7 +57,7 @@ public class VerticalVelocity extends MultipleListeningCheck {
 
 	private void onVelocity(PlayerVelocityEvent e) {
 		yVelocity = (float) e.getVelocity().getY();
-		velocityAlreadyUsed = true;
+		velocityTicks = 5;
 	}
 
 	private void onMove(PlayerMoveEvent e) {
@@ -62,25 +66,25 @@ public class VerticalVelocity extends MultipleListeningCheck {
 		if (getMaterialName(values.getTo()).contains("WEB")) {
 			return;
 		}
-		if (velocityAlreadyUsed) {
-			velocityAlreadyUsed = false;
-			velocityTicks = 5;
-		}
 		if (yVelocity < 0) {
 			velocityTicks = 0;
 			return;
 		}
 		if (velocityTicks > 0) {
-			lastYDistances.add(yDelta); // We actually get the last 5 movements of when the player gets velocity
+			lastYDistances.add(yDelta); // We get the last 5 movements of when the player gets velocity
 			if (lastYDistances.size() > 4) {
 				float max = Collections.max(lastYDistances); // We get the max value and we check how much it is similar
 																// to the velocity
 				float ySubtract = max / yVelocity;
 				lastYDistances.clear();
 				float percentage = Math.abs(roundNumber(ySubtract * 100, 100));
-				if (percentage < minVelocityPercentage) {
-					this.flag("percent: " + percentage + " velocity: " + roundNumber(yVelocity, 1000));
-				} else if (buffer > 0) {
+				
+				if (percentage < minVelocityPercentage) { //First check: low velocity
+					this.flag("Low percentage: " + percentage + " velocity: " + roundNumber(yVelocity, 1000));
+				} else if (percentage > maxVelocityPercentage) { //Second check: high velocity
+					this.flag("High percentage: " + percentage + " velocity: " + roundNumber(yVelocity, 1000));
+				}
+				 else if (buffer > 0) {
 					buffer -= 0.5;
 				}
 			}
