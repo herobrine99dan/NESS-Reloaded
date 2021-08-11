@@ -1,6 +1,8 @@
 package com.github.ness.check.movement;
 
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Firework;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
 
@@ -42,7 +44,14 @@ public class ElytraCheats extends ListeningCheck<PlayerMoveEvent> {
 		float xzPredicted = (float) Math.hypot(predictedMotion.getX(), predictedMotion.getZ());
 		float resultXZ = (float) Math.abs(xzDiff - xzPredicted);
 		float resultY = (float) Math.abs(yDiff - predictedMotion.getY());
-		if(resultY > 0.001 && resultXZ > 0.03) {
+		Vector firework = new Vector(0,0,0);
+		for (Entity ent : player().getBukkitPlayer().getNearbyEntities(1, 1, 1)) {
+			if (ent instanceof Firework && ent.getLocation().distanceSquared(event.getFrom()) == 0.0) {
+				firework.add(fireworkAdder(new Vector(lastXDiff, lastYDiff, lastZDiff)));
+			}
+		}
+		if(firework.length() > 0) this.player().sendDevMessage("shitty firework: " + firework);
+		if(resultY > 0.001 || resultXZ > 0.03) {
 			this.player().sendDevMessage("resultXZ: " + resultXZ + "resultY: " + resultY);
 		}
 		this.lastXDiff = (float) this.player().getMovementValues().getxDiff();
@@ -94,12 +103,7 @@ public class ElytraCheats extends ListeningCheck<PlayerMoveEvent> {
 		motionX *= 0.9900000095367432D;
 		motionY *= 0.9800000190734863D;
 		motionZ *= 0.9900000095367432D;
-		Vector result = new Vector(motionX, motionY, motionZ);
-		if(nessPlayer.milliSecondTimeDifference(PlayerAction.FIREWORKUSED) < 500) {
-			this.player().sendDevMessage("Fireworks are being used!");
-			result.add(fireworkAdder(result));
-		}
-		return result;
+		return new Vector(motionX, motionY, motionZ);
 	}
 
 }

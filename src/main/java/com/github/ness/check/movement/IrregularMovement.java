@@ -38,6 +38,7 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		levitationEffect(e);
 		stepYCheck(e);
 		IllegalXZDistance(e);
+		nonCorrespondentServerVelocity(e);
 	}
 
 	public void IllegalXZDistance(Cancellable e) {
@@ -106,6 +107,11 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		if ((float) this.player().getMovementValues().getyDiff() > max && jumpBoost > 0) {
 			this.flagEvent(e, "HighJumpBoost: " + (float) player().getMovementValues().getyDiff());
 		}
+	}
+	
+	public void nonCorrespondentServerVelocity(PlayerMoveEvent e) {
+		float yResult = (float) (e.getPlayer().getVelocity().getY() - player().getMovementValues().getyDiff());
+		player().sendDevMessage("yVelocity: " + yResult);
 	}
 
 }

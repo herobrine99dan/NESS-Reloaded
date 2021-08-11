@@ -70,7 +70,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.12.2-R0.1-20180712.012057-156</version>
+            <version>1.13.2-R0.1-20190423.030901-214</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
