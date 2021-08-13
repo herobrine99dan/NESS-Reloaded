@@ -106,10 +106,10 @@ public class MovementValues {
 			}
 			groundAround = ground;
 			insideVehicle = p.isInsideVehicle();
-			boolean colliderHorizon = this.getHelper().isCollidedHorizontally(to.toBukkitLocation());
-			if (!colliderHorizon) {
-				colliderHorizon = this.getHelper().isCollidedHorizontally(from.toBukkitLocation());
-			}
+			//boolean colliderHorizon = this.getHelper().isCollidedHorizontally(to.toBukkitLocation());
+			//if (!colliderHorizon) {
+			//	colliderHorizon = this.getHelper().isCollidedHorizontally(from.toBukkitLocation());
+			//}
 			if (trasparentMaterials.size() == 0.0) { // We add in a set all the non-occluding materials
 				trasparentMaterials = access.nonOccludingMaterials();
 			}
@@ -255,12 +255,12 @@ public class MovementValues {
 	 * @return
 	 */
 	public boolean isAroundNonOccludingBlocks() {
-		for (Location newLoc : getHelper().getBoundingBoxesAroundPlayer(to.toBukkitLocation())) {
+		for (Location newLoc : getHelper().getLocationsAroundPlayerLocation(to.toBukkitLocation())) {
 			if (!this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding()
 					&& this.getHelper().getMaterialAccess().getMaterial(newLoc).isSolid())
 				return true;
 		}
-		for (Location newLoc : getHelper().getBoundingBoxesAroundPlayer(from.toBukkitLocation())) {
+		for (Location newLoc : getHelper().getLocationsAroundPlayerLocation(from.toBukkitLocation())) {
 			if (!this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding()
 					&& this.getHelper().getMaterialAccess().getMaterial(newLoc).isSolid())
 				return true;

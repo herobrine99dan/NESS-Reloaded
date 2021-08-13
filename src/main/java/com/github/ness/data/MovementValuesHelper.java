@@ -23,7 +23,7 @@ public class MovementValuesHelper {
 	public MovementValuesHelper(MaterialAccess materialAccess) {
 		this.materialAccess = materialAccess;
 	}
-
+	//TODO Recode this method
 	/**
 	 * Get Angle (in Radians) beetween a player and the target
 	 * 
@@ -40,50 +40,31 @@ public class MovementValuesHelper {
 		return dot;
 	}
 
-	public Location getEyeLocation(Location location, Player player) {
-		return location.add(0, player.getEyeHeight(), 0);
-	}
-
 	public boolean isNearWater(Location loc) {
-		int water = 0;
-		double limit = 0.22;
-		for (double x = -limit; x < limit + 0.1; x += limit) {
-			for (double z = -limit; z < limit + 0.1; z += limit) {
-				if (materialAccess.getMaterial(loc.clone().add(x, 0, z)).name().contains("WATER")) {
-					water++;
-				}
+		for (Location newLoc : getLocationsAroundPlayerLocation(loc)) {
+			if (materialAccess.getMaterial(newLoc).name().contains("WATER")) {
+				return true;
 			}
 		}
-		return water > 3;
+		return false;
 	}
 
 	public boolean isNearLiquid(Location loc) {
-		int water = 0;
-		double limit = 0.22;
-		for (double x = -limit; x < limit + 0.1; x += limit) {
-			for (double z = -limit; z < limit + 0.1; z += limit) {
-				final Material material = materialAccess.getMaterial(loc.clone().add(x, 0, z));
-				if (!material.isSolid()) {
-					if (material.name().contains("WATER") || material.name().contains("LAVA")) {
-						water++;
-					}
-				}
+		for (Location newLoc : getLocationsAroundPlayerLocation(loc)) {
+			if (newLoc.getBlock().isLiquid()) {
+				return true;
 			}
 		}
-		return water > 3;
+		return false;
 	}
 
 	public boolean isNearLava(Location loc) {
-		int water = 0;
-		double limit = 0.22;
-		for (double x = -limit; x < limit + 0.1; x += limit) {
-			for (double z = -limit; z < limit + 0.1; z += limit) {
-				if (materialAccess.getMaterial(loc.clone().add(x, 0, z)).name().contains("LAVA")) {
-					water++;
-				}
+		for (Location newLoc : getLocationsAroundPlayerLocation(loc)) {
+			if (materialAccess.getMaterial(newLoc).name().contains("LAVA")) {
+				return true;
 			}
 		}
-		return water > 3;
+		return false;
 	}
 
 	public boolean isMathematicallyOnGround(double y) {
@@ -93,105 +74,71 @@ public class MovementValuesHelper {
 	public boolean hasflybypass(NessPlayer nessPlayer) {
 		Player player = nessPlayer.getBukkitPlayer();
 		if (!Bukkit.getVersion().contains("1.8")) {
-			return player.hasPotionEffect(PotionEffectType.LEVITATION) || player.isGliding() || player.isFlying()
-					|| nessPlayer.milliSecondTimeDifference(PlayerAction.GLIDING) < 1500;
-		} else {
-			return player.isFlying();
+			return player.hasPotionEffect(PotionEffectType.LEVITATION) || player.isFlying()
+					|| isPlayerUsingElytra(nessPlayer);
 		}
+		return player.isFlying();
 	}
 
-	public boolean isPlayerUsingElytra(NessPlayer nessPlayer) {
+//TODO See if some checks use this without checking the Server version
+	/**When we use this method, we assume we already checked the Server Version**/
+	private boolean isPlayerUsingElytra(NessPlayer nessPlayer) {
 		Player player = nessPlayer.getBukkitPlayer();
-		if (!Bukkit.getVersion().contains("1.8")) {
-			return player.isGliding() || nessPlayer.milliSecondTimeDifference(PlayerAction.GLIDING) < 1500;
-		}
-		return false; // IN 1.8 there isn't Elytra!
+		return player.isGliding() || nessPlayer.milliSecondTimeDifference(PlayerAction.GLIDING) < 1500;
 	}
 
 	public double calcDamageFall(double dist) {
 		return (dist * 0.5) - 1.5;
 	}
 
-	private static final float ONGROUNDBOUNDINGBOXWITDH = 0.4f;
-	private static final float ONGROUNDBOUNDINGBOXHEIGHT = 0.7f;
-
 	/**
 	 * A Good isOnGround Method
 	 * 
 	 * @param Location           loc [the location that we have to check]
-	 * @param otherBlocksToCheck [some other blocks that you consider onGround]
-	 *                           (some checks may need this)
 	 * @return
 	 */
-	public boolean isOnGround(Location loc, String... otherBlocksToCheck) {
-		final Location cloned = loc.clone();
-		double limit = ONGROUNDBOUNDINGBOXWITDH;
-		for (double x = -limit; x < limit; x += 0.1) {
-			for (double z = -limit; z < limit; z += 0.1) {
-				for (double y = -ONGROUNDBOUNDINGBOXHEIGHT; y < 0; y += 0.1) {
-					if (isBlockConsideredOnGround(cloned.clone().add(x, y, z), otherBlocksToCheck)) {
+	public boolean isOnGround(Location loc) {
+		for (Location newLoc : getLocationsAroundPlayerLocation(loc)) {
+			if (isBlockConsideredOnGround(newLoc))
 						return true;
-					}
-				}
-			}
 		}
 		return false;
 	}
 
-	public List<Location> getBoundingBoxesAroundPlayer(Location loc) {
+	public List<Location> getLocationsAroundPlayerLocation(Location loc) {
 		List<Location> list = new ArrayList<Location>();
-		final Location cloned = loc.clone();
-		double limit = ONGROUNDBOUNDINGBOXWITDH;
-		for (double x = -limit; x < limit; x += 0.1) {
-			for (double z = -limit; z < limit; z += 0.1) {
-				for (double y = -ONGROUNDBOUNDINGBOXHEIGHT; y < 0; y += 0.1) {
-					list.add(cloned.clone().add(x, y, z));
-				}
+		final double limit = 0.3;
+		for (double x = -limit; x <= limit; x += limit) {
+			for (double z = -limit; z <= limit; z += limit) {
+				list.add(loc.clone().add(x, -0.501, z));
 			}
 		}
 		return list;
 	}
 
 	public boolean isNearMaterials(Location loc, String... materials) {
-		for(String s : materials) {
-			if(isNearMaterial(loc, s)) {
-				return true;
+		for(Location newLoc : getLocationsAroundPlayerLocation(loc)) {
+			for(String s : materials) {
+				if(this.materialAccess.getMaterial(newLoc).name().contains(s)) return true;
 			}
 		}
 		return false;
 	}
-	
-	private boolean isNearMaterial(Location loc, String material) {
-		for(Location newLoc : getBoundingBoxesAroundPlayer(loc)) {
-			if(this.materialAccess.getMaterial(newLoc).name().contains(material)) return true;
-		}
-		//return getBoundingBoxesAroundPlayer(loc).stream()
-		//		.anyMatch((newLoc) -> this.materialAccess.getMaterial(newLoc).name().contains(material));
-		return false;
-	}
 
-	public boolean isBlockConsideredOnGround(Location loc, String... otherBlocksToCheck) {
+	public boolean isBlockConsideredOnGround(Location loc) {
 		Block block = loc.getBlock();
 		Material material = this.materialAccess.getMaterial(block);
 		String name = material.name();
+		
 		if (material.isSolid() || name.contains("SNOW") || name.contains("CARPET") || name.contains("SCAFFOLDING")
-				|| name.contains("SKULL") || name.contains("LADDER") || name.contains("WALL")
-				|| elementOfStringContainsMaterial(name, otherBlocksToCheck)) {
+				|| name.contains("SKULL") || name.contains("LADDER") || name.contains("WALL")) {
 			return true;
 		}
 		return false;
 	}
 	
-	private boolean elementOfStringContainsMaterial(String material, String... otherBlocksToCheck) {
-		for(String s : otherBlocksToCheck) {
-			if(s.contains(material)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean isCollidedHorizontally(Location loc) {
+	//Bad and useless
+	/*public boolean isCollidedHorizontally(Location loc) {
 		final Location cloned = loc.clone();
 		double limit = 0.1;
 		for (double x = -limit; x < limit + 0.1; x += limit) {
@@ -204,7 +151,7 @@ public class MovementValuesHelper {
 			}
 		}
 		return false;
-	}
+	}*/
 
 	public static MovementValuesHelper makeHelper(MaterialAccess materialAccess) {
 		return new MovementValuesHelper(materialAccess);

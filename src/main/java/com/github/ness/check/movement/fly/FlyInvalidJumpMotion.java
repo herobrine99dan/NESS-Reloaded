@@ -29,7 +29,7 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 		NessPlayer nessPlayer = this.player();
 		MovementValues movementValues = nessPlayer.getMovementValues();
 		if (movementValues.isNearLiquid() || movementValues.hasBlockNearHead()
-				|| movementValues.isNearMaterials("ICE", "SLIME", "SNOW", "VINE", "LADDER")
+				|| movementValues.isNearMaterials("SNOW", "VINE", "LADDER")
 				|| isBlockUpperHeadOnGround(event.getTo()) || isBlockUpperHeadOnGround(event.getFrom())
 				|| movementValues.isAroundNonOccludingBlocks() || movementValues.getHelper().hasflybypass(nessPlayer)) {
 			return;

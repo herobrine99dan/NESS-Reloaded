@@ -14,6 +14,8 @@ import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfo;
 import com.github.ness.check.CheckInfos;
 import com.github.ness.check.MultipleListeningCheck;
+import java.util.List;
+import java.util.ArrayList;
 import com.github.ness.check.MultipleListeningCheckFactory;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
@@ -30,9 +32,7 @@ public class FlyInvalidClientGravity extends MultipleListeningCheck {
 	private final int minAirTicks;
 	private final double minBuffer;
 	private final boolean useAbsoluteDifference;
-	private final boolean usePlayerIsOnGround;
-	private float yVelocity;
-	private boolean velocityAlreadyUsed = false;
+	private List<Float> velocitys = new ArrayList<Float>();
 
 	public FlyInvalidClientGravity(MultipleListeningCheckFactory<?> factory, NessPlayer player) {
 		super(factory, player);
@@ -40,8 +40,6 @@ public class FlyInvalidClientGravity extends MultipleListeningCheck {
 		minBuffer = this.ness().getMainConfig().getCheckSection().flyInvalidClientGravity().buffer();
 		useAbsoluteDifference = this.ness().getMainConfig().getCheckSection().flyInvalidClientGravity()
 				.useAbsoluteDifference();
-		usePlayerIsOnGround = this.ness().getMainConfig().getCheckSection().flyInvalidClientGravity()
-				.usePlayerIsOnGroundMethod();
 	}
 
 	private int airTicks;
@@ -57,13 +55,6 @@ public class FlyInvalidClientGravity extends MultipleListeningCheck {
 
 		@DefaultBoolean(false)
 		boolean useAbsoluteDifference();
-
-		@DefaultBoolean(true)
-		@ConfComments({ "Player.isOnGround() is suggested because the other method that",
-				" NESS Reloaded currently has is a math method (ground = (y%0,015625) < 0.001)",
-				"and, while this method works correctly, it can produce disablers.",
-				" Also invalid values of Player.isOnGround() will be detected by FlyFalseGround." })
-		boolean usePlayerIsOnGroundMethod();
 	}
 
 	/**
@@ -84,8 +75,9 @@ public class FlyInvalidClientGravity extends MultipleListeningCheck {
 	}
 
 	private void onVelocity(PlayerVelocityEvent e) {
-		yVelocity = (float) e.getVelocity().getY();
-		velocityAlreadyUsed = true;
+		//yVelocity = 
+		//velocityAlreadyUsed = true;
+		velocitys.add((float) e.getVelocity().getY());
 	}
 
 	private void onMove(PlayerMoveEvent event) {
@@ -94,7 +86,7 @@ public class FlyInvalidClientGravity extends MultipleListeningCheck {
 		MovementValues values = nessPlayer.getMovementValues();
 		// Flying will be handled in another class. Same thing for Elytra. Lava and
 		// Water are handled in Jesus
-		if (player.isFlying() || player.getAllowFlight() || values.getHelper().isPlayerUsingElytra(nessPlayer)
+		if (player.getAllowFlight() || values.getHelper().hasflybypass(nessPlayer)
 				|| values.isNearLiquid()) {
 			return;
 		}
@@ -113,10 +105,7 @@ public class FlyInvalidClientGravity extends MultipleListeningCheck {
 		// TODO There is one false flag with jump boost because Minecraft (aka
 		// Shitcraft) rounds the number if it is very low
 		// Sometimes this onGround Value is too
-		final boolean onGroundFixer = usePlayerIsOnGround ? nessPlayer.isOnGroundPacket() : isOnGround1(event.getTo());
-		// boolean onGround = !isOnGround(event.getTo()) ? onGroundFixer : true;
-		boolean onGroundCalculated = isOnGround(event.getTo()) || isOnGround(event.getFrom());
-		boolean onGround = onGroundCalculated || onGroundFixer;
+		boolean onGround = isOnGround(event.getTo()); //|| isOnGround(event.getFrom());
 		float yDiff = (float) values.getyDiff();
 		if (onGround) {
 			yDiff = 0.0f;
@@ -135,11 +124,20 @@ public class FlyInvalidClientGravity extends MultipleListeningCheck {
 		}
 		motionY -= 0.08f; // Gravity
 		motionY *= 0.98f; // Air Resistance
-		if (velocityAlreadyUsed) {
+		/*if (velocityAlreadyUsed) {
 			velocityAlreadyUsed = false;
 			// if (yVelocity > 0) {
 			motionY = yVelocity;
 			// }
+		}*/
+		float yVelocity = 0.0f;
+		List<Float> clonedVelocitys = new ArrayList<Float>(velocitys);
+		for(float f : clonedVelocitys) {
+			if(Math.abs(yDiff - f) < 0.005) {
+				velocitys.remove(f);
+				motionY = f;
+				yVelocity = f;
+			}
 		}
 		float result = yDiff - motionY;
 		// this.player().sendDevMessage("result: " + result + " onGround: " + onGround +
@@ -147,7 +145,7 @@ public class FlyInvalidClientGravity extends MultipleListeningCheck {
 		if (useAbsoluteDifference) {
 			result = Math.abs(result);
 		}
-		this.player().sendDevMessage("onGroundCalculated: " + onGroundCalculated);
+		//this.player().sendDevMessage("onGroundCalculated: " + onGroundCalculated);
 		// Here we use 0.005 because in newer Minecraft versions the yMotion is clamped
 		// if it's low.
 		if (result > 0.005 && airTicks > minAirTicks) { // After some tests i discovered that minAirTicks should be two
@@ -183,14 +181,11 @@ public class FlyInvalidClientGravity extends MultipleListeningCheck {
 	}
 
 	private boolean isOnGround(Location loc) {
-		final Location cloned = loc.clone();
 		double limit = 0.3; //TODO Maybe this fix allows some little WallClimb that glitch you in the wall
 		for (double x = -limit; x <= limit; x += limit) {
 			for (double z = -limit; z <= limit; z += limit) {
-				for (double y = -0.5; y <= 0; y += 0.1) {
-					if (isBlockConsideredOnGround(cloned.clone().add(x, y, z))) {
-						return true;
-					}
+				if (isBlockConsideredOnGround(loc.clone().add(x, -0.501, z))) {
+					return true;
 				}
 			}
 		}

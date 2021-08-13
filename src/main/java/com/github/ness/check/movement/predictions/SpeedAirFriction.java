@@ -32,7 +32,7 @@ public class SpeedAirFriction extends ListeningCheck<PlayerMoveEvent> {
 		Player player = event.getPlayer();
 		NessPlayer nessPlayer = this.player();
 		MovementValues values = nessPlayer.getMovementValues();
-		if (player.isFlying() || values.getHelper().isPlayerUsingElytra(nessPlayer)
+		if (values.getHelper().hasflybypass(nessPlayer)
 				|| values.getHelper().isNearLiquid(event.getTo()) || values.getHelper().isNearLiquid(event.getFrom())) {
 			return;
 		}
