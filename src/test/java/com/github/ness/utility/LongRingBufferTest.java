@@ -27,7 +27,7 @@ public class LongRingBufferTest {
 
 		assertTrue(count <= buffer.getCapacity());
 		assertEquals(sum, buffer.sum());
-		assertEquals(sum / count, buffer.average());
+		assertEquals((double) sum / (double) count, buffer.average());
 	}
 	
 	@Test

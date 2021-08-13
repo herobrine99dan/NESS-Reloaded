@@ -142,8 +142,8 @@ public class LongRingBuffer {
 	}
 
 	/**
-	 * Get the median beetween values
-	 * 
+	 * Get the median beetween values of the array
+	 * Median is a Robust Statistic and works even if ~45% of data is messed up.
 	 * @return the median
 	 */
 	public long median() {
@@ -151,16 +151,18 @@ public class LongRingBuffer {
 	}
 	
 	/**
-	 * Get the median beetween values
+	 * Get the median beetween values in long array
 	 * 
 	 * @param the long array
 	 * @return the median
 	 */
-	public long calculateMedian(long[] values) {
+	private long calculateMedian(long[] values) {
 		Arrays.sort(values);
 		long median;
 		if (values.length % 2 == 0) {
-			median = (values[values.length / 2] + values[values.length / 2 + 1]) / 2;
+			median = (values[values.length / 2] + values[values.length / 2 + 1]) / 2; //Doing the average beetween two values in the array 
+																					  //can product unstable results: if one value is an outlier, 
+																					  //the mean isn't correct so the median won't be robust.
 		} else {
 			median = values[values.length / 2];
 		}
@@ -177,11 +179,11 @@ public class LongRingBuffer {
 	}
 
 	/**
-	 * Get the simple average waste
+	 * Get the Mean Absolute Deviation
 	 * 
 	 * @return the simple average waste
 	 */
-	public double simpleAverageWaste() {
+	public double meanAbsoluteDeviation() {
 		double number = 0;
 
 		double mean = average();
@@ -216,23 +218,32 @@ public class LongRingBuffer {
 	 * @return the skewness, calculated with: 3*(x̄-M)/σ
 	 */
 	public double getSkewness() {
-		return 3*(average()-median())/standardDeviation();
+		double mean = average();
+		double median = median();
+		return 3*(mean-median)/standardDeviation();
 	}
 
 	/**
-	 * Calculate the MAD. 
-	 * MAD is a more robust than Standard Deviation measure of statistical dispersion.
-	 * MAD And Standard Deviation are linked by a relationship: deviationStandard = k*MAD
-	 * For normally distributed data the k is 1.4826 (MAD/deviationStandard=0.6745)
+	 * Calculate the MAD (Median Absolute Deviation). 
+	 * MAD is a robust measure of statistical dispersion.
 	 * @return
 	 */
-	public long calculateMAD() {
+	public long medianAbsoluteDeviation() {
 		long median = this.median();
 		long[] wastes = new long[this.values.length];
 		for (int i = 0; i < wastes.length; i++) {
 			wastes[i] = Math.abs(values[i] - median);
 		}
 		return calculateMedian(wastes);
+	}
+	
+	/**
+	 * Get the k costant beetween MAD and Standard Deviation
+	 * MAD And Standard Deviation are linked by a relationship: deviationStandard = k*MAD
+	 * For normally distributed data the k is 1.4826 (MAD/deviationStandard=0.6745)
+	**/
+	public double getCostantBeetweenMADandStandardDeviation() {
+		return standardDeviation() / medianAbsoluteDeviation();
 	}
 
 	/**
