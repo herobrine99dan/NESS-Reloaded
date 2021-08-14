@@ -18,8 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.geysermc.floodgate.FloodgateApi;
-import org.geysermc.floodgate.FloodgatePlayer;
+import org.geysermc.floodgate.api.FloodgateApi;
 
 import com.github.ness.api.AnticheatPlayer;
 import com.github.ness.api.Infraction;
@@ -94,7 +93,7 @@ public class NessPlayer implements AnticheatPlayer {
 		ping = new AtomicInteger(0);
 		animationPacketsCounter = 0;
 		if (ness.isUseFloodGate()) {
-			isUsingGeyserMC = FloodgateApi.isFloodgatePlayer(player.getUniqueId());
+			isUsingGeyserMC = FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId());
 		} else {
 			isUsingGeyserMC = false;
 		}
