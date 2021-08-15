@@ -38,12 +38,12 @@ class FactoryLoader {
 					continue factoryLoadLoop;
 				}
 			}
-			logger.log(Level.WARNING, "No check factory found for " + checkName);
+			logger.log(Level.WARNING, "No check factory found for {0}", checkName);
 		}
 		for (String requiredCheck : ChecksPackage.REQUIRED_CHECKS) {
 			BaseCheckFactory<?> factory = loadFactory("required", requiredCheck);
 			if (factory == null) {
-				logger.log(Level.WARNING, "No check factory found for required " + requiredCheck);
+				logger.log(Level.WARNING, "No check factory found for required {0}", requiredCheck);
 				continue;
 			}
 			factories.add(factory);

@@ -19,12 +19,12 @@ public class PlayInUseEntity {
 	public static PacketType<PlayInUseEntity> type(VersionDetermination version, ReflectHelper helper) {
 		Class<?> packetClass = helper.getNmsClass("PacketPlayInUseEntity");
 		FieldInvoker<Integer> entityID = helper.getFieldFromNames(packetClass, int.class, "a");
-		FieldInvoker<?> enumAction = helper.getField(packetClass, MemberDescriptions.forField("action")); //for 1.12.2 and less
+		//FieldInvoker<?> enumAction = helper.getField(packetClass, MemberDescriptions.forField("action")); //for 1.12.2 and less
 		return new RawPacketType<PlayInUseEntity>(packetClass) {
 			@Override
 			public PlayInUseEntity convertPacket(Object packet) {
-				boolean isAttack = enumAction.get(packet).toString().equals("ATTACK");
-				return new PlayInUseEntity(entityID.get(packet), isAttack);
+				//boolean isAttack = enumAction.get(packet).toString().equals("ATTACK");
+				return new PlayInUseEntity(entityID.get(packet), true);
 			}
 		};
 	}

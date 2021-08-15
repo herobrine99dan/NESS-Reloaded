@@ -279,6 +279,7 @@ public class NessPlayer implements AnticheatPlayer {
 	/**
 	 * Drags down the player
 	 * 
+         * @return boolean
 	 */
 	// TODO Implement damage, using proportions
 	public boolean completeDragDown() {

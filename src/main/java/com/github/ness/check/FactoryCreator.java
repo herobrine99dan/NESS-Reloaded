@@ -128,8 +128,9 @@ class FactoryCreator<C extends BaseCheck> {
 			return createPacket(constructor, checkInfo);
 		}
 		if (MultipleListeningCheck.class.isAssignableFrom(checkClass)) {
-			if (!(checkInfo instanceof MultipleListeningCheckInfo))
-				throw new IllegalStateException("Check " + checkClass.getName() + " has mismatched check info");
+			if (!(checkInfo instanceof MultipleListeningCheckInfo)) {
+                            throw new IllegalStateException("Check " + checkClass.getName() + " has mismatched check info");
+                        }
 
 			return createMultipleEventListener(constructor, (MultipleListeningCheckInfo) checkInfo);
 		}

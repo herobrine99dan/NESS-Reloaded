@@ -78,7 +78,7 @@ public class AutoClick extends ListeningCheck<PlayerInteractEvent> {
 	}
 
 	@Override
-	protected void checkAsyncPeriodic() {
+	protected void checkSyncPeriodic() {
 		// Cleanup old history
 		Set<Long> clickHistory = this.clickHistory;
 

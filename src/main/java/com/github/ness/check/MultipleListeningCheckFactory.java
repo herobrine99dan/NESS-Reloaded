@@ -4,7 +4,7 @@ import org.bukkit.event.Event;
 
 public class MultipleListeningCheckFactory<C extends MultipleListeningCheck> extends CheckFactory<C> {
 
-	private RegisteredMultipleListener registeredListener;
+	private final RegisteredMultipleListener registeredListener;
 
 	private final Class<? extends Event>[] events;
 

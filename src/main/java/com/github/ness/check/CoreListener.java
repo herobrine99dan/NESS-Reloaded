@@ -1,7 +1,6 @@
 package com.github.ness.check;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -11,8 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -149,7 +146,7 @@ public class CoreListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onVehicleEnter(VehicleEnterEvent event) {
 		if (event.getEntered() instanceof Player) {
-			setPlayerAction((Player) event.getEntered(), PlayerAction.VEHICLEENTER);
+			setPlayerAction((HumanEntity) event.getEntered(), PlayerAction.VEHICLEENTER);
 		}
 	}
 

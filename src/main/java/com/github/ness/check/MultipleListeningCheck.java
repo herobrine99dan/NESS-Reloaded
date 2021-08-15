@@ -46,9 +46,9 @@ public abstract class MultipleListeningCheck extends Check {
 		if (player().isInvalid()) {
 			return;
 		}
-		if (event instanceof PlayerEvent)
-			if (player().isNot(((PlayerEvent) event).getPlayer()))
-				return;
+		if (event instanceof PlayerEvent && player().isNot(((PlayerEvent) event).getPlayer())) {
+                        return;
+                }
 		checkEvent(event);
 	}
 
@@ -64,6 +64,8 @@ public abstract class MultipleListeningCheck extends Check {
 
 	/**
 	 * Utility method to get material name with MaterialAccess implementation
+         * @param ImmutableLoc loc
+         * @return String
 	 */
 
 	public String getMaterialName(ImmutableLoc loc) {

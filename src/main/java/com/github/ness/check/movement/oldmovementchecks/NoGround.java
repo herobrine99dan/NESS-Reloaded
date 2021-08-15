@@ -11,6 +11,7 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.check.PeriodicTaskInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
@@ -18,7 +19,7 @@ import com.github.ness.utility.Utility;
 public class NoGround extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos
-			.forEventWithAsyncPeriodic(PlayerMoveEvent.class, Duration.ofSeconds(1));
+			.forEventWithTask(PlayerMoveEvent.class, PeriodicTaskInfo.syncTask(Duration.ofSeconds(1)));
 	private int flags;
 
 	public NoGround(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
@@ -27,7 +28,7 @@ public class NoGround extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	@Override
-	protected void checkAsyncPeriodic() {
+	protected void checkSyncPeriodic() {
 		flags = 0;
 	}
 

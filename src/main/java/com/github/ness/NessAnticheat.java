@@ -114,7 +114,7 @@ public class NessAnticheat {
 		}
 		// Start plugin message listener if bungeecord notify-staff hook enabled
 		String formatted = getMainConfig().getViolationHandling().notifyStaff().bungeecord()?"is" : "isn't";
-		logger.info("NESS Reloaded " + formatted + " going to hook into BungeeCord!");
+		logger.log(Level.INFO, "NESS Reloaded {0} going to hook into BungeeCord!", formatted);
 		if (getMainConfig().getViolationHandling().notifyStaff().bungeecord()) {
 			Messenger messenger = plugin.getServer().getMessenger();
 			messenger.registerOutgoingPluginChannel(plugin, "BungeeCord");

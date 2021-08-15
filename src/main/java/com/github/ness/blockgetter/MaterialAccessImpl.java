@@ -30,7 +30,7 @@ public class MaterialAccessImpl implements MaterialAccess {
 	public HashSet<Material> nonOccludingMaterials() {
 		HashSet<Material> trasparentMaterials = new HashSet<Material>();
 		for(Material material : Material.values()) {
-			if(!material.isOccluding()) {
+			if(!material.isOccluding() && material.isBlock() && material.isSolid()) {
 				trasparentMaterials.add(material);
 			}
 		}

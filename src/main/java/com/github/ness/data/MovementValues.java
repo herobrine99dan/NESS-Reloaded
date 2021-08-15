@@ -1,6 +1,6 @@
 package com.github.ness.data;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Objects;
 
 import org.bukkit.Bukkit;
@@ -15,6 +15,7 @@ import com.github.ness.NessPlayer;
 import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.reflect.locator.VersionDetermination;
 import com.github.ness.utility.Utility;
+import java.util.Set;
 
 public class MovementValues {
 
@@ -56,17 +57,17 @@ public class MovementValues {
 	private final int hasBubblesColumns;
 	private final boolean blockUnderHead;
 	private static MovementValuesHelper helper;
-	private static volatile HashSet<Material> trasparentMaterials = new HashSet<Material>();
+	private static volatile Set<Material> trasparentMaterials = EnumSet.noneOf(Material.class);
 
 	/**
 	 * WARNING: USE THIS CONSTRUCTOR ONLY TO SETUP THE MOVEMENTVALUESHELPER OBJECT
 	 * 
-	 * @param MaterialAccess access
+         * @param materialAccess
 	 */
-	public MovementValues(MaterialAccess access) {
+	public MovementValues(MaterialAccess materialAccess) {
 		this.pitchDiff = 0;
-		Objects.requireNonNull(access, "The MaterialAccess object provided is null!");
-		helper = MovementValuesHelper.makeHelper(access);
+		Objects.requireNonNull(materialAccess, "The MaterialAccess object provided is null!");
+		helper = MovementValuesHelper.makeHelper(materialAccess);
 		this.XZDiff = 0;
 		this.xDiff = 0;
 		this.to = null;
@@ -241,6 +242,7 @@ public class MovementValues {
 	 * This is a shortcut for the getHelper().isNearMaterial(material, loc) This
 	 * checks both to and from locations
 	 * 
+         * @param materials
 	 * @return
 	 */
 	public boolean isNearMaterials(String... materials) {
@@ -257,13 +259,15 @@ public class MovementValues {
 	public boolean isAroundNonOccludingBlocks() {
 		for (Location newLoc : getHelper().getLocationsAroundPlayerLocation(to.toBukkitLocation())) {
 			if (!this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding()
-					&& this.getHelper().getMaterialAccess().getMaterial(newLoc).isSolid())
-				return true;
+					&& this.getHelper().getMaterialAccess().getMaterial(newLoc).isSolid()) {
+                            return true;
+                        }
 		}
 		for (Location newLoc : getHelper().getLocationsAroundPlayerLocation(from.toBukkitLocation())) {
 			if (!this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding()
-					&& this.getHelper().getMaterialAccess().getMaterial(newLoc).isSolid())
-				return true;
+					&& this.getHelper().getMaterialAccess().getMaterial(newLoc).isSolid()) {
+                            return true;
+                        }
 		}
 		return false;
 	}

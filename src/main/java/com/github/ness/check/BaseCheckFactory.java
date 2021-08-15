@@ -7,6 +7,7 @@ import com.github.ness.api.AnticheatCheck;
  * Base class for
  * 
  * @author A248
+ * @param <C>
  *
  */
 public abstract class BaseCheckFactory<C extends BaseCheck> implements AnticheatCheck {

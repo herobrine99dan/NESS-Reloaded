@@ -10,13 +10,14 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.CheckManager;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.check.PeriodicTaskInfo;
 
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class AutoClickFactory extends ListeningCheckFactory<AutoClick, PlayerInteractEvent> {
 	
 	private static final ListeningCheckInfo<PlayerInteractEvent> CHECK_INFO = CheckInfos
-			.forEventWithAsyncPeriodic(PlayerInteractEvent.class, Duration.ofSeconds(2));
+			.forEventWithTask(PlayerInteractEvent.class, PeriodicTaskInfo.syncTask(Duration.ofSeconds(2)));
 	
 	private final AutoClickConfig.Constancy constancy;
 	private final List<HardLimitEntry> sortedHardLimits;

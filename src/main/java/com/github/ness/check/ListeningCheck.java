@@ -2,7 +2,6 @@ package com.github.ness.check;
 
 import java.time.Duration;
 
-import org.bukkit.Location;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 
@@ -67,6 +66,9 @@ public abstract class ListeningCheck<E extends Event> extends Check {
 	
 	/**
 	 * Utility method to get material name with MaterialAccess implementation
+         * @param immutableLoc
+         * @return String
+         * 
 	 */
 	
 	public String getMaterialName(ImmutableLoc loc) {

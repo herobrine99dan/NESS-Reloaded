@@ -1,7 +1,7 @@
 package com.github.ness.api;
 
 /**
- * A component of an anticheat which is responsible for detecting a certain type of hack. <br>
+ * A component of an anticheat which is responsible for detecting a certain type of cheat. <br>
  * <br>
  * 
  * 

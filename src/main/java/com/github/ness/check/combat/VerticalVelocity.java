@@ -44,13 +44,14 @@ public class VerticalVelocity extends MultipleListeningCheck {
 		double maxVelocityPercentage();
 	}
 
-	private List<Float> lastYDistances = new ArrayList<Float>();
+	private final List<Float> lastYDistances = new ArrayList<Float>();
 
 	@Override
 	protected void checkEvent(Event event) {
 			Player player = ((PlayerEvent) event).getPlayer(); //It must extends at least PlayerEvent, we declared this before!
-			if (player().isNot(player))
-				return;
+			if (player().isNot(player)) {
+                            return;
+                        }
 			if(event instanceof PlayerVelocityEvent) onVelocity((PlayerVelocityEvent) event);
 			if(event instanceof PlayerMoveEvent) onMove((PlayerMoveEvent) event);
 	}
@@ -77,7 +78,7 @@ public class VerticalVelocity extends MultipleListeningCheck {
 																// to the velocity
 				float ySubtract = max / yVelocity;
 				lastYDistances.clear();
-				float percentage = Math.abs(roundNumber(ySubtract * 100, 100));
+				float percentage = roundNumber(ySubtract * 100, 100);
 				
 				if (percentage < minVelocityPercentage) { //First check: low velocity
 					this.flag("Low percentage: " + percentage + " velocity: " + roundNumber(yVelocity, 1000));
@@ -93,7 +94,7 @@ public class VerticalVelocity extends MultipleListeningCheck {
 	}
 
 	private float roundNumber(float n, float places) {
-		return Math.round(n * places) / places;
+		return (int) (n * places) / places;
 	}
 
 }

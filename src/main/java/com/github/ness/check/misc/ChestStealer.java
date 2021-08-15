@@ -13,6 +13,7 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.check.PeriodicTaskInfo;
 
 public class ChestStealer extends ListeningCheck<InventoryClickEvent> {
 
@@ -21,7 +22,7 @@ public class ChestStealer extends ListeningCheck<InventoryClickEvent> {
 	 */
 
 	public static final ListeningCheckInfo<InventoryClickEvent> checkInfo = CheckInfos.
-			forEventWithAsyncPeriodic(InventoryClickEvent.class, Duration.ofMillis(500));
+			forEventWithTask(InventoryClickEvent.class, PeriodicTaskInfo.syncTask(Duration.ofMillis(500)));
 	private long moveInvItemsLastTime;
 	private int movedInvItems;
 	private byte lastItemSlot = 0;

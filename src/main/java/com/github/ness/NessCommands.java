@@ -123,7 +123,7 @@ class NessCommands implements CommandExecutor {
 					try {
 						p.setVelocity(p.getLocation().getDirection().multiply(Double.parseDouble(args[1])));
 					    p.sendMessage("Velocity applied!");
-					} catch(Exception ex) {
+					} catch(NumberFormatException ex) {
 					    p.sendMessage(args[1] + "can't be recognized as a number.");
 					}
 				} else {

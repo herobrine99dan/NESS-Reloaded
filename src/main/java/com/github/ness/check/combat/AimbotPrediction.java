@@ -39,8 +39,8 @@ public class AimbotPrediction extends PacketCheck {
 	}
 	
 	private void calculateAndStoreMouseDeltas(Packet packet, float yawDiff, float pitchDiff) {
-		float xDelta = (float) round((yawDiff - lastYawDiff) / this.player().getGcd());
-		float yDelta = (float) round((pitchDiff + lastPitchDiff) / this.player().getGcd());
+		float xDelta = round((yawDiff - lastYawDiff) / this.player().getGcd());
+		float yDelta = round((pitchDiff + lastPitchDiff) / this.player().getGcd());
 		this.player().sendDevMessage("xDelta: " + xDelta + " yDelta: " + yDelta);
 		// The checks
 		costantRotation(xDelta, yDelta);

@@ -9,14 +9,15 @@ import com.github.ness.check.CheckInfos;
 import com.github.ness.check.ListeningCheck;
 import com.github.ness.check.ListeningCheckFactory;
 import com.github.ness.check.ListeningCheckInfo;
+import com.github.ness.check.PeriodicTaskInfo;
 
 import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
 public class FastPlace extends ListeningCheck<BlockPlaceEvent> {
 
-    int max;
+    private final int max;
     
-	public static final ListeningCheckInfo<BlockPlaceEvent> checkInfo = CheckInfos.forEventWithAsyncPeriodic(BlockPlaceEvent.class, Duration.ofSeconds(1));
+	public static final ListeningCheckInfo<BlockPlaceEvent> checkInfo = CheckInfos.forEventWithTask(BlockPlaceEvent.class, PeriodicTaskInfo.syncTask(Duration.ofSeconds(1)));
     private int blockPlace; // For FastPlace Check
 
 	public FastPlace(ListeningCheckFactory<?, BlockPlaceEvent> factory, NessPlayer player) {
@@ -31,7 +32,7 @@ public class FastPlace extends ListeningCheck<BlockPlaceEvent> {
 	}
 
     @Override
-    protected void checkAsyncPeriodic() {
+    protected void checkSyncPeriodic() {
         blockPlace = 0;
     }
 
