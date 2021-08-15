@@ -59,10 +59,25 @@ public class VersionDetermination {
 	 * Does the server has Acquatic Update? (Versions with Acquatic Update starts
 	 * from 1.13)
 	 * 
-	 * @return if the server's version is newer than 1.13
+	 * @return if the server's version is newer than 1.12
 	 */
 	public boolean hasAquaticUpdate() {
 		for (int version = 13; version <= LATEST_MINECRAFT_VERSION; version++) {
+			if (isVersion(version)) {
+				return true;
+			}
+		}
+		return false;
+	}
+        
+        /**
+	 * Does the server has Cave Update? (Versions with Cave Update starts
+	 * from 1.17)
+	 * 
+	 * @return if the server's version is newer than 1.16
+	 */
+	public boolean hasCaveUpdate() {
+		for (int version = 17; version <= LATEST_MINECRAFT_VERSION; version++) {
 			if (isVersion(version)) {
 				return true;
 			}

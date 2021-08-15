@@ -33,7 +33,7 @@ public class ChestStealer extends ListeningCheck<InventoryClickEvent> {
 	}
 
 	@Override
-	protected void checkAsyncPeriodic() {
+	protected void checkSyncPeriodic() {
 		movedInvItems = 0;
 	}
 
