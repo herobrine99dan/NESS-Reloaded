@@ -12,32 +12,34 @@ import com.github.ness.data.MovementValues;
 
 public class Criticals extends ListeningCheck<EntityDamageByEntityEvent> {
 
-	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfos
-			.forEvent(EntityDamageByEntityEvent.class);
+    public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfos
+            .forEvent(EntityDamageByEntityEvent.class);
 
-	public Criticals(ListeningCheckFactory<?, EntityDamageByEntityEvent> factory, NessPlayer player) {
-		super(factory, player);
-	}
+    public Criticals(ListeningCheckFactory<?, EntityDamageByEntityEvent> factory, NessPlayer player) {
+        super(factory, player);
+    }
 
-	@Override
-	protected void checkEvent(EntityDamageByEntityEvent e) {
-		if (player().isNot(e.getDamager()))
-			return;
-		check(e);
-	}
+    @Override
+    protected void checkEvent(EntityDamageByEntityEvent e) {
+        if (player().isNot(e.getDamager())) {
+            return;
+        }
+        check(e);
+    }
 
-	private void check(EntityDamageByEntityEvent event) {
-		NessPlayer nessPlayer = player();
-		Player player = (Player) event.getDamager();
-		MovementValues values = player().getMovementValues();
-		if(values.isNearMaterials("WEB")) {
-			return;
-		}
-		if (values.isNearLiquid() || values.getHelper().hasflybypass(nessPlayer)) {
-			return;
-		}
-		if (!player.isOnGround() && this.player().getMovementValues().getTo().getY() % 1.0 == 0.0) {
-			flagEvent(event);
-		}
-	}
+    private void check(EntityDamageByEntityEvent event) {
+        NessPlayer nessPlayer = player();
+        Player player = (Player) event.getDamager();
+        MovementValues values = player().getMovementValues();
+        if (values.isNearMaterials("WEB")) {
+            return;
+        }
+        if (values.isNearLiquid() || values.getHelper().hasflybypass(nessPlayer)) {
+            return;
+        }
+        boolean onGroundReally = this.player().getMovementValues().getTo().getY() % 1.0 == 0.0;
+        if (!player.isOnGround() && onGroundReally) {
+            flagEvent(event);
+        }
+    }
 }

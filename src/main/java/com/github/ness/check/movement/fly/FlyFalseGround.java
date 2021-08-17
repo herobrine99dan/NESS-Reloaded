@@ -58,7 +58,7 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 		}
 		if (nessPlayer.isOnGroundPacket() && !movementValues.isGroundAround()) {
 			flagEvent(e, " TypeB");
-		} else if (nessPlayer.isOnGroundPacket()
+		}else if (nessPlayer.isOnGroundPacket()
 				&& !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY()) && ++buffer > maxBuffer) {
 			flagEvent(e, " TypeA, result: " + (float) (movementValues.getTo().getY() % (1D / 64D)));
 		} else if (buffer > 0) {

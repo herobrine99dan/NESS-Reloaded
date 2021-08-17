@@ -32,7 +32,7 @@ public class PlayerESP extends Check {
     }
 
     @Override
-    protected void checkAsyncPeriodic() {
+    protected void checkSyncPeriodic() {
         for (Player cheater : Bukkit.getOnlinePlayers()) {
             for (Player tohide : Bukkit.getOnlinePlayers()) {
                 if ((this.player().getMovementValues().getHelper().getAngle(cheater, tohide.getLocation()) < minangle
