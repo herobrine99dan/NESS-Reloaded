@@ -38,7 +38,8 @@ public class Criticals extends ListeningCheck<EntityDamageByEntityEvent> {
             return;
         }
         boolean onGroundReally = this.player().getMovementValues().getTo().getY() % 1.0 == 0.0;
-        if (!player.isOnGround() && onGroundReally) {
+        boolean onGround = player.isOnGround();
+        if (!onGround && onGroundReally) {
             flagEvent(event);
         }
     }

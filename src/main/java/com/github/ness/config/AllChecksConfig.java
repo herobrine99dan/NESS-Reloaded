@@ -11,6 +11,7 @@ import com.github.ness.check.movement.Jesus;
 import com.github.ness.check.movement.OmniSprint;
 import com.github.ness.check.movement.fly.FlyFalseGround;
 import com.github.ness.check.movement.fly.FlyInvalidClientGravity;
+import com.github.ness.check.movement.oldmovementchecks.NoFall;
 import com.github.ness.check.movement.oldmovementchecks.Speed;
 import com.github.ness.check.packet.Freecam;
 import com.github.ness.check.packet.MorePackets;
@@ -175,4 +176,14 @@ public interface AllChecksConfig {
 		""})
 	@SubSection
 	KillauraHitMissRatio.Config killauraHitMissRatio();
+        @ConfKey("nofall")
+	@ConfComments({
+		"",
+		"Check the percentage hits/swings of a specific playe",
+		"",
+		"Performance impact: low", 
+		"Effectiveness: High",
+		""})
+	@SubSection
+	NoFall.Config nofall();
 }

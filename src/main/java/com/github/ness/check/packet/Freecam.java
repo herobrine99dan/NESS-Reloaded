@@ -37,10 +37,8 @@ public class Freecam extends PacketCheck {
 	protected void checkSyncPeriodic() {
 		if ((System.nanoTime() - lastPosition) / 1e+6 > maxDelay
 				&& player().milliSecondTimeDifference(PlayerAction.JOIN) > 2000) {
-			runTaskLater(() -> {
-				player().getBukkitPlayer().teleport(player().getBukkitPlayer().getLocation().clone().add(0, 0.00001, 0),
+			player().getBukkitPlayer().teleport(player().getBukkitPlayer().getLocation().clone().add(0, 0.00001, 0),
 						TeleportCause.PLUGIN);
-			}, durationOfTicks(1));
 			this.lastPosition = System.nanoTime();
 		}
 	}
