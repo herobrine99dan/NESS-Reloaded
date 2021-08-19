@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.ness.antibot.AntiBotConfig;
 import com.github.ness.violation.ViolationHandling;
 
 import space.arim.dazzleconf.annote.ConfComments;
@@ -100,11 +99,6 @@ public interface NessConfig {
 		"ScaffoldOldNESS",
 		"ScaffoldOldNESS1"})
 	List<String> getEnabledChecks();
-
-	@ConfKey("antibot")
-	@ConfComments({ "", "AntiBot", "", "Blocks Bot Attacks which sends a lot of players", "" })
-	@SubSection
-	AntiBotConfig getAntiBot();
 
 	@ConfKey("violation-handling")
 	@ConfComments({ "",

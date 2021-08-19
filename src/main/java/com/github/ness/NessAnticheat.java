@@ -13,7 +13,6 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.Messenger;
 
-import com.github.ness.antibot.AntiBot;
 import com.github.ness.api.NESSApi;
 import com.github.ness.blockgetter.MaterialAccess;
 import com.github.ness.check.CheckManager;
@@ -101,12 +100,6 @@ public class NessAnticheat {
 		// Register API implementation
 		getPlugin().getServer().getServicesManager().register(NESSApi.class, new NessApiImpl(this), plugin,
 				ServicePriority.Low);
-
-		// Start AntiBot if enabled
-		if (getMainConfig().getAntiBot().enable()) {
-			AntiBot antiBot = new AntiBot(plugin, getMainConfig().getAntiBot());
-			antiBot.initiate();
-		}
 
 		// Start packet listener except on Glowstone
 		if (!Bukkit.getName().toLowerCase().contains("glowstone")) {
