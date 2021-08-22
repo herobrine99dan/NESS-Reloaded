@@ -1,4 +1,4 @@
-package com.github.ness.check.movement.oldmovementchecks;
+package com.github.ness.check.movement;
 
 import com.github.ness.NessPlayer;
 import com.github.ness.check.CheckInfos;
@@ -57,11 +57,11 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
         }
         //TODO Tridents
         boolean isNearWater = isLiquid(event.getTo());
+
         boolean isOnGround = player.isOnGround();//isOnGround(event.getFrom());
-        if (isOnGround || this.player().getMovementValues().getHelper().hasflybypass(this.player()) || isNearWater || player.isInsideVehicle()) {
+        if (isOnGround || this.player().getMovementValues().getHelper().hasflybypass(this.player()) || isNearWater || player.isInsideVehicle() || event.getFrom().getBlock().getType().name().contains("WEB") || event.getTo().getBlock().getType().name().contains("WEB")) {
             fallHeight = 0.0f;
-        }
-    }
+        }}
 
     private boolean isLiquid(Location loc) {
         String name = loc.getBlock().getType().name();
@@ -69,7 +69,7 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 
     }
 
-    public boolean isOnGround(Location loc) {
+    private boolean isOnGround(Location loc) {
         final double limit = 0.3;
         for (double x = -limit; x <= limit; x += limit) {
             for (double z = -limit; z <= limit; z += limit) {

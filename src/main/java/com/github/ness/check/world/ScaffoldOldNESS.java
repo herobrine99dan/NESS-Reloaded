@@ -43,7 +43,7 @@ public class ScaffoldOldNESS extends ListeningCheck<BlockPlaceEvent> {
 		if (oldLoc.getY() == player.getLocation().getY()) {
 			if (!player.isSneaking() && !player.isFlying() && this.player().getMovementValues().isGroundAround()) {
 				if (placeTicks > 1) { //Since we are updating this value every 500 milliseconds (and not every 1000 milliseconds), we must divide this maxPlaceTicks by two
-					if (player.getWorld().getBlockAt(player.getLocation().subtract(0, 1, 0)).equals(event.getBlock()))
+					if (player.getLocation().subtract(0, 1, 0).getBlock().equals(event.getBlock()))
 						this.flagEvent(event);
 				}
 			}

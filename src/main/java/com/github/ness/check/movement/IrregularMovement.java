@@ -14,6 +14,7 @@ import com.github.ness.check.ListeningCheckInfo;
 import com.github.ness.data.MovementValues;
 import com.github.ness.data.PlayerAction;
 import com.github.ness.utility.Utility;
+import org.bukkit.block.Block;
 
 public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 
@@ -38,7 +39,6 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		levitationEffect(e);
 		stepYCheck(e);
 		IllegalXZDistance(e);
-		nonCorrespondentServerVelocity(e);
 	}
 
 	public void IllegalXZDistance(Cancellable e) {
@@ -104,14 +104,9 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		if (this.player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 1700) {
 			max += this.player().getLastVelocity().getY();
 		}
-		if ((float) this.player().getMovementValues().getyDiff() > max && jumpBoost > 0) {
+		if (this.player().getMovementValues().getyDiff() > max && jumpBoost > 0) {
 			this.flagEvent(e, "HighJumpBoost: " + (float) player().getMovementValues().getyDiff());
 		}
-	}
-	
-	public void nonCorrespondentServerVelocity(PlayerMoveEvent e) {
-		float yResult = (float) (e.getPlayer().getVelocity().getY() - player().getMovementValues().getyDiff());
-		player().sendDevMessage("yVelocity: " + yResult);
 	}
 
 }
