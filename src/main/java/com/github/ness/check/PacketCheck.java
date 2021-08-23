@@ -35,22 +35,6 @@ public abstract class PacketCheck extends Check {
 		}
 		checkPacket(packet);
 	}
-	
-	/**
-	 * Flags the player for cheating, and cancels the event if the violation count is too high (when configured)
-	 * 
-	 * @param evt the event to cancel
-	 * @param details debugging details
-	 */
-	protected final void flagEvent(Packet evt, String details) {
-		if (callFlagEvent()) {
-			int violations = flag0(details).getCount();
-			ViolationManager violationManager = getFactory().getCheckManager().getNess().getViolationManager();
-			if (violationManager.shouldCancelPacketCheck(this, violations)) {
-				evt.cancel();
-			}
-		}
-	}
 
 	protected PacketTypeRegistry packetTypeRegistry() {
 		return ness().getPacketTypeRegistry();

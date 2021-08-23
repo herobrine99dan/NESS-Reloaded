@@ -34,7 +34,7 @@ public class KillauraQuickHit extends ListeningCheck<EntityDamageByEntityEvent> 
 			Double dist = currentEntity.getLocation().distance(lastHitLoc);
 			long delay = (long) ((System.nanoTime() - lastHit) / 1e+6);
 			if (delay <= 100 && dist > .23) {
-				this.flagEvent(e, "delay: " + delay);
+				this.flag("delay: " + delay);
 			}
 		}
 		lastHit = System.nanoTime();

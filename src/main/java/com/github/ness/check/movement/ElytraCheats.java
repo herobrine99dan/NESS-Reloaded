@@ -20,11 +20,6 @@ public class ElytraCheats extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
 
-	@Override
-	protected boolean shouldDragDown() {
-		return true;
-	}
-
 	public ElytraCheats(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
 	}

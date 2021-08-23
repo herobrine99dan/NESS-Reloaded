@@ -22,11 +22,11 @@ public interface ViolationHandling {
 	@SubSection
 	ExecuteCommand executeCommand();
 	
-	@ConfKey("cancel")
+	/*@ConfKey("cancel")
 	@ConfComments({"Cancels the event involved with the cheat.",
 		"For example, the speed check will cancel movement."})
 	@SubSection
-	CancelEvent cancelEvent();
+	CancelEvent cancelEvent();*/
 	
 	default Collection<ViolationTriggerSection> getTriggerSections() {
 		return Arrays.asList(notifyStaff(), executeCommand());

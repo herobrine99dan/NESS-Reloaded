@@ -32,7 +32,7 @@ public class ScaffoldDownWard extends ListeningCheck<PlayerInteractEvent> {
         if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             Block below = p.getLocation().subtract(0, 1, 0).getBlock();
             if (e.getClickedBlock().equals(below) && e.getBlockFace().equals(BlockFace.DOWN)) {
-            	this.flagEvent(e);
+            	this.flag();
             }
         }
 	}

@@ -53,13 +53,13 @@ public class ChestStealer extends ListeningCheck<InventoryClickEvent> {
 				if (!lastItemType.equals(itemType)) {
 					movedInvItems++;
 					if (movedInvItems > 4) {
-						flagEvent(e, " movedInventoryItems: " + movedInvItems);
+						flag(" movedInventoryItems: " + movedInvItems);
 						movedInvItems = 0;
 					}
 					final long now = System.currentTimeMillis();
 					final long result = now - moveInvItemsLastTime;
 					if (result < 60) {
-						flagEvent(e, " timeBetweenMovedItems: " + result);
+						flag(" timeBetweenMovedItems: " + result);
 					}
 					moveInvItemsLastTime = System.currentTimeMillis();
 				}

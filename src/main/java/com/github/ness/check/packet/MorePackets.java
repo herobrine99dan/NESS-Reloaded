@@ -73,7 +73,7 @@ public class MorePackets extends PacketCheck {
 				packet.cancel();
 				np.kickThreadSafe(kickMessage);
 			} else {
-				this.flagEvent(packet, "");
+				this.flag("");
 			}
 		}
 	}

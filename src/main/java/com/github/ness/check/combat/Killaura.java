@@ -140,7 +140,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 			final double bufferAdder = range / maxReach;
 			buffer += bufferAdder;
 			if (buffer > rayTraceReachBuffer) {
-				flagEvent(event, "Reach: " + range);
+				flag("Reach: " + range);
 			}
 		} else if (buffer > 0) {
 			buffer -= 0.5;
@@ -153,7 +153,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 					final double bufferAdder = average / maxAngle;
 					angleBuffer += bufferAdder;
 					if (angleBuffer > this.rayTraceHitboxBuffer) {
-						flagEvent(event, "Hitbox");
+						flag("Hitbox");
 					}
 				} else if (angleBuffer > 0) {
 					angleBuffer -= 0.25;
@@ -174,7 +174,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 			Location loc1 = player.getLocation();
 			float grade = loc.getYaw() - loc1.getYaw();
 			if (Math.round(grade) > maxYaw) {
-				flagEvent(event, "HighYaw");
+				flag("HighYaw");
 			}
 		}, durationOfTicks(2));
 	}
@@ -182,7 +182,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 	public void Check2(EntityDamageByEntityEvent event) {
 		Player player = (Player) event.getDamager();
 		if (player.isDead()) {
-			flagEvent(event, "Impossible");
+			flag("Impossible");
 		}
 	}
 
@@ -203,14 +203,14 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		}
 		if (b.getType().isSolid() && (material.isOccluding() && !material.name().contains("GLASS"))
 				&& (materialCustom.isOccluding() && !materialCustom.name().contains("GLASS"))) {
-			flagEvent(event, "WallHit");
+			flag("WallHit");
 		}
 	}
 
 	public void Check4(EntityDamageByEntityEvent event) {
 		if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK
 				&& event.getEntity().getEntityId() == event.getDamager().getEntityId()) {
-			flagEvent(event, "SelfHit");
+			flag("SelfHit");
 		}
 	}
 
@@ -224,7 +224,7 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		NessPlayer nessPlayer = player();
 		nessPlayer.addEntityToAttackedEntities(event.getEntity().getEntityId());
 		if (nessPlayer.getAttackedEntities().size() > 2) {
-			flagEvent(event, "MultiAura Entities: " + nessPlayer.getAttackedEntities().size());
+			flag("MultiAura Entities: " + nessPlayer.getAttackedEntities().size());
 		}
 	}
 }

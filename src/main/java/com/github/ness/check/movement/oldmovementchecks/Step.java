@@ -64,7 +64,7 @@ public class Step extends MultipleListeningCheck {
                 boolean isOnSlime = e.getTo().clone().add(0,-1.0,0).getBlock().getType().name().contains("SLIME") || e.getFrom().clone().add(0,-1.0,0).getBlock().getType().name().contains("SLIME");
 		if (yDiff > minY && values.isGroundAround()) { // TODO Add groundAround
 			if(!isOnSlime) {
-                            flagEvent(e, "High Distance: " + yDiff + " minY: " + minY);
+                            flag("High Distance: " + yDiff + " minY: " + minY);
                         }
 		}
 	}

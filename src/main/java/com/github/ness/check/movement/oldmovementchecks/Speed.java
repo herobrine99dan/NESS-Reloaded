@@ -125,7 +125,7 @@ public class Speed extends ListeningCheck<PlayerMoveEvent> {
 					if (!player.getWorld().getBlockAt(from).getType().isSolid()
 							&& !player.getWorld().getBlockAt(to).getType().isSolid()) {
 						if (!small.name().contains("TRAPDOOR") && nessPlayer.milliSecondTimeDifference(PlayerAction.VEHICLEENTER) > 150) {
-							this.flagEvent(e, maxSpd + " Dist: " + hozDist);
+							this.flag(maxSpd + " Dist: " + hozDist);
 						}
 					}
 				}

@@ -40,7 +40,7 @@ public class FlyInvalidJumpMotion extends ListeningCheck<PlayerMoveEvent> {
 					&& movementValues.getHelper().isMathematicallyOnGround(event.getFrom().getY())) {
 				double yResult = Math.abs(yDiff - player.getVelocity().getY());
 				if (yResult != 0.0 && nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) > 1700) {
-					flagEvent(event, " yResult: " + yResult + "  yDiff: " + yDiff);
+					flag(" yResult: " + yResult + "  yDiff: " + yDiff);
 				}
 			}
 		}

@@ -19,268 +19,270 @@ import java.util.Set;
 
 public class MovementValues {
 
-	/**
-	 * Yaw Difference (to.getYaw() - from.getYaw());
-	 */
-	private final double yawDiff;
-	/**
-	 * Pitch Difference (to.getPitch() - from.getPitch());
-	 */
-	private final double pitchDiff;
-	/**
-	 * X Difference (to.getX() - from.getX());
-	 */
-	private final double xDiff;
-	/**
-	 * Y Difference (to.getY() - from.getY());
-	 */
-	private final double yDiff;
-	/**
-	 * Z Difference (to.getZ() - from.getZ());
-	 */
-	private final double zDiff;
+    /**
+     * Yaw Difference (to.getYaw() - from.getYaw());
+     */
+    private final double yawDiff;
+    /**
+     * Pitch Difference (to.getPitch() - from.getPitch());
+     */
+    private final double pitchDiff;
+    /**
+     * X Difference (to.getX() - from.getX());
+     */
+    private final double xDiff;
+    /**
+     * Y Difference (to.getY() - from.getY());
+     */
+    private final double yDiff;
+    /**
+     * Z Difference (to.getZ() - from.getZ());
+     */
+    private final double zDiff;
 
-	private final double XZDiff;
+    private final double XZDiff;
 
-	private final boolean groundAround;
+    private final boolean groundAround;
 
-	private final Vector serverVelocity;
+    private final Vector serverVelocity;
 
-	private final boolean insideVehicle;
+    private final boolean insideVehicle;
 
-	private final ImmutableLoc to;
+    private final ImmutableLoc to;
 
-	private final ImmutableLoc from;
+    private final ImmutableLoc from;
 
-	private final GameMode gamemode;
+    private final GameMode gamemode;
 
-	private final int hasBubblesColumns;
-	private final boolean blockUnderHead;
-	private static MovementValuesHelper helper;
-	private static volatile Set<Material> trasparentMaterials = EnumSet.noneOf(Material.class);
+    private final int hasBubblesColumns;
+    private final boolean blockUnderHead;
+    private static MovementValuesHelper helper;
+    private static volatile Set<Material> trasparentMaterials = EnumSet.noneOf(Material.class);
 
-	/**
-	 * WARNING: USE THIS CONSTRUCTOR ONLY TO SETUP THE MOVEMENTVALUESHELPER OBJECT
-	 * 
-         * @param materialAccess
-	 */
-	public MovementValues(MaterialAccess materialAccess) {
-		this.pitchDiff = 0;
-		Objects.requireNonNull(materialAccess, "The MaterialAccess object provided is null!");
-		helper = MovementValuesHelper.makeHelper(materialAccess);
-		this.XZDiff = 0;
-		this.xDiff = 0;
-		this.to = null;
-		this.from = null;
-		this.yDiff = 0;
-		this.yawDiff = 0;
-		this.zDiff = 0;
-		serverVelocity = new Vector(0, 0, 0);
-		groundAround = false;
-		blockUnderHead = false;
-		insideVehicle = false;
-		hasBubblesColumns = 0;
-		gamemode = GameMode.SURVIVAL;
-	}
+    /**
+     * WARNING: USE THIS CONSTRUCTOR ONLY TO SETUP THE MOVEMENTVALUESHELPER
+     * OBJECT
+     *
+     * @param materialAccess
+     */
+    public MovementValues(MaterialAccess materialAccess) {
+        this.pitchDiff = 0;
+        Objects.requireNonNull(materialAccess, "The MaterialAccess object provided is null!");
+        helper = MovementValuesHelper.makeHelper(materialAccess);
+        this.XZDiff = 0;
+        this.xDiff = 0;
+        this.to = null;
+        this.from = null;
+        this.yDiff = 0;
+        this.yawDiff = 0;
+        this.zDiff = 0;
+        serverVelocity = new Vector(0, 0, 0);
+        groundAround = false;
+        blockUnderHead = false;
+        insideVehicle = false;
+        hasBubblesColumns = 0;
+        gamemode = GameMode.SURVIVAL;
+    }
 
-	public MovementValues(NessPlayer nessPlayer, ImmutableLoc to, ImmutableLoc from, MaterialAccess access,
-			VersionDetermination determination) {
-		Player p = nessPlayer.getBukkitPlayer();
-		this.to = to;
-		this.from = from;
-		if (Bukkit.isPrimaryThread()) {
-			boolean ground = to.toBukkitLocation().add(0, -1, 0).getBlock().getType().isSolid();
-			serverVelocity = new Vector(p.getVelocity().getX(), p.getVelocity().getY(), p.getVelocity().getZ());
-			gamemode = p.getGameMode();
-			if(!ground) {
-                            for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 1)) {
-				if (b.getType().isSolid()) {
-					ground = true;
-				}
-                            }
-                        }
-                        if(!ground) {
-                            for (Block b : Utility.getBlocksAround(from.toBukkitLocation(), 1)) {
-				if (b.getType().isSolid()) {
-					ground = true;
-				}
-                            }
-                        }
-			// blockUnderHead = helper.groundAround(to.toBukkitLocation().add(0, 2.5, 0));
-			blockUnderHead = false;
-			if (determination.hasAquaticUpdate()) {
-				hasBubblesColumns = 0;
-			} else {
-				hasBubblesColumns = isInColumnOfBubbles();
-			}
-			groundAround = ground;
-			insideVehicle = p.isInsideVehicle();
-			//boolean colliderHorizon = this.getHelper().isCollidedHorizontally(to.toBukkitLocation());
-			//if (!colliderHorizon) {
-			//	colliderHorizon = this.getHelper().isCollidedHorizontally(from.toBukkitLocation());
-			//}
-			if (trasparentMaterials.size() == 0.0) { // We add in a set all the non-occluding materials
-				trasparentMaterials = access.nonOccludingMaterials();
-			}
-		} else {
-			serverVelocity = new Vector(0, 0, 0);
-			groundAround = false;
-			blockUnderHead = false;
-			insideVehicle = false;
-			hasBubblesColumns = 0;
-			gamemode = GameMode.SURVIVAL;
-		}
-		yawDiff = to.getYaw() - from.getYaw();
-		pitchDiff = to.getPitch() - from.getPitch();
-		xDiff = to.getX() - from.getX();
-		yDiff = to.getY() - from.getY();
-		zDiff = to.getZ() - from.getZ();
-		XZDiff = Math.hypot(xDiff, zDiff);
-	}
+    public MovementValues(NessPlayer nessPlayer, ImmutableLoc to, ImmutableLoc from, MaterialAccess access,
+            VersionDetermination determination) {
+        Player p = nessPlayer.getBukkitPlayer();
+        this.to = to;
+        this.from = from;
+        if (Bukkit.isPrimaryThread()) {
+            boolean ground = to.toBukkitLocation().add(0, -1, 0).getBlock().getType().isSolid();
+            serverVelocity = new Vector(p.getVelocity().getX(), p.getVelocity().getY(), p.getVelocity().getZ());
+            gamemode = p.getGameMode();
+            if (!ground) {
+                for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 1)) {
+                    if (b.getType().isSolid()) {
+                        ground = true;
+                    }
+                }
+            }
+            if (!ground) {
+                for (Block b : Utility.getBlocksAround(from.toBukkitLocation(), 1)) {
+                    if (b.getType().isSolid()) {
+                        ground = true;
+                    }
+                }
+            }
+            // blockUnderHead = helper.groundAround(to.toBukkitLocation().add(0, 2.5, 0));
+            blockUnderHead = false;
+            if (determination.hasAquaticUpdate()) {
+                hasBubblesColumns = 0;
+            } else {
+                hasBubblesColumns = isInColumnOfBubbles();
+            }
+            groundAround = ground;
+            insideVehicle = p.isInsideVehicle();
+            //boolean colliderHorizon = this.getHelper().isCollidedHorizontally(to.toBukkitLocation());
+            //if (!colliderHorizon) {
+            //	colliderHorizon = this.getHelper().isCollidedHorizontally(from.toBukkitLocation());
+            //}
+            if (trasparentMaterials.size() == 0.0) { // We add in a set all the non-occluding materials
+                trasparentMaterials = access.nonOccludingMaterials();
+            }
+        } else {
+            serverVelocity = new Vector(0, 0, 0);
+            groundAround = false;
+            blockUnderHead = false;
+            insideVehicle = false;
+            hasBubblesColumns = 0;
+            gamemode = GameMode.SURVIVAL;
+        }
+        yawDiff = to.getYaw() - from.getYaw();
+        pitchDiff = to.getPitch() - from.getPitch();
+        xDiff = to.getX() - from.getX();
+        yDiff = to.getY() - from.getY();
+        zDiff = to.getZ() - from.getZ();
+        XZDiff = Math.hypot(xDiff, zDiff);
+    }
 
-	public boolean hasBlockNearHead() {
-		return blockUnderHead;
-	}
+    public boolean hasBlockNearHead() {
+        return blockUnderHead;
+    }
 
-	public Vector getDirection() {
-		return this.getTo().getDirectionVector();
-	}
+    public Vector getDirection() {
+        return this.getTo().getDirectionVector();
+    }
 
-	/**
-	 * Check if the player is in a column of bubbles
-	 * 
-	 * @param magma
-	 * @return 0 if there isn't a column, -1 if there is a column of magma bubbles
-	 *         and 1 if there is a column of soulsand bubbles
-	 */
-	private int isInColumnOfBubbles() {
-		int columnOfBubbles = 0;
-		for (int x = -1; x <= 1; x++) {
-			for (int z = -1; z <= 1; z++) {
-				for (int y = (int) to.getY(); y > 1; y--) {
-					Location loc = to.toBukkitLocation();
-					Location cloned = new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());
-					cloned.subtract(0, y, 0);
-					if (cloned.getBlock().getType().name().contains("MAGMA")) {
-						columnOfBubbles = -1;
-						return columnOfBubbles;
-					} else if (cloned.getBlock().getType().name().contains("SOUL")
-							&& cloned.getBlock().getType().name().contains("SAND")) {
-						columnOfBubbles = 1;
-						return columnOfBubbles;
-					}
-				}
-			}
-		}
-		return columnOfBubbles;
-	}
+    /**
+     * Check if the player is in a column of bubbles
+     *
+     * @param magma
+     * @return 0 if there isn't a column, -1 if there is a column of magma
+     * bubbles and 1 if there is a column of soulsand bubbles
+     */
+    private int isInColumnOfBubbles() {
+        int columnOfBubbles = 0;
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                for (int y = (int) to.getY(); y > 1; y--) {
+                    Location loc = to.toBukkitLocation();
+                    Location cloned = new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());
+                    cloned.subtract(0, y, 0);
+                    if (cloned.getBlock().getType().name().contains("MAGMA")) {
+                        columnOfBubbles = -1;
+                        return columnOfBubbles;
+                    } else if (cloned.getBlock().getType().name().contains("SOUL")
+                            && cloned.getBlock().getType().name().contains("SAND")) {
+                        columnOfBubbles = 1;
+                        return columnOfBubbles;
+                    }
+                }
+            }
+        }
+        return columnOfBubbles;
+    }
 
-	/**
-	 * Is the player near Liquids? This method uses getHelper().isNearLiquid(loc)
-	 * 
-	 * @return
-	 */
-	public boolean isNearLiquid() {
-		return getHelper().isNearLiquid(from.toBukkitLocation()) || getHelper().isNearLiquid(to.toBukkitLocation());
-	}
+    /**
+     * Is the player near Liquids? This method uses
+     * getHelper().isNearLiquid(loc)
+     *
+     * @return
+     */
+    public boolean isNearLiquid() {
+        return getHelper().isNearLiquid(from.toBukkitLocation()) || getHelper().isNearLiquid(to.toBukkitLocation());
+    }
 
-	public ImmutableLoc getTo() {
-		return to;
-	}
+    public ImmutableLoc getTo() {
+        return to;
+    }
 
-	public ImmutableLoc getFrom() {
-		return from;
-	}
+    public ImmutableLoc getFrom() {
+        return from;
+    }
 
-	public double getYawDiff() {
-		return yawDiff;
-	}
+    public double getYawDiff() {
+        return yawDiff;
+    }
 
-	public double getPitchDiff() {
-		return pitchDiff;
-	}
+    public double getPitchDiff() {
+        return pitchDiff;
+    }
 
-	public double getxDiff() {
-		return xDiff;
-	}
+    public double getxDiff() {
+        return xDiff;
+    }
 
-	public double getyDiff() {
-		return yDiff;
-	}
+    public double getyDiff() {
+        return yDiff;
+    }
 
-	public double getzDiff() {
-		return zDiff;
-	}
+    public double getzDiff() {
+        return zDiff;
+    }
 
-	public double getXZDiff() {
-		return XZDiff;
-	}
+    public double getXZDiff() {
+        return XZDiff;
+    }
 
-	public boolean isGroundAround() {
-		return groundAround;
-	}
+    public boolean isGroundAround() {
+        return groundAround;
+    }
 
-	public Vector getServerVelocity() {
-		return serverVelocity;
-	}
+    public Vector getServerVelocity() {
+        return serverVelocity;
+    }
 
-	public boolean isInsideVehicle() {
-		return insideVehicle;
-	}
+    public boolean isInsideVehicle() {
+        return insideVehicle;
+    }
 
-	public GameMode getGamemode() {
-		return gamemode;
-	}
+    public GameMode getGamemode() {
+        return gamemode;
+    }
 
-	public MovementValuesHelper getHelper() {
-		return helper;
-	}
+    public MovementValuesHelper getHelper() {
+        return helper;
+    }
 
-	/**
-	 * This is a shortcut for the getHelper().isOnGround(loc) This checks both to
-	 * and from locations
-	 * 
-	 * @return
-	 */
-	public boolean isOnGround() {
-		return getHelper().isOnGround(to.toBukkitLocation()) || getHelper().isOnGround(from.toBukkitLocation());
-	}
+    /**
+     * This is a shortcut for the getHelper().isOnGround(loc) This checks both
+     * to and from locations
+     *
+     * @return
+     */
+    public boolean isOnGround() {
+        return getHelper().isOnGround(to.toBukkitLocation()) || getHelper().isOnGround(from.toBukkitLocation());
+    }
 
-	/**
-	 * This is a shortcut for the getHelper().isNearMaterial(material, loc) This
-	 * checks both to and from locations
-	 * 
-         * @param materials
-	 * @return
-	 */
-	public boolean isNearMaterials(String... materials) {
-		return getHelper().isNearMaterials(to.toBukkitLocation(), materials)
-				|| getHelper().isNearMaterials(from.toBukkitLocation(), materials);
-	}
+    /**
+     * This is a shortcut for the getHelper().isNearMaterial(material, loc) This
+     * checks both to and from locations
+     *
+     * @param materials
+     * @return
+     */
+    public boolean isNearMaterials(String... materials) {
+        return getHelper().isNearMaterials(to.toBukkitLocation(), materials)
+                || getHelper().isNearMaterials(from.toBukkitLocation(), materials);
+    }
 
-	/**
-	 * This is method checks if the player is near nonOccluding blocks This checks
-	 * both to and from locations
-	 * 
-	 * @return
-	 */
-	public boolean isAroundNonOccludingBlocks() {
-		for (Location newLoc : getHelper().getLocationsAroundPlayerLocation(to.toBukkitLocation())) {
-			if (!this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding()
-					&& this.getHelper().getMaterialAccess().getMaterial(newLoc).isSolid()) {
-                            return true;
-                        }
-		}
-		for (Location newLoc : getHelper().getLocationsAroundPlayerLocation(from.toBukkitLocation())) {
-			if (!this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding()
-					&& this.getHelper().getMaterialAccess().getMaterial(newLoc).isSolid()) {
-                            return true;
-                        }
-		}
-		return false;
-	}
+    /**
+     * This is method checks if the player is near nonOccluding blocks This
+     * checks both to and from locations
+     *
+     * @return
+     */
+    public boolean isAroundNonOccludingBlocks() {
+        for (Location newLoc : getHelper().getLocationsAroundPlayerLocation(to.toBukkitLocation())) {
+            if (!this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding()
+                    && this.getHelper().getMaterialAccess().getMaterial(newLoc).isSolid()) {
+                return true;
+            }
+        }
+        for (Location newLoc : getHelper().getLocationsAroundPlayerLocation(from.toBukkitLocation())) {
+            if (!this.getHelper().getMaterialAccess().getMaterial(newLoc).isOccluding()
+                    && this.getHelper().getMaterialAccess().getMaterial(newLoc).isSolid()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	public int hasBubblesColumns() {
-		return hasBubblesColumns;
-	}
+    public int hasBubblesColumns() {
+        return hasBubblesColumns;
+    }
 }

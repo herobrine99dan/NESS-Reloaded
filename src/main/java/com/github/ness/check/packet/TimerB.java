@@ -37,7 +37,7 @@ public class TimerB extends PacketCheck {
 
         if (time >= 1000) {
             if (this.balance/(time/1000D) > 21.0D) {
-                this.flagEvent(packet, "BasicTimerB rate: " + this.balance/(time/1000D));
+                this.flag("BasicTimerB rate: " + this.balance/(time/1000D));
             }
             this.balance = 0;
             this.lastTime = CTime;

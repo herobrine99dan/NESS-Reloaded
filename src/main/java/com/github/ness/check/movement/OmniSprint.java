@@ -51,7 +51,7 @@ public class OmniSprint extends ListeningCheck<PlayerMoveEvent> {
 				float median = (float) angles.average() / 100000.0f;
 				if (median < minAngle) {
 					if (++buffer > 2) {
-						flagEvent(event, "Angle: " + (float) median);
+						flag("Angle: " + (float) median);
 					}
 				} else if (buffer > 0) {
 					buffer -= 0.25;

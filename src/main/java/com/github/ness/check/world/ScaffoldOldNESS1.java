@@ -55,10 +55,10 @@ public class ScaffoldOldNESS1 extends MultipleListeningCheck {
 					.getType() == Material.AIR) {
 				if (player.getWorld().getBlockAt(player.getLocation().subtract(0, 1, 0)).equals(event.getBlock())) {
 					if (extremeYawTicks <= 5) {
-						this.flagEvent(event, " extremeYaw!");
+						this.flag(" extremeYaw!");
 					}
 					if (placeTicks > 2) {
-						this.flagEvent(event, " highPlaceTicks");
+						this.flag(" highPlaceTicks");
 					}
 				}
 			}

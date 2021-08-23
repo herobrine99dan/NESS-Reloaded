@@ -50,7 +50,7 @@ public class Phase extends ListeningCheck<PlayerMoveEvent> {
 		if (occluder && values.isGroundAround() && values.getXZDiff() > 0.07) {
 			nessPlayer.sendDevMessage("Phase2");
 			if (++buffer > 1) {
-				flagEvent(event);
+				flag();
 			}
 		} else if (buffer > 0) {
 			buffer -= 0.25;

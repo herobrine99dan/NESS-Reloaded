@@ -55,17 +55,17 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 		boolean inventoryOpened = player.getOpenInventory().getType() != InventoryType.CRAFTING;
 		if (nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKPLACED) < 100
 				|| nessPlayer.milliSecondTimeDifference(PlayerAction.BLOCKBROKED) < 100) {
-			flagEvent(e, "IllegalBlockAction");
+			flag("IllegalBlockAction");
 			return;
 		} else if (nessPlayer.milliSecondTimeDifference(PlayerAction.ANIMATION) < 50) {
-			flagEvent(e, "MS: " + nessPlayer.milliSecondTimeDifference(PlayerAction.ANIMATION));
+			flag("MS: " + nessPlayer.milliSecondTimeDifference(PlayerAction.ANIMATION));
 			return;
 		} else if (player.isSprinting() || player.isSneaking() || player.isBlocking() || player.isSleeping()
 				|| player.isConversing()) {
-			flagEvent(e, " IllegalAction");
+			flag(" IllegalAction");
 			return;
 		} else if (!inventoryOpened && e.getRawSlot() == -1) {
-			flagEvent(e);
+			flag();
 			return;
 		}
 
@@ -79,7 +79,7 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 			}
 			if (distance > 0.19) {
 				if (++buffer > 1) {
-					flagEvent(e, action);
+					flag(action);
 				}
 			} else if (buffer > 0) {
 				buffer -= 0.5;

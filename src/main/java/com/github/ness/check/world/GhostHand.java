@@ -48,7 +48,7 @@ public class GhostHand extends ListeningCheck<PlayerInteractEvent> {
 			int interactedBlockCorrect = traceLocation1(event.getPlayer().getLocation().getDirection(),
 					fixedEyeLocation, 6, event.getClickedBlock());
 			if (interactedBlockCorrect > 0) {
-				this.flagEvent(event, "val: " + interactedBlockCorrect);
+				this.flag("val: " + interactedBlockCorrect);
 			}
 		}
 	}

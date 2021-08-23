@@ -24,11 +24,6 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
 
     private float fallHeight = 0.0f;
 
-    @Override
-    protected boolean shouldDragDown() {
-        return true;
-    }
-
     public interface Config {
 
         @ConfDefault.DefaultBoolean(true)

@@ -57,7 +57,7 @@ public class KillauraKeepSprint extends ListeningCheck<PlayerMoveEvent> {
 		if (invalid) {
 			if (++bufferViolation > 2) {
 				this.player().sendDevMessage("invalid: " + invalid);
-				this.flagEvent(e);
+				this.flag();
 			}
 		} else if (bufferViolation > 0) {
 			bufferViolation -= 0.5;

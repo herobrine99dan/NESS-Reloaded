@@ -24,17 +24,17 @@ public class IllegalPlace extends ListeningCheck<BlockPlaceEvent> {
 		if (e.getBlockAgainst().isLiquid()) {
 			String type = e.getBlock().getType().name();
 			if (!type.contains("LILY") && !type.contains("SEA")) {
-				flagEvent(e, "LiquidPlacement");
+				flag("LiquidPlacement");
 				return;
 			}
 		}
 		if (e.getBlockAgainst().getType().name().contains("AIR")) {
-			flagEvent(e, "AirPlacement");
+			flag("AirPlacement");
 			return;
 		}
 		Location blockFace = e.getBlockAgainst().getLocation().clone().subtract(e.getBlockPlaced().getLocation());
 		if(Math.abs(blockFace.getX()) == 1 && Math.abs(blockFace.getZ()) == 1) {
-			flagEvent(e, "DiagonalPlacement");
+			flag("DiagonalPlacement");
 			return;
 		}
 	}

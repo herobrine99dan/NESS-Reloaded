@@ -58,8 +58,7 @@ public class SpeedAirFriction extends ListeningCheck<PlayerMoveEvent> {
 			float result = xzDiff - prediction;
 			if (result > 1.0E-12D && prediction > 0.075D) {
 				if (++this.buffer > 1) {
-					this.flagEvent(event,
-							"predictAccel: " + acceleration + " realAccell: " + roundNumber(xzDiff - momentum));
+					this.flag("predictAccel: " + acceleration + " realAccell: " + roundNumber(xzDiff - momentum));
 				}
 			} else if (this.buffer > 0) {
 				this.buffer -= 0.5f;

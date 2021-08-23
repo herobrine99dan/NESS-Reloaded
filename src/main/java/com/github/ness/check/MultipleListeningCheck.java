@@ -7,7 +7,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerEvent;
 
 import com.github.ness.NessPlayer;
-import com.github.ness.check.dragdown.SetBack;
 import com.github.ness.data.ImmutableLoc;
 import com.github.ness.violation.ViolationManager;
 
@@ -53,16 +52,6 @@ public abstract class MultipleListeningCheck extends Check {
 	}
 
 	/**
-	 * Flags the player for cheating, and cancels the event if the violation count
-	 * is too high (when configured)
-	 * 
-	 * @param evt the event to cancel
-	 */
-	protected final void flagEvent(Cancellable evt) {
-		flagEvent(evt, "");
-	}
-
-	/**
 	 * Utility method to get material name with MaterialAccess implementation
          * @param ImmutableLoc loc
          * @return String
@@ -70,32 +59,6 @@ public abstract class MultipleListeningCheck extends Check {
 
 	public String getMaterialName(ImmutableLoc loc) {
 		return this.getMaterialAccess().getMaterial(loc.toBukkitLocation()).name();
-	}
-
-	/**
-	 * Flags the player for cheating, and cancels the event if the violation count
-	 * is too high (when configured)
-	 * 
-	 * @param evt     the event to cancel
-	 * @param details debugging details
-	 */
-	protected final void flagEvent(Cancellable evt, String details) {
-		if (callFlagEvent()) {
-			int violations = flag0(details).getCount();
-			ViolationManager violationManager = getFactory().getCheckManager().getNess().getViolationManager();
-			// TODO Implement later
-
-			SetBack setBackToUse = violationManager.shouldCancelWithSetBack(this, violations);
-			if (setBackToUse != null) {
-				if (setBackToUse.shouldRunOnDelay()) {
-					NessPlayer player = player();
-					runTaskLater(() -> setBackToUse.doSetBack(player, evt), Duration.ZERO);
-				} else {
-					setBackToUse.doSetBack(player(), evt);
-				}
-			}
-
-		}
 	}
 
 }

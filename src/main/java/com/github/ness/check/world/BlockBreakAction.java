@@ -34,12 +34,12 @@ public class BlockBreakAction extends ListeningCheck<BlockBreakEvent> {
 		final double max = 6;
 		final double placedAngle = values.getHelper().getAngle(event.getPlayer(), block.getLocation());
 		if (event.getBlock().isLiquid()) {
-			flagEvent(event);
+			flag();
 		}
 		if (xDiff > max || yDiff > max || zDiff > max) {
-			flagEvent(event, " HighDistance");
+			flag(" HighDistance");
 		} else if (placedAngle > MAX_ANGLE) {
-			flagEvent(event, " Angle: " + placedAngle);
+			flag(" Angle: " + placedAngle);
 		} else {
 			Location fixedEyeLocation = event.getPlayer().getEyeLocation().subtract(0.0D, 0.0, 0.0D);
 			// int interactedBlockCorrect = traceLocation(fixedEyeLocation,
@@ -48,7 +48,7 @@ public class BlockBreakAction extends ListeningCheck<BlockBreakEvent> {
 			int interactedBlockCorrect = traceLocation1(event.getPlayer().getLocation().getDirection(),
 					fixedEyeLocation, 6, event.getBlock());
 			if (interactedBlockCorrect > 0) {
-				this.flagEvent(event, "val: " + interactedBlockCorrect);
+				this.flag("val: " + interactedBlockCorrect);
 			}
 		}
 	}

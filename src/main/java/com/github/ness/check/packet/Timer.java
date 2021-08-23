@@ -71,11 +71,11 @@ public class Timer extends PacketCheck {
 		if (delay.size() > (this.ness().getMainConfig().getCheckSection().timer().delaysSize() - 1)) {
 			if (speed > MAX_PACKETS_PER_TICK) {
 				if (++buffer > 4) {
-					this.flagEvent(packet, "BasicTimer " + (float) speed);
+					this.flag("BasicTimer " + (float) speed);
 				}
 			} else if ((speed > 0.2 && speed < 0.9) && negativeTimerEnabled) {
 				if (++buffer > 3) {
-					this.flagEvent(packet, "NegativeTimer " + (float) speed);
+					this.flag("NegativeTimer " + (float) speed);
 				}
 			} else if (buffer > 0) {
 				buffer -= 0.5;

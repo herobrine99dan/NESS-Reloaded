@@ -29,11 +29,6 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 	private double illegalXZBuffer;
 
 	@Override
-	protected boolean shouldDragDown() {
-		return true;
-	}
-
-	@Override
 	protected void checkEvent(PlayerMoveEvent e) {
 		jumpBoost(e);
 		levitationEffect(e);
@@ -52,7 +47,7 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 		float yDiff = (float) values.getyDiff();
 		if (xzDiff > 0.0D && Math.abs(yDiff) < 0.005) {
 			if (++illegalXZBuffer > 5) {
-				this.flagEvent(e, "IllegalXZDistance yDiff: " + yDiff + " xDiff: " + xzDiff);
+				this.flag("IllegalXZDistance yDiff: " + yDiff + " xDiff: " + xzDiff);
 			}
 		} else if(illegalXZBuffer > 0) {
 			illegalXZBuffer -= 0.5;
@@ -71,7 +66,7 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 			flyYSum += yDelta;
 			double minY = this.player().isUsingGeyserMC() ? 1.3 : 0.52;
 			if (flyYSum % 0.5 == 0 && flyYSum > minY && !player().getAcquaticUpdateFixes().isRiptiding()) {
-				this.flagEvent(e, "flyYSum: " + (float) flyYSum);
+				this.flag("flyYSum: " + (float) flyYSum);
 			}
 		} else {
 			flyYSum = 0.0;
@@ -87,7 +82,7 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 				float resultY = superPrediction - yDiff;
 				if (resultY > 0.005) {
 					if (++levitationBuffer > 50) {
-						this.flagEvent(e, "NoLevitation ResultY: " + resultY);
+						this.flag("NoLevitation ResultY: " + resultY);
 					}
 				} else if (levitationBuffer > 0) {
 					levitationBuffer -= 0.25;
@@ -105,7 +100,7 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 			max += this.player().getLastVelocity().getY();
 		}
 		if (this.player().getMovementValues().getyDiff() > max && jumpBoost > 0) {
-			this.flagEvent(e, "HighJumpBoost: " + (float) player().getMovementValues().getyDiff());
+			this.flag("HighJumpBoost: " + (float) player().getMovementValues().getyDiff());
 		}
 	}
 

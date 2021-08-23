@@ -38,7 +38,7 @@ public class MaxCPS extends ListeningCheck<PlayerInteractEvent> {
 		if (action == Action.LEFT_CLICK_AIR || action == Action.RIGHT_CLICK_AIR) {
 			CPS++;
 			if (CPS > maxCPS && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
-				flagEvent(e, " CPS: " + CPS);
+				flag(" CPS: " + CPS);
 			}
 		}
 	}

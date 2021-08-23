@@ -32,11 +32,6 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	@Override
-	protected boolean shouldDragDown() {
-		return true;
-	}
-
-	@Override
 	protected void checkEvent(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
 		NessPlayer nessPlayer = this.player();
@@ -57,10 +52,10 @@ public class FlyFalseGround extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		if (nessPlayer.isOnGroundPacket() && !movementValues.isGroundAround()) {
-			flagEvent(e, " TypeB");
+			flag(" TypeB");
 		}else if (nessPlayer.isOnGroundPacket()
 				&& !movementValues.getHelper().isMathematicallyOnGround(e.getTo().getY()) && ++buffer > maxBuffer) {
-			flagEvent(e, " TypeA, result: " + (float) (movementValues.getTo().getY() % (1D / 64D)));
+			flag(" TypeA, result: " + (float) (movementValues.getTo().getY() % (1D / 64D)));
 		} else if (buffer > 0) {
 			buffer -= 0.25;
 		}
