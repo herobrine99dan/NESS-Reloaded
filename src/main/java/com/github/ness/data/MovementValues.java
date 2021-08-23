@@ -89,18 +89,26 @@ public class MovementValues {
 		this.to = to;
 		this.from = from;
 		if (Bukkit.isPrimaryThread()) {
-			boolean ground = false;
+			boolean ground = to.toBukkitLocation().add(0, -1, 0).getBlock().getType().isSolid();
 			serverVelocity = new Vector(p.getVelocity().getX(), p.getVelocity().getY(), p.getVelocity().getZ());
 			gamemode = p.getGameMode();
-			for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 1)) {
-				if (b.getType().isSolid()) { // Doing all things in a single loop is better than 12 loops
+			if(!ground) {
+                            for (Block b : Utility.getBlocksAround(to.toBukkitLocation(), 1)) {
+				if (b.getType().isSolid()) {
 					ground = true;
 				}
-			}
+                            }
+                        }
+                        if(!ground) {
+                            for (Block b : Utility.getBlocksAround(from.toBukkitLocation(), 1)) {
+				if (b.getType().isSolid()) {
+					ground = true;
+				}
+                            }
+                        }
 			// blockUnderHead = helper.groundAround(to.toBukkitLocation().add(0, 2.5, 0));
 			blockUnderHead = false;
-			if (determination.hasAquaticUpdate()) { // We aren't stupid! columns of Bubbles don't exists in 1.12 or
-													// below!
+			if (determination.hasAquaticUpdate()) {
 				hasBubblesColumns = 0;
 			} else {
 				hasBubblesColumns = isInColumnOfBubbles();

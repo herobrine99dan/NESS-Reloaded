@@ -80,8 +80,6 @@ public class MovementValuesHelper {
 		return player.isFlying();
 	}
 
-//TODO See if some checks use this without checking the Server version
-	/**When we use this method, we assume we already checked the Server Version**/
 	private boolean isPlayerUsingElytra(NessPlayer nessPlayer) {
 		Player player = nessPlayer.getBukkitPlayer();
 		return player.isGliding() || nessPlayer.milliSecondTimeDifference(PlayerAction.GLIDING) < 1500;

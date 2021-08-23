@@ -19,7 +19,6 @@ public class Step extends MultipleListeningCheck {
 
 	private float yVelocity;
 	private boolean velocityAlreadyUsed = false;
-	private float lastYVelocity;
 	public static final CheckInfo checkInfo = CheckInfos.forMultipleEventListener(PlayerMoveEvent.class,
 			PlayerVelocityEvent.class);
 
@@ -29,10 +28,7 @@ public class Step extends MultipleListeningCheck {
 
 	@Override
 	protected void checkEvent(Event event) {
-		Player player = ((PlayerEvent) event).getPlayer(); // It must extends at least PlayerEvent, we declared this
-															// before!
-		if (player().isNot(player))
-			return;
+		Player player = ((PlayerEvent) event).getPlayer();
 		if (event instanceof PlayerVelocityEvent)
 			onVelocity((PlayerVelocityEvent) event);
 		if (event instanceof PlayerMoveEvent)
@@ -59,22 +55,17 @@ public class Step extends MultipleListeningCheck {
 		float minY = this.player().isUsingGeyserMC() ? 0.76f : 0.6f;
 		minY += jumpBoost * 0.1;
 		this.player().sendDevMessage("yDiff: " + yDiff);
-		//Handling Velocity: one tick velocity isn't enough, we have to even predict the next ticks!!
 		if (velocityAlreadyUsed) {
 			velocityAlreadyUsed = false;
 			if(yVelocity > 0) {
 				minY += yVelocity;
 			}
-			lastYVelocity = yVelocity;
-		} else {
-			float predictedY = (lastYVelocity - 0.08f) * 0.98f;
-			if (predictedY > 0) {
-				minY += predictedY;
-				lastYVelocity = predictedY;
-			}
 		}
-		if (yDiff > minY && !values.isNearMaterials("SLIME")) { // TODO Add groundAround
-			flagEvent(e, "High Distance: " + yDiff + " minY: " + minY);
+                boolean isOnSlime = e.getTo().clone().add(0,-1.0,0).getBlock().getType().name().contains("SLIME") || e.getFrom().clone().add(0,-1.0,0).getBlock().getType().name().contains("SLIME");
+		if (yDiff > minY && values.isGroundAround()) { // TODO Add groundAround
+			if(!isOnSlime) {
+                            flagEvent(e, "High Distance: " + yDiff + " minY: " + minY);
+                        }
 		}
 	}
 

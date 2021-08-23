@@ -11,7 +11,7 @@ import com.github.ness.check.movement.Jesus;
 import com.github.ness.check.movement.OmniSprint;
 import com.github.ness.check.movement.fly.FlyFalseGround;
 import com.github.ness.check.movement.fly.FlyInvalidClientGravity;
-import com.github.ness.check.movement.oldmovementchecks.NoFall;
+import com.github.ness.check.movement.NoFall;
 import com.github.ness.check.movement.oldmovementchecks.Speed;
 import com.github.ness.check.packet.Freecam;
 import com.github.ness.check.packet.MorePackets;
@@ -96,16 +96,6 @@ public interface AllChecksConfig {
 	@ConfKey("freecam")
 	@SubSection
 	Freecam.Config freecam();
-	@ConfKey("jesus")
-	@ConfComments({
-		"",
-		"Check the speed of a player in Water.",
-		"",
-		"Performance impact: low", 
-		"Effectiveness: Medium",
-		""})
-	@SubSection
-	Jesus.Config jesus();
 	@ConfKey("timer")
 	@ConfComments({
 		"",

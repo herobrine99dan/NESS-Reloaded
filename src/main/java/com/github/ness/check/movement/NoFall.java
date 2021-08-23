@@ -61,7 +61,8 @@ public class NoFall extends ListeningCheck<PlayerMoveEvent> {
         boolean isOnGround = player.isOnGround();//isOnGround(event.getFrom());
         if (isOnGround || this.player().getMovementValues().getHelper().hasflybypass(this.player()) || isNearWater || player.isInsideVehicle() || event.getFrom().getBlock().getType().name().contains("WEB") || event.getTo().getBlock().getType().name().contains("WEB")) {
             fallHeight = 0.0f;
-        }}
+        }
+    }
 
     private boolean isLiquid(Location loc) {
         String name = loc.getBlock().getType().name();
