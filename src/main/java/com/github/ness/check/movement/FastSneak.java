@@ -14,7 +14,7 @@ import com.github.ness.check.MultipleListeningCheckFactory;
 import com.github.ness.data.MovementValues;
 import org.bukkit.potion.PotionEffect;
 
-public class NoWeb extends MultipleListeningCheck {
+public class FastSneak extends MultipleListeningCheck {
 
     private float xzVelocity;
     private boolean velocityAlreadyUsed = false;
@@ -22,7 +22,7 @@ public class NoWeb extends MultipleListeningCheck {
     public static final CheckInfo checkInfo = CheckInfos.forMultipleEventListener(PlayerMoveEvent.class,
             PlayerVelocityEvent.class);
 
-    public NoWeb(MultipleListeningCheckFactory<?> factory, NessPlayer player) {
+    public FastSneak(MultipleListeningCheckFactory<?> factory, NessPlayer player) {
         super(factory, player);
     }
 
@@ -46,17 +46,18 @@ public class NoWeb extends MultipleListeningCheck {
         Player player = e.getPlayer();
         MovementValues values = player().getMovementValues();
         double dist = values.getXZDiff();
-        float walkSpeed = player.getWalkSpeed() / 2;
+        float walkSpeed = player.getWalkSpeed();
+
+        double yDelta = values.getyDiff();
         float speedMultiplier = getEffectMultipliers(player) + 0.03f; //Little offset to prevent false flags
         float maxDist = walkSpeed * speedMultiplier;
         if (velocityAlreadyUsed) {
             velocityAlreadyUsed = false;
             dist -= xzVelocity;
         }
-        if (e.getFrom().getBlock().getType().name().contains("WEB") && e.getTo().getBlock().getType().name().contains("WEB") && !player.isFlying() && !player().isTeleported()) {
-            this.player().sendDevMessage("dist: " + (float) dist + " maxDist: " + maxDist);
-            if (dist > maxDist) {
-                this.flag("dist: " + (float) dist);
+        if (player.isSneaking() && !player().isTeleported() && !player.isFlying() && yDelta == 0.0 && dist > maxDist) {
+            if (e.getFrom().getBlock().getType().isSolid() && e.getTo().getBlock().getType().isSolid() && player().getTimeSinceLastWasOnIce() > 1000.0) {
+                this.flag();
             }
         }
     }
