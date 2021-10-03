@@ -16,15 +16,13 @@ import com.github.ness.utility.Utility;
 public class SpeedAir extends ListeningCheck<PlayerMoveEvent> {
 
 	public static final ListeningCheckInfo<PlayerMoveEvent> checkInfo = CheckInfos.forEvent(PlayerMoveEvent.class);
-	private final double speedAirBaseSpeed, speedAirIceSpeed, speedAirSlimeSpeed, speedAirUnderBlock;
-	int airTicks;
+	private final double speedAirBaseSpeed, speedAirIceSpeed;
+	private int airTicks;
 
 	public SpeedAir(ListeningCheckFactory<?, PlayerMoveEvent> factory, NessPlayer player) {
 		super(factory, player);
-		speedAirBaseSpeed = this.ness().getMainConfig().getCheckSection().speed().speedAirBaseSpeed();
-		speedAirIceSpeed = this.ness().getMainConfig().getCheckSection().speed().speedAirIceSpeed();
-		speedAirSlimeSpeed = this.ness().getMainConfig().getCheckSection().speed().speedAirSlimeSpeed();
-		speedAirUnderBlock = this.ness().getMainConfig().getCheckSection().speed().speedAirUnderBlock();
+		speedAirBaseSpeed = 0.34;
+		speedAirIceSpeed = 0.1;
 	}
 
 	private float getBaseSpeed(NessPlayer player) {
@@ -32,10 +30,7 @@ public class SpeedAir extends ListeningCheck<PlayerMoveEvent> {
 				+ (Utility.getPotionEffectLevel(player.getBukkitPlayer(), PotionEffectType.SPEED) * 0.062f)
 				+ ((player.getBukkitPlayer().getWalkSpeed() - 0.2f) * 1.6f);
 		if (player.getMovementValues().isNearMaterials("ICE")) {
-			returner += speedAirSlimeSpeed;
-		}
-		if (player.getMovementValues().hasBlockNearHead()) {
-			returner += speedAirUnderBlock;
+			returner *= 1.2;
 		}
 		if (player.milliSecondTimeDifference(PlayerAction.VELOCITY) < 2000) {
 			returner += Math.hypot(player.getLastVelocity().getX(), player.getLastVelocity().getZ());

@@ -30,28 +30,8 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 
 	@Override
 	protected void checkEvent(PlayerMoveEvent e) {
-		jumpBoost(e);
-		levitationEffect(e);
+            levitationEffect(e);
 		stepYCheck(e);
-		IllegalXZDistance(e);
-	}
-
-	public void IllegalXZDistance(Cancellable e) {
-		MovementValues values = player().getMovementValues();
-		Player player = player().getBukkitPlayer();
-		if (values.isGroundAround() || player.getAllowFlight() || player.isFlying() || values.isInsideVehicle()
-				|| Utility.hasVehicleNear(player().getBukkitPlayer()) || values.isNearLiquid()) {
-			return;
-		}
-		float xzDiff = (float) values.getXZDiff();
-		float yDiff = (float) values.getyDiff();
-		if (xzDiff > 0.0D && Math.abs(yDiff) < 0.005) {
-			if (++illegalXZBuffer > 5) {
-				this.flag("IllegalXZDistance yDiff: " + yDiff + " xDiff: " + xzDiff);
-			}
-		} else if(illegalXZBuffer > 0) {
-			illegalXZBuffer -= 0.5;
-		}
 	}
 
 	// Thanks funkemunky for the idea
@@ -90,17 +70,6 @@ public class IrregularMovement extends ListeningCheck<PlayerMoveEvent> {
 			} else if (levitationBuffer > 0) {
 				levitationBuffer -= 0.25;
 			}
-		}
-	}
-
-	public void jumpBoost(Cancellable e) {
-		int jumpBoost = Utility.getPotionEffectLevel(this.player().getBukkitPlayer(), PotionEffectType.JUMP);
-		double max = 0.42F + (jumpBoost * 0.13);
-		if (this.player().milliSecondTimeDifference(PlayerAction.VELOCITY) < 1700) {
-			max += this.player().getLastVelocity().getY();
-		}
-		if (this.player().getMovementValues().getyDiff() > max && jumpBoost > 0) {
-			this.flag("HighJumpBoost: " + (float) player().getMovementValues().getyDiff());
 		}
 	}
 

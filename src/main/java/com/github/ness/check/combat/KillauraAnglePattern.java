@@ -16,7 +16,7 @@ import com.github.ness.utility.LongRingBuffer;
 
 public class KillauraAnglePattern extends ListeningCheck<EntityDamageByEntityEvent> {
 	private final double anglePatternMaxPrecision;
-	private LongRingBuffer anglePatternList = new LongRingBuffer(10);
+	private final LongRingBuffer anglePatternList = new LongRingBuffer(10);
 	public static final ListeningCheckInfo<EntityDamageByEntityEvent> checkInfo = CheckInfos
 			.forEventWithTask(EntityDamageByEntityEvent.class, PeriodicTaskInfo.asyncTask(Duration.ofMillis(4000)));
 
@@ -33,7 +33,7 @@ public class KillauraAnglePattern extends ListeningCheck<EntityDamageByEntityEve
 			double standardDeviationSample = ((anglePatternList.standardDeviation() / 10000) / averageAngle) * 100;
 			player().sendDevMessage("standardDeviationSample: " + (float) standardDeviationSample);
 			if (standardDeviationSample < anglePatternMaxPrecision
-					&& Math.abs(this.player().getMovementValues().getYawDiff()) > 10) { // If you don't move, obviously
+					&& Math.abs(this.player().getMovementValues().getYawDiff()) > 10) { // If you don't move, obviously you can flag
 																						// the angle difference is
 																						// always 0
 				this.flag("AnglePatternList");
@@ -44,8 +44,9 @@ public class KillauraAnglePattern extends ListeningCheck<EntityDamageByEntityEve
 
 	@Override
 	protected void checkEvent(final EntityDamageByEntityEvent e) {
-		if (player().isNot(e.getDamager()))
-			return;
+		if (player().isNot(e.getDamager())) {
+                    return;
+                }
 		if (!(e.getEntity() instanceof LivingEntity)) {
 			return;
 		}

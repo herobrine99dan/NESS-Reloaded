@@ -14,26 +14,25 @@ import com.github.ness.check.ListeningCheckInfo;
 
 public class ScaffoldDownWard extends ListeningCheck<PlayerInteractEvent> {
 
-	public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos
-			.forEvent(PlayerInteractEvent.class);
+    public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos
+            .forEvent(PlayerInteractEvent.class);
 
-	public ScaffoldDownWard(ListeningCheckFactory<?, PlayerInteractEvent> factory, NessPlayer player) {
-		super(factory, player);
-	}
+    public ScaffoldDownWard(ListeningCheckFactory<?, PlayerInteractEvent> factory, NessPlayer player) {
+        super(factory, player);
+    }
 
-	@Override
-	/**
-	 * @author Frap
-	 * Check from
-	 * https://github.com/freppp/ThotPatrol/blob/master/src/main/java/me/frep/thotpatrol/checks/player/scaffold/ScaffoldA.java
-	 */
-	protected void checkEvent(PlayerInteractEvent e) {
+    @Override
+    /**
+     * @author Frap
+     * From https://github.com/freppp/ThotPatrol/blob/master/src/main/java/me/frep/thotpatrol/checks/player/scaffold/ScaffoldA.java
+     */
+    protected void checkEvent(PlayerInteractEvent e) {
         Player p = e.getPlayer();
         if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             Block below = p.getLocation().subtract(0, 1, 0).getBlock();
             if (e.getClickedBlock().equals(below) && e.getBlockFace().equals(BlockFace.DOWN)) {
-            	this.flag();
+                this.flag();
             }
         }
-	}
+    }
 }

@@ -57,8 +57,7 @@ public class FlyInvalidClientGravity extends MultipleListeningCheck {
 	}
 
 	/**
-	 * Powerful Y-Prediction check made with https://www.mcpk.wiki/wiki/ Loving
-	 * those guys who made it.
+	 * Simple Y-Gravity Check.
          * @param event
 	 */
 
@@ -99,8 +98,7 @@ public class FlyInvalidClientGravity extends MultipleListeningCheck {
 				|| this.getMaterialAccess().getMaterial(event.getTo()).name().contains("LADDER")) {
 			return;
 		}
-		// TODO There is one false flag with jump boost because Minecraft (aka
-		// Shitcraft) rounds the number if it is very low
+		// TODO There is one false flag with jump boost because Minecraft rounds the number if it is very low
 		boolean onGround = isOnGround(event.getTo()); //|| isOnGround(event.getFrom());
 		float yDiff = onGround ? 0.0f : (float) values.getyDiff();
 		if (!onGround) {

@@ -16,41 +16,41 @@ import space.arim.dazzleconf.annote.ConfDefault.DefaultInteger;
 
 public class MaxCPS extends ListeningCheck<PlayerInteractEvent> {
 
-	private final int maxCPS;
+    private final int maxCPS;
 
-	public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos
-			.forEventWithTask(PlayerInteractEvent.class, PeriodicTaskInfo.syncTask(Duration.ofSeconds(1)));
-	private int CPS; // For AutoClicker
+    public static final ListeningCheckInfo<PlayerInteractEvent> checkInfo = CheckInfos
+            .forEventWithTask(PlayerInteractEvent.class, PeriodicTaskInfo.syncTask(Duration.ofSeconds(1)));
+    private int CPS; // For AutoClicker
 
-	public MaxCPS(ListeningCheckFactory<?, PlayerInteractEvent> factory, NessPlayer player) {
-		super(factory, player);
-		this.maxCPS = this.ness().getMainConfig().getCheckSection().maxCps().maxCPS();
-		this.CPS = 0;
-	}
+    public MaxCPS(ListeningCheckFactory<?, PlayerInteractEvent> factory, NessPlayer player) {
+        super(factory, player);
+        this.maxCPS = this.ness().getMainConfig().getCheckSection().maxCps().maxCPS();
+        this.CPS = 0;
+    }
 
-	@Override
-	protected void checkEvent(PlayerInteractEvent e) {
-		check(e);
-	}
+    @Override
+    protected void checkEvent(PlayerInteractEvent e) {
+        check(e);
+    }
 
-	private void check(PlayerInteractEvent e) {
-		Action action = e.getAction();
-		if (action == Action.LEFT_CLICK_AIR || action == Action.RIGHT_CLICK_AIR) {
-			CPS++;
-			if (CPS > maxCPS && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
-				flag(" CPS: " + CPS);
-			}
-		}
-	}
+    private void check(PlayerInteractEvent e) {
+        Action action = e.getAction();
+        if (action == Action.LEFT_CLICK_AIR || action == Action.RIGHT_CLICK_AIR) {
+            if (++CPS > maxCPS && !e.getPlayer().getTargetBlock(null, 5).getType().name().contains("grass")) {
+                flag(" CPS: " + CPS);
+            }
+        }
+    }
 
-	@Override
-	protected void checkSyncPeriodic() {
-		CPS = 0;
-	}
+    @Override
+    protected void checkSyncPeriodic() {
+        CPS = 0;
+    }
 
-	public interface Config {
-		@DefaultInteger(18)
-		int maxCPS();
-	}
+    public interface Config {
+
+        @DefaultInteger(18)
+        int maxCPS();
+    }
 
 }

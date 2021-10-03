@@ -32,7 +32,7 @@ public class KillauraHitMissRatio extends PacketCheck {
 		@DefaultInteger(60)
 		int maxSwings();
 
-		@DefaultDouble(95f)
+		@DefaultDouble(95.0)
 		double minPercentage();
 
 	}

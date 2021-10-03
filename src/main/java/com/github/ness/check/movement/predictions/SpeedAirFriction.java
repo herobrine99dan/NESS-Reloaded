@@ -25,8 +25,8 @@ public class SpeedAirFriction extends ListeningCheck<PlayerMoveEvent> {
 
 	@Override
 	/**
-	 * Powerful Air XZ-Prediction check made with https://www.mcpk.wiki/wiki/ Loving
-	 * those guys who made it.
+	 * Simple Air-Friction Check
+         * Wiki: https://www.mcpk.wiki/wiki/
 	 */
 	protected void checkEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();

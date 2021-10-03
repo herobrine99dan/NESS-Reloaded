@@ -25,12 +25,12 @@ public class OmniSprint extends ListeningCheck<PlayerMoveEvent> {
 	}
 	
 	public interface Config {
-		@DefaultDouble(1.59)
+		@DefaultDouble(91.1)
 		double minAngle();
 	}
 
 	private double buffer;
-	private LongRingBuffer angles = new LongRingBuffer(10);
+	private final LongRingBuffer angles = new LongRingBuffer(10);
 
 	@Override
 	protected void checkEvent(PlayerMoveEvent event) {
@@ -42,16 +42,16 @@ public class OmniSprint extends ListeningCheck<PlayerMoveEvent> {
 			return;
 		}
 		if (nessPlayer.getSprinting().get() && values.getXZDiff() > 0.2) {
-			Vector from = new Vector(values.getFrom().getX(), 0, values.getFrom().getZ());
-			Vector to = new Vector(values.getTo().getX(), 0, values.getTo().getZ());
-			Vector moving = from.subtract(to);
+                    //TODO Apply Vector Motion
+			Vector moving = event.getFrom().toVector().subtract(event.getTo().toVector());
+                        moving.setY(0);
 			double angleToStore = moving.angle(getDirectionOfOnlyYaw(values.getTo().getYaw()));
 			angles.add((long) (angleToStore * 100000));
 			if (angles.size() > 4) {
-				float median = (float) angles.average() / 100000.0f;
+				float median = (float) Math.toDegrees(angles.average() / 100000.0f);
 				if (median < minAngle) {
 					if (++buffer > 2) {
-						flag("Angle: " + (float) median);
+						flag("Angle: " + median);
 					}
 				} else if (buffer > 0) {
 					buffer -= 0.25;

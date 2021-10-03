@@ -33,9 +33,9 @@ public class IllegalPlace extends ListeningCheck<BlockPlaceEvent> {
 			return;
 		}
 		Location blockFace = e.getBlockAgainst().getLocation().clone().subtract(e.getBlockPlaced().getLocation());
-		if(Math.abs(blockFace.getX()) == 1 && Math.abs(blockFace.getZ()) == 1) {
+		//I don't remember if the vanilla server already blocks diagonal placements...
+                if(Math.abs(blockFace.getX()) == 1 && Math.abs(blockFace.getZ()) == 1) {
 			flag("DiagonalPlacement");
-			return;
 		}
 	}
 

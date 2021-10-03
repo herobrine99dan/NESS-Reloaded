@@ -37,7 +37,7 @@ public class ElytraCheats extends ListeningCheck<PlayerMoveEvent> {
 		float xzDiff = (float) this.player().getMovementValues().getXZDiff();
 		float yDiff = (float) this.player().getMovementValues().getyDiff();
 		float xzPredicted = (float) Math.hypot(predictedMotion.getX(), predictedMotion.getZ());
-		float resultXZ = (float) Math.abs(xzDiff - xzPredicted);
+		float resultXZ = Math.abs(xzDiff - xzPredicted);
 		float resultY = (float) Math.abs(yDiff - predictedMotion.getY());
 		Vector firework = new Vector(0,0,0);
 		for (Entity ent : player().getBukkitPlayer().getNearbyEntities(1, 1, 1)) {

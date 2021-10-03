@@ -27,7 +27,6 @@ public class InvalidSprint extends ListeningCheck<PlayerMoveEvent> {
 		if (player.isSprinting() && (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE)) {
 			if (player.hasPotionEffect(PotionEffectType.BLINDNESS) || player.getFoodLevel() < 7) {
 				flag();
-				//if(player().setViolation(new Violation("Sprint", "ImpossibleActions"))) event.setCancelled(true);
 			}
 		}
 	}

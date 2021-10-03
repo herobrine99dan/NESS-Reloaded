@@ -26,7 +26,6 @@ public class PlayerESP extends Check {
     }
 
     public interface Config {
-
         @DefaultDouble(-0.05)
         double minAngle();
     }
@@ -35,8 +34,7 @@ public class PlayerESP extends Check {
     protected void checkSyncPeriodic() {
         for (Player cheater : Bukkit.getOnlinePlayers()) {
             for (Player tohide : Bukkit.getOnlinePlayers()) {
-                if ((this.player().getMovementValues().getHelper().getAngle(cheater, tohide.getLocation()) < minangle
-                        || !cheater.hasLineOfSight(tohide))
+                if (!cheater.hasLineOfSight(tohide)
                         && cheater.getLocation().distance(tohide.getLocation()) > 13) {
                     cheater.hidePlayer(ness().getPlugin(), tohide);
                 } else {

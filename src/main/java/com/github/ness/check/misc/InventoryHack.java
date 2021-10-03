@@ -73,11 +73,19 @@ public class InventoryHack extends ListeningCheck<InventoryClickEvent> {
 
 		runTaskLater(() -> {
 			Location to = player.getLocation();
-			double distance = Math.hypot(from.getX() - to.getX(), from.getZ() - to.getZ()) - (to.getY() - from.getY());
+			double distance = Math.hypot(from.getX() - to.getX(), from.getZ() - to.getZ());
 			if (nessPlayer.milliSecondTimeDifference(PlayerAction.VELOCITY) < 1000) {
 				return;
 			}
-			if (distance > 0.19) {
+                        float maxDist = 0.19f;
+                        //We have GroundSpoof checks
+                        if(!player.isOnGround()) {
+                            maxDist += 0.02f; //0.02
+                            if(player.isSprinting()) {
+                                maxDist += 0.006f; //0.026
+                            }
+                        }
+			if (distance > maxDist) {
 				if (++buffer > 1) {
 					flag(action);
 				}

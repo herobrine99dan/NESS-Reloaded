@@ -28,7 +28,7 @@ public class KillauraKeepSprint extends ListeningCheck<PlayerMoveEvent> {
 	}
 
 	/**
-	 * Created on 10/24/2020 Package me.frep.vulcan.check.impl.movement.aim by frep
+	 * Created on 10/24/2020 by frep
 	 * (https://github.com/freppp/)
 	 */
 	@Override

@@ -109,7 +109,7 @@ public class MovementValues {
             }
             // blockUnderHead = helper.groundAround(to.toBukkitLocation().add(0, 2.5, 0));
             blockUnderHead = false;
-            if (determination.hasAquaticUpdate()) {
+            if (!determination.hasAquaticUpdate()) {
                 hasBubblesColumns = 0;
             } else {
                 hasBubblesColumns = isInColumnOfBubbles();

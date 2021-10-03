@@ -35,7 +35,7 @@ public class ScaffoldAir extends ListeningCheck<BlockPlaceEvent> {
 				&& airTicks < 1 && values.getXZDiff() > 0.2D && ++buffer > 1) {
 			this.flag();
 		} else if(buffer > 0) {
-			buffer -= 0.5;
+			buffer -= 0.25;
 		}
 	}
 

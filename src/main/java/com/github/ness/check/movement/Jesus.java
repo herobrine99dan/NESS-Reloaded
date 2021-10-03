@@ -20,10 +20,6 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
         super(factory, player);
     }
 
-    public interface Config {
-        //Empty configuration for the future
-    }
-
     @Override
     protected void checkEvent(PlayerMoveEvent event) {
         Player player = event.getPlayer();
@@ -38,6 +34,9 @@ public class Jesus extends ListeningCheck<PlayerMoveEvent> {
             }
         }
         double yDelta = Math.abs(movementValues.getyDiff());
+        if(player.isInsideVehicle() && player.getVehicle().getType().name().contains("BOAT")) {
+            return;
+        }
         if (event.getTo().clone().add(0, -1.0, 0).getBlock().isLiquid() && !player.isFlying()) {
             if (!movementValues.getHelper().isOnGround(event.getTo()) && !lilypad
                     && !event.getTo().clone().add(0, 1, 0).getBlock().isLiquid()) {

@@ -23,6 +23,7 @@ public class ScaffoldAngle extends ListeningCheck<BlockPlaceEvent> {
 	protected void checkEvent(BlockPlaceEvent event) {
 		BlockFace placedFace = event.getBlock().getFace(event.getBlockAgainst());
 		if (placedFace == null) {
+                    flag("A PlacedBlock must be against another block");
 			return;
 		}
 		if(this.getMaterialAccess().getMaterial(event.getBlockAgainst()).name().contains("SCAFFOLD")) { //Scaffoldings can be placed anywhere

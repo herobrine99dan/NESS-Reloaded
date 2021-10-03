@@ -112,7 +112,6 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		Check1(e);
 		Check2(e);
 		Check3(e);
-		Check4(e);
 		Check5(e);
 	}
 
@@ -204,13 +203,6 @@ public class Killaura extends ListeningCheck<EntityDamageByEntityEvent> {
 		if (b.getType().isSolid() && (material.isOccluding() && !material.name().contains("GLASS"))
 				&& (materialCustom.isOccluding() && !materialCustom.name().contains("GLASS"))) {
 			flag("WallHit");
-		}
-	}
-
-	public void Check4(EntityDamageByEntityEvent event) {
-		if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK
-				&& event.getEntity().getEntityId() == event.getDamager().getEntityId()) {
-			flag("SelfHit");
 		}
 	}
 
