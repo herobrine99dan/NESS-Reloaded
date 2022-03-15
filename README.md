@@ -27,7 +27,7 @@ To use NESS-Reloaded you must use:
 ## Contributors
  - [herobrine99dan](https://github.com/herobrine99dan) (Lead developer of NESS Reloaded)
  - [A248](https://github.com/A248) (Another developer of NESS Reloaded)
- - [MatuloM](MatuloM#5335 on Discord) (Working on ChestStealerCheck)
+ - [MatuloM] (Working on ChestStealerCheck)
  - Islandscout(GCD Utils) (developer of [Hawk](https://github.com/HawkAnticheat/Hawk))
  
 Also see the [extended contributors page](https://github.com/herobrine99dan/NESS-Reloaded/graphs/contributors).
